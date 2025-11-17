@@ -7,7 +7,7 @@ class Room {
     int height = 1, width = 1;
     //Doors*
     //bool isLit
-
+    friend Screen;
 public:
     Room(Placement p, char c, int h, int w) {
         symbol = c;
@@ -21,5 +21,7 @@ public:
     int getWidth() {
         return width;
     }
-    void MakeWalls();
+    //void MakeWalls();
+    void drawRoom(Screen& screen);
+
 };

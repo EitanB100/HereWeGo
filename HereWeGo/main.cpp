@@ -10,18 +10,21 @@ int main() {
 
     constexpr char ESC = 27;
     hideCursor();
+	Screen screen; // Create a Screen object (test)
 
     Placement start(10, 10);
     Placement startR(7, 6);
 
     char player1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q'};
-    char player2Keys[NUM_KEYS] = { 'I','K','J','L','U' };    //no logic implemented yet!
+    char player2Keys[NUM_KEYS] = { 'I','K','J','L','U' };   // no logic implemented yet!
 
-    Room areaA(startR, 'W', 12, 21);
+	Room areaA(startR, 'W', 10, 20);
+	
+    areaA.drawRoom(screen);
     
     Player player(start, 'H', 1, 0, player1Keys);
     
-    areaA.MakeWalls();
+    
 
     while (true) {
         player.changeDirection();  // instant input reaction

@@ -11,6 +11,10 @@ void Screen::draw() const {
 	}
 }
 
+void Screen::setTile(int x, int y, char symbol) const {
+	screen[x][y] = symbol;
+}
+
 void Screen::inLimit(Placement& p)
 {
 

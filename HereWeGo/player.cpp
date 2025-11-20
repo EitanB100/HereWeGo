@@ -13,24 +13,40 @@ void Player::move(Room& room) {
 	Placement nextMove = pos; // copy current position
 	nextMove.set(pos.getx() + dirx, pos.gety() + diry, symbol); // calculate next position
 
-	if (!room.inBounds(nextMove.getPosition())) return; // out of bounds
-    
+    /*if (!room.inBounds(nextMove.getPosition()))
+    {
+		setDirection(0, 0); // stop movement
+        return; // out of bounds
+    }*/
 	Point nextPos = nextMove.getPosition();
 
 	switch (room.getObjectAt(nextPos)) //will be implemented in a more readable way later
     {
         case 'W':
 			setDirection(0, 0); // stop movement
-			 // can't move
+            return;
             break;
 
 		case 'D': // door
-            return; // can't move through closed door
+            if (room.checkDoor(nextPos, itemInHand))
+            {
+				itemInHand = { NONE, 0 }; // the key has been used 
+                break;
+            }
+            else {
+				setDirection(0, 0); // stop movement
+				return; // can't move through closed door
+            }
+            
             break;
 
         case 'K': // key
             if (itemInHand.type == NONE)
+            {
                 pickItem(nextPos, room, 'K');
+				break;
+            }
+                
             else
                 setDirection(0, 0);
 			return;// can't pick up another item so it collides with it

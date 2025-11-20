@@ -39,8 +39,12 @@ public:
     }
 
     bool inBounds(const Point& p) const {
-        return (p.x > 0 && p.x < width - 1 &&
-                p.y > 0 && p.y < height - 1);
+    int startX = pos.getx();
+    int startY = pos.gety();
+
+    return (p.x > startX && p.x < startX + width - 1 &&
+            p.y > startY && p.y < startY + height - 1);
+
 	}
 
     void drawDoors(Screen& screen);
@@ -66,6 +70,7 @@ public:
 	Wall* isWallThere(Point& p) const;
 
     Door* isDoorThere(Point& p) const;
+	bool checkDoor(Point p, const heldItem& item);
 
     Key* isKeyThere(Point& p) const;
 

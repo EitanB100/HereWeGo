@@ -30,7 +30,7 @@ int main() {
 	areaA.initializeArrays(2, 2, 4);
 
 	areaA.addDoor(0, Door(0, 0, 12, 1, 0)); // doorNum, x, y, destID, keyID
-	areaA.addDoor(1, Door(1, 79, 12, 2, 1));
+	areaA.addDoor(1, Door(1, 78, 12, 2, 1));
 	areaA.addKey(0, Key(40, 5, 0)); // x, y, keyID
 	areaA.addKey(1, Key(20, 15, 1));
 	areaA.addWall(0, Wall(30, 10));

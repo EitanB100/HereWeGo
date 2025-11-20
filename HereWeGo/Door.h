@@ -15,7 +15,7 @@ public:
 	
 
 	Door(int doorNum, int _x, int _y, int destID, int keyID) // Constructor to initialize door properties
-		: pos(_x, _y, doorNum + '0'), DestinationID(destID), requiredKeyID(keyID), isOpen(false) {}
+		: pos(_x, _y, doorNum + '1'), DestinationID(destID), requiredKeyID(keyID), isOpen(false) {}
 
 
 	int getDestinationID() const { 

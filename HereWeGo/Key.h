@@ -36,6 +36,6 @@ public:
 	}
 
 	bool isAtPosition(const Point& p) const {
-		return (pos.getx() == p.x && pos.gety() == p.y);
+		return (isActive && pos.getx() == p.x && pos.gety() == p.y);
 	}
  };

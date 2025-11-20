@@ -74,19 +74,20 @@ void Room::drawKeys(Screen& screen)
 
 char Room::getObjectAt(Point& p) const
 {
-	if (!inBounds(p)) {
-	
-return 'W'; // Wall symbol if out of bounds
-	
-	}
 	Door* doorAtPos = isDoorThere(p);
-	if (doorAtPos != nullptr)  
+	if (doorAtPos != nullptr)
 		return (*doorAtPos).getIsOpen() ? ' ' : 'D'; // Return 'D' for closed door, ' ' for open door
-	
+
 	Key* keyAtPos = isKeyThere(p);
-	if (keyAtPos != nullptr) 
+	if (keyAtPos != nullptr)
 		return 'K'; // Return 'K' for key
 
+	if (!inBounds(p)) {
+	
+	return 'W'; // Wall symbol if out of bounds
+	
+	}
+	
 	Wall* wallAtPos = isWallThere(p);
 	if (wallAtPos != nullptr)
 		return 'W'; // Return 'W' for wall
@@ -144,6 +145,20 @@ Door* Room::isDoorThere(Point& p) const
 		if (doors[i].isAtPosition(p)) return &doors[i];
 	}
 	return nullptr; // Return default door if none found
+}
+
+bool Room::checkDoor(Point p, const heldItem& item)
+{
+	Door* door = isDoorThere(p);
+	if (door == nullptr) return false; // No door at this position
+	if (door->getIsOpen()) return true; // Door already open
+
+	if (item.type == KEY && item.id == door->getRequiredKeyID())
+	{
+		door->openDoor(true); // Open the door
+		return true;
+	}
+	return false;
 }
 	
 

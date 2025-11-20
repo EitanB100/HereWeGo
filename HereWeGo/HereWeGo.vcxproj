@@ -125,11 +125,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CommandKeys.h" />
+    <ClInclude Include="Door.h" />
+    <ClInclude Include="Key.h" />
     <ClInclude Include="Placement.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

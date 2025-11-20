@@ -51,19 +51,6 @@ public:
     }
     void draw(char c);
 
-    /* bool onBlock() { //next is where the player is heading
-         int x = getx();
-         int y = gety();
-
-        if (x < 0 || y < 0 || x > MAX_X || y > MAX_Y)
-            return false; // out of bounds means not blocked (or could be true if you prefer)
-
-        if (isBlockingTile(getTileChar(x, y))) {
-            return true;
-        }
-        return false;
-    }
-      */
 
 private:
     void inLimit();

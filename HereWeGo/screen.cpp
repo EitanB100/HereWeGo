@@ -43,7 +43,3 @@ void Screen::draw() const {
 	}
 }
 
-void Screen::inLimit(Placement& p)
-{
-
-}

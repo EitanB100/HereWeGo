@@ -15,6 +15,7 @@ void Screen::createGameScreen() {
 	}
 
 }
+
 Screen::Screen() {
 	for (int i = 0; i < MAX_Y; i++) {
 		screen[i] = new char[MAX_X + 1];
@@ -23,9 +24,15 @@ Screen::Screen() {
 	createGameScreen();
 }
 
+Screen::~Screen() {  // Destructor to free allocated memory
+	for (int i = 0; i < MAX_Y; i++) {
+		delete[] screen[i];
+	}
+}
 
-void Screen::setTile(int x, int y, char symbol) const {
-	const_cast<char*>(screen[y])[x] = symbol;
+
+void Screen::setTile(int x, int y, char symbol) { //updated to improve readability, removed const
+	screen[y][x] = symbol;
 }
 
 void Screen::draw() const {

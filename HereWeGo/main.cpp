@@ -19,7 +19,7 @@ int main() {
 	Placement startR(7, 6);
 
 	char player1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q' };
-	char player2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };    //no logic implemented yet!
+	char player2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };  
 
 	Room areaA(startR, 'W', 18, 50);
 	Player players[] = {

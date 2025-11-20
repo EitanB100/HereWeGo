@@ -11,7 +11,7 @@ class Player {
     Screen& area;
 
 public:
-    Player(Placement p, char c, int directx, int directy, const char keyArray[NUM_KEYS], Screen& box) 
+    Player(const Placement& p, char c, int directx, int directy, const char keyArray[NUM_KEYS], Screen& box) 
         :area(box) {
         symbol = c;
         pos.set(p.getx(), p.gety(), symbol);

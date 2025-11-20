@@ -9,7 +9,7 @@ class Room {
     //bool isLit
     friend Screen;
 public:
-    Room(Placement p, char c, int h, int w) {
+    Room(const Placement& p, char c, const int h, const int w) {
         symbol = c;
         pos.set(p.getx(), p.gety(), symbol);
         height = h;

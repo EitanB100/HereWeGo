@@ -3,47 +3,46 @@
 #include <utility>
 #include "Utils.h"
 
+
 class Placement {
-    int pos[2] = { 0,0 };        //pos[0] = x, pos[1] = ya
+	int x = 0, y = 0; //position coordinates
     char tileChar = ' ';
-
-
 
 
 public:
 
 
     Placement() {}
-    Placement(int x, int y, char tile = ' ') {
-        pos[0] = x;
-        pos[1] = y;
+    Placement(int _x, int _y, char tile = ' ') {
+        x = _x;
+        y = _y;
         tileChar = tile;
         inLimit();
     }
 
-    void set(int x, int y, char tile = ' ') {
-        pos[0] = x;
-        pos[1] = y;
+    void set(int _x, int _y, char tile = ' ') {
+        x = _x;
+        y = _y;
         inLimit();
     }
-    void move(int x, int y, char tile) {
-        set(pos[0] + x, pos[1] + y, tile);
+    void move(int xSteps, int ySteps, char tile) {
+        set(x + xSteps, y + ySteps, tile);
     }
 
     void setTileChar(char tile) {
         tileChar = tile;
     }
-    int getx() {
-        return pos[0];
+    int getx() const{
+        return x;
     }
-    int gety() {
-        return pos[1];
+    int gety() const{
+        return y;
     }
-    int* getPos() {
-        return pos;
+    Point getPosition() const {
+        return { x,y };
     }
 
-    char getTileChar(const int x, const int y) {
+    char getTileChar() {
         return tileChar;
     }
 

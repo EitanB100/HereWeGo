@@ -3,38 +3,54 @@
 #include "Player.h"
 #include "Placement.h"
 #include "Room.h"
+#include "Screen.h"
 #include "Utils.h"
 #include "CommandKeys.h"
 
 int main() {
 
-    constexpr char ESC = 27;
-    hideCursor();
+	constexpr char ESC = 27;
+	hideCursor();
+	cls();
+	Screen screen;
 
-    Placement start(10, 10);
-    Placement startR(7, 6);
+	Placement start(10, 10);
+	Placement start2(9, 15);
+	Placement startR(7, 6);
 
-    char player1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q'};
-    char player2Keys[NUM_KEYS] = { 'I','K','J','L','U' };    //no logic implemented yet!
+	char player1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q' };
+	char player2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };    //no logic implemented yet!
 
-    Room areaA(startR, 'W', 12, 21);
-    
-    Player player(start, 'H', 1, 0, player1Keys);
-    
-    areaA.MakeWalls();
+	Room areaA(startR, 'W', 18, 50);
+	Player players[] = {
+		Player(start, '&', 1, 0, player1Keys,screen),
+		Player(start2, '*', 0, 1, player2Keys, screen)
+	};
 
-    while (true) {
-        player.changeDirection();  // instant input reaction
-        player.move();             // move in that direction
+	areaA.drawRoom(screen);
+	screen.draw();
 
-        if (_kbhit()) {
-            char ch = _getch();
-            if (ch == ESC) break;  // escape to exit
-        }
+	while (true) {
+		char key = 0;
 
-        Sleep(100); // adjust to control speed (lower = faster)
-    }
+		if (_kbhit()) {
+			key = _getch();
+			if (key == ESC) {
+				key = _getch();
+				if (key == 'h' || key == 'H') {
+					cls();
+					break;
+				}
+			}
+		}
 
-    cls();
-    return 0;
+		for (auto& player : players) {
+			player.changeDirection(key);
+			player.move();
+		}
+
+		Sleep(50);       // frame delay
+	}
+	cls();
 }
+

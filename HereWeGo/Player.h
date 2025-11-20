@@ -1,15 +1,18 @@
 #pragma once
 #include "CommandKeys.h"
 #include "Placement.h"
+#include "Screen.h"
 
 class Player {
     Placement pos = Placement();
     char symbol = ' ';
     int dirx = 0, diry = 0;
     char keys[NUM_KEYS];            // fixed-size array
+    Screen& area;
 
 public:
-    Player(Placement p, char c, int directx, int directy, const char keyArray[NUM_KEYS]) {
+    Player(Placement p, char c, int directx, int directy, const char keyArray[NUM_KEYS], Screen& box) 
+        :area(box) {
         symbol = c;
         pos.set(p.getx(), p.gety(), symbol);
         dirx = directx;
@@ -28,5 +31,5 @@ public:
         diry = dy;
     }
     void move();
-    void changeDirection();
+    void changeDirection(char tav);
 };

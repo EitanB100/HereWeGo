@@ -7,15 +7,18 @@
 #include "Screen.h"
 
 void Player::move() {
-    pos.draw(' '); // erase old position
-    Placement preMove = pos;
-    int targetX = pos.getx() + dirx;
-    int targetY = pos.gety() + diry;
 
-    pos.set(targetX, targetY, symbol);
-    if (area.isWall(pos)) {
-        pos = preMove;
+    if (dirx == 0 && diry == 0) return; // no movement
+
+	Placement nextMove = pos; // copy current position
+	nextMove.set(pos.getx() + dirx, pos.gety() + diry, symbol); // calculate next position
+
+    if (area.isWall(nextMove)) {
+        setDirection(0, 0); // stop movement if hit wall
+        return;
     }
+	pos.draw(' '); // erase previous position
+	pos.set(pos.getx() + dirx, pos.gety() + diry, symbol);
     pos.draw(symbol);
 };
 

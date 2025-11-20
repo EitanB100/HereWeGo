@@ -12,11 +12,14 @@ private:
         return screen[p.gety()][p.getx()];
     }
 
+
 public:
     Screen();
+    ~Screen();
+
     void createGameScreen();
 
-    void setTile(int x, int y, char symbol) const;
+    void setTile(int x, int y, char symbol) ;
     void inLimit(Placement& p);
 
     void clearScreen() {

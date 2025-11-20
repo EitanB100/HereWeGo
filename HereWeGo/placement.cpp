@@ -5,19 +5,19 @@
 
 
 void Placement::draw(char c) {
-    gotoxy(pos[0], pos[1]);
+    gotoxy(x, y);
     std::cout << c;
 }
 
 void Placement::inLimit() {
-    if (getx() < 0)
-        pos[0] = 0;
-    if (gety() < 0)
-        pos[1] = 0;
+    if (x < 0)
+        x = 0;
+    if (y < 0)
+        y = 0;
     if (getx() > MAX_X)
-        pos[0] = MAX_X;
+        x = MAX_X;
     if (gety() > MAX_Y)
-        pos[1] = MAX_Y;
+        y = MAX_Y;
 }
 
 

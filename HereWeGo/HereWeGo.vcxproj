@@ -127,6 +127,7 @@
     <ClInclude Include="CommandKeys.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="Key.h" />
+    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Placement.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Room.h" />
@@ -136,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="placement.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="room.cpp" />

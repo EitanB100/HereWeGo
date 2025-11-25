@@ -2,12 +2,15 @@
 #include "Key.h"
 #include "Door.h"
 #include "Wall.h"
+#include "Obstacle.h"
+
 void Room::drawRoom(Screen& screen)
 {
 	drawPerimiterWalls(screen);
 	drawInternalWalls(screen);
 	drawDoors(screen);
 	drawKeys(screen);
+	//drawObstacles(screen); // to be implemented later
 }
 
 //perimeter walls
@@ -82,24 +85,26 @@ char Room::getObjectAt(Point& p) const
 	if (keyAtPos != nullptr)
 		return 'K'; // Return 'K' for key
 
-	if (!inBounds(p)) {
-	
-	return 'W'; // Wall symbol if out of bounds
-	
-	}
+	if (!inBounds(p)) 
+		return 'W'; // Wall symbol if out of bounds
 	
 	Wall* wallAtPos = isWallThere(p);
 	if (wallAtPos != nullptr)
 		return 'W'; // Return 'W' for wall
 
+	Obstacle* obstacleAtPos = isObstacleThere(p);
+	if (obstacleAtPos != nullptr)
+		return '*'; // Return '*' for obstacle
+
 	return ' '; // Empty space if no object found
 }
 
-void Room::initializeArrays(int doorCount, int keyCount, int wallCount) { // Initialize doors,keys and internal walls arrays
+void Room::initializeArrays(int doorCount, int keyCount, int wallCount, int ObstacleCount) { // Initialize doors,keys and internal walls arrays
 
 	delete[] doors; // Free existing memory if any
 	delete[] keys;
 	delete[] walls;
+	delete[] obstacles;
 
 	if (keyCount > 0 && doorCount > 0) {
 		doors = new Door[doorCount];
@@ -113,6 +118,12 @@ void Room::initializeArrays(int doorCount, int keyCount, int wallCount) { // Ini
 	{
 		walls = new Wall[wallCount];
 		numWalls = wallCount;
+	}
+
+	if (ObstacleCount > 0)
+	{
+		obstacles = new Obstacle[ObstacleCount];
+		numObstacles = ObstacleCount;
 	}
 
 
@@ -134,6 +145,14 @@ void Room::addWall(int index, const Wall& wall)
 {
 	if (walls != nullptr && index < numWalls) {
 		walls[index] = wall;
+	}
+}
+
+void Room::addObstacle(int index, int x, int y)
+{
+	if (obstacles != nullptr && index < numObstacles) {
+		Placement part(x, y, '*');
+		obstacles[index].addPart(part);
 	}
 }
 
@@ -181,4 +200,23 @@ Wall* Room::isWallThere(Point& p) const
 	}
 
 	return nullptr; // No wall found (perimiter walls are not included here)
+}
+
+Obstacle* Room::isObstacleThere(Point& p) const
+{
+	for (int i = 0; i < numObstacles; i++)
+	{
+		if (obstacles[i].isAt(p)) return &obstacles[i];
+	}
+
+		return nullptr;
+}
+
+bool Room::moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce)
+{
+	if (playerForce < obstacle->getSize()) return false; // Not enough force to move the obstacle
+	
+
+
+	return false;
 }

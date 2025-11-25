@@ -17,17 +17,16 @@ int main() {
 	cls();
 	Screen screen;
 
-	Placement start = Placement(10,10,'&');
-	Placement start2 = Placement(9,15,'*');
+	Placement start = Placement(10,10);
+	Placement start2 = Placement(9,15);
 
-	Placement startR(7, 6);
 
 	char player1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q' };
 	char player2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };  
 
 	Room areaA = Room();
 
-	areaA.initializeArrays(2, 2, 4);
+	areaA.initializeArrays(2, 2, 4, 3);
 
 	areaA.addDoor(0, Door(0, 0, 12, 1, 0)); // doorNum, x, y, destID, keyID
 	areaA.addDoor(1, Door(1, 78, 12, 2, 1));
@@ -39,7 +38,7 @@ int main() {
 	areaA.addWall(3, Wall(33, 10));
 	Player players[] = {
 		Player(start, '&', 1, 0, player1Keys),
-		Player(start2, '*', 0, 1, player2Keys)
+		Player(start2, '@', 0, 1, player2Keys)
 	};
 
 	areaA.drawRoom(screen);

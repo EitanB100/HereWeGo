@@ -6,6 +6,7 @@
 class Door; 
 class Key;
 class Wall;
+class Obstacle;
 
 class Room {
     
@@ -20,6 +21,8 @@ class Room {
 	int numKeys = 0;
 	Wall* walls = nullptr;
 	int numWalls = 0;
+	Obstacle* obstacles = nullptr;
+	int numObstacles = 0;
 
 public:
 
@@ -53,7 +56,7 @@ public:
 
     char getObjectAt(Point& p) const;
 
-    void initializeArrays(int doorCount, int keyCount, int wallCount); // Initialize doors and keys arrays
+    void initializeArrays(int doorCount, int keyCount, int wallCount, int obstacleCount); // Initialize doors and keys arrays
     
     void drawRoom(Screen& screen);
 
@@ -67,11 +70,17 @@ public:
 
 	void addWall(int index, const Wall& wall);
 
-	Wall* isWallThere(Point& p) const;
+    void addObstacle(int index, int x, int y);
+
 
     Door* isDoorThere(Point& p) const;
 	bool checkDoor(Point p, const heldItem& item);
 
     Key* isKeyThere(Point& p) const;
 
+    Wall* isWallThere(Point& p) const;
+
+	Obstacle* isObstacleThere(Point& p) const;
+
+    bool moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce);
 };

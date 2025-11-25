@@ -9,6 +9,7 @@ class Player {
 
     char symbol = ' ';
     int dirx = 0, diry = 0;
+    int force = 1; // for moving obstacles, will be changed by spring later
 
     char keys[NUM_KEYS];            // fixed-size array
 

@@ -82,13 +82,13 @@ void Player::pickItem(Point& position, Room& room, char symbol)
 void Player::changeDirection(char input) {
     if (input == 0) return;
     input = toupper(input); // normalize input
-    if (input == keys[UP] && getdirctY() <= 0)
+    if (input == keys[UP])
         setDirection(0, -1);
-    else if (input == keys[DOWN] && getdirctY() >= 0)
+    else if (input == keys[DOWN])
         setDirection(0, 1);
-    else if (input == keys[LEFT] && getdirctX() <= 0)
+    else if (input == keys[LEFT])
         setDirection(-1, 0);
-    else if (input == keys[RIGHT] && getdirctX() >= 0)
+    else if (input == keys[RIGHT])
         setDirection(1, 0);
     else if (input == keys[STAY]) setDirection(0, 0);
     

@@ -1,11 +1,8 @@
 #pragma once
 
-constexpr int MAX_X = 79;
-constexpr int MAX_Y = 24;
-
-constexpr char WALL = 'W';
-constexpr char OBSTACLE = '*';
-constexpr char KEY = 'K';
+constexpr char WALL_TILE = 'W';
+constexpr char OBSTACLE_TILE = '*';
+constexpr char KEY_TILE = 'K';
 
 // Check if character represents a door - suggested by gemini
 inline bool isDoor(char c) { 

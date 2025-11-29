@@ -6,12 +6,13 @@
 class Key {
 	
 	Placement pos;
+	
 	int keyID;
 	Color color = Color::WHITE;
 	bool isActive = true;
 
 public:
-	Key(int x, int y, int id, Color c) : pos(x, y, 'K'), keyID(id), color(c) {}
+	Key(int x, int y, int id, Color c) : pos(x, y, KEY_TILE), keyID(id), color(c) {}
 
 	int getKeyID() const {
 		return keyID;
@@ -25,6 +26,11 @@ public:
 		return isActive;
 	}
 
+	Point getPos() const {
+		return pos.getPosition();
+	}
+	
+	
 	void draw()
 	{
 		if (isActive) {

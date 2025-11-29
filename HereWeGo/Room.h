@@ -25,7 +25,7 @@ public:
     void drawRoom(Screen& screen);
 
     void addWall(Point p);
-    void addDoor(Door& door);
+    void addDoor(Door door);
     void addKey(Key key);
 
     char getObjectAt(Point& p) const;

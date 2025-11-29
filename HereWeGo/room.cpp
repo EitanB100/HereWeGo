@@ -42,7 +42,7 @@ bool Room::checkDoor(Point p, heldItem& item)
 	return (door->getIsOpen());
 }
 
-void Room::addDoor(Door& door) {
+void Room::addDoor(Door door) {
 
 	Point doorPos = door.getPos();
 
@@ -51,17 +51,31 @@ void Room::addDoor(Door& door) {
 	doors.push_back(door);
 }
 
-void Room::addWall(int x, int y)
+Key* Room::isKeyThere(Point& p)
 {
-	map[y][x] = WALL;
+	for (Key& key : keys)
+	{
+		Point keyPos = key.getPos();
+
+		if (keyPos.x == p.x && keyPos.y == p.y)
+		{
+			return &key;
+		}
+	}
+	return nullptr;
 }
 
+void Room::addKey(Key key) {
 
-void Room::addKey(int x, int y, int keyID) {
+	Point keyPos = key.getPos();
+	map[keyPos.y][keyPos.x] = KEY_TILE;
+	
+	keys.push_back(key);
+}
 
-	map[y][x] = KEY;
-
-
+void Room::addWall(Point p)
+{
+	map[p.y][p.x] = WALL_TILE;
 }
 
 
@@ -72,14 +86,7 @@ char Room::getObjectAt(Point& p) const
 
 
 
-void Room::addWall(int index, const Wall& wall)
-{
-	if (walls != nullptr && index < numWalls) {
-		walls[index] = wall;
-	}
-}
-
-void Room::addObstacle(int index, int x, int y)
+/*void Room::addObstacle(int index, int x, int y)
 {
 	if (obstacles != nullptr && index < numObstacles) {
 		Placement part(x, y, '*');
@@ -97,4 +104,4 @@ bool Room::moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce)
 
 
 	return false;
-}
+}*/

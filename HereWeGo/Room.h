@@ -17,18 +17,13 @@ class Room {
     char map[25][80] = {};
     
     Door doors[MAX_DOORS];
-	/*Door* doors = nullptr;
-	int numDoors = 0;
-	Key* keys = nullptr;
-	int numKeys = 0;
-	Wall* walls = nullptr;
-	int numWalls = 0;
-	Obstacle* obstacles = nullptr;
-	int numObstacles = 0;*/
+    int numDoors = 0;
 
 public:
 
-    Room() {} // Default constructor
+    
+
+    bool checkDoor(Point p, heldItem& item);
 
     void setupPerimiter();
 
@@ -59,11 +54,8 @@ public:
 
 
     Door* isDoorThere(Point& p) const;
-	bool checkDoor(Point p, const heldItem& item);
 
     Key* isKeyThere(Point& p) const;
-
-    Wall* isWallThere(Point& p) const;
 
 	Obstacle* isObstacleThere(Point& p) const;
 

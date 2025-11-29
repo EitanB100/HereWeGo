@@ -1,4 +1,5 @@
 #pragma once
+#include <Windows.h>
 
 constexpr int MAX_DOORS = 10;
 
@@ -13,11 +14,13 @@ struct Point { // simple struct for position getting
     int x, y;
 };
 
+enum class Color {
+	BLUE = 1, GREEN, RED, CYAN, MAGENTA, YELLOW, WHITE //white is default
+};
 
-
+void setColor(Color c);
 
 void gotoxy(int x, int y);
 
 void hideCursor();
 
-void cls();

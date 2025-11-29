@@ -57,18 +57,9 @@ void Room::addObstacle(int index, int x, int y)
 }
 
 
-bool Room::checkDoor(Point p, const heldItem& item)
+bool Room::checkDoor(Door& door)
 {
-	Door* door = isDoorThere(p);
-	if (door == nullptr) return false; // No door at this position
-	if (door->getIsOpen()) return true; // Door already open
-
-	if (item.type == KEY && item.id == door->getRequiredKeyID())
-	{
-		door->openDoor(true); // Open the door
-		return true;
-	}
-	return false;
+	if ()
 }
 	
 

@@ -136,6 +136,7 @@
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Door.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="placement.cpp" />

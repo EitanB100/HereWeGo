@@ -1,15 +1,33 @@
 #pragma once
+#include <vector>
 #include "Utils.h"
 #include "Placement.h"
 
 // Door class representing a door in the game
 class Door {
-    int requiredKeyID;
-    int nextRoomID; // For later exercises
+    
+    Placement pos;
+    std::vector<int> requiredKeyIDs;
+	Color color = Color::WHITE;
+    bool isOpen = false;
+
 public:
 
-    Door();
-    Door(int keyID, int nextRoom) : requiredKeyID(keyID), nextRoomID(nextRoom) {}
+   Door(int x, int y, Color c) : pos(x, y, 'D'), color(c) {}
+   
+   void addRequiredKey(int id) {
+       requiredKeyIDs.push_back(id);
+   }
 
-    int getRequiredKeyID() const { return requiredKeyID; }
+   void open() { isOpen = true; }
+   
+   bool getIsOpen() const { return isOpen; }
+
+   void draw();
+
+   bool tryUnlock(int keyID);
+   
+   
+    
+   
 };

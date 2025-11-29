@@ -5,17 +5,33 @@
 
 class Key {
 	
-	int  x, y;
+	Placement pos;
 	int keyID;
+	Color color = Color::WHITE;
+	bool isActive = true;
 
 public:
-	Key(int _x, int _y, int _id) : x(_x), y(_y), keyID(_id) {}
-
-	bool isAt (int checkX, int checkY) const {
-		return (x == checkX && y == checkY);
-	}
+	Key(int x, int y, int id, Color c) : pos(x, y, 'K'), keyID(id), color(c) {}
 
 	int getKeyID() const {
 		return keyID;
 	}
+
+	Color getColor() const {
+		return color;
+	}
+
+	bool getIsActive() const {
+		return isActive;
+	}
+
+	void draw()
+	{
+		if (isActive) {
+			setColor(color);
+			pos.draw();
+			setColor(Color::WHITE); // Reset to default color
+		}
+	}
+
  };

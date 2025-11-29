@@ -16,6 +16,8 @@ class Player {
 	heldItem itemInHand = { NONE, 0 };
 
 public:
+
+    
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[NUM_KEYS]) 
     {
         symbol = c;
@@ -25,6 +27,8 @@ public:
         for (int i = 0; i < NUM_KEYS; ++i)
             keys[i] = keyArray[i];
     }
+
+    void draw() { pos.draw(); }
 
     int getdirctX() {
         return dirx;

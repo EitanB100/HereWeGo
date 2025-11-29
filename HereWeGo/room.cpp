@@ -3,6 +3,12 @@
 #include "Door.h"
 #include "Obstacle.h"
 
+void Room::drawTopLayer()
+{
+	for (Door& door : doors) door.draw();
+	for (Key& key : keys) key.draw();
+}
+
 void Room::drawRoom(Screen& screen) // Draw the room on the screen
 {
 	for (int y = 0; y < MAX_Y; y++)

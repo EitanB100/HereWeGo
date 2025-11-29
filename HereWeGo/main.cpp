@@ -24,6 +24,8 @@ int main() {
 	char player2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };  
 
 	Room areaA;
+	
+
 
 
 	Player players[] = {
@@ -45,6 +47,15 @@ int main() {
 	areaA.addWall(Point{30,10});
 	areaA.addWall(Point{ 31,10 });
 
+	areaA.drawRoom(screen);
+	screen.draw();
+
+	areaA.drawTopLayer();
+
+	for (auto& player : players)
+	{
+		player.draw();
+	}
 	while (true) {
 		char key = 0;
 

@@ -18,10 +18,19 @@ class Room {
 
 public:
 
-    Room() {} // array initialized to zeroes, vectors self initialize
+    Room() {
+        for (int y = 0; y < MAX_Y; y++)
+        {
+            for (int x = 0; x < MAX_X; x++)
+            {
+                map[y][x] = ' ';
+            }
+        }
+    } // array initialized to zeroes, vectors self initialize
 
     bool checkDoor(Point p, heldItem& item);
 
+    void drawTopLayer();
     void drawRoom(Screen& screen);
     void clearTile(Point p) { map[p.y][p.x] = ' '; }
 

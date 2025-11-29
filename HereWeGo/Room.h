@@ -23,13 +23,13 @@ public:
     bool checkDoor(Point p, heldItem& item);
 
     void drawRoom(Screen& screen);
-    void clearTile(Point p) { map[p.x][p.y] = ' '; }
+    void clearTile(Point p) { map[p.y][p.x] = ' '; }
 
     void addWall(Point p);
     void addDoor(Door door);
     void addKey(Key key);
 
-    char getObjectAt(Point& p) const;
+    char getObjectAt(Point& p);
 
     Door* isDoorThere(Point& p);
     Key* isKeyThere(Point& p);

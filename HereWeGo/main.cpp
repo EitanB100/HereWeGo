@@ -13,8 +13,8 @@ int main() {
 
 	constexpr char ESC = 27;
 	hideCursor();
-	cls();
 	Screen screen;
+	screen.clearScreen();
 
 	Placement start = Placement(10,10);
 	Placement start2 = Placement(9,15);
@@ -23,26 +23,27 @@ int main() {
 	char player1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q' };
 	char player2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };  
 
-	Room areaA = Room();
+	Room areaA;
 
-	areaA.initializeArrays(2, 2, 4, 3);
-
-	areaA.addDoor(0, Door(0, 0, 12, 1, 0)); // doorNum, x, y, destID, keyID
-	areaA.addDoor(1, Door(1, 78, 12, 2, 1));
-	areaA.addKey(0, Key(40, 5, 0)); // x, y, keyID
-	areaA.addKey(1, Key(20, 15, 1));
-	areaA.addWall(0, Wall(30, 10));
-	areaA.addWall(1, Wall(31, 10));
-	areaA.addWall(2, Wall(32, 10));
-	areaA.addWall(3, Wall(33, 10));
 
 	Player players[] = {
 		Player(start, '&', 1, 0, player1Keys),
 		Player(start2, '@', 0, 1, player2Keys)
 	};
 
-	areaA.drawRoom(screen);
-	screen.draw();
+	Door d1(12, 1, 1, Color::GREEN);
+	d1.addRequiredKey(10);
+	areaA.addDoor(d1);
+
+	Door d2(78, 12, 2, Color::RED);
+	d2.addRequiredKey(11);
+	areaA.addDoor(d2);
+	
+	areaA.addKey(Key(40, 5, 10, Color::GREEN));
+	areaA.addKey(Key(20, 15, 11, Color::RED));
+
+	areaA.addWall(Point{30,10});
+	areaA.addWall(Point{ 31,10 });
 
 	while (true) {
 		char key = 0;
@@ -52,7 +53,7 @@ int main() {
 			if (key == ESC) {
 				key = _getch();
 				if (key == 'h' || key == 'H') {
-					cls();
+					screen.clearScreen();
 					break;
 				}
 			}
@@ -65,6 +66,6 @@ int main() {
 
 		Sleep(50);       // frame delay
 	}
-	cls();
+	screen.clearScreen();
 }
 

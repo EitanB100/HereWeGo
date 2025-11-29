@@ -90,8 +90,18 @@ void Room::addWall(Point p)
 }
 
 
-char Room::getObjectAt(Point& p) const
+char Room::getObjectAt(Point& p)
 {
+	Door* door = isDoorThere(p);
+	if (door != nullptr) {
+		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
+	}
+
+	Key* key = isKeyThere(p);
+	if (key != nullptr) {
+		return key->getIsActive() ? KEY_TILE : ' ';
+	}
+
 	return map[p.y][p.x];
 }
 

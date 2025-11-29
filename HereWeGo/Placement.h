@@ -23,6 +23,7 @@ public:
     void set(int _x, int _y, char tile = ' ') {
         x = _x;
         y = _y;
+        tileChar = tile;
         inLimit();
     }
     void move(int xSteps, int ySteps, char tile) {

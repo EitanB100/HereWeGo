@@ -28,11 +28,16 @@ void Player::move(Room& room) {
             return;
         }
         setDirection(0, 0);
+        return;
     }
 
     if (tileOnMap == KEY_TILE) {
         if (itemInHand.type == NONE)
             pickItem(nextPoint, room, KEY);
+        else {
+            setDirection(0, 0);
+            return;
+        }
     }
 
 

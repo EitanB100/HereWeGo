@@ -23,7 +23,10 @@ public:
         {
             for (int x = 0; x < MAX_X; x++)
             {
-                map[y][x] = ' ';
+                if (y == 0 || y == MAX_Y - 1 || x == 0 || x == MAX_X - 1)
+                    map[y][x] = WALL_TILE;
+                else
+                    map[y][x] = ' ';
             }
         }
     } // array initialized to zeroes, vectors self initialize

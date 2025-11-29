@@ -16,7 +16,7 @@ struct Point { // simple struct for position getting
 };
 
 enum class Color {
-	BLUE = 1, GREEN, RED, CYAN, MAGENTA, YELLOW, WHITE //white is default
+	BLUE = 1, GREEN, CYAN, RED, MAGENTA, WHITE = 15//white is default
 };
 
 void setColor(Color c);

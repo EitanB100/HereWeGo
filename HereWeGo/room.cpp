@@ -19,15 +19,6 @@ void Room::drawRoom(Screen& screen) // Draw the room on the screen
 		}
 	}
 
-	for (Door& door : doors)
-	{
-		door.draw();
-	}
-
-	for (Key& key : keys)
-	{
-		key.draw();
-	}
 }
 
 Door* Room::isDoorThere(Point& p)

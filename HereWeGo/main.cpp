@@ -47,10 +47,14 @@ int main() {
 	areaA.addWall(Point{30,10});
 	areaA.addWall(Point{ 31,10 });
 
+
+	setColor(Color::WHITE);
 	areaA.drawRoom(screen);
 	screen.draw();
 
 	areaA.drawTopLayer();
+
+	setColor(Color::WHITE);
 
 	for (auto& player : players)
 	{
@@ -71,6 +75,7 @@ int main() {
 		}
 
 		for (auto& player : players) {
+			setColor(Color::WHITE);
 			player.changeDirection(key);
 			player.move(areaA);
 		}

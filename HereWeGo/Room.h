@@ -23,6 +23,7 @@ public:
     bool checkDoor(Point p, heldItem& item);
 
     void drawRoom(Screen& screen);
+    void clearTile(Point p) { map[p.x][p.y] = ' '; }
 
     void addWall(Point p);
     void addDoor(Door door);

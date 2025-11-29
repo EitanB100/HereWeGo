@@ -5,7 +5,6 @@
 #include "Room.h"
 #include "Door.h"
 #include "Key.h"
-#include "Wall.h"
 #include "Screen.h"
 #include "Utils.h"
 #include "CommandKeys.h"

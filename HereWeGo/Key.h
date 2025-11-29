@@ -30,6 +30,7 @@ public:
 		return pos.getPosition();
 	}
 	
+	void takeKey() { isActive = false; }
 	
 	void draw()
 	{

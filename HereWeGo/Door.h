@@ -6,15 +6,15 @@
 // Door class representing a door in the game
 class Door {
     
-    Placement pos;
     int id;
+    Placement pos;
     std::vector<int> requiredKeyIDs;
 	Color color = Color::WHITE;
     bool isOpen = false;
 
 public:
 
-   Door(int x, int y, int _id, Color c) : pos(x, y, id + '1'), id(_id), color(c) {}
+   Door(int x, int y, int _id, Color c) : pos(x, y, id + '0'), id(_id), color(c) {}
    
    void addRequiredKey(int id) {
        requiredKeyIDs.push_back(id);
@@ -25,7 +25,7 @@ public:
    
    bool getIsOpen() const { return isOpen; }
 
-   Point getPos() { return pos.getPosition(); }
+   Placement getPos() { return pos; }
 
    void draw();
 

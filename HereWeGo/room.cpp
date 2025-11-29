@@ -12,14 +12,25 @@ void Room::drawRoom(Screen& screen) // Draw the room on the screen
 			screen.setTile(x, y, map[y][x]);
 		}
 	}
+
+	for (Door& door : doors)
+	{
+		door.draw();
+	}
+
+	for (Key& key : keys)
+	{
+		key.draw();
+	}
 }
 
 Door* Room::isDoorThere(Point& p)
 {
 	for (Door& door : doors)
 	{
-		Point doorPos = door.getPos();
-		if (doorPos.x == p.x && doorPos.y == p.y)
+		Placement doorPos = door.getPos();
+		
+		if (doorPos.getx() == p.x && doorPos.gety() == p.y)
 		{
 			return &door;
 		}
@@ -44,9 +55,9 @@ bool Room::checkDoor(Point p, heldItem& item)
 
 void Room::addDoor(Door door) {
 
-	Point doorPos = door.getPos();
+	Placement doorPos = door.getPos();
 
-	map[doorPos.y][doorPos.x] = door.getDoorID();
+	map[doorPos.gety()][doorPos.getx()] = doorPos.getTileChar();
 
 	doors.push_back(door);
 }

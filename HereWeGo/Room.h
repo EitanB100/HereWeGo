@@ -16,7 +16,7 @@ class Room {
     
     char map[25][80] = {};
     
-    Door doors[MAX_DOORS]
+    Door doors[MAX_DOORS];
 	/*Door* doors = nullptr;
 	int numDoors = 0;
 	Key* keys = nullptr;
@@ -28,7 +28,7 @@ class Room {
 
 public:
 
-	Room() {} // Default constructor
+    Room() {} // Default constructor
 
     void setupPerimiter();
 

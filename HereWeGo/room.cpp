@@ -14,7 +14,42 @@ void Room::drawRoom(Screen& screen) // Draw the room on the screen
 	}
 }
 
+Door* Room::isDoorThere(Point& p)
+{
+	for (Door& door : doors)
+	{
+		Point doorPos = door.getPos();
+		if (doorPos.x == p.x && doorPos.y == p.y)
+		{
+			return &door;
+		}
+	}
+	return nullptr;
+}
 
+bool Room::checkDoor(Point p, heldItem& item)
+{
+	Door* door = isDoorThere(p);
+	if (door == nullptr) return false;
+	if (door->getIsOpen()) return true;
+	
+	if (item.type == KEY) 
+	{
+		if (door->tryUnlock(item.id))
+			item = { NONE, 0 };
+	}
+
+	return (door->getIsOpen());
+}
+
+void Room::addDoor(Door& door) {
+
+	Point doorPos = door.getPos();
+
+	map[doorPos.y][doorPos.x] = door.getDoorID();
+
+	doors.push_back(door);
+}
 
 void Room::addWall(int x, int y)
 {
@@ -36,10 +71,6 @@ char Room::getObjectAt(Point& p) const
 }
 
 
-void Room:: addDoor(int x, int y, int doorNumber) {
-	
-	map[y][x] = doorNumber + '1';
-}
 
 void Room::addWall(int index, const Wall& wall)
 {
@@ -57,10 +88,6 @@ void Room::addObstacle(int index, int x, int y)
 }
 
 
-bool Room::checkDoor(Door& door)
-{
-	if ()
-}
 	
 
 bool Room::moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce)

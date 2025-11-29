@@ -9,6 +9,6 @@ constexpr char KEY = 'K';
 
 // Check if character represents a door - suggested by gemini
 inline bool isDoor(char c) { 
-	return (c == 'D'); 
+	
 	return (c >= '1' && c <= '9');
 }

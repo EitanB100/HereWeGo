@@ -36,6 +36,7 @@ int main() {
 	areaA.addWall(1, Wall(31, 10));
 	areaA.addWall(2, Wall(32, 10));
 	areaA.addWall(3, Wall(33, 10));
+
 	Player players[] = {
 		Player(start, '&', 1, 0, player1Keys),
 		Player(start2, '@', 0, 1, player2Keys)

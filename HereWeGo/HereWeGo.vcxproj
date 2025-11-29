@@ -132,8 +132,8 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Screen.h" />
+    <ClInclude Include="Tile_Chars.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

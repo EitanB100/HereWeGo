@@ -25,13 +25,13 @@ void Player::move(Room& room) {
 
     if (isDoor(tileOnMap))
     {
-        // Try to unlock. If successful, key is used.
-        if (!room.checkDoor(nextPoint, itemInHand))
-        {
-            setDirection(0, 0); // Locked. Stop.
-            return;
-        }
-        setDirection(0, 0); // Opened. Stop to admire the amazing work.
+        bool isOpened = room.checkDoor(nextPoint, itemInHand);
+
+        setDirection(0, 0);
+
+        setColor(itemInHand.color);
+        pos.draw();
+        std::cout << std::flush;
         return;
     }
 

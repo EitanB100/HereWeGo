@@ -44,7 +44,11 @@ bool Room::checkDoor(Point p, heldItem& item)
 	if (item.type == KEY) 
 	{
 		if (door->tryUnlock(item.id))
-			item = { NONE, 0 };
+		{
+			item = { NONE, 0, Color::WHITE};
+			door->draw();
+		}
+			
 	}
 
 	return (door->getIsOpen());

@@ -14,7 +14,7 @@ class Door {
 
 public:
 
-   Door(int x, int y, int _id, Color c) : pos(x, y, id + '0'), id(_id), color(c) {}
+   Door(int x, int y, int _id, Color c) : pos(x, y, _id + '0'), id(_id), color(c) {}
    
    void addRequiredKey(int id) {
        requiredKeyIDs.push_back(id);

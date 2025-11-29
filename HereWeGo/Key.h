@@ -1,6 +1,7 @@
 #pragma once
 #include "Placement.h"
 #include "utils.h"
+#include "Tile_Chars.h"
 // Key class representing a key in the game
 
 class Key {

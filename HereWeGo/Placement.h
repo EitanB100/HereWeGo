@@ -42,7 +42,7 @@ public:
         return { x,y };
     }
 
-    char getTileChar() {
+    char getTileChar() const {
         return tileChar;
     }
 

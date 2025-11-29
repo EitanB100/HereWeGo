@@ -1,8 +1,8 @@
 #pragma once
 #include <Windows.h>
 
-constexpr int MAX_X = 25;
-constexpr int MAX_Y = 80;
+constexpr int MAX_X = 80;
+constexpr int MAX_Y = 25;
 
 enum itemType { NONE, KEY, TORCH, BOMB }; // possible item types - last two for exercise 2
 

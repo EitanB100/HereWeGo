@@ -8,27 +8,37 @@
 
 void Player::move(Room& room) {
 
-    Placement nextPos = pos;
-    nextPos.set(pos.getx() + dirx, pos.gety() + diry, symbol);
+    if (dirx == 0 && diry == 0) return;
 
-    if (isDoor(nextPos.getTileChar()))
+    
+    Point nextPoint = { pos.getx() + dirx, pos.gety() + diry };
+
+    char tileOnMap = room.getObjectAt(nextPoint);
+
+    if (tileOnMap == WALL_TILE) {
+        setDirection(0, 0);
+        return; 
+    }
+
+    if (isDoor(tileOnMap))
     {
-        if (room.checkDoor(pos.getPosition(), itemInHand))
-            pos = nextPos;
-    
-        return;
+        if (!room.checkDoor(nextPoint, itemInHand))
+        {
+            setDirection(0, 0);
+            return;
+        }
+        setDirection(0, 0);
     }
 
-    if (nextPos.getTileChar() == WALL_TILE) return;
-    
-    if (nextPos.getTileChar() == KEY_TILE) {
-        if (itemInHand.type == NONE) {
-            
-            Point temp = nextPos.getPosition();
-            pickItem(temp, room, KEY_TILE);
-        
-        }
+    if (tileOnMap == KEY_TILE) {
+        if (itemInHand.type == NONE)
+            pickItem(nextPoint, room, KEY);
     }
+
+
+    pos.draw(' ');
+    pos.set(nextPoint.x, nextPoint.y, symbol);
+    pos.draw();
 };
 
 
@@ -42,6 +52,7 @@ void Player::pickItem(Point& position, Room& room, char symbol)
 
         key->takeKey();
         itemInHand = { KEY, key->getKeyID()};
+        room.clearTile(position);
     }
 
 }

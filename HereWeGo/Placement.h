@@ -20,6 +20,9 @@ public:
         inLimit();
     }
 
+    // Added 'tileChar = tile;'
+    // Previously, this function updated X and Y but ignored the 'tile' char.
+    // This caused the Player to turn invisible (become ' ') as soon as they moved.
     void set(int _x, int _y, char tile = ' ') {
         x = _x;
         y = _y;

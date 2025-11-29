@@ -51,13 +51,11 @@ int main() {
 	areaA.addWall(Point{ 31,10 });
 	areaA.addDoor(d2);
 
-	setColor(Color::WHITE);
+
 	areaA.drawRoom(screen);
 	screen.draw();
 
 	areaA.drawTopLayer();
-
-	setColor(Color::WHITE);
 
 	for (auto& player : players)
 	{

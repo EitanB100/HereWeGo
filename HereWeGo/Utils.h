@@ -6,18 +6,21 @@ constexpr int MAX_Y = 25;
 
 enum itemType { NONE, KEY, TORCH, BOMB }; // possible item types - last two for exercise 2
 
+enum class Color {
+    BLUE = 1, GREEN, CYAN, RED, MAGENTA, WHITE = 15//white is default
+};
+
 struct heldItem {
     itemType type = NONE;
     int id = 0; // key ID or bomb timer
+    Color color = Color::WHITE;
 };
 
 struct Point { // simple struct for position getting
     int x, y;
 };
 
-enum class Color {
-	BLUE = 1, GREEN, CYAN, RED, MAGENTA, WHITE = 15//white is default
-};
+
 
 void setColor(Color c);
 

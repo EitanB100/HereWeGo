@@ -13,7 +13,8 @@ class Player {
 
     char keys[NUM_KEYS];            // fixed-size array
 
-	heldItem itemInHand = { NONE, 0 };
+     //Color will be used as an indicator for a picked up item, mainly key
+	heldItem itemInHand = { NONE, 0, Color::WHITE};
 
 public:
 
@@ -28,8 +29,14 @@ public:
             keys[i] = keyArray[i];
     }
 
-    void draw() { pos.draw(); }
+    void draw() {
+        if (itemInHand.type != NONE)
+            setColor(itemInHand.color);
+        pos.draw();
+        setColor(Color::WHITE);
+    }
 
+    
     int getdirctX() {
         return dirx;
     }

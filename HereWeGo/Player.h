@@ -13,9 +13,18 @@ class Player {
 
     char keys[NUM_KEYS];            // fixed-size array
 
+<<<<<<< Updated upstream
 	heldItem itemInHand = { NONE, 0 };
 
 public:
+=======
+     //Color will be used as an indicator for a picked up item, mainly key
+	heldItem itemInHand = { NONE, 0, Color::WHITE};
+
+public:
+
+    
+>>>>>>> Stashed changes
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[NUM_KEYS]) 
     {
         symbol = c;
@@ -26,6 +35,17 @@ public:
             keys[i] = keyArray[i];
     }
 
+<<<<<<< Updated upstream
+=======
+    void draw() {
+        if (itemInHand.type != NONE)
+            setColor(itemInHand.color);
+        pos.draw();
+        setColor(Color::WHITE);
+    }
+
+    
+>>>>>>> Stashed changes
     int getdirctX() {
         return dirx;
     }

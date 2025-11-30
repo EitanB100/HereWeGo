@@ -1,10 +1,27 @@
 #pragma once
+#include <Windows.h>
 
+<<<<<<< Updated upstream
 enum itemType { NONE, KEY, TORCH, BOMB }; // possible item types - last two for exercise 2
 
 struct heldItem {
     itemType type = NONE;
     int id = 0; // key ID or bomb timer
+=======
+constexpr int MAX_X = 80;
+constexpr int MAX_Y = 25;
+
+enum itemType { NONE, KEY, TORCH, BOMB }; // possible item types - last two for exercise 2
+
+enum class Color {
+    BLUE = 1, GREEN, CYAN, RED, MAGENTA, WHITE = 15//white is default
+};
+
+struct heldItem {
+    itemType type = NONE;
+    int id = 0; // key ID or bomb timer
+    Color color = Color::WHITE;
+>>>>>>> Stashed changes
 };
 
 struct Point { // simple struct for position getting
@@ -13,8 +30,12 @@ struct Point { // simple struct for position getting
 
 
 
+<<<<<<< Updated upstream
 static constexpr int MAX_X = 79;
 static constexpr int MAX_Y = 24;
+=======
+void setColor(Color c);
+>>>>>>> Stashed changes
 
 void gotoxy(int x, int y);
 

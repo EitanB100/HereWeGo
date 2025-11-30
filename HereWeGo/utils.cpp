@@ -21,4 +21,9 @@ void hideCursor() {
 
 void cls() {
     system("cls");
+
+void setColor(Color c) // set console text color - logic suggested by gemini
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, int(c));
 }

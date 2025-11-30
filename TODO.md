@@ -8,8 +8,8 @@
     - [ ] Display controls and game rules when '8' is pressed.
 - [ ] **Pause & Exit**
     - [ ] `ESC`: Pause game and show "Game Paused".
-    - [ ] `ESC` again: Resume game.
-    - [ ] `H` (during pause): Exit to Main Menu.
+    - [x] `ESC` again: Resume game.
+    - [x] `H` (during pause): Exit to Main Menu.
 - [ ] **Win Condition**
     - [ ] Define a "Last Room" (Screen 3).
     - [ ] Trigger Game Over when *both* players are in the Last Room.
@@ -58,13 +58,13 @@
 
 ## 🗺️ Level Design
 - [ ] **Screen 1 (Start):**
-    - [ ] Basic layout, Keys, Doors.
-- [ ] **Screen 2 (Challenge):**
+    - [ ] Basic layout, Keys, Doors (Possible challenge too)
+- [ ] **Screen 2 (Challenge, ideas are optional):**
     - [ ] Switches puzzle.
     - [ ] Obstacle blocking path.
     - [ ] Riddle to unlock area.
 - [ ] **Screen 3 (End):**
-    - [ ] Empty room to trigger win condition.
+    - [ ] Final challenge room and a trigger win condition.
 
 ## 📝 Submission Docs
 - [ ] **readme.txt:** Add student IDs (Mandatory).

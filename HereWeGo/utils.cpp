@@ -19,8 +19,6 @@ void hideCursor() {
     SetConsoleCursorInfo(consoleHandle, &cursorInfo);
 }
 
-void cls() {
-    system("cls");
 
 void setColor(Color c) // set console text color - logic suggested by gemini
 {

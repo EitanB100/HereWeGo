@@ -27,6 +27,7 @@ public:
         x = _x;
         y = _y;
         tileChar = tile;
+ 
         inLimit();
     }
     void move(int xSteps, int ySteps, char tile) {
@@ -36,10 +37,10 @@ public:
     void setTileChar(char tile) {
         tileChar = tile;
     }
-    int getx() const{
+    int getx() const {
         return x;
     }
-    int gety() const{
+    int gety() const {
         return y;
     }
     Point getPosition() const {

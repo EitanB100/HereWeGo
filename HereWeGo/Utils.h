@@ -13,7 +13,10 @@ enum class Color {
 struct heldItem {
     itemType type = NONE;
     int id = 0; // key ID or bomb timer
+    
+
     Color color = Color::WHITE;
+ 
 };
 
 struct Point { // simple struct for position getting
@@ -21,8 +24,8 @@ struct Point { // simple struct for position getting
 };
 
 
-
 void setColor(Color c);
+ 
 
 void gotoxy(int x, int y);
 

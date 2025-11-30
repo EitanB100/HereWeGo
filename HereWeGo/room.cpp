@@ -1,12 +1,14 @@
 #include "Room.h"
 #include "Key.h"
 #include "Door.h"
+#include "Switch.h"  
 #include "Obstacle.h"
 
 void Room::drawTopLayer()
 {
 	for (Door& door : doors) door.draw();
 	for (Key& key : keys) key.draw();
+	for (Switch& switchOnOff : switches) switchOnOff.draw(); // <--- Added
 }
 
 void Room::drawRoom(Screen& screen) // Draw the room on the screen
@@ -18,7 +20,6 @@ void Room::drawRoom(Screen& screen) // Draw the room on the screen
 			screen.setTile(x, y, map[y][x]);
 		}
 	}
-
 }
 
 Door* Room::isDoorThere(Point& p)
@@ -39,27 +40,35 @@ bool Room::checkDoor(Point p, heldItem& item)
 {
 	Door* door = isDoorThere(p);
 	if (door == nullptr) return false;
+
+	// If door is already open, we can pass (optional check)
 	if (door->getIsOpen()) return true;
-	
+
 	if (item.type == KEY) 
 	{
 		if (door->tryUnlock(item.id))
 		{
-			item = { NONE, 0, Color::WHITE};
+			item = { NONE, 0, Color::WHITE}; // Consume key
 			door->draw();
 		}
-			
 	}
 
 	return (door->getIsOpen());
 }
 
+// --- NEW SWITCH LOGIC (Restored from Conflict) ---
+void Room::checkSwitch(Point p) {
+	Switch* switchOnOff = isSwitchThere(p);
+	if (switchOnOff != nullptr) {
+		for (Door& door : doors) {
+			door.UpdatedFromSwitch();
+		}
+	}
+}
+
 void Room::addDoor(Door door) {
-
 	Placement doorPos = door.getPos();
-
 	map[doorPos.gety()][doorPos.getx()] = doorPos.getTileChar();
-
 	doors.push_back(door);
 }
 
@@ -68,7 +77,6 @@ Key* Room::isKeyThere(Point& p)
 	for (Key& key : keys)
 	{
 		Point keyPos = key.getPos();
-
 		if (keyPos.x == p.x && keyPos.y == p.y)
 		{
 			return &key;
@@ -78,11 +86,18 @@ Key* Room::isKeyThere(Point& p)
 }
 
 void Room::addKey(Key key) {
-
 	Point keyPos = key.getPos();
 	map[keyPos.y][keyPos.x] = KEY_TILE;
-	
 	keys.push_back(key);
+}
+
+// --- NEW SWITCH ADDER (Restored from Conflict) ---
+void Room::addSwitch(const Switch& s) {
+	Point SwitchPos = s.getPos();
+	if (SwitchPos.x >= 0 && SwitchPos.x < MAX_X && SwitchPos.y >= 0 && SwitchPos.y < MAX_Y) {
+		map[SwitchPos.y][SwitchPos.x] = SWITCH_OFF; // Ensure SWITCH_OFF is defined in Tile_Chars.h
+		switches.push_back(s);
+	}
 }
 
 void Room::addWall(Point p)
@@ -90,6 +105,17 @@ void Room::addWall(Point p)
 	map[p.y][p.x] = WALL_TILE;
 }
 
+// --- NEW SWITCH GETTER (Restored from Conflict) ---
+Switch* Room::isSwitchThere(Point& p){
+	for (Switch& switchOnOff : switches){
+		Point SwitchPoint = switchOnOff.getPos();
+
+		if (SwitchPoint.x == p.x && SwitchPoint.y == p.y){
+			return &switchOnOff;
+		}
+	}
+	return nullptr;
+}
 
 char Room::getObjectAt(Point& p)
 {
@@ -102,28 +128,18 @@ char Room::getObjectAt(Point& p)
 	if (key != nullptr) {
 		return key->getIsActive() ? KEY_TILE : ' ';
 	}
+	
+	// Note: You might want to add a check for Switch here too if you want to avoid walking on it
+	// But usually, switches are walkable 'floor' tiles.
 
 	return map[p.y][p.x];
 }
 
-
-
-/*void Room::addObstacle(int index, int x, int y)
+/*bool Room::moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce)
 {
-	if (obstacles != nullptr && index < numObstacles) {
-		Placement part(x, y, '*');
-		obstacles[index].addPart(part);
-	}
-}
-
-
+	if (playerForce < obstacle->getSize()) return false; // Not enough force
 	
-
-bool Room::moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce)
-{
-	if (playerForce < obstacle->getSize()) return false; // Not enough force to move the obstacle
-	
-
-
+	// Add your actual moving logic here later.
+	// For now, return false is fine to compile.
 	return false;
 }*/

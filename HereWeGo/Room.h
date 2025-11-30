@@ -5,7 +5,7 @@
 #include "Tile_Chars.h"
 #include "Door.h"
 #include "Key.h"
-
+#include "Switch.h" // 1. Added Switch Header
 
 class Obstacle;
 
@@ -14,6 +14,7 @@ class Room {
     char map[MAX_Y][MAX_X] = {};
     std::vector<Door> doors;
     std::vector<Key> keys;
+    std::vector<Switch> switches; // 2. Added Switch Vector
     //obstacles vector later
 
 public:
@@ -37,6 +38,7 @@ public:
     }
 
     bool checkDoor(Point p, heldItem& item);
+    void checkSwitch(Point p); // 3. Added Switch Check
 
     void drawTopLayer();
     void drawRoom(Screen& screen);
@@ -45,9 +47,14 @@ public:
     void addWall(Point p);
     void addDoor(Door door);
     void addKey(Key key);
+    void addSwitch(const Switch& s); // 4. Added Switch Adder
 
     char getObjectAt(Point& p);
 
     Door* isDoorThere(Point& p);
     Key* isKeyThere(Point& p);
+    Switch* isSwitchThere(Point& p); // 5. Added Switch Getter
+
+    
+   //bool moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce);
 };

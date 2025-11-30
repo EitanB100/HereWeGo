@@ -3,8 +3,8 @@
 #include <conio.h>
 #include "Player.h"
 #include "Key.h"
-
-
+// Ensure Switch.h is included (either here or in Room.h)
+#include "Switch.h" 
 
 void Player::move(Room& room) {
 
@@ -15,7 +15,6 @@ void Player::move(Room& room) {
 
     // Look ahead at what is currently on the map
     char tileOnMap = room.getObjectAt(nextPoint);
-
 
     // --- COLLISION LOGIC ---
     if (tileOnMap == WALL_TILE) {
@@ -42,39 +41,46 @@ void Player::move(Room& room) {
         }
         else {
             // Hands are full. STOP!
-            // This is preventing the drawing code below to print ' ' over the key, 
-            // deleting it from the game forever.
             setDirection(0, 0);
             return;
         }
     }
 
-    // --- RENDERING LOGIC ---
+    if (isSwitch(tileOnMap)) {
+        Switch* switchOnOff = room.isSwitchThere(nextPoint);
+        if (switchOnOff != nullptr) {
+            switchOnOff->toggleState();          // toggle the switch state
+            room.checkSwitch(switchOnOff->getPos()); // update doors
+            room.drawTopLayer();                 // redraw
+            setDirection(0, 0);                  // stop player
+            return;
+        }
+    }
 
-    // We print ' ' at the OLD position to clear the player's trail.
-    // This is safe now because strictly controlled collision above guarantees
-    // we never walked on top of a vital object.
+    // --- RENDERING LOGIC ---
+    // Clear old position
     pos.draw(' ');
     // Update and draw at new position
     pos.set(nextPoint.x, nextPoint.y, symbol);
-    draw(); //draw with a color
-};
+    draw(); 
+}
 
 
 void Player::pickItem(Point& position, Room& room, char symbol)
 {
-	if (itemInHand.type != NONE) return; // already holding an item
+    if (itemInHand.type != NONE) return; // already holding an item
 
     Key* key = room.isKeyThere(position);
 
     if (key != nullptr && key->getIsActive()) {
 
         key->takeKey();
+        
+        // Use the struct initializer with Color (From the "New" code)
         itemInHand = { KEY, key->getKeyID(), key->getColor()};
-      
+       
         room.clearTile(position);
     }
-
 }
 
 void Player::changeDirection(char input) {
@@ -89,5 +95,4 @@ void Player::changeDirection(char input) {
     else if (input == keys[RIGHT])
         setDirection(1, 0);
     else if (input == keys[STAY]) setDirection(0, 0);
-    
 }

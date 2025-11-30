@@ -9,12 +9,16 @@ class Player {
 
     char symbol = ' ';
     int dirx = 0, diry = 0;
+    int force = 1; // for moving obstacles, will be changed by spring later
 
     char keys[NUM_KEYS];            // fixed-size array
 
-	heldItem itemInHand = { NONE, 0 };
+     //Color will be used as an indicator for a picked up item, mainly key
+	heldItem itemInHand = { NONE, 0, Color::WHITE};
 
 public:
+
+    
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[NUM_KEYS]) 
     {
         symbol = c;
@@ -25,6 +29,14 @@ public:
             keys[i] = keyArray[i];
     }
 
+    void draw() {
+        if (itemInHand.type != NONE)
+            setColor(itemInHand.color);
+        pos.draw();
+        setColor(Color::WHITE);
+    }
+
+    
     int getdirctX() {
         return dirx;
     }

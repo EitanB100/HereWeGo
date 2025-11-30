@@ -1,48 +1,37 @@
 #pragma once
+#include <vector>
 #include "Utils.h"
 #include "Placement.h"
 
 // Door class representing a door in the game
 class Door {
-	Placement pos;
-	int DestinationID;
-	int requiredKeyID;
-	bool isOpen;
-	
+    
+    int id;
+    Placement pos;
+    std::vector<int> requiredKeyIDs;
+	Color color = Color::WHITE;
+    bool isOpen = false;
+
 public:
 
-	Door() : pos(0, 0, 'D'), DestinationID(-1), requiredKeyID(-1), isOpen(false) {} // Default constructor for array initialization
-	
+   Door(int x, int y, int _id, Color c) : pos(x, y, _id + '0'), id(_id), color(c) {}
+   
+   void addRequiredKey(int id) {
+       requiredKeyIDs.push_back(id);
+   }
 
-	Door(int doorNum, int _x, int _y, int destID, int keyID) // Constructor to initialize door properties
-		: pos(_x, _y, doorNum + '1'), DestinationID(destID), requiredKeyID(keyID), isOpen(false) {}
+   int getDoorID() { return id; }
+   void open() { isOpen = true; }
+   
+   bool getIsOpen() const { return isOpen; }
 
+   Placement getPos() { return pos; }
 
-	int getDestinationID() const { 
-		return DestinationID;
-	}
+   void draw();
 
-	int getRequiredKeyID() const {
-			return requiredKeyID;
-	}
-
-	Placement getPosition() const {
-		return pos;
-	}
-
-	bool getIsOpen() const { 
-			return isOpen;
-		}
-
-	void openDoor(bool open) {
-			isOpen = open;
-		}
-	
-	void draw() { // Draw the door on the screen based on its state
-		pos.draw(isOpen ? ' ' : pos.getTileChar());
-	}
-
-	bool isAtPosition(const Point& p) const {
-		return (pos.getx() == p.x && pos.gety() == p.y);
-	}
+   bool tryUnlock(int keyID);
+   
+   
+    
+   
 };

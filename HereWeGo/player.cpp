@@ -46,7 +46,6 @@ void Player::move(Room& room) {
         }
     }
 
-    // THIS IS THE PIECE THAT WAS MISSING IN THE TOP BLOCK
     if (isSwitch(tileOnMap)) {
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
         if (switchOnOff != nullptr) {

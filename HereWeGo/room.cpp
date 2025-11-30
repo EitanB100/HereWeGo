@@ -1,7 +1,7 @@
 #include "Room.h"
 #include "Key.h"
 #include "Door.h"
-#include "Switch.h"   // <--- Added (Essential)
+#include "Switch.h"  
 #include "Obstacle.h"
 
 void Room::drawTopLayer()
@@ -135,14 +135,11 @@ char Room::getObjectAt(Point& p)
 	return map[p.y][p.x];
 }
 
-// --- RESTORED OBSTACLE LOGIC (Uncommented) ---
-// In the stash, this was commented out /* ... */. 
-// We need it active because Room.h declares it.
-bool Room::moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce)
+/*bool Room::moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce)
 {
 	if (playerForce < obstacle->getSize()) return false; // Not enough force
 	
 	// Add your actual moving logic here later.
 	// For now, return false is fine to compile.
 	return false;
-}
+}*/

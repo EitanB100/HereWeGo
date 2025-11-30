@@ -31,13 +31,16 @@ int main() {
 	};
 
 	// --- SETUP SWITCH (Restored from Conflict) ---
-	Switch* SW1 = new Switch(50, 5, 20); 
-	areaA.addSwitch(*SW1);
+	Switch SW1(50, 5, 20);
+	areaA.addSwitch(SW1);
+
+	Point swPos = SW1.getPos();
+	Switch* activeSwitch = areaA.isSwitchThere(swPos);
 
 	// --- SETUP DOOR 1 (Green) ---
 	Door d1(12, 0, 1, Color::GREEN);
 	d1.addRequiredKey(10);
-	d1.addRequiredSwitch(SW1, false); // Restored: Requires Switch OFF
+	d1.addRequiredSwitch(activeSwitch, false); // Restored: Requires Switch OFF
 	areaA.addDoor(d1);
 
 	// --- SETUP DOOR 2 (Red) ---
@@ -45,7 +48,7 @@ int main() {
 	d2.addRequiredKey(11);
 	d2.addRequiredKey(12);
 	d2.addRequiredKey(13);
-	d2.addRequiredSwitch(SW1, true); // Restored: Requires Switch ON
+	d2.addRequiredSwitch(activeSwitch, true); // Restored: Requires Switch ON
 	areaA.addDoor(d2); // Note: Added d2 AFTER configuring requirements
 
 	// --- SETUP KEYS ---
@@ -93,6 +96,6 @@ int main() {
 		Sleep(50); // Fixed the garbage characters here
 	}
 	
-	delete SW1; // Cleanup memory
+	
 	screen.clearScreen();
 }

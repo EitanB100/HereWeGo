@@ -14,14 +14,7 @@
 
 using namespace std;
 
-void printInstructions() {
-	system("cls");
-	cout << "Instructions:" << endl;
-	cout << "Use W/A/S/D to move Player 1" << endl;
-	cout << "Use I/J/K/L to move Player 2" << endl;
-	cout << "Press any key to go back...";
-	_getch();
-}
+
 
 int main() {
 	

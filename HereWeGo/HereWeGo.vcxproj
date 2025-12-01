@@ -126,6 +126,7 @@
   <ItemGroup>
     <ClInclude Include="CommandKeys.h" />
     <ClInclude Include="Door.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Key.h" />
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Placement.h" />
@@ -138,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Door.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="placement.cpp" />

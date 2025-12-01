@@ -1,5 +1,7 @@
 #include <windows.h>
 #include <conio.h>
+#include <iostream>
+#include "Game.h"
 #include "Player.h"
 #include "Placement.h"
 #include "Room.h"
@@ -10,9 +12,72 @@
 #include "CommandKeys.h"
 #include "Switch.h" // <--- Added this
 
-int main() {
+using namespace std;
 
-	constexpr char ESC = 27;
+void printInstructions() {
+	system("cls");
+	cout << "Instructions:" << endl;
+	cout << "Use W/A/S/D to move Player 1" << endl;
+	cout << "Use I/J/K/L to move Player 2" << endl;
+	cout << "Press any key to go back...";
+	_getch();
+}
+
+int main() {
+	
+	bool exitProgram = false;
+	hideCursor();
+	while (!exitProgram)
+	{
+		system("cls");
+
+		cout << "Welcome to the game!" << endl;
+		cout << "(1) Start a new game" << endl;
+		cout << "(8) Instructions" << endl;
+		cout << "(9) EXIT" << endl;
+		char selection = _getch();
+
+		switch (selection)
+		{
+		case '1':
+		{
+			Game game;
+			game.init();
+			game.run();
+			break;
+		}
+		case '8':
+			printInstructions();
+			break;
+		}
+
+	}
+	return 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*constexpr char ESC = 27;
 	hideCursor();
 	Screen screen;
 	screen.clearScreen();
@@ -97,5 +162,5 @@ int main() {
 	}
 	
 	
-	screen.clearScreen();
+	screen.clearScreen();*/
 }

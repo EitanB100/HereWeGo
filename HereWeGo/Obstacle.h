@@ -24,4 +24,5 @@ public:
 	void draw();
 
 
+	std::vector<Point> getFutureParts(int dirx, int diry) const;
 };

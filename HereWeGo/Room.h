@@ -57,6 +57,7 @@ public:
     Key* isKeyThere(Point& p);
     Switch* isSwitchThere(Point& p); // 5. Added Switch Getter
 
+    
     bool moveObstacle(Point p, int dirx, int diry, int force);
 
     

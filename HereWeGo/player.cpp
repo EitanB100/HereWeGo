@@ -9,7 +9,7 @@
 void Player::move(Room& room) {
 
     if (dirx == 0 && diry == 0) return; // No movement input
-
+    
     // 1. Calculate where we want to go next
     Point nextPoint = { pos.getx() + dirx, pos.gety() + diry };
 
@@ -73,7 +73,6 @@ bool Player::keyHandling(Room& room, Point& nextPoint)
 }
 void Player::switchHandling(Room& room, Point& nextPoint)
 {
-    if (isSwitch(tileOnMap)) {
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
         if (switchOnOff != nullptr) {
             switchOnOff->toggleState();          // toggle the switch state
@@ -82,16 +81,10 @@ void Player::switchHandling(Room& room, Point& nextPoint)
             setDirection(0, 0);                  // stop player
             return;
         }
-    }
+    
 }
 
-    // --- RENDERING LOGIC ---
-    // Clear old position
-    pos.draw(' ');
-    // Update and draw at new position
-    pos.set(nextPoint.x, nextPoint.y, symbol);
-    draw(); 
-}
+
 
 void Player::pickItem(Point& position, Room& room, char symbol)
 {

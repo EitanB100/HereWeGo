@@ -1,5 +1,9 @@
 #pragma once
 #include <Windows.h>
+#include <string>
+#include <conio.h>
+
+constexpr char ESC = 27;
 
 constexpr int MAX_X = 80;
 constexpr int MAX_Y = 25;
@@ -23,6 +27,8 @@ struct Point { // simple struct for position getting
     int x, y;
 };
 
+void printCentered(std::string text, int y); //to print the menu in the center
+void printInstructions();
 
 void setColor(Color c);
  

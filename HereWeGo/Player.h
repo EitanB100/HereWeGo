@@ -54,6 +54,10 @@ public:
     
 
     void move(Room& room);
+    void doorHandling(Room& room, Point& nextPoint, heldItem& itemInHand);
+    void keyHandling(Room& room, Point& nextPoint);
+    void switchHandling(Room& room, Point& nextPoint);
+
     void pickItem(Point& position,Room& room, char symbol);
     void changeDirection(char tav);
 };

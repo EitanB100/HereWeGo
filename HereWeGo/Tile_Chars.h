@@ -5,6 +5,7 @@ constexpr char OBSTACLE_TILE = '*';
 constexpr char KEY_TILE = 'K';
 constexpr char SWITCH_ON = '/';
 constexpr char SWITCH_OFF = '\\';
+
 // Check if character represents a door - suggested by gemini
 inline bool isDoor(char c) { 
 	
@@ -13,4 +14,4 @@ inline bool isDoor(char c) {
 
 inline bool isSwitch(char c) {
 	return (c == '\\' || c == '/');
-}
+}	

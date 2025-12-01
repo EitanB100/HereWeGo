@@ -51,13 +51,12 @@ void Player::doorHandling(Room& room, Point& nextPoint, heldItem& itemInHand )
 {
     bool isOpened = room.checkDoor(nextPoint, itemInHand);
 
-        setDirection(0, 0);
+    setDirection(0, 0);
 
-        setColor(itemInHand.color);
-        pos.draw();
-        std::cout << std::flush;
-        return;
-    }
+    setColor(itemInHand.color);
+    pos.draw();
+    std::cout << std::flush;
+}
 
 bool Player::keyHandling(Room& room, Point& nextPoint)
 {
@@ -94,7 +93,6 @@ void Player::switchHandling(Room& room, Point& nextPoint)
     draw(); 
 }
 
-
 void Player::pickItem(Point& position, Room& room, char symbol)
 {
     if (itemInHand.type != NONE) return; // already holding an item
@@ -105,7 +103,7 @@ void Player::pickItem(Point& position, Room& room, char symbol)
 
         key->takeKey();
         
-        // Use the struct initializer with Color (From the "New" code)
+        
         itemInHand = { KEY, key->getKeyID(), key->getColor()};
        
         room.clearTile(position);

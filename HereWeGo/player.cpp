@@ -24,47 +24,63 @@ void Player::move(Room& room) {
 
     if (isDoor(tileOnMap))
     {
-        bool isOpened = room.checkDoor(nextPoint, itemInHand);
-
-        setDirection(0, 0);
-
-        setColor(itemInHand.color);
-        pos.draw();
-        std::cout << std::flush;
+        doorHandling(room, nextPoint, itemInHand);
         return;
     }
 
     if (tileOnMap == KEY_TILE) {
-        if (itemInHand.type == NONE)
-        {
-            pickItem(nextPoint, room, KEY);
-        }
-        else {
-            // Hands are full. STOP!
-            setDirection(0, 0);
-            return;
-        }
+     
+        keyHandling(room, nextPoint);
+        return;
     }
 
     if (isSwitch(tileOnMap)) {
-        Switch* switchOnOff = room.isSwitchThere(nextPoint);
-        if (switchOnOff != nullptr) {
-            switchOnOff->toggleState();          // toggle the switch state
-            room.checkSwitch(switchOnOff->getPos()); // update doors
-            room.drawTopLayer();                 // redraw
-            setDirection(0, 0);                  // stop player
-            return;
-        }
+        switchHandling(room, nextPoint);
+        return;
     }
 
     // --- RENDERING LOGIC ---
-    // Clear old position
+    
     pos.draw(' ');
-    // Update and draw at new position
-    pos.set(nextPoint.x, nextPoint.y, symbol);
+    
+    pos.set(nextPoint.x, nextPoint.y, symbol); // Update and draw at new position
     draw(); 
 }
 
+void Player::doorHandling(Room& room, Point& nextPoint, heldItem& itemInHand )
+{
+    bool isOpened = room.checkDoor(nextPoint, itemInHand);
+
+    setDirection(0, 0);
+
+    setColor(itemInHand.color);
+    pos.draw();
+    std::cout << std::flush;
+}
+
+void Player::keyHandling(Room& room, Point& nextPoint)
+{
+    if (itemInHand.type == NONE)
+    {
+        pickItem(nextPoint, room, KEY);
+    }
+    else {
+        // Hands are full. STOP!
+        setDirection(0, 0);
+    }
+}
+
+void Player::switchHandling(Room& room, Point& nextPoint)
+{
+    Switch* switchOnOff = room.isSwitchThere(nextPoint);
+    if (switchOnOff != nullptr) {
+        switchOnOff->toggleState();          // toggle the switch state
+        room.checkSwitch(switchOnOff->getPos()); // update doors
+        room.drawTopLayer();                 // redraw
+        setDirection(0, 0);                  // stop player
+        
+    }
+}
 
 void Player::pickItem(Point& position, Room& room, char symbol)
 {
@@ -76,7 +92,7 @@ void Player::pickItem(Point& position, Room& room, char symbol)
 
         key->takeKey();
         
-        // Use the struct initializer with Color (From the "New" code)
+        
         itemInHand = { KEY, key->getKeyID(), key->getColor()};
        
         room.clearTile(position);

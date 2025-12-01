@@ -78,7 +78,7 @@ void Game::run()
 			player.move(room);
 		}
 
-		Sleep(100); // Fixed the garbage characters here
+		Sleep(75); // Fixed the garbage characters here
 	}
 
 }

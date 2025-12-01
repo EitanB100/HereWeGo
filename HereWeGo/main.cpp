@@ -36,62 +36,24 @@ int main() {
 		case '1':
 		{
 			Game game;
-			game.init();
 			game.run();
 			break;
 		}
 		case '8':
 			printInstructions();
 			break;
+		
+		case '9':
+		{
+			system("cls");
+			printCentered("Goodbye :3", 10);
+			exitProgram = true;
+			break;
+		}
+			
 		}
 
 	}
+	
 	return 0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-	hideCursor();
-	Screen screen;
-	screen.clearScreen();
-
-	Placement start = Placement(10, 10);
-	Placement start2 = Placement(9, 15);
-
-	char player1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q' };
-	char player2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };
-
-	Room areaA;
-
-	Player players[] = {
-		Player(start, '&', 1, 0, player1Keys),
-		Player(start2, '@', 0, 1, player2Keys)
-	};
-
-
-	// --- GAME LOOP ---
-	
-	
-	screen.clearScreen();*/
 }

@@ -34,6 +34,16 @@ void Player::move(Room& room, const Player* otherPlayer) {
         return;
     }
 
+    if (tileOnMap == OBSTACLE_TILE) {
+       
+        if (obstacleHandling(room, nextPoint, otherPlayer)) {
+            pos.draw(' ');
+            pos.set(nextPoint.x, nextPoint.y, symbol);
+            draw();
+        }
+        return;
+    }
+
     if (isSwitch(tileOnMap)) {
         switchHandling(room, nextPoint);
         return;
@@ -82,6 +92,27 @@ void Player::switchHandling(Room& room, Point& nextPoint)
             return;
         }
     
+}
+
+bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherPlayer)
+{
+    int currentForce = this->force;
+    if (otherPlayer != nullptr)
+    {
+        Point otherPos = otherPlayer->getPos();
+        int otherDirx = otherPlayer->dirx;
+        int otherDiry = otherPlayer->diry;
+        
+        Point otherTarget = { otherPos.x + otherDirx, otherPos.y + otherDiry };
+        
+        if (otherTarget.x == nextPoint.x && otherTarget.y == nextPoint.y && dirx == otherDirx && diry == otherDiry)
+        {
+            currentForce += otherPlayer->force();
+        }
+
+    }
+
+    return room.moveObstacle(nextPoint, dirx, diry, currentForce);
 }
 
 

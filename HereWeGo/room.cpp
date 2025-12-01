@@ -117,6 +117,35 @@ Switch* Room::isSwitchThere(Point& p){
 	return nullptr;
 }
 
+bool Room::moveObstacle(Point p, int dirx, int diry, int force)
+{
+	Obstacle* obs = nullptr;
+	for (auto& o : obstacles)
+	{
+		if (o.isAt(p)) {
+			obs = &o;
+			break;
+		}
+	}
+
+	if (!obs) return false;
+
+	if (force < obs->getSize()) return false;
+
+	std::vector<Point> futurePos = obs->getFutureParts(dirx, diry);
+
+	for (const auto& fp : futurePos) {
+		if (fp.x < 0 || fp.x >= MAX_X || fp.y < 0 || fp.y >= MAX_Y) return false;
+		
+		char obj = map[fp.y][fp.x];
+		
+		if (obj != ' ') return false;
+	}
+
+	for (int )
+
+}
+
 char Room::getObjectAt(Point& p)
 {
 	Door* door = isDoorThere(p);

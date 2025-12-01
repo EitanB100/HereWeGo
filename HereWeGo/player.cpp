@@ -72,7 +72,8 @@ bool Player::keyHandling(Room& room, Point& nextPoint)
         return false;
     }
 }
-
+void Player::switchHandling(Room& room, Point& nextPoint)
+{
     if (isSwitch(tileOnMap)) {
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
         if (switchOnOff != nullptr) {
@@ -83,6 +84,7 @@ bool Player::keyHandling(Room& room, Point& nextPoint)
             return;
         }
     }
+}
 
     // --- RENDERING LOGIC ---
     // Clear old position

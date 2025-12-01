@@ -6,7 +6,7 @@
 // Ensure Switch.h is included (either here or in Room.h)
 #include "Switch.h" 
 
-void Player::move(Room& room) {
+void Player::move(Room& room, const Player* otherPlayer) {
 
     if (dirx == 0 && diry == 0) return; // No movement input
     

@@ -53,7 +53,7 @@ public:
     }
     
 
-    void move(Room& room);
+    void move(Room& room, const Player* otherPlayer);
     void doorHandling(Room& room, Point& nextPoint, heldItem& itemInHand);
     bool keyHandling(Room& room, Point& nextPoint);
     void switchHandling(Room& room, Point& nextPoint);

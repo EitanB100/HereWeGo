@@ -71,11 +71,11 @@ void Game::run()
 				}
 			}
 		}
-
-		for (auto& player : players) {
+	
+		for (int i = 0; i < 2; i++) {
 			setColor(Color::WHITE);
-			player.changeDirection(key);
-			player.move(room);
+			players[i].changeDirection(key);
+			players[i].move(room, &players[1-i]);
 		}
 
 		Sleep(75); // Fixed the garbage characters here

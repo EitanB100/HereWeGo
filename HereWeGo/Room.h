@@ -6,16 +6,17 @@
 #include "Door.h"
 #include "Key.h"
 #include "Switch.h" // 1. Added Switch Header
+#include "Obstacle.h"
 
-class Obstacle;
 
 class Room {
         
     char map[MAX_Y][MAX_X] = {};
     std::vector<Door> doors;
     std::vector<Key> keys;
-    std::vector<Switch> switches; // 2. Added Switch Vector
-    //obstacles vector later
+    std::vector<Switch> switches; 
+    std::vector<Obstacle> obstacles;
+    
 
 public:
 
@@ -42,12 +43,13 @@ public:
 
     void drawTopLayer();
     void drawRoom(Screen& screen);
-    void clearTile(Point p) { map[p.y][p.x] = ' '; }
+    void clearTile(Point& p) { map[p.y][p.x] = ' '; }
 
     void addWall(Point p);
     void addDoor(Door door);
     void addKey(Key key);
     void addSwitch(const Switch& s); // 4. Added Switch Adder
+    void addObstacle(Obstacle obs);
 
     char getObjectAt(Point& p);
 

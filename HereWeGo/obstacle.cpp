@@ -2,7 +2,10 @@
 
 void Obstacle::move(int dirx, int diry)
 {
-
+	for (auto& part : parts)
+	{
+		part.move(dirx, diry, symbol);
+	}
 }
 
 bool Obstacle::isAt(const Point& p) const { // Check if any part of the obstacle is at the given point

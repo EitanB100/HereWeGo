@@ -24,7 +24,32 @@ void Player::move(Room& room) {
 
     if (isDoor(tileOnMap))
     {
-        bool isOpened = room.checkDoor(nextPoint, itemInHand);
+        doorHandling(room, nextPoint, itemInHand);
+        return;
+    }
+
+    if (tileOnMap == KEY_TILE) {
+     
+        if (!keyHandling(room, nextPoint))
+        return;
+    }
+
+    if (isSwitch(tileOnMap)) {
+        switchHandling(room, nextPoint);
+        return;
+    }
+
+    // --- RENDERING LOGIC ---
+    
+    pos.draw(' ');
+    
+    pos.set(nextPoint.x, nextPoint.y, symbol); // Update and draw at new position
+    draw(); 
+}
+
+void Player::doorHandling(Room& room, Point& nextPoint, heldItem& itemInHand )
+{
+    bool isOpened = room.checkDoor(nextPoint, itemInHand);
 
         setDirection(0, 0);
 
@@ -34,17 +59,19 @@ void Player::move(Room& room) {
         return;
     }
 
-    if (tileOnMap == KEY_TILE) {
-        if (itemInHand.type == NONE)
-        {
-            pickItem(nextPoint, room, KEY);
-        }
-        else {
-            // Hands are full. STOP!
-            setDirection(0, 0);
-            return;
-        }
+bool Player::keyHandling(Room& room, Point& nextPoint)
+{
+    if (itemInHand.type == NONE)
+    {
+        pickItem(nextPoint, room, KEY);
+        return true;
     }
+    else {
+        // Hands are full. STOP!
+        setDirection(0, 0);
+        return false;
+    }
+}
 
     if (isSwitch(tileOnMap)) {
         Switch* switchOnOff = room.isSwitchThere(nextPoint);

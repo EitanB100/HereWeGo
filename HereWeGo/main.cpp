@@ -40,11 +40,13 @@ int main() {
 			break;
 		}
 		case '8':
+			
 			printInstructions();
 			break;
 		
 		case '9':
 		{
+			
 			system("cls");
 			printCentered("Goodbye :3", 10);
 			exitProgram = true;

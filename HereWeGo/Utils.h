@@ -27,6 +27,7 @@ struct Point { // simple struct for position getting
     int x, y;
 };
 
+
 void printCentered(std::string text, int y); //to print the menu in the center
 void printInstructions();
 

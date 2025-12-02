@@ -22,7 +22,7 @@ public:
 		return color;
 	}
 
-	bool getIsState() const {
+	bool getState() const {
 		return state;
 	}
 

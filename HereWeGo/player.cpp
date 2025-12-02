@@ -17,12 +17,12 @@ void Player::move(Room& room, const Player* otherPlayer) {
     char tileOnMap = room.getObjectAt(nextPoint);
 
     // --- COLLISION LOGIC ---
-    if (tileOnMap == WALL_TILE) {
-        setDirection(0, 0); // Hit a wall, stop.
+    if (tileOnMap == WALL_TILE) { //wall
+        setDirection(0, 0); 
         return; 
     }
 
-    if (otherPlayer != nullptr) {
+    if (otherPlayer != nullptr) { //collision with 2nd player
         Point otherPos = otherPlayer->getPos();
         if (nextPoint.x == otherPos.x && nextPoint.y == otherPos.y)
         {
@@ -31,19 +31,19 @@ void Player::move(Room& room, const Player* otherPlayer) {
         }
     }
 
-    if (isDoor(tileOnMap))
+    if (isDoor(tileOnMap)) //collision with door, there is no door tile so this is a "workaround"
     {
         doorHandling(room, nextPoint, itemInHand);
         return;
     }
 
-    if (tileOnMap == KEY_TILE) {
+    if (tileOnMap == KEY_TILE) { //key collision
      
         if (!keyHandling(room, nextPoint))
         return;
     }
 
-    if (tileOnMap == OBSTACLE_TILE) {
+    if (tileOnMap == OBSTACLE_TILE) { //obstacle collision
        
         if (obstacleHandling(room, nextPoint, otherPlayer)) {
             pos.draw(' ');
@@ -53,7 +53,7 @@ void Player::move(Room& room, const Player* otherPlayer) {
         return;
     }
 
-    if (isSwitch(tileOnMap)) {
+    if (tileOnMap == SWITCH_ON || tileOnMap == SWITCH_OFF) { //switch collision
         switchHandling(room, nextPoint);
         return;
     }
@@ -106,7 +106,7 @@ void Player::switchHandling(Room& room, Point& nextPoint)
 bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherPlayer)
 {
     int currentForce = this->force;
-    Obstacle* obstacleToPush = room.getObstacleAt(nextPoint);
+    Obstacle* obstacleToPush = room.isObstacleThere(nextPoint);
 
     if (otherPlayer != nullptr && obstacleToPush != nullptr)
     {
@@ -115,7 +115,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherP
         int otherDiry = otherPlayer->diry;
         
         Point otherTarget = { otherPos.x + otherDirx, otherPos.y + otherDiry };
-        Obstacle* otherObToPush = room.getObstacleAt(otherTarget);
+        Obstacle* otherObToPush = room.isObstacleThere(otherTarget);
 
 
         if (obstacleToPush == otherObToPush && dirx == otherDirx && diry == otherDiry)

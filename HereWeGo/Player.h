@@ -50,6 +50,10 @@ public:
         return diry;
     }
 
+    heldItem getItemInHand() {
+        return itemInHand;
+    }
+
     void setDirection(int dx, int dy) {
         dirx = dx;
         diry = dy;

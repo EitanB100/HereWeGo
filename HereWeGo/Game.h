@@ -1,4 +1,5 @@
 #pragma once
+#include "utils.h"
 #include "Screen.h"
 #include "Room.h"
 #include "Player.h"
@@ -8,6 +9,7 @@ class Game {
 	Room room;
 	Player players[2];
 
+	void printHUD();
 public:
 	Game(); //defined in .cpp
 	void init();

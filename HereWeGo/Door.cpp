@@ -43,7 +43,7 @@ void Door::UpdatedFromSwitch()
 	for (const auto& req : requiredSwitchIDs)
 	{
 		// req.SW is the pointer, req.requiredState is the boolean (ON/OFF)
-		if (req.SW && req.SW->getIsState() != req.requiredState)
+		if (req.SW && req.SW->getState() != req.requiredState)
 		{
 			conditionsMet = false;
 			break;

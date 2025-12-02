@@ -22,27 +22,29 @@ void hideCursor() {
 }
 
 
-void printCentered(string text, int y)
-{
-    size_t length = text.length();
-    
-
-    int x = (80 - length) / 2;
-    gotoxy(x, y);
-    cout << text;
-}
-
-void printInstructions() {
-    system("cls");
-    cout << "Instructions:" << endl;
-    cout << "Use W/A/S/D to move Player 1" << endl;
-    cout << "Use I/J/K/L to move Player 2" << endl;
-    cout << "Press any key to go back";
-    _getch();
-}
 
 void setColor(Color c) // set console text color - logic suggested by gemini
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, int(c));
+	SetConsoleTextAttribute(hConsole, int(c));  
+}
+
+
+void printCentered(std::string text, int y)
+{
+	size_t length = text.length();
+
+
+	int x = (80 - length) / 2;
+	gotoxy(x, y);
+	cout << text;
+}
+
+void printInstructions() {
+	system("cls");
+	cout << "Instructions:" << endl;
+	cout << "Use W/A/S/D to move Player 1" << endl;
+	cout << "Use I/J/K/L to move Player 2" << endl;
+	cout << "Press any key to go back";
+	_getch();
 }

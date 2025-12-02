@@ -2,10 +2,41 @@
 
 const char p1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q' };
 const char p2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };
+using namespace std;
+
+void Game::printHUD()
+{
+	gotoxy(0, 0);
+	setColor(Color::WHITE);
+	std::cout << "Player 1: ";
+	const heldItem& item1 = players[0].getItemInHand();
+	if (item1.type == KEY) {
+		setColor(item1.color);
+		std::cout << "KEY ";
+	}
+	//remove the comment brackets if you implemented torch!
+	/*else if (item1.type == TORCH) {
+	setColor(item1.color) -> if it has a unique color lol
+	std::cout << "TORCH";
+	*/
+	else std::cout << "EMPTY ";
+	
+	setColor(Color::WHITE);
+	
+	std::cout << " | Player 2: ";
+	const heldItem& item2 = players[1].getItemInHand();
+	if (item2.type == KEY) {
+		setColor(item2.color);
+		std::cout << "KEY  ";
+	}
+
+	else std::cout << "EMPTY  ";
+	setColor(Color::WHITE);
+}
 
 Game::Game() : players{
-	Player(Placement(10,20),'&',1,0,p1Keys),
-	Player(Placement(9,15),'@',0,1,p2Keys)
+	Player(Placement(10,20),'$',1,0,p1Keys),
+	Player(Placement(9,15),'&',0,1,p2Keys)
 }
 {
 	init();
@@ -21,7 +52,7 @@ void Game::init()
 	Switch* activeSwitch = room.isSwitchThere(swPos);
 
 	// --- SETUP DOOR 1 (Green) ---
-	Door d1(12, 0, 1, Color::GREEN);
+	Door d1(12, 1, 1, Color::GREEN);
 	d1.addRequiredKey(10);
 	d1.addRequiredSwitch(activeSwitch, false); // Restored: Requires Switch OFF
 	room.addDoor(d1);
@@ -61,6 +92,7 @@ void Game::init()
 	for (auto& player : players)
 	{
 		player.draw();
+		player.setDirection(0, 0);
 	}
 }
 
@@ -89,7 +121,7 @@ void Game::run()
 			setColor(Color::WHITE);
 			players[i].move(room, &players[1 - i]);
 		}
-
+		printHUD();
 		Sleep(75); // Fixed the garbage characters here
 	}
 

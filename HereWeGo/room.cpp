@@ -129,7 +129,7 @@ Switch* Room::isSwitchThere(Point& p){
 	return nullptr;
 }
 
-Obstacle* Room::getObstacleAt(Point p)
+Obstacle* Room::isObstacleThere(Point p)
 {
 	for (auto& ob : obstacles)
 	{
@@ -142,7 +142,7 @@ Obstacle* Room::getObstacleAt(Point p)
 
 bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 {
-	Obstacle* obs = getObstacleAt(p);
+	Obstacle* obs = isObstacleThere(p);
 	if (!obs) return false;
 	
 	if (obs->getHasMoved()) return true;
@@ -222,17 +222,18 @@ char Room::getObjectAt(Point& p)
 		return key->getIsActive() ? KEY_TILE : ' ';
 	}
 	
-	// Note: You might want to add a check for Switch here too if you want to avoid walking on it
-	// But usually, switches are walkable 'floor' tiles.
+	Switch* sw = isSwitchThere(p);
+	if (sw != nullptr) {
+		return sw->getState() ? SWITCH_ON : SWITCH_OFF;
+	}
+	//work in progress - instead of obstacleMove function above!
+	Obstacle* obstacle = isObstacleThere(p);
+	if (obstacle != nullptr) {
+		
+		// handle move check function
+		//move parts function
+
+	}
 
 	return map[p.y][p.x];
 }
-
-/*bool Room::moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce)
-{
-	if (playerForce < obstacle->getSize()) return false; // Not enough force
-	
-	// Add your actual moving logic here later.
-	// For now, return false is fine to compile.
-	return false;
-}*/

@@ -29,7 +29,7 @@ int main() {
 			break;
 		}
 		case '8':
-			
+			gotoxy(MAX_X / 2, MAX_Y / 2);
 			printInstructions();
 			break;
 		

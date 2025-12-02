@@ -42,9 +42,9 @@ void printCentered(std::string text, int y)
 
 void printInstructions() {
 	system("cls");
-	cout << "Instructions:" << endl;
-	cout << "Use W/A/S/D to move Player 1" << endl;
-	cout << "Use I/J/K/L to move Player 2" << endl;
-	cout << "Press any key to go back";
+	printCentered("Instructions:",5);
+	printCentered("Use W/A/S/D to move Player 1, E to stop in place",8);
+	printCentered("Use I/J/K/L to move Player 2, U to stop in place",10);
+	printCentered("Press any key to return",12);
 	_getch();
 }

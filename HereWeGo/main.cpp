@@ -2,18 +2,7 @@
 #include <conio.h>
 #include <iostream>
 #include "Game.h"
-#include "Player.h"
-#include "Placement.h"
-#include "Room.h"
-#include "Door.h"
-#include "Key.h"
-#include "Screen.h"
-#include "Utils.h"
-#include "CommandKeys.h"
-#include "Switch.h" // <--- Added this
-
-using namespace std;
-
+//removed all the inclusions!
 
 
 int main() {

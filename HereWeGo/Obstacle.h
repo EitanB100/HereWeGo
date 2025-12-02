@@ -20,8 +20,9 @@ public:
 	}
 	
 	void move(int dirx, int diry);
-	void resetMove() { hasMoved = false; }
 	bool getHasMoved() { return hasMoved; }
+	void resetMove() { hasMoved = false; }
+	void markAsMoved() { hasMoved = true; }
 	
 
 	bool isAt(const Point& p) const;

@@ -142,15 +142,7 @@ Obstacle* Room::getObstacleAt(Point p)
 
 bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 {
-	Obstacle* obs = nullptr;
-	for (auto& o : obstacles)
-	{
-		if (o.isAt(p)) {
-			obs = &o;
-			break;
-		}
-	}
-
+	Obstacle* obs = getObstacleAt(p);
 	if (!obs) return false;
 	
 	if (obs->getHasMoved()) return true;
@@ -158,14 +150,12 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 	if (force < obs->getSize()) return false;
 
 	std::vector<Point> currentParts = obs->getFutureParts(0, 0);
+	std::vector<Point> futureParts = obs->getFutureParts(dirx, diry); // complete
 
 	for (const auto& part : currentParts) {
 		map[part.y][part.x] = ' ';
-		gotoxy(part.x, part.y);
-		std::cout << ' ';
 	}
 
-	std::vector<Point> futureParts = obs->getFutureParts(dirx, diry); // complete
 	bool canMove = true;
 
 	for (auto& futurePart : futureParts)
@@ -184,13 +174,29 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 	}
 
 	if (canMove) {
-		obs->move(dirx, diry);
-
-		for (const auto& part : futureParts)
+		for (const auto& part : currentParts)
 		{
-			map[part.y][part.x] = OBSTACLE_TILE;	
+			bool staysCovered = false;
+			for (const auto& newPart : futureParts) {
+				if (part.x == newPart.x && part.y == newPart.y)
+				{
+					staysCovered = true; 
+					break;
+				}
+			}
+			if (!staysCovered)
+			{
+				gotoxy(part.x, part.y);
+				std::cout << ' ';
+			}
+		}
+
+		obs->move(dirx, diry);
+		for (const auto& part : futureParts) {
+			map[part.y][part.x] = OBSTACLE_TILE;
 		}
 		obs->draw();
+		obs->markAsMoved();
 		return true;
 	}
 	else {

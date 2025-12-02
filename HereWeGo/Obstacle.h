@@ -6,6 +6,7 @@
 class Obstacle {
 	std::vector<Placement> parts;
 	char symbol = '*';
+
 public:
 	Obstacle() {}
 

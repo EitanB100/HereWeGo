@@ -102,9 +102,12 @@ void Room::addSwitch(const Switch& s) {
 
 void Room::addObstacle(Obstacle obs)
 {
+	obstacles.push_back(obs);
+
 	std::vector<Point> currParts = obs.getFutureParts(0, 0);
 	for (const auto& part : currParts)
 	{
+
 		map[part.y][part.x] = OBSTACLE_TILE;
 	}
 }
@@ -122,6 +125,16 @@ Switch* Room::isSwitchThere(Point& p){
 		if (SwitchPoint.x == p.x && SwitchPoint.y == p.y){
 			return &switchOnOff;
 		}
+	}
+	return nullptr;
+}
+
+Obstacle* Room::getObstacleAt(Point p)
+{
+	for (auto& ob : obstacles)
+	{
+		if (ob.isAt(p))
+			return &ob;
 	}
 	return nullptr;
 }
@@ -146,6 +159,8 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 
 	for (const auto& part : currentParts) {
 		map[part.y][part.x] = ' ';
+		gotoxy(part.x, part.y);
+		std::cout << ' ';
 	}
 
 	std::vector<Point> futureParts = obs->getFutureParts(dirx, diry); // complete

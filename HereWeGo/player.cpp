@@ -22,6 +22,15 @@ void Player::move(Room& room, const Player* otherPlayer) {
         return; 
     }
 
+    if (otherPlayer != nullptr) {
+        Point otherPos = otherPlayer->getPos();
+        if (nextPoint.x == otherPos.x && nextPoint.y == otherPos.y)
+        {
+            setDirection(0, 0);
+            return;
+        }
+    }
+
     if (isDoor(tileOnMap))
     {
         doorHandling(room, nextPoint, itemInHand);
@@ -97,15 +106,19 @@ void Player::switchHandling(Room& room, Point& nextPoint)
 bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherPlayer)
 {
     int currentForce = this->force;
-    if (otherPlayer != nullptr)
+    Obstacle* obstacleToPush = room.getObstacleAt(nextPoint);
+
+    if (otherPlayer != nullptr && obstacleToPush != nullptr)
     {
         Point otherPos = otherPlayer->getPos();
         int otherDirx = otherPlayer->dirx;
         int otherDiry = otherPlayer->diry;
         
         Point otherTarget = { otherPos.x + otherDirx, otherPos.y + otherDiry };
-        
-        if (otherTarget.x == nextPoint.x && otherTarget.y == nextPoint.y && dirx == otherDirx && diry == otherDiry)
+        Obstacle* otherObToPush = room.getObstacleAt(otherTarget);
+
+
+        if (obstacleToPush == otherObToPush && dirx == otherDirx && diry == otherDiry)
         {
             currentForce += otherPlayer->force;
         }

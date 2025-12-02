@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <iostream>
 #include "Screen.h"
 #include "Placement.h"
 #include "Tile_Chars.h"
@@ -56,7 +57,7 @@ public:
     Door* isDoorThere(Point& p);
     Key* isKeyThere(Point& p);
     Switch* isSwitchThere(Point& p); // 5. Added Switch Getter
-
+    Obstacle* getObstacleAt(Point p);
     
     bool moveObstacle(Point p, int dirx, int diry, int force);
 

@@ -14,10 +14,10 @@ void Placement::inLimit() {
         x = 0;
     if (y < 0)
         y = 0;
-    if (getx() > MAX_X)
-        x = MAX_X;
-    if (gety() > MAX_Y)
-        y = MAX_Y;
+    if (getx() > MAX_X - 1)
+        x = MAX_X - 1;
+    if (gety() > MAX_Y - 1)
+        y = MAX_Y - 1;
 }
 
 

@@ -22,6 +22,15 @@ void Player::move(Room& room, const Player* otherPlayer) {
         return; 
     }
 
+    if (otherPlayer != nullptr) {
+        Point otherPos = otherPlayer->getPos();
+        if (nextPoint.x == otherPos.x && nextPoint.y == otherPos.y)
+        {
+            setDirection(0, 0);
+            return;
+        }
+    }
+
     if (isDoor(tileOnMap))
     {
         doorHandling(room, nextPoint, itemInHand);
@@ -31,6 +40,16 @@ void Player::move(Room& room, const Player* otherPlayer) {
     if (tileOnMap == KEY_TILE) {
      
         if (!keyHandling(room, nextPoint))
+        return;
+    }
+
+    if (tileOnMap == OBSTACLE_TILE) {
+       
+        if (obstacleHandling(room, nextPoint, otherPlayer)) {
+            pos.draw(' ');
+            pos.set(nextPoint.x, nextPoint.y, symbol);
+            draw();
+        }
         return;
     }
 
@@ -82,6 +101,31 @@ void Player::switchHandling(Room& room, Point& nextPoint)
             return;
         }
     
+}
+
+bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherPlayer)
+{
+    int currentForce = this->force;
+    Obstacle* obstacleToPush = room.getObstacleAt(nextPoint);
+
+    if (otherPlayer != nullptr && obstacleToPush != nullptr)
+    {
+        Point otherPos = otherPlayer->getPos();
+        int otherDirx = otherPlayer->dirx;
+        int otherDiry = otherPlayer->diry;
+        
+        Point otherTarget = { otherPos.x + otherDirx, otherPos.y + otherDiry };
+        Obstacle* otherObToPush = room.getObstacleAt(otherTarget);
+
+
+        if (obstacleToPush == otherObToPush && dirx == otherDirx && diry == otherDiry)
+        {
+            currentForce += otherPlayer->force;
+        }
+
+    }
+
+    return room.moveObstacle(nextPoint, dirx, diry, currentForce);
 }
 
 

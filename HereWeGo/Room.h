@@ -1,11 +1,12 @@
 #pragma once
 #include <vector>
+#include <iostream>
 #include "Screen.h"
 #include "Placement.h"
 #include "Tile_Chars.h"
 #include "Door.h"
 #include "Key.h"
-#include "Switch.h" // 1. Added Switch Header
+#include "Switch.h" 
 #include "Obstacle.h"
 
 
@@ -56,7 +57,14 @@ public:
     Door* isDoorThere(Point& p);
     Key* isKeyThere(Point& p);
     Switch* isSwitchThere(Point& p); // 5. Added Switch Getter
-
+    Obstacle* getObstacleAt(Point p);
+    
+    bool moveObstacle(Point p, int dirx, int diry, int force);
+    void resetObstacles() {
+        for (auto& o : obstacles) {
+            o.resetMove();
+        }
+    }
     
    //bool moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce);
 };

@@ -22,3 +22,13 @@ void Obstacle::draw() { // Draw the entire obstacle on screen
 		part.draw(symbol); // Draw each part of the obstacle
 	}
 }
+
+std::vector<Point> Obstacle::getFutureParts(int dirx, int diry) const
+{
+	std::vector<Point> newPositions;
+	for (const auto& part : parts)
+	{
+		newPositions.push_back({ part.getx() + dirx, part.gety() + diry });
+	}
+	return newPositions;
+}

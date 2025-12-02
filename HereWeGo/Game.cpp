@@ -44,6 +44,14 @@ void Game::init()
 	room.addWall(Point{ 30,10 });
 	room.addWall(Point{ 31,10 });
 
+	// --- SETUP OBSTACLES ---
+	Obstacle rock;
+	rock.addPart(Placement(35, 10));
+	rock.addPart(Placement(35, 11));
+	Obstacle rock1;
+	rock1.addPart(Placement(21, 15));
+	room.addObstacle(rock);
+	room.addObstacle(rock1);
 
 	// --- DRAWING ---
 	room.drawRoom(screen);
@@ -71,11 +79,15 @@ void Game::run()
 				}
 			}
 		}
-	
+		room.resetObstacles();
+
+		for (int i = 0; i < 2; i++) {
+			players[i].changeDirection(key);
+		}
+		
 		for (int i = 0; i < 2; i++) {
 			setColor(Color::WHITE);
-			players[i].changeDirection(key);
-			players[i].move(room, &players[1-i]);
+			players[i].move(room, &players[1 - i]);
 		}
 
 		Sleep(75); // Fixed the garbage characters here

@@ -61,13 +61,13 @@ public:
 
 
     void move(Room& room, const Player* otherPlayer);
-    void doorHandling(Room& room, Point& nextPoint, heldItem& itemInHand);
+    void doorHandling(Room& room, heldItem& itemInHand);
     bool keyHandling(Room& room, Point& nextPoint);
     void switchHandling(Room& room, Point& nextPoint);
     bool obstacleHandling(Room& room, Point& nextPoint, const Player* otherPlayer);
 
     
 
-    void pickItem(Point& position,Room& room, char symbol);
+    void pickItem(Point& position,Room& room, char _symbol);
     void changeDirection(char tav);
 };

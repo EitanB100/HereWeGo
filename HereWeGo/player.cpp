@@ -33,7 +33,8 @@ void Player::move(Room& room, const Player* otherPlayer) {
 
     if (isDoor(tileOnMap)) //collision with door, there is no door tile so this is a "workaround"
     {
-        doorHandling(room, nextPoint, itemInHand);
+        room.checkDoor(nextPoint, itemInHand);
+        doorHandling(room, itemInHand);
         return;
     }
 
@@ -66,13 +67,11 @@ void Player::move(Room& room, const Player* otherPlayer) {
     draw(); 
 }
 
-void Player::doorHandling(Room& room, Point& nextPoint, heldItem& itemInHand )
+void Player::doorHandling(Room& room, heldItem& _itemInHand ) //room might be used in future, when we add more rooms to project!
 {
-    bool isOpened = room.checkDoor(nextPoint, itemInHand);
-
     setDirection(0, 0);
 
-    setColor(itemInHand.color);
+    setColor(_itemInHand.color);
     pos.draw();
     std::cout << std::flush;
 }
@@ -130,7 +129,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherP
 
 
 
-void Player::pickItem(Point& position, Room& room, char symbol)
+void Player::pickItem(Point& position, Room& room, char _symbol) //check about instead of getting a symbol, get a dynamic type object (torch/key etc.. maybe in future w/ gameobject)
 {
     if (itemInHand.type != NONE) return; // already holding an item
 

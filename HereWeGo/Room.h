@@ -60,7 +60,11 @@ public:
     Obstacle* getObstacleAt(Point p);
     
     bool moveObstacle(Point p, int dirx, int diry, int force);
-
+    void resetObstacles() {
+        for (auto& o : obstacles) {
+            o.resetMove();
+        }
+    }
     
    //bool moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce);
 };

@@ -6,6 +6,7 @@
 class Obstacle {
 	std::vector<Placement> parts;
 	char symbol = '*';
+	bool hasMoved = false;
 
 public:
 	Obstacle() {}
@@ -19,6 +20,9 @@ public:
 	}
 	
 	void move(int dirx, int diry);
+	void resetMove() { hasMoved = false; }
+	bool getHasMoved() { return hasMoved; }
+	
 
 	bool isAt(const Point& p) const;
 

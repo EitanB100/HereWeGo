@@ -152,6 +152,8 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 	}
 
 	if (!obs) return false;
+	
+	if (obs->getHasMoved()) return true;
 
 	if (force < obs->getSize()) return false;
 
@@ -196,6 +198,7 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 		{
 			map[part.y][part.x] = OBSTACLE_TILE;
 		}
+		obs->draw();
 		return false;
 	}
 

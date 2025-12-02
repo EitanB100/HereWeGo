@@ -107,7 +107,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherP
         
         if (otherTarget.x == nextPoint.x && otherTarget.y == nextPoint.y && dirx == otherDirx && diry == otherDiry)
         {
-            currentForce += otherPlayer->force();
+            currentForce += otherPlayer->force;
         }
 
     }

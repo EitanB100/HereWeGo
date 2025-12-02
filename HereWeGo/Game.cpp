@@ -44,6 +44,10 @@ void Game::init()
 	room.addWall(Point{ 30,10 });
 	room.addWall(Point{ 31,10 });
 
+	// --- SETUP OBSTACLES ---
+	Obstacle rock;
+	rock.addPart(Placement(35, 10));
+	room.addObstacle(rock);
 
 	// --- DRAWING ---
 	room.drawRoom(screen);

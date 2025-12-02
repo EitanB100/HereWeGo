@@ -56,7 +56,7 @@ bool Room::checkDoor(Point p, heldItem& item)
 	return (door->getIsOpen());
 }
 
-// --- NEW SWITCH LOGIC (Restored from Conflict) ---
+
 void Room::checkSwitch(Point p) {
 	Switch* switchOnOff = isSwitchThere(p);
 	if (switchOnOff != nullptr) {
@@ -91,12 +91,21 @@ void Room::addKey(Key key) {
 	keys.push_back(key);
 }
 
-// --- NEW SWITCH ADDER (Restored from Conflict) ---
+
 void Room::addSwitch(const Switch& s) {
 	Point SwitchPos = s.getPos();
 	if (SwitchPos.x >= 0 && SwitchPos.x < MAX_X && SwitchPos.y >= 0 && SwitchPos.y < MAX_Y) {
 		map[SwitchPos.y][SwitchPos.x] = SWITCH_OFF; // Ensure SWITCH_OFF is defined in Tile_Chars.h
 		switches.push_back(s);
+	}
+}
+
+void Room::addObstacle(Obstacle obs)
+{
+	std::vector<Point> currParts = obs.getFutureParts(0, 0);
+	for (const auto& part : currParts)
+	{
+		map[part.y][part.x] = OBSTACLE_TILE;
 	}
 }
 
@@ -133,9 +142,9 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 
 	if (force < obs->getSize()) return false;
 
-	std::vector<Point> currentPos = obs->getFutureParts(0, 0);
+	std::vector<Point> currentParts = obs->getFutureParts(0, 0);
 
-	for (const auto& part : currentPos) {
+	for (const auto& part : currentParts) {
 		map[part.y][part.x] = ' ';
 	}
 
@@ -144,7 +153,35 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 
 	for (auto& futurePart : futureParts)
 	{
-		if (futurePart.x < 0)
+		if (futurePart.x < 0 || futurePart.x > MAX_X - 1 || futurePart.y < 0 || futurePart.y > MAX_Y - 1)
+		{
+			canMove = false;
+			break;
+		}
+
+		if (map[futurePart.y][futurePart.x] != ' ')
+		{
+			canMove = false;
+			break;
+		}
+	}
+
+	if (canMove) {
+		obs->move(dirx, diry);
+
+		for (const auto& part : futureParts)
+		{
+			map[part.y][part.x] = OBSTACLE_TILE;	
+		}
+		obs->draw();
+		return true;
+	}
+	else {
+		for (const auto& part : currentParts)
+		{
+			map[part.y][part.x] = OBSTACLE_TILE;
+		}
+		return false;
 	}
 
 }

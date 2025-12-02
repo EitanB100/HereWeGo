@@ -5,7 +5,7 @@
 #include "Tile_Chars.h"
 #include "Door.h"
 #include "Key.h"
-#include "Switch.h" // 1. Added Switch Header
+#include "Switch.h" 
 #include "Obstacle.h"
 
 

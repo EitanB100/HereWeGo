@@ -19,13 +19,7 @@ class Player {
     //written by gemini!
     //added as a bug fix to player 1 trailing a tile behind 
     //when moving an obstacle of size > 1 with player 2.
-    void synchronizePartner(Player* otherPlayer) {
-        if (otherPlayer == nullptr) return;
-        
-        otherPlayer->pos.draw(' ');
-        otherPlayer->pos.move(dirx, diry, otherPlayer->symbol);
-        otherPlayer->draw();
-    }
+    void synchronizePartner(Player* otherPlayer, Room& room);
 
 public:
 

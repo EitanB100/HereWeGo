@@ -114,7 +114,7 @@ void Game::run()
 		room.resetObstacles();
 
 		for (int i = 0; i < 2; i++) {
-			players[i].changeDirection(key);
+			players[i].inputManager(key,room);
 		}
 		
 		for (int i = 0; i < 2; i++) {

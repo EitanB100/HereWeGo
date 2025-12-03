@@ -7,11 +7,11 @@ constexpr char SWITCH_ON = '/';
 constexpr char SWITCH_OFF = '\\';
 
 // Check if character represents a door - suggested by gemini
-bool isDoor(char c) { 
+inline bool isDoorTile(char c) { 
 	
 	return (c >= '1' && c <= '9');
 }
 
-bool isSwitch(char c) {
+inline bool isSwitchTile(char c) {
 	return (c == '\\' || c == '/');
-}	
+}

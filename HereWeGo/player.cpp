@@ -31,7 +31,7 @@ void Player::move(Room& room, const Player* otherPlayer) {
         }
     }
 
-    if (isDoor(tileOnMap)) //collision with door, there is no door tile so this is a "workaround"
+    if (isDoorTile(tileOnMap)) //collision with door, there is no door tile so this is a "workaround"
     {
         room.checkDoor(nextPoint, itemInHand);
         doorHandling(room, itemInHand);

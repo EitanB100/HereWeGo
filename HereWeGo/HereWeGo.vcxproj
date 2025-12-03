@@ -135,11 +135,13 @@
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Switch.h" />
     <ClInclude Include="Tile_Chars.h" />
+    <ClInclude Include="Torch.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="key.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="placement.cpp" />

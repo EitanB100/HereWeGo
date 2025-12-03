@@ -5,6 +5,7 @@
 #include "Key.h"
 // Ensure Switch.h is included (either here or in Room.h)
 #include "Switch.h" 
+#include "Torch.h"
 
 void Player::move(Room& room, Player* otherPlayer) {
 
@@ -16,8 +17,13 @@ void Player::move(Room& room, Player* otherPlayer) {
     // Look ahead at what is currently on the map
     char tileOnMap = room.getObjectAt(nextPoint);
 
+    if (this->itemInHand.type == TORCH) {
+        room.CompleteLineOfSight(Torch(pos.getx() + dirx, pos.gety() + diry));
+    }
+    
+
     // --- COLLISION LOGIC ---
-    if (tileOnMap == WALL_TILE) { //wall
+	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE) { //wall or unknown tile which might be collideable
         setDirection(0, 0); 
         return; 
     }
@@ -40,6 +46,10 @@ void Player::move(Room& room, Player* otherPlayer) {
 
     if (tileOnMap == KEY_TILE) { //key collision
      
+        if (!keyHandling(room, nextPoint))
+        return;
+    }
+    if (tileOnMap == TORCH_TILE) { //key collision
         if (!keyHandling(room, nextPoint))
         return;
     }
@@ -82,6 +92,20 @@ bool Player::keyHandling(Room& room, Point& nextPoint)
     if (itemInHand.type == NONE)
     {
         pickItem(nextPoint, room, KEY);
+        return true;
+    }
+    else {
+        // Hands are full. STOP!
+        setDirection(0, 0);
+        return false;
+    }
+}
+
+bool Player::torchHandling(Room& room, Point& nextPoint)
+{
+    if (itemInHand.type == NONE)
+    {
+        pickItem(nextPoint, room, TORCH);
         return true;
     }
     else {
@@ -140,7 +164,7 @@ void Player::pickItem(Point& position, Room& room, char _symbol) //check about i
     if (itemInHand.type != NONE) return; // already holding an item
 
     Key* key = room.isKeyThere(position);
-
+	
     if (key != nullptr && key->getIsActive()) {
 
         key->takeKey();
@@ -150,6 +174,11 @@ void Player::pickItem(Point& position, Room& room, char _symbol) //check about i
        
         room.clearTile(position);
     }
+    Torch* torch = room.isTorchThere(position);
+	if (torch != nullptr) {
+		itemInHand = { TORCH, 0, torch->getColor()};
+		room.clearTile(position);
+	}
 }
 
 void Player::dropItem(Room& room) //item that isnt a bomb!
@@ -163,7 +192,9 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
         room.addKey(Key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color));
 
         break;
-    //case TORCH:
+    case TORCH:
+		room.addTorch(Torch(pos.getx(), pos.gety()));
+		break;
     //case BOMB:
 
         

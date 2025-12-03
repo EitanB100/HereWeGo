@@ -8,7 +8,7 @@ constexpr char ESC = 27;
 constexpr int MAX_X = 80;
 constexpr int MAX_Y = 25;
 
-enum itemType { NONE, KEY, TORCH, BOMB }; // possible item types - last two for exercise 2
+enum itemType { NONE, KEY, TORCH, BOMB }; // possible item types - last one for exercise 2
 
 enum class Color {
     BLUE = 1, GREEN, CYAN, RED, MAGENTA, WHITE = 15//white is default

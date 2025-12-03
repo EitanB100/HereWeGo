@@ -21,7 +21,7 @@ class Room {
 
 public:
 
-    Room() {
+    Room() { //move to .cpp
         // Iterate through the entire map grid
         for (int y = 1; y < MAX_Y; y++)
         {

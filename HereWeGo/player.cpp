@@ -80,14 +80,14 @@ void Player::move(Room& room, Player* otherPlayer) {
 }
 
 void Player::synchronizePartner(Player* otherPlayer, Room& room) {
-    if (otherPlayer == nullptr) return;
+    if (otherPlayer == nullptr) return;     
 
     Point p = otherPlayer->getPos();
     Color c = Color::WHITE;
-    char objectRunOver = room.getObjectAt(p, c);
+    char tileBelow = room.getObjectAt(p, c); //the tile that became invisible when disposed!
 
     setColor(c);
-    otherPlayer->pos.draw(objectRunOver);
+    otherPlayer->pos.draw(tileBelow);
     setColor(Color::WHITE);
 
     otherPlayer->pos.move(dirx, diry, otherPlayer->symbol);

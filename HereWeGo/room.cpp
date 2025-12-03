@@ -109,7 +109,7 @@ void Room::addKey(Key key) {
 	keys.push_back(key);
 }
 
-
+	
 void Room::addSwitch(const Switch& s) {
 	Point SwitchPos = s.getPos();
 	if (SwitchPos.x >= 0 && SwitchPos.x < MAX_X && SwitchPos.y >= 0 && SwitchPos.y < MAX_Y) {

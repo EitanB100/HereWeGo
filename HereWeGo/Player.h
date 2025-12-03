@@ -82,5 +82,5 @@ public:
     void pickItem(Point& position,Room& room, char _symbol);
     void dropItem(Room& room);
 
-    void changeDirection(char tav);
+    void inputManager(char tav, Room& room);
 };

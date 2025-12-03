@@ -61,8 +61,8 @@ void Player::move(Room& room, Player* otherPlayer) {
     }
 
     // --- RENDERING LOGIC ---
-    
-    pos.draw(' ');
+    Point currentPos = getPos();
+    pos.draw(room.getObjectAt(currentPos));
     
     pos.set(nextPoint.x, nextPoint.y, symbol); // Update and draw at new position
     draw(); 
@@ -161,15 +161,24 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
     
     case KEY:
         room.addKey(Key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color));
+
         break;
     //case TORCH:
     //case BOMB:
 
-        itemInHand = { NONE,0,Color::WHITE };
+        
     }
+    itemInHand = { NONE,0,Color::WHITE };
+    draw();
 }
 
-void Player::changeDirection(char input) {
+void Player::inputManager(char input, Room& room) {
+
+    switch (input) {
+    case 0:
+        return;
+    
+    }
     if (input == 0) return;
     input = toupper(input); // normalize input
     if (input == keys[UP])
@@ -180,5 +189,9 @@ void Player::changeDirection(char input) {
         setDirection(-1, 0);
     else if (input == keys[RIGHT])
         setDirection(1, 0);
-    else if (input == keys[STAY]) setDirection(0, 0);
+    else if (input == keys[STAY])
+        setDirection(0, 0);
+    else if (input == keys[DISPOSE])
+        dropItem(room);
+    
 }

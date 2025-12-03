@@ -12,7 +12,7 @@
 
 class Room {
         
-    char map[MAX_Y][MAX_X-1] = {}; // leave a room for HUD at top row
+    char map[MAX_Y][MAX_X] = {}; // leave a room for HUD at top row
     std::vector<Door> doors;
     std::vector<Key> keys;
     std::vector<Switch> switches; 
@@ -21,23 +21,7 @@ class Room {
 
 public:
 
-    Room() { //move to .cpp
-        // Iterate through the entire map grid
-        for (int y = 1; y < MAX_Y; y++)
-        {
-            for (int x = 0; x < MAX_X; x++)
-            {
-                // Initialize Map Data
-                // I set the boundaries to WALL_TILE and the inside to Empty Space.
-                // PREVIOUS BUG: The map was initialized to all ' ', so the walls
-                // existed in the physics check but were invisible on screen.
-                if (y == 1 || y == MAX_Y - 1 || x == 0 || x == MAX_X - 1)
-                    map[y][x] = WALL_TILE;
-                else
-                    map[y][x] = ' ';
-            }
-        }
-    }
+    Room();
 
     bool checkDoor(Point p, heldItem& item);
     void checkSwitch(Point p); // 3. Added Switch Check

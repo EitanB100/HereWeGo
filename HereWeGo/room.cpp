@@ -163,7 +163,7 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 	Obstacle* obs = isObstacleThere(p);
 	if (!obs) return false;
 	
-	//if (obs->getHasMoved()) return true;
+	if (obs->getHasMoved()) return true;
 
 	if (force < obs->getSize()) return false;
 

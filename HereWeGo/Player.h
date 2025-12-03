@@ -60,11 +60,11 @@ public:
     }
 
 
-    void move(Room& room, const Player* otherPlayer);
+    void move(Room& room, Player* otherPlayer);
     void doorHandling(Room& room, heldItem& itemInHand);
     bool keyHandling(Room& room, Point& nextPoint);
     void switchHandling(Room& room, Point& nextPoint);
-    bool obstacleHandling(Room& room, Point& nextPoint, const Player* otherPlayer);
+    bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
 
     
 

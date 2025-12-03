@@ -6,7 +6,7 @@
 // Ensure Switch.h is included (either here or in Room.h)
 #include "Switch.h" 
 
-void Player::move(Room& room, const Player* otherPlayer) {
+void Player::move(Room& room, Player* otherPlayer) {
 
     if (dirx == 0 && diry == 0) return; // No movement input
     
@@ -103,7 +103,7 @@ void Player::switchHandling(Room& room, Point& nextPoint)
     
 }
 
-bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherPlayer)
+bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 {
     int currentForce = this->force;
     Obstacle* obstacleToPush = room.isObstacleThere(nextPoint);
@@ -111,21 +111,18 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherP
     if (otherPlayer != nullptr && obstacleToPush != nullptr)
     {
         Point otherPos = otherPlayer->getPos();
-        int otherDirx = otherPlayer->dirx;
-        int otherDiry = otherPlayer->diry;
-            
-        Point otherTarget = { otherPos.x + otherDirx, otherPos.y + otherDiry };
+
+        Point otherTarget = { otherPos.x + otherPlayer->dirx, otherPos.y + otherPlayer->diry };
         Obstacle* otherObToPush = room.isObstacleThere(otherTarget);
 
 
-        if (obstacleToPush == otherObToPush && dirx == otherDirx && diry == otherDiry)
+        if (obstacleToPush == otherObToPush && dirx == otherPlayer->dirx && diry == otherPlayer->diry)
         {
             currentForce += otherPlayer->force;
+
         }
-
+        return room.moveObstacle(nextPoint, dirx, diry, currentForce);
     }
-
-    return room.moveObstacle(nextPoint, dirx, diry, currentForce);
 }
 
 

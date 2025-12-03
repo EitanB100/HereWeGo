@@ -105,8 +105,11 @@ void Player::switchHandling(Room& room, Point& nextPoint)
 
 bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 {
-    int currentForce = this->force;
     Obstacle* obstacleToPush = room.isObstacleThere(nextPoint);
+    if (obstacleToPush != nullptr && obstacleToPush->getHasMoved()) return false;
+
+    int currentForce = this->force;
+    bool combinedPush = false;
 
     if (otherPlayer != nullptr && obstacleToPush != nullptr)
     {
@@ -119,9 +122,14 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
         if (obstacleToPush == otherObToPush && dirx == otherPlayer->dirx && diry == otherPlayer->diry)
         {
             currentForce += otherPlayer->force;
-
+            combinedPush = true;
         }
-        return room.moveObstacle(nextPoint, dirx, diry, currentForce);
+        bool hasMoved = room.moveObstacle(nextPoint, dirx, diry, currentForce);
+
+        if (hasMoved && combinedPush) {
+            synchronizePartner(otherPlayer);
+        }
+        return hasMoved;
     }
 }
 

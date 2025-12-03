@@ -62,8 +62,13 @@ void Player::move(Room& room, Player* otherPlayer) {
 
     // --- RENDERING LOGIC ---
     Point currentPos = getPos();
-    pos.draw(room.getObjectAt(currentPos));
+    Color objectColor = Color::WHITE;
+    char objectChar = room.getObjectAt(currentPos, objectColor);
+
+    setColor(objectColor);
+    pos.draw(objectChar);
     
+    setColor(Color::WHITE);
     pos.set(nextPoint.x, nextPoint.y, symbol); // Update and draw at new position
     draw(); 
 }

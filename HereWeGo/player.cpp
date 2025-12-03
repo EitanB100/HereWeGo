@@ -79,7 +79,7 @@ void Player::move(Room& room, Player* otherPlayer) {
     draw(); 
 }
 
-/*void Player::synchronizePartner(Player* otherPlayer, Room& room) {
+void Player::synchronizePartner(Player* otherPlayer, Room& room) {
     if (otherPlayer == nullptr) return;
 
     Point p = otherPlayer->getPos();
@@ -92,7 +92,7 @@ void Player::move(Room& room, Player* otherPlayer) {
 
     otherPlayer->pos.move(dirx, diry, otherPlayer->symbol);
     otherPlayer->draw();
-}*/
+}
 
 void Player::doorHandling(Room& room, heldItem& _itemInHand ) //room might be used in future, when we add more rooms to project!
 {
@@ -153,7 +153,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
         bool hasMoved = room.moveObstacle(nextPoint, dirx, diry, currentForce);
 
         if (hasMoved && combinedPush) {
-            synchronizePartner(otherPlayer);
+            synchronizePartner(otherPlayer, room);
         }
         return hasMoved;
     }

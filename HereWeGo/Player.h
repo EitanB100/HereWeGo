@@ -11,7 +11,7 @@ class Player {
     int dirx = 0, diry = 0;
     int force = 1; // for moving obstacles, will be changed by spring later
 
-    char keys[NUM_KEYS];            // fixed-size array
+    char keys[NUM_KEYS];  // fixed-size array for command keys
 
      //Color will be used as an indicator for a picked up item, mainly key
 	heldItem itemInHand = { NONE, 0, Color::WHITE};
@@ -69,5 +69,7 @@ public:
     
 
     void pickItem(Point& position,Room& room, char _symbol);
+    void dropItem(Room& room);
+
     void changeDirection(char tav);
 };

@@ -2,7 +2,7 @@
 
 const char p1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q' };
 const char p2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };
-using namespace std;
+
 
 void Game::printHUD()
 {
@@ -23,7 +23,7 @@ void Game::printHUD()
 	
 	setColor(Color::WHITE);
 	
-	std::cout << " | Player 2: ";
+	std::cout << "| Player 2: ";
 	const heldItem& item2 = players[1].getItemInHand();
 	if (item2.type == KEY) {
 		setColor(item2.color);

@@ -51,6 +51,7 @@ void Player::move(Room& room, const Player* otherPlayer) {
             pos.set(nextPoint.x, nextPoint.y, symbol);
             draw();
         }
+        
         return;
     }
 
@@ -112,7 +113,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherP
         Point otherPos = otherPlayer->getPos();
         int otherDirx = otherPlayer->dirx;
         int otherDiry = otherPlayer->diry;
-        
+            
         Point otherTarget = { otherPos.x + otherDirx, otherPos.y + otherDiry };
         Obstacle* otherObToPush = room.isObstacleThere(otherTarget);
 
@@ -143,6 +144,23 @@ void Player::pickItem(Point& position, Room& room, char _symbol) //check about i
         itemInHand = { KEY, key->getKeyID(), key->getColor()};
        
         room.clearTile(position);
+    }
+}
+
+void Player::dropItem(Room& room) //item that isnt a bomb!
+{
+    switch (itemInHand.type) {
+    case NONE:
+        return;
+        break;
+    
+    case KEY:
+        room.addKey(Key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color));
+        break;
+    //case TORCH:
+    //case BOMB:
+
+        itemInHand = { NONE,0,Color::WHITE };
     }
 }
 

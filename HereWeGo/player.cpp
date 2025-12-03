@@ -6,7 +6,7 @@
 // Ensure Switch.h is included (either here or in Room.h)
 #include "Switch.h" 
 
-void Player::move(Room& room, const Player* otherPlayer) {
+void Player::move(Room& room, Player* otherPlayer) {
 
     if (dirx == 0 && diry == 0) return; // No movement input
     
@@ -51,6 +51,7 @@ void Player::move(Room& room, const Player* otherPlayer) {
             pos.set(nextPoint.x, nextPoint.y, symbol);
             draw();
         }
+        
         return;
     }
 
@@ -102,29 +103,34 @@ void Player::switchHandling(Room& room, Point& nextPoint)
     
 }
 
-bool Player::obstacleHandling(Room& room, Point& nextPoint, const Player* otherPlayer)
+bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 {
-    int currentForce = this->force;
     Obstacle* obstacleToPush = room.isObstacleThere(nextPoint);
+    if (obstacleToPush != nullptr && obstacleToPush->getHasMoved()) return false;
+
+    int currentForce = this->force;
+    bool combinedPush = false;
 
     if (otherPlayer != nullptr && obstacleToPush != nullptr)
     {
         Point otherPos = otherPlayer->getPos();
-        int otherDirx = otherPlayer->dirx;
-        int otherDiry = otherPlayer->diry;
-        
-        Point otherTarget = { otherPos.x + otherDirx, otherPos.y + otherDiry };
+
+        Point otherTarget = { otherPos.x + otherPlayer->dirx, otherPos.y + otherPlayer->diry };
         Obstacle* otherObToPush = room.isObstacleThere(otherTarget);
 
 
-        if (obstacleToPush == otherObToPush && dirx == otherDirx && diry == otherDiry)
+        if (obstacleToPush == otherObToPush && dirx == otherPlayer->dirx && diry == otherPlayer->diry)
         {
             currentForce += otherPlayer->force;
+            combinedPush = true;
         }
+        bool hasMoved = room.moveObstacle(nextPoint, dirx, diry, currentForce);
 
+        if (hasMoved && combinedPush) {
+            synchronizePartner(otherPlayer);
+        }
+        return hasMoved;
     }
-
-    return room.moveObstacle(nextPoint, dirx, diry, currentForce);
 }
 
 
@@ -143,6 +149,23 @@ void Player::pickItem(Point& position, Room& room, char _symbol) //check about i
         itemInHand = { KEY, key->getKeyID(), key->getColor()};
        
         room.clearTile(position);
+    }
+}
+
+void Player::dropItem(Room& room) //item that isnt a bomb!
+{
+    switch (itemInHand.type) {
+    case NONE:
+        return;
+        break;
+    
+    case KEY:
+        room.addKey(Key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color));
+        break;
+    //case TORCH:
+    //case BOMB:
+
+        itemInHand = { NONE,0,Color::WHITE };
     }
 }
 

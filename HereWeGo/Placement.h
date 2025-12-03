@@ -30,6 +30,7 @@ public:
  
         inLimit();
     }
+
     void move(int xSteps, int ySteps, char tile) {
         set(x + xSteps, y + ySteps, tile);
     }

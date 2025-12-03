@@ -135,7 +135,7 @@ void Room::addWall(Point p)
 	map[p.y][p.x] = WALL_TILE;
 }
 
-// --- NEW SWITCH GETTER (Restored from Conflict) ---
+
 Switch* Room::isSwitchThere(Point& p){
 	for (Switch& switchOnOff : switches){
 		Point SwitchPoint = switchOnOff.getPos();

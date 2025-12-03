@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "utils.h"
 
-using namespace std;
+
 
 void gotoxy(int x, int y) {
     std::cout.flush();
@@ -37,14 +37,14 @@ void printCentered(std::string text, int y)
 
 	int x = (80 - length) / 2;
 	gotoxy(x, y);
-	cout << text;
+	std::cout << text;
 }
 
 void printInstructions() {
 	system("cls");
 	printCentered("Instructions:",5);
-	printCentered("Use W/A/S/D to move Player 1, E to stop in place",8);
-	printCentered("Use I/J/K/L to move Player 2, U to stop in place",10);
+	printCentered("Use W/A/S/D to move Player 1, E to stop in place, Q to drop an Item",8);
+	printCentered("Use I/J/K/L to move Player 2, U to stop in place, O to drop an Item",10);
 	printCentered("Press any key to return",12);
 	_getch();
 }

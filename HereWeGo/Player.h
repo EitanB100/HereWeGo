@@ -11,10 +11,21 @@ class Player {
     int dirx = 0, diry = 0;
     int force = 1; // for moving obstacles, will be changed by spring later
 
-    char keys[NUM_KEYS];            // fixed-size array
+    char keys[NUM_KEYS];  // fixed-size array for command keys
 
      //Color will be used as an indicator for a picked up item, mainly key
 	heldItem itemInHand = { NONE, 0, Color::WHITE};
+
+    //written by gemini!
+    //added as a bug fix to player 1 trailing a tile behind 
+    //when moving an obstacle of size > 1 with player 2.
+    void synchronizePartner(Player* otherPlayer) {
+        if (otherPlayer == nullptr) return;
+        
+        otherPlayer->pos.draw(' ');
+        otherPlayer->pos.move(dirx, diry, otherPlayer->symbol);
+        otherPlayer->draw();
+    }
 
 public:
 
@@ -60,14 +71,16 @@ public:
     }
 
 
-    void move(Room& room, const Player* otherPlayer);
+    void move(Room& room, Player* otherPlayer);
     void doorHandling(Room& room, heldItem& itemInHand);
     bool keyHandling(Room& room, Point& nextPoint);
     void switchHandling(Room& room, Point& nextPoint);
-    bool obstacleHandling(Room& room, Point& nextPoint, const Player* otherPlayer);
+    bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
 
     
 
     void pickItem(Point& position,Room& room, char _symbol);
+    void dropItem(Room& room);
+
     void changeDirection(char tav);
 };

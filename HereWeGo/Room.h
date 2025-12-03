@@ -37,6 +37,7 @@ public:
     void addObstacle(Obstacle obs);
 
     char getObjectAt(Point& p);
+    char getObjectAt(Point& p, Color& color);
 
     Door* isDoorThere(Point& p);
     Key* isKeyThere(Point& p);

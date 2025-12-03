@@ -34,6 +34,10 @@ public:
     }
 
     int getDoorID() { return id; }
+
+    Color getColor() const {
+        return color;
+    }
     
     // Logic for keys
     bool setKeySatisfied(bool val) { return keysSatisfied = val; }

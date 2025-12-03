@@ -95,7 +95,7 @@ Key* Room::isKeyThere(Point& p)
 	for (Key& key : keys)
 	{
 		Point keyPos = key.getPos();
-		if (keyPos.x == p.x && keyPos.y == p.y)
+		if (keyPos.x == p.x && keyPos.y == p.y && key.getIsActive())
 		{
 			return &key;
 		}
@@ -230,24 +230,40 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 
 char Room::getObjectAt(Point& p)
 {
+	Color c = Color::WHITE;
+	return getObjectAt(p, c);
+}
+
+char Room::getObjectAt(Point& p, Color& color)
+{
+
 	Door* door = isDoorThere(p);
 	if (door != nullptr) {
+		if (door->getIsOpen()) color = door->getColor();
+
 		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
 	}
 
 	Key* key = isKeyThere(p);
 	if (key != nullptr) {
-		return key->getIsActive() ? KEY_TILE : ' ';
+		if (key->getIsActive()) {
+			color = key->getColor();
+			return KEY_TILE;
+		}
+		color = Color::WHITE;
+		return ' ';
 	}
-	
+
 	Switch* sw = isSwitchThere(p);
 	if (sw != nullptr) {
+		color = sw->getState() ? Color::GREEN : Color::RED;
+
 		return sw->getState() ? SWITCH_ON : SWITCH_OFF;
 	}
 	//work in progress - instead of obstacleMove function above!
 	Obstacle* obstacle = isObstacleThere(p);
 	if (obstacle != nullptr) {
-		
+
 		// handle move check function
 		//move parts function
 

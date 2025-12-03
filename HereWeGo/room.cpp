@@ -95,7 +95,7 @@ Key* Room::isKeyThere(Point& p)
 	for (Key& key : keys)
 	{
 		Point keyPos = key.getPos();
-		if (keyPos.x == p.x && keyPos.y == p.y)
+		if (keyPos.x == p.x && keyPos.y == p.y && key.getIsActive())
 		{
 			return &key;
 		}

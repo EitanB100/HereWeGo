@@ -16,16 +16,13 @@ class Player {
      //Color will be used as an indicator for a picked up item, mainly key
 	heldItem itemInHand = { NONE, 0, Color::WHITE};
 
-    //written by gemini!
-    //added as a bug fix to player 1 trailing a tile behind 
-    //when moving an obstacle of size > 1 with player 2.
-    void synchronizePartner(Player* otherPlayer) {
-        if (otherPlayer == nullptr) return;
-        
-        otherPlayer->pos.draw(' ');
-        otherPlayer->pos.move(dirx, diry, otherPlayer->symbol);
-        otherPlayer->draw();
-    }
+    //Suggested and written by gemini!
+    // added as a visual bux fix (when player 1 moved first and pushed an obstacle, 
+    // player 2 got left behind one tile despite applying force on the obstacle as well
+    // also when player 2 disposed an item while moving an obstacle, it turned invisible (yet still interactable)
+    // this function takes care of both bugs!
+ 
+    void synchronizePartner(Player* otherPlayer, Room& room);
 
 public:
 

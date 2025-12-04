@@ -41,8 +41,11 @@ public:
     void addObstacle(Obstacle obs);
 
     char getObjectAt(Point& p);
-    
+    char getObjectAt(Point& p, Color& color);
+  
     bool isWallThere(Point p);
+    
+
     Door* isDoorThere(Point& p);
     Key* isKeyThere(Point& p);
     Switch* isSwitchThere(Point& p); // 5. Added Switch Getter

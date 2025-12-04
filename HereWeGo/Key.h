@@ -5,12 +5,13 @@
 
 // Key class representing a key in the game
 class Key {
-	
+
 	Placement pos;
-	
+
 	int keyID;
 	Color color = Color::WHITE;
 	bool isActive = true;
+	bool seen = false;
 
 public:
 	// Use the version that supports Color and the global KEY_TILE constant
@@ -28,19 +29,22 @@ public:
 		return isActive;
 	}
 
-    // Note: The new version returns a Point (struct), not the Placement object.
+	bool getIsSeen() const {
+		return seen;
+	}
+	void setSeen() {
+		seen = true;
+	}
+
+
+
+	// Note: The new version returns a Point (struct), not the Placement object.
 	Point getPos() const {
 		return pos.getPosition();
 	}
-	
+
 	void takeKey() { isActive = false; }
-	
-	void draw()
-	{
-		if (isActive) {
-			setColor(color);
-			pos.draw();
-			setColor(Color::WHITE); // Reset to default color
-		}
-	}
+
+	void draw();
+
 };

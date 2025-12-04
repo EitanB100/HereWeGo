@@ -14,6 +14,10 @@ void Game::printHUD()
 		setColor(item1.color);
 		std::cout << "KEY ";
 	}
+	else if (item1.type == TORCH) {
+		setColor(item1.color);
+		std::cout << "TORCH ";
+	}
 	//remove the comment brackets if you implemented torch!
 	/*else if (item1.type == TORCH) {
 	setColor(item1.color) -> if it has a unique color lol
@@ -28,6 +32,11 @@ void Game::printHUD()
 	if (item2.type == KEY) {
 		setColor(item2.color);
 		std::cout << "KEY  ";
+	}
+
+	else if (item2.type == TORCH) {
+		setColor(item2.color);
+		std::cout << "TORCH ";
 	}
 
 	else std::cout << "EMPTY  ";
@@ -66,10 +75,10 @@ void Game::init()
 	room.addDoor(d2); // Note: Added d2 AFTER configuring requirements
 
 	// --- SETUP KEYS ---
-	room.addKey(Key(40, 5, 10, Color::GREEN));
+	room.addKey(Key(20, 5, 10, Color::GREEN));
 	room.addKey(Key(20, 15, 11, Color::RED));
 	room.addKey(Key(20, 10, 12, Color::RED));
-	room.addKey(Key(20, 5, 13, Color::RED));
+	room.addKey(Key(40, 5, 13, Color::RED));
 
 	// --- SETUP WALLS ---
 	room.addWall(Point{ 30,10 });
@@ -83,6 +92,9 @@ void Game::init()
 	rock1.addPart(Placement(21, 15));
 	room.addObstacle(rock);
 	room.addObstacle(rock1);
+
+	// --- SETUP TORCHES ---
+	room.addTorch(Torch(50, 20));
 
 	// --- DRAWING ---
 	room.drawRoom(screen);

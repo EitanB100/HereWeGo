@@ -6,6 +6,7 @@
 #include "Tile_Chars.h"
 #include "Door.h"
 #include "Key.h"
+#include "Torch.h"
 #include "Switch.h" 
 #include "Obstacle.h"
 
@@ -17,7 +18,8 @@ class Room {
     std::vector<Key> keys;
     std::vector<Switch> switches; 
     std::vector<Obstacle> obstacles;
-    
+    std::vector<Torch> torches;
+
 
 public:
 
@@ -33,17 +35,29 @@ public:
     void addWall(Point p);
     void addDoor(Door door);
     void addKey(Key key);
+    void addTorch(Torch torch);
+
     void addSwitch(const Switch& s); // 4. Added Switch Adder
     void addObstacle(Obstacle obs);
 
     char getObjectAt(Point& p);
     char getObjectAt(Point& p, Color& color);
+  
+    bool isWallThere(Point p);
+    
 
     Door* isDoorThere(Point& p);
     Key* isKeyThere(Point& p);
     Switch* isSwitchThere(Point& p); // 5. Added Switch Getter
+    Torch* isTorchThere(Point p);
     Obstacle* isObstacleThere(Point p);
     
+    
+	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
+	void CompleteLineOfSight(Torch torch);
+	void getTorchesLineOfSight();
+
+
     bool moveObstacle(Point p, int dirx, int diry, int force);
     void resetObstacles() {
         for (auto& o : obstacles) {

@@ -2,89 +2,70 @@
 
 const char p1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q' };
 const char p2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };
-
-
 void Game::initLevel1(Room& r)
 {
     // ==========================================
-    // 1. THE EXACT MAP DATA
+    // 1. RAW MAP DATA
     // ==========================================
     const char* layout[] = {
-        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-        "W T             W          * W",
-        "W     P1        W     K2   * K5                W",
-        "W               W          W                                          W",
-        "WWWWWWWWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWW    WWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-        "W         /D1        * ",
-        "W    P2   \\D2        * ",
-        "W                WWWWWWWWWWWWWWWWWWWWWWWW2WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-        "WWWWWWWWWWWWWWWWWW                             W     /D5    \\D4     \\D4    W",
-        "W    K3          W                             W                           W",
-        "W                W     /D3                     W                           W",
-        "WWWWWWWWWWWWWWW  * \\D2                     W                           W",
-        "W     W          W                             W                           W",
-        "W     W          W                             W                           W",
-        "W   /D3          W                             W    \\D4             /D5    W",
-        "W                W                             W                           W",
-        "W                * W                           W",
-        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW3WWWWWWWWWWWWWWWWW4WWWWWWWWWWWWW",
-        "W   W       W         W   W                       W                        WWWW",
-        "W  WW     K3  WWWW    W                                                       W",
-        "W        WWWW         W                                                       5",
-        "W   W       W WW      W                                                       W",
-        "WW  W     W                                                   /F            WWW",
-        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        R"(WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW)",
+        R"(W T             W          * W)",
+        R"(W     P1        W     K2   * K5                W)",
+        R"(W               W          W                                          W)",
+        R"(WWWWWWWWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWW    WWWWWWWWWWWWWWWWWWWWWWWWWWWWW)",
+        R"(W                    * )",
+        R"(W    P2   \D2        * )",
+        R"(W                WWWWWWWWWWWWWWWWWWWWWWWW2WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW)",
+        R"(WWWWWWWWWWWWWWWWWW                             W     /D5    \D4     \D4    W)",
+        R"(W    K3          W                             W                           W)",
+        R"(W                W     /D3                     W                           W)",
+        R"(WWWWWWWWWWWWWWW  * \D2                     W                           W)",
+        R"(W     W          W                             W                           W)",
+        R"(W     W          W                             W                           W)",
+        R"(W   /D3          W                             W    \D4             /D5    W)",
+        R"(W                W                             W                           W)",
+        R"(W                * W                           W)",
+        R"(WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW3WWWWWWWWWWWWWWWWW4WWWWWWWWWWWWW)",
+        R"(W   W       W         W   W                       W                        WWWW)",
+        R"(W  WW     K3  WWWW    W                                                       W)",
+        R"(W        WWWW         W                                                       5)",
+        R"(W   W       W WW      W                                                       W)",
+        R"(WW  W     W                                                   /F            WWW)",
+        R"(WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW)"
     };
 
     int rows = sizeof(layout) / sizeof(layout[0]);
-    int offY = 1; // Start map at y=1 to leave room for HUD
+    int offY = 1;
 
-    // Helper to store links safely (using Coordinates instead of Pointers)
     struct LinkInfo { Point p; int doorID; bool reqState; };
     std::vector<LinkInfo> pendingLinks;
 
-    // Helper to store Doors by ID so we can find them later
-    // (Map allows IDs 0-9)
-    Door* doorRegistry[10] = { nullptr };
+    Point doorLocs[10];
+    bool doorExists[10] = { false };
+
+    int switchGridIDs[MAX_Y][MAX_X];
+    for (int i = 0; i < MAX_Y; i++) for (int j = 0; j < MAX_X; j++) switchGridIDs[i][j] = -1;
 
     // ==========================================
-    // 2. PARSING LOOP
+    // 2. PARSE OBJECTS
     // ==========================================
     for (int y = 0; y < rows; y++) {
         for (int x = 0; layout[y][x] != '\0'; x++) {
 
-            // Safety Check (Prevent Out-of-Bounds Crash)
             if (x >= MAX_X || (y + offY) >= MAX_Y) continue;
 
             char c = layout[y][x];
             int worldY = y + offY;
 
             // --- WALLS ---
-            if (c == 'W') {
-                r.addWall(Point{ x, worldY });
-            }
+            if (c == 'W') r.addWall(Point{ x, worldY });
 
-            // --- OBSTACLES (With Vertical Grouping) ---
+            // --- OBSTACLES (Vertical Grouping) ---
             else if (c == '*') {
-                // If the tile above is also '*', this is part of that obstacle.
-                // We assume the top one created the object, we just add this part.
-                // But since we can't easily access the previous obstacle object,
-                // we will only create a NEW obstacle if the one above is NOT '*'.
-                // If the one above IS '*', we skip (it was handled by the row above).
-
-                // Wait! simpler approach for your class:
-                // Create a new obstacle for every *, BUT check if we should merge?
-                // Your Obstacle class doesn't support merging easily.
-                // Let's stick to the strategy: 
-                // "If top is *, do nothing (assume top handled it). If top is NOT *, create."
-
                 bool topIsObs = (y > 0 && layout[y - 1][x] == '*');
-
                 if (!topIsObs) {
                     Obstacle obs;
                     obs.addPart(Placement(x, worldY));
-
-                    // Look ahead: Is there a * below?
                     int nextY = y + 1;
                     while (nextY < rows && layout[nextY][x] == '*') {
                         obs.addPart(Placement(x, nextY + offY));
@@ -95,71 +76,81 @@ void Game::initLevel1(Room& r)
             }
 
             // --- TORCH ---
-            else if (c == 'T') {
-                r.addTorch(Torch(x, worldY, 6));
-            }
+            else if (c == 'T') r.addTorch(Torch(x, worldY, 6));
 
-            // --- PLAYERS ---
+            // --- PLAYERS (P1/P2) ---
             else if (c == 'P') {
-                char id = layout[y][x + 1];
-                if (id == '1') players[0].setPos(x, worldY);
-                if (id == '2') players[1].setPos(x, worldY);
+                char pid = layout[y][x + 1];
+                if (pid == '1') players[0].setPos(x, worldY);
+                if (pid == '2') players[1].setPos(x, worldY);
+                x++; // Skip ID so it isn't drawn or parsed as a Door
             }
 
             // --- DOORS (1-9) ---
             else if (c >= '1' && c <= '9') {
                 int id = c - '0';
-                Color color = Color::WHITE;
-                if (id == 2) color = Color::MAGENTA;
-                if (id == 3) color = Color::RED;
-                if (id == 4) color = Color::CYAN;
-                if (id == 5) color = Color::GREEN; // Exit
+                Color col = Color::WHITE;
+                if (id == 2) col = Color::MAGENTA;
+                if (id == 3) col = Color::RED;
+                if (id == 4) col = Color::CYAN;
+                if (id == 5) col = Color::GREEN;
 
-                Door d(x, worldY, id, color);
-
-                // Add Key Requirements
+                Door d(x, worldY, id, col);
+                // Key Logic
                 if (id == 2) d.addRequiredKey(2);
-                if (id == 3) d.addRequiredKey(3); // Based on K3 existing
+                if (id == 3) d.addRequiredKey(3);
                 if (id == 5) d.addRequiredKey(5);
 
                 r.addDoor(d);
-
-                // Save pointer for linking. 
-                // We search for it immediately because addDoor makes a copy.
-                doorRegistry[id] = r.isDoorThere(Point{ x, worldY });
+                doorLocs[id] = { x, worldY };
+                doorExists[id] = true;
             }
 
-            // --- KEYS (Kn) ---
+            // --- KEYS (K) ---
             else if (c == 'K') {
-                char dChar = layout[y][x + 1];
-                if (dChar >= '0' && dChar <= '9') {
-                    int id = dChar - '0';
-                    Color color = Color::WHITE;
-                    if (id == 2) color = Color::MAGENTA;
-                    if (id == 3) color = Color::RED;
-                    if (id == 5) color = Color::GREEN;
-
-                    r.addKey(Key(x, worldY, id, color));
+                char kid = layout[y][x + 1];
+                if (isdigit(kid)) {
+                    int id = kid - '0';
+                    Color col = Color::WHITE;
+                    if (id == 2) col = Color::MAGENTA;
+                    if (id == 3) col = Color::RED;
+                    if (id == 5) col = Color::GREEN;
+                    r.addKey(Key(x, worldY, id, col));
+                    x++; // CRITICAL FIX: Skip the digit so it isn't parsed as a Door!
                 }
             }
 
             // --- SWITCHES (/ or \) ---
             else if (c == '/' || c == '\\') {
                 bool isFake = (layout[y][x + 1] == 'F');
-                bool reqOn = (c == '/');
-                int doorID = -1;
 
-                // Check for label like D1, D2
+                // UNIFIED LOGIC: All switches must be ON to trigger their door.
+                // This means you step on '\' -> it becomes '/' -> Door Opens.
+                // This fixes the "Non-reversible / Starts Open" confusion.
+                bool reqOn = true;
+
+                int doorID = -1;
                 if (layout[y][x + 1] == 'D') {
                     doorID = layout[y][x + 2] - '0';
+                    x += 2; // CRITICAL FIX: Skip 'D' and ID
+                }
+                else if (isFake) {
+                    x++; // Skip 'F'
                 }
 
-                // Create the switch
-                int sid = isFake ? 99 : (y * 100 + x); // Unique ID based on position
+                // Vertical Grouping Logic
+                int sid = -1;
+                if (y > 0 && switchGridIDs[y - 1][x] != -1) {
+                    sid = switchGridIDs[y - 1][x];
+                }
+                else {
+                    sid = isFake ? 99 : (y * 100 + x);
+                }
+                switchGridIDs[y][x] = sid;
+
                 Switch s(x, worldY, sid);
                 r.addSwitch(s);
 
-                // If it controls a door, save the coordinate to link later
                 if (doorID != -1) {
                     pendingLinks.push_back({ Point{x, worldY}, doorID, reqOn });
                 }
@@ -168,19 +159,19 @@ void Game::initLevel1(Room& r)
     }
 
     // ==========================================
-    // 3. APPLY LINKS (Safe Phase)
+    // 3. PASS 2: LINKING
     // ==========================================
-    // Now that all switches are created and the vector is stable, 
-    // we can safely get their pointers.
     for (const auto& link : pendingLinks) {
-        Switch* sPtr = r.isSwitchThere(link.p);
+        if (!doorExists[link.doorID]) continue;
 
-        if (sPtr != nullptr && doorRegistry[link.doorID] != nullptr) {
-            doorRegistry[link.doorID]->addRequiredSwitch(sPtr, link.reqState);
+        Switch* sPtr = r.isSwitchThere(link.p);
+        Door* dPtr = r.isDoorThere(doorLocs[link.doorID]);
+
+        if (sPtr && dPtr) {
+            dPtr->addRequiredSwitch(sPtr, link.reqState);
         }
     }
 }
-
 
 void Game::initLevel2(Room& r)
 {

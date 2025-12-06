@@ -182,6 +182,10 @@ Switch* Room::isSwitchThere(Point& p){
 }
 
 bool Room::isWallThere(Point p) {
+	//world edge boundary check
+	if (p.x < 0 || p.x >= MAX_X || p.y < 0 || p.y >= MAX_Y)
+		return true; 
+
 	if (map[p.y][p.x] == WALL_TILE)
 		return true;
 	return false;
@@ -362,7 +366,10 @@ char Room::getObjectAt(Point& p)
 
 char Room::getObjectAt(Point& p, Color& color)
 {
-
+	if (p.x < 0 || p.x > MAX_X || p.y < 0 || p.y > MAX_Y) {
+		color = Color::WHITE;
+		return ' ';
+	}
 	Door* door = isDoorThere(p);
 	if (door != nullptr) {
 		if (door->getIsOpen()) color = door->getColor();

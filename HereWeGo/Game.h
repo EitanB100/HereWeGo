@@ -14,8 +14,8 @@ class Game {
 	int currentLevelID = 0;
 
 	void initLevel1(Room& r);
-	void initLevel2(Room& room);
-	void initLevel3(Room& room);
+	void initLevel2(Room& r);
+	void initLevel3(Room& r);
 
 	void printHUD();
 

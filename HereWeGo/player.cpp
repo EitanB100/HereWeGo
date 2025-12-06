@@ -145,6 +145,12 @@ void Player::switchHandling(Room& room, Point& nextPoint)
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
         if (switchOnOff != nullptr) {
             switchOnOff->toggleState();          // toggle the switch state
+            if (switchOnOff->getSwitchID() == 99) //fake switch
+            {
+                gotoxy(35, 24);
+                std::cout << "Gotcha :D";
+            }
+
             room.checkSwitch(switchOnOff->getPos()); // update doors
             room.drawTopLayer();                 // redraw
             setDirection(0, 0);                  // stop player

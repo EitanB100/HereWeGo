@@ -7,103 +7,156 @@ const char p2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };
 void Game::initLevel1(Room& r)
 {
 	// ============================
-	// 1. PLAYERS (Top Left Start)
+	// 0. MAP SETTINGS
 	// ============================
-	// Based on the 'P1' and 'P2' marks in your sketch
-	players[0].setPos(2, 2);
-	players[1].setPos(2, 6);
+	int top = 1;  // Leave y=0 for HUD
+	int bot = 22; // Bottom wall y-coord
 
 	// ============================
-	// 2. WALLS (The Map Layout)
+	// 1. PLAYERS & TORCH
 	// ============================
+	players[0].setPos(4, top + 2); // P1 (Top Left Room)
+	players[1].setPos(4, top + 6); // P2 (Room below P1)
 
+	r.addTorch(Torch(2, top + 1, 6)); // T (Top Left Corner)
+
+	// ============================
+	// 2. WALLS
+	// ============================
 	// A. Outer Borders
-	for (int x = 0; x <= 60; x++) { r.addWall(Point{ x, 0 }); r.addWall(Point{ x, 20 }); } // Top & Bottom
-	for (int y = 0; y <= 20; y++) { r.addWall(Point{ 0, y }); r.addWall(Point{ 60, y }); } // Left & Right
+	for (int x = 0; x <= 60; x++) { r.addWall(Point{ x, top }); r.addWall(Point{ x, bot }); }
+	for (int y = top; y <= bot; y++) { r.addWall(Point{ 0, y }); r.addWall(Point{ 60, y }); }
 
-	// B. The Horizontal Divider (Separating Top/Bottom)
-	// In sketch: Goes from left wall to the center
-	for (int x = 1; x <= 25; x++) r.addWall(Point{ x, 8 });
+	// B. Internal Vertical Walls
+	// Wall x=12 (Separates Left Rooms)
+	for (int y = top; y <= bot; y++) if (y != top + 4 && y != top + 7 && y != 14 && y != 15) r.addWall(Point{ 12, y });
 
-	// C. The Vertical Divider (Separating Top-Left from Top-Right)
-	// In sketch: Goes from top wall down to the horizontal line
-	for (int y = 1; y <= 8; y++) r.addWall(Point{ 25, y });
+	// Wall x=24 (Separates Middle/Right)
+	for (int y = top; y <= 17; y++) if (y != top + 1 && y != top + 2 && y != top + 3) r.addWall(Point{ 24, y });
 
-	// D. The "Switch Cage" Wall (Bottom Right)
-	// In sketch: Encloses the switches, separates them from the left side
-	for (int y = 8; y < 20; y++) r.addWall(Point{ 45, y });
+	// Wall x=36 (Partial Right Wall)
+	for (int y = top + 8; y <= 17; y++) r.addWall(Point{ 36, y });
 
+	// C. Internal Horizontal Walls
+	// Wall y=5 (Separates P1/P2)
+	for (int x = 0; x <= 12; x++) if (x != 8) r.addWall(Point{ x, top + 4 });
 
-	// ============================
-	// 3. OBSTACLES (The '*' marks)
-	// ============================
-	// In sketch: Blocking the path in the top corridor
-	Obstacle column;
-	column.addPart(Placement(15, 2));
-	column.addPart(Placement(15, 3));
-	column.addPart(Placement(15, 4));
-	r.addObstacle(column);
+	// Wall y=8 (Long horizontal)
+	for (int x = 12; x <= 60; x++) r.addWall(Point{ x, top + 7 });
 
-	// ============================
-	// 4. KEYS (The 'K' marks)
-	// ============================
+	// Wall y=17 (Bottom Corridor)
+	for (int x = 0; x <= 60; x++) if (x != 30 && x != 45) r.addWall(Point{ x, 17 });
 
-	// Purple Key (Top Middle - needed for Purple Door)
-	r.addKey(Key(20, 2, 10, Color::MAGENTA));
-
-	// Green Key (Top Right - needed for Exit)
-	r.addKey(Key(35, 2, 11, Color::GREEN));
-
-	// Orange/Red Key (Bottom Left - needed for Cage Door)
-	r.addKey(Key(5, 12, 12, Color::RED));
-
+	// Bottom Left Maze Walls
+	r.addWall(Point{ 6, 19 }); r.addWall(Point{ 6, 20 });
+	r.addWall(Point{ 12, 19 }); r.addWall(Point{ 12, 20 });
+	for (int x = 8; x <= 16; x++) r.addWall(Point{ x, 21 }); // Small maze wall
 
 	// ============================
-	// 5. SWITCHES (The '/' marks)
+	// 3. OBSTACLES ('*')
 	// ============================
-	// In sketch: Located in the bottom-right "Cage" area
-	Switch s1(50, 10, 1);
-	Switch s2(55, 12, 2);
-	Switch s3(50, 14, 3);
+	Obstacle obsTop; // Blocking Top Corridor (x=24)
+	obsTop.addPart(Placement(24, top + 1));
+	obsTop.addPart(Placement(24, top + 2));
+	obsTop.addPart(Placement(24, top + 3));
+	r.addObstacle(obsTop);
 
-	r.addSwitch(s1);
-	r.addSwitch(s2);
-	r.addSwitch(s3);
-
-	// *IMPORTANT*: Get pointers to the switches inside the Room 
-	// so we can link them to the door logic.
-	Switch* pS1 = r.isSwitchThere(s1.getPos());
-	Switch* pS2 = r.isSwitchThere(s2.getPos());
-	Switch* pS3 = r.isSwitchThere(s3.getPos());
-
+	Obstacle obsLeft; // Blocking Left Vertical (x=12)
+	obsLeft.addPart(Placement(12, 14));
+	obsLeft.addPart(Placement(12, 15));
+	r.addObstacle(obsLeft);
 
 	// ============================
-	// 6. DOORS (The 'D' marks)
+	// 4. KEYS ('K')
+	// ============================
+	r.addKey(Key(16, top + 2, 10, Color::MAGENTA)); // Magenta Key (Top Middle)
+	r.addKey(Key(45, top + 2, 11, Color::GREEN));   // Green Key (Top Right)
+	r.addKey(Key(4, 13, 12, Color::RED));           // Orange Key (Left Room) - Using RED for Orange
+	r.addKey(Key(14, 19, 13, Color::GREEN));        // Green Key 2 (Bot Left Maze)
+
+	// ============================
+	// 5. SWITCHES ('/' and '\')
+	// ============================
+	Switch sGreen1(40, top + 9, 1);  // Top Right Area
+	Switch sBlue1(45, top + 9, 2);
+	Switch sBlue2(50, top + 9, 3);
+
+	Switch sOrange(5, 16, 4);        // Bottom Left
+
+	// THE FAKE SWITCH (Bottom Right) - ID 99
+	Switch sFake(45, 21, 99);
+
+	r.addSwitch(sGreen1);
+	r.addSwitch(sBlue1);
+	r.addSwitch(sBlue2);
+	r.addSwitch(sOrange);
+	r.addSwitch(sFake);
+
+	// Pointers for Door Logic
+	Switch* pS_Green1 = r.isSwitchThere(sGreen1.getPos());
+	Switch* pS_Blue1 = r.isSwitchThere(sBlue1.getPos());
+	Switch* pS_Blue2 = r.isSwitchThere(sBlue2.getPos());
+	Switch* pS_Orange = r.isSwitchThere(sOrange.getPos());
+
+	// ============================
+	// 6. DOORS ('D')
 	// ============================
 
-	// Purple Door (Top, allows access to Green Key)
-	// In sketch: Located on the vertical divider
-	Door dPurple(25, 4, 1, Color::MAGENTA);
-	dPurple.addRequiredKey(10); // Requires Purple Key
-	r.addDoor(dPurple);
+	// 1. White Door (Start P1)
+	Door dWhite(8, top + 4, 1, Color::WHITE);
+	r.addDoor(dWhite);
 
-	// Red Door (Bottom, allows access to Switches)
-	// In sketch: Located on the cage wall
-	Door dRed(45, 12, 2, Color::RED);
-	dRed.addRequiredKey(12); // Requires Orange/Red Key
-	r.addDoor(dRed);
+	// 2. Magenta Door (Left Vertical)
+	Door dMag(12, top + 7, 2, Color::MAGENTA);
+	dMag.addRequiredKey(10);
+	r.addDoor(dMag);
 
-	// EXIT DOOR (Blue/Cyan) - Leads to Room 2
-	// In sketch: Bottom right corner, arrows pointing to "Room 2"
-	Door dExit(58, 18, 9, Color::CYAN);
+	// 3. Orange Door (Opens maze or switch path)
+	// Located at (16, 10) roughly based on image
+	Door dOrange(16, 10, 3, Color::RED);
+	dOrange.addRequiredKey(12); // Needs Orange Key
+	dOrange.addRequiredSwitch(pS_Orange, true); // Needs Switch ON
+	r.addDoor(dOrange);
 
-	// Logic: Requires Green Key AND correct Switch combination
-	dExit.addRequiredKey(11);
-	dExit.addRequiredSwitch(pS1, true);  // Switch 1 must be ON
-	dExit.addRequiredSwitch(pS2, false); // Switch 2 must be OFF
-	dExit.addRequiredSwitch(pS3, true);  // Switch 3 must be ON
+	// 4. Blue Doors (Top Right Room)
+	Door dBlue1(42, top + 9, 4, Color::CYAN);
+	dBlue1.addRequiredSwitch(pS_Blue1, false); // Switch OFF opens it
+	r.addDoor(dBlue1);
 
+	Door dBlue2(47, top + 9, 5, Color::CYAN);
+	dBlue2.addRequiredSwitch(pS_Blue2, false); // Switch OFF opens it
+	r.addDoor(dBlue2);
+
+	// 5. EXIT DOOR (Green) - Bottom Right
+	Door dExit(60, 20, 9, Color::GREEN);
+	dExit.addRequiredKey(11); // Needs Green Key
+	dExit.addRequiredKey(13); // Needs Green Key 2
+	dExit.addRequiredSwitch(pS_Green1, true); // Needs Green Switch ON
 	r.addDoor(dExit);
+}
+
+void Game::initLevel2(Room& r)
+{
+	// 1. Walls (Simple Box)
+	for (int x = 0; x < 79; x++) { r.addWall(Point{ x, 0 }); r.addWall(Point{ x, 24 }); }
+	for (int y = 0; y < 25; y++) { r.addWall(Point{ 0, y }); r.addWall(Point{ 78, y }); }
+
+	// 2. Torch (Required for vision)
+	r.addTorch(Torch(5, 5, 8));
+
+	// 3. Hidden Key
+	r.addKey(Key(70, 20, 20, Color::GREEN));
+
+	// 4. Exit Door
+	Door dExit(77, 22, 9, Color::CYAN);
+	dExit.addRequiredKey(20);
+	r.addDoor(dExit);
+}
+
+void Game::initLevel3(Room& r)
+{
+	for (int x = 0; x < 40; x++) { r.addWall(Point{ x, 0 }); r.addWall(Point{ x, 20 }); }
+	for (int y = 0; y <= 20; y++) { r.addWall(Point{ 0, y }); r.addWall(Point{ 40, y }); }
 }
 
 
@@ -153,69 +206,30 @@ Game::Game() : players{
 {
 	init();
 }
+
 void Game::init()
 {
+	// Initialize ALL levels
+	initLevel1(levels[0]);
+	initLevel2(levels[1]);
+	initLevel3(levels[2]);
 
-	// --- SETUP SWITCH (Restored from Conflict) ---
-	Switch SW1(50, 5, 20);
-	room.addSwitch(SW1);
+	currentLevelID = 0; // Start at Level 1
 
-	Point swPos = SW1.getPos();
-	Switch* activeSwitch = room.isSwitchThere(swPos);
-
-	// --- SETUP DOOR 1 (Green) ---
-	Door d1(12, 1, 1, Color::GREEN);
-	d1.addRequiredKey(10);
-	d1.addRequiredSwitch(activeSwitch, false); // Restored: Requires Switch OFF
-	room.addDoor(d1);
-
-	// --- SETUP DOOR 2 (Red) ---
-	Door d2(79, 12, 2, Color::RED);
-	d2.addRequiredKey(11);
-	d2.addRequiredKey(12);
-	d2.addRequiredKey(13);
-	d2.addRequiredSwitch(activeSwitch, true); // Restored: Requires Switch ON
-	room.addDoor(d2); // Note: Added d2 AFTER configuring requirements
-
-	// --- SETUP KEYS ---
-	room.addKey(Key(20, 5, 10, Color::GREEN));
-	room.addKey(Key(20, 15, 11, Color::RED));
-	room.addKey(Key(20, 10, 12, Color::RED));
-	room.addKey(Key(40, 5, 13, Color::RED));
-
-	// --- SETUP WALLS ---
-	room.addWall(Point{ 30,10 });
-	room.addWall(Point{ 31,10 });
-
-	// --- SETUP OBSTACLES ---
-	Obstacle rock;
-	rock.addPart(Placement(35, 10));
-	rock.addPart(Placement(35, 11));
-	Obstacle rock1;
-	rock1.addPart(Placement(21, 15));
-	room.addObstacle(rock);
-	room.addObstacle(rock1);
-
-	// --- SETUP TORCHES ---
-	room.addTorch(Torch(50, 20));
-
-	// --- DRAWING ---
-	room.drawRoom(screen);
+	// Draw the initial room
+	levels[currentLevelID].drawRoom(screen);
 	screen.draw();
-	room.drawTopLayer();
+	levels[currentLevelID].drawTopLayer();
 
-	for (auto& player : players)
-	{
-		player.draw();
-		player.setDirection(0, 0);
-	}
+	for (auto& player : players) player.draw();
 }
 
 void Game::run()
 {
 	while (true) {
-		char key = 0;
+		Room& currRoom = levels[currentLevelID]; // Use CURRENT room
 
+		char key = 0;
 		if (_kbhit()) {
 			key = _getch();
 			if (key == ESC) {
@@ -226,18 +240,58 @@ void Game::run()
 				}
 			}
 		}
-		room.resetObstacles();
+
+		currRoom.resetObstacles();
 
 		for (int i = 0; i < 2; i++) {
-			players[i].inputManager(key,room);
+			players[i].inputManager(key, currRoom);
 		}
-		
+
 		for (int i = 0; i < 2; i++) {
 			setColor(Color::WHITE);
-			players[i].move(room, &players[1 - i]);
+			players[i].move(currRoom, &players[1 - i]);
 		}
+
+		// --- LEVEL TRANSITIONS ---
+		Point p1 = players[0].getPos();
+		Point p2 = players[1].getPos();
+
+		// Level 1 -> Level 2
+		if (currentLevelID == 0 && p1.x == 58 && p1.y == 18 && p2.x == 58 && p2.y == 18)
+		{
+			// Check for obstacle push
+			Obstacle* obs = currRoom.isObstacleThere({ 58, 18 });
+			if (obs) {
+				Obstacle newObs = *obs;
+				newObs.obstacleRoomTravel(3, 3); // Teleport to new room entrance
+				levels[1].addObstacle(newObs);
+				currRoom.removeObstacle({ 58, 18 });
+			}
+
+			currentLevelID = 1;
+			screen.clearScreen();
+
+			// Set players at start of Level 2
+			players[0].setPos(2, 2);
+			players[1].setPos(2, 3);
+
+			levels[currentLevelID].drawRoom(screen);
+			levels[currentLevelID].drawTopLayer();
+		}
+		// Level 2 -> Level 3
+		else if (currentLevelID == 1 && p1.x == 77 && p1.y == 22 && p2.x == 77 && p2.y == 22)
+		{
+			currentLevelID = 2;
+			screen.clearScreen();
+			players[0].setPos(5, 5);
+			players[1].setPos(5, 6);
+
+			printCentered("YOU WIN!", 12);
+			levels[currentLevelID].drawRoom(screen);
+		}
+
 		printHUD();
-		Sleep(75); // Fixed the garbage characters here
+		Sleep(75);
 	}
 
 }

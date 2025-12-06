@@ -39,7 +39,7 @@ public:
 
     void removeKey(const Point& p);
     void removeTorch(const Point& p);
-    void removeObsacle(const Point& p);
+    void removeObstacle(const Point& p);
 
     void addSwitch(const Switch& s); // 4. Added Switch Adder
     void addObstacle(Obstacle obs);
@@ -50,9 +50,9 @@ public:
     bool isWallThere(Point p);
     
 
-    Door* isDoorThere(Point& p);
-    Key* isKeyThere(Point& p);
-    Switch* isSwitchThere(Point& p); // 5. Added Switch Getter
+    Door* isDoorThere(Point p);
+    Key* isKeyThere(Point p);
+    Switch* isSwitchThere(Point p); // 5. Added Switch Getter
     Torch* isTorchThere(Point p);
     Obstacle* isObstacleThere(Point p);
     

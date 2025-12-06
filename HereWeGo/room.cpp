@@ -43,7 +43,7 @@ void Room::drawRoom(Screen& screen) // Draw the room on the screen
 	}
 }
 
-Door* Room::isDoorThere(Point& p)
+Door* Room::isDoorThere(Point p)
 {
 	for (Door& door : doors)
 	{
@@ -93,7 +93,7 @@ void Room::addDoor(Door door) {
 	doors.push_back(door);
 }
 
-Key* Room::isKeyThere(Point& p)
+Key* Room::isKeyThere(Point p)
 {
 	for (Key& key : keys)
 	{
@@ -144,7 +144,7 @@ void Room::removeTorch(const Point& p)
 }
 
 	
-void Room::removeObsacle(const Point& p)
+void Room::removeObstacle(const Point& p)
 {
 	for (auto obstacle = obstacles.begin(); obstacle != obstacles.end(); obstacle++) {
 		if (obstacle->isAt(p)) {
@@ -180,7 +180,7 @@ void Room::addWall(Point p)
 }
 
 
-Switch* Room::isSwitchThere(Point& p){
+Switch* Room::isSwitchThere(Point p){
 	for (Switch& switchOnOff : switches){
 		Point SwitchPoint = switchOnOff.getPos();
 

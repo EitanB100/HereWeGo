@@ -5,174 +5,160 @@ const char p2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };
 void Game::initLevel1(Room& r)
 {
     // ==========================================
-    // 1. RAW MAP DATA
+    // 1. BOUNDARIES (Box 0-78, Y 1-23)
     // ==========================================
-    const char* layout[] = {
-        R"(WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW)",
-        R"(W T             W          * W)",
-        R"(W     P1        W     K2   * K5                W)",
-        R"(W               W          W                                          W)",
-        R"(WWWWWWWWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWW    WWWWWWWWWWWWWWWWWWWWWWWWWWWWW)",
-        R"(W                    * )",
-        R"(W    P2   \D2        * )",
-        R"(W                WWWWWWWWWWWWWWWWWWWWWWWW2WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW)",
-        R"(WWWWWWWWWWWWWWWWWW                             W     /D5    \D4     \D4    W)",
-        R"(W    K3          W                             W                           W)",
-        R"(W                W     /D3                     W                           W)",
-        R"(WWWWWWWWWWWWWWW  * \D2                     W                           W)",
-        R"(W     W          W                             W                           W)",
-        R"(W     W          W                             W                           W)",
-        R"(W   /D3          W                             W    \D4             /D5    W)",
-        R"(W                W                             W                           W)",
-        R"(W                * W                           W)",
-        R"(WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW3WWWWWWWWWWWWWWWWW4WWWWWWWWWWWWW)",
-        R"(W   W       W         W   W                       W                        WWWW)",
-        R"(W  WW     K3  WWWW    W                                                       W)",
-        R"(W        WWWW         W                                                       5)",
-        R"(W   W       W WW      W                                                       W)",
-        R"(WW  W     W                                                   /F            WWW)",
-        R"(WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW)"
-    };
-
-    int rows = sizeof(layout) / sizeof(layout[0]);
-    int offY = 1;
-
-    struct LinkInfo { Point p; int doorID; bool reqState; };
-    std::vector<LinkInfo> pendingLinks;
-
-    Point doorLocs[10];
-    bool doorExists[10] = { false };
-
-    int switchGridIDs[MAX_Y][MAX_X];
-    for (int i = 0; i < MAX_Y; i++) for (int j = 0; j < MAX_X; j++) switchGridIDs[i][j] = -1;
+    for (int x = 0; x < 79; x++) { r.addWall(Point{ x, 1 }); r.addWall(Point{ x, 23 }); }
+    for (int y = 1; y < 24; y++) { r.addWall(Point{ 0, y }); r.addWall(Point{ 78, y }); }
 
     // ==========================================
-    // 2. PARSE OBJECTS
+    // 2. INTERNAL WALLS
     // ==========================================
-    for (int y = 0; y < rows; y++) {
-        for (int x = 0; layout[y][x] != '\0'; x++) {
+    // Vertical Separator for P1 area (x=16, y=2-4)
+    for (int y = 2; y <= 4; y++) r.addWall(Point{ 16, y });
 
-            if (x >= MAX_X || (y + offY) >= MAX_Y) continue;
+    // Horizontal Separator below P1 (y=5), Gap for Door 1 at x=10
+    for (int x = 1; x <= 40; x++) {
+        if (x != 10) r.addWall(Point{ x, 5 });
+    }
+    // Continue that wall to the right side if needed, or leave open as per map
+    // Map shows wall continues to right side
+    for (int x = 41; x < 78; x++) r.addWall(Point{ x, 5 });
 
-            char c = layout[y][x];
-            int worldY = y + offY;
+    // Vertical Separator for P2 area (x=17, y=5-7)
+    // Note: Starts at y=5 (wall) goes down
+    for (int y = 5; y <= 7; y++) r.addWall(Point{ 17, y });
 
-            // --- WALLS ---
-            if (c == 'W') r.addWall(Point{ x, worldY });
-
-            // --- OBSTACLES (Vertical Grouping) ---
-            else if (c == '*') {
-                bool topIsObs = (y > 0 && layout[y - 1][x] == '*');
-                if (!topIsObs) {
-                    Obstacle obs;
-                    obs.addPart(Placement(x, worldY));
-                    int nextY = y + 1;
-                    while (nextY < rows && layout[nextY][x] == '*') {
-                        obs.addPart(Placement(x, nextY + offY));
-                        nextY++;
-                    }
-                    r.addObstacle(obs);
-                }
-            }
-
-            // --- TORCH ---
-            else if (c == 'T') r.addTorch(Torch(x, worldY, 6));
-
-            // --- PLAYERS (P1/P2) ---
-            else if (c == 'P') {
-                char pid = layout[y][x + 1];
-                if (pid == '1') players[0].setPos(x, worldY);
-                if (pid == '2') players[1].setPos(x, worldY);
-                x++; // Skip ID so it isn't drawn or parsed as a Door
-            }
-
-            // --- DOORS (1-9) ---
-            else if (c >= '1' && c <= '9') {
-                int id = c - '0';
-                Color col = Color::WHITE;
-                if (id == 2) col = Color::MAGENTA;
-                if (id == 3) col = Color::RED;
-                if (id == 4) col = Color::CYAN;
-                if (id == 5) col = Color::GREEN;
-
-                Door d(x, worldY, id, col);
-                // Key Logic
-                if (id == 2) d.addRequiredKey(2);
-                if (id == 3) d.addRequiredKey(3);
-                if (id == 5) d.addRequiredKey(5);
-
-                r.addDoor(d);
-                doorLocs[id] = { x, worldY };
-                doorExists[id] = true;
-            }
-
-            // --- KEYS (K) ---
-            else if (c == 'K') {
-                char kid = layout[y][x + 1];
-                if (isdigit(kid)) {
-                    int id = kid - '0';
-                    Color col = Color::WHITE;
-                    if (id == 2) col = Color::MAGENTA;
-                    if (id == 3) col = Color::RED;
-                    if (id == 5) col = Color::GREEN;
-                    r.addKey(Key(x, worldY, id, col));
-                    x++; // CRITICAL FIX: Skip the digit so it isn't parsed as a Door!
-                }
-            }
-
-            // --- SWITCHES (/ or \) ---
-            else if (c == '/' || c == '\\') {
-                bool isFake = (layout[y][x + 1] == 'F');
-
-                // UNIFIED LOGIC: All switches must be ON to trigger their door.
-                // This means you step on '\' -> it becomes '/' -> Door Opens.
-                // This fixes the "Non-reversible / Starts Open" confusion.
-                bool reqOn = true;
-
-                int doorID = -1;
-                if (layout[y][x + 1] == 'D') {
-                    doorID = layout[y][x + 2] - '0';
-                    x += 2; // CRITICAL FIX: Skip 'D' and ID
-                }
-                else if (isFake) {
-                    x++; // Skip 'F'
-                }
-
-                // Vertical Grouping Logic
-                int sid = -1;
-                if (y > 0 && switchGridIDs[y - 1][x] != -1) {
-                    sid = switchGridIDs[y - 1][x];
-                }
-                else {
-                    sid = isFake ? 99 : (y * 100 + x);
-                }
-                switchGridIDs[y][x] = sid;
-
-                Switch s(x, worldY, sid);
-                r.addSwitch(s);
-
-                if (doorID != -1) {
-                    pendingLinks.push_back({ Point{x, worldY}, doorID, reqOn });
-                }
-            }
-        }
+    // Horizontal Separator below P2 (y=8), Gap for Door 2 at x=45
+    for (int x = 1; x < 78; x++) {
+        if (x != 45) r.addWall(Point{ x, 8 });
     }
 
-    // ==========================================
-    // 3. PASS 2: LINKING
-    // ==========================================
-    for (const auto& link : pendingLinks) {
-        if (!doorExists[link.doorID]) continue;
-
-        Switch* sPtr = r.isSwitchThere(link.p);
-        Door* dPtr = r.isDoorThere(doorLocs[link.doorID]);
-
-        if (sPtr && dPtr) {
-            dPtr->addRequiredSwitch(sPtr, link.reqState);
-        }
+    // Horizontal Separator at bottom (y=18), Gaps for D3(45), D4(65)
+    for (int x = 1; x < 78; x++) {
+        if (x != 45 && x != 65) r.addWall(Point{ x, 18 });
     }
+
+    // Bottom Maze Structures
+    // Vertical segments around y=19-22
+    for (int y = 19; y <= 22; y++) {
+        r.addWall(Point{ 4, y });
+        r.addWall(Point{ 12, y });
+    }
+    // Small horizontal bits in maze
+    r.addWall(Point{ 8, 20 }); r.addWall(Point{ 9, 20 });
+    r.addWall(Point{ 15, 20 }); r.addWall(Point{ 16, 20 }); r.addWall(Point{ 17, 20 });
+
+    // ==========================================
+    // 3. DOORS
+    // ==========================================
+    // Door 1 (White) at (10,5)
+    Door d1(10, 5, 1, Color::WHITE);
+    r.addDoor(d1);
+
+    // Door 2 (Magenta) at (45,8) - Requires Key 2
+    Door d2(45, 8, 2, Color::MAGENTA);
+    d2.addRequiredKey(2);
+    r.addDoor(d2);
+
+    // Door 3 (Red) at (45,18) - Requires Key 3
+    Door d3(45, 18, 3, Color::RED);
+    d3.addRequiredKey(3);
+    r.addDoor(d3);
+
+    // Door 4 (Cyan) at (65,18)
+    Door d4(65, 18, 4, Color::CYAN);
+    r.addDoor(d4);
+
+    // Door 5 (Green - Exit) at (78,21) or close to it
+    Door d5(78, 21, 5, Color::GREEN);
+    d5.addRequiredKey(5);
+    r.addDoor(d5);
+
+    // ==========================================
+    // 4. SWITCHES
+    // ==========================================
+
+    // -- P2 Area Switches (The "Same Switch" Group) --
+    // Top Part: /D1 at (10,6). Controls D1.
+    Switch sD1(10, 6, 101);
+    r.addSwitch(sD1);
+
+    // Bottom Part: \D2 at (10,7). Controls D2.
+    Switch sD2(10, 7, 102);
+    r.addSwitch(sD2);
+
+    // Link them!
+    // Note: We must fetch the pointer from the room to link correctly
+    r.isDoorThere(Point{ 10, 5 })->addRequiredSwitch(r.isSwitchThere(Point{ 10, 6 }), true);  // D1 needs S(10,6) ON
+    r.isDoorThere(Point{ 45, 8 })->addRequiredSwitch(r.isSwitchThere(Point{ 10, 7 }), false); // D2 needs S(10,7) OFF
+
+    // -- Middle Switches --
+    // /D5 at (38,9)
+    Switch sD5(38, 9, 103);
+    r.addSwitch(sD5);
+    r.isDoorThere(Point{ 78, 21 })->addRequiredSwitch(r.isSwitchThere(Point{ 38, 9 }), true); // D5 needs S ON
+
+    // \D4 at (45,9)
+    Switch sD4a(45, 9, 104);
+    r.addSwitch(sD4a);
+    r.isDoorThere(Point{ 65, 18 })->addRequiredSwitch(r.isSwitchThere(Point{ 45, 9 }), false); // D4 needs S OFF
+
+    // \D4 at (52,9)
+    Switch sD4b(52, 9, 105);
+    r.addSwitch(sD4b);
+    r.isDoorThere(Point{ 65, 18 })->addRequiredSwitch(r.isSwitchThere(Point{ 52, 9 }), false); // D4 needs S OFF
+
+    // -- Bottom Switches --
+    // /D3 at (4,15)
+    Switch sD3(4, 15, 106);
+    r.addSwitch(sD3);
+    // Link D3 to this switch if required? Text implies /D3 relationship.
+    r.isDoorThere(Point{ 45, 18 })->addRequiredSwitch(r.isSwitchThere(Point{ 4, 15 }), true);
+
+    // Fake Switch /F at (60,22)
+    r.addSwitch(Switch(60, 22, 99)); // ID 99 triggers "Gotcha"
+
+    // ==========================================
+    // 5. OBSTACLES
+    // ==========================================
+    // Group 1: Top (y=2,3) at x=27
+    Obstacle obs1;
+    obs1.addPart(Placement(27, 2));
+    obs1.addPart(Placement(27, 3));
+    r.addObstacle(obs1);
+
+    // Group 2: Middle (y=6,7) at x=27
+    Obstacle obs2;
+    obs2.addPart(Placement(27, 6));
+    obs2.addPart(Placement(27, 7));
+    r.addObstacle(obs2);
+
+    // Group 3: Lower (y=12) at x=27
+    Obstacle obs3;
+    obs3.addPart(Placement(27, 12));
+    r.addObstacle(obs3);
+
+    // Group 4: Bottom (y=17) at x=27
+    Obstacle obs4;
+    obs4.addPart(Placement(27, 17));
+    r.addObstacle(obs4);
+
+    // ==========================================
+    // 6. KEYS & ITEMS
+    // ==========================================
+    r.addTorch(Torch(2, 2, 6));
+
+    r.addKey(Key(22, 3, 2, Color::MAGENTA)); // K2
+    r.addKey(Key(37, 3, 5, Color::GREEN));   // K5
+    r.addKey(Key(5, 10, 3, Color::RED));     // K3 (Left)
+    r.addKey(Key(10, 20, 3, Color::RED));    // K3 (Bottom maze)
+
+    // ==========================================
+    // 7. PLAYERS
+    // ==========================================
+    players[0].setPos(6, 3);
+    players[1].setPos(5, 7);
 }
-
 void Game::initLevel2(Room& r)
 {
 	// 1. Walls (Simple Box)

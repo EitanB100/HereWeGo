@@ -50,6 +50,10 @@ public:
         return { pos.getx(),pos.gety() };
     }
     
+    void setPos(int x, int y) {
+        pos.set(x, y, symbol);
+    }
+
     int getdirctX() {
         return dirx;
     }

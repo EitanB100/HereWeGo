@@ -37,8 +37,9 @@ public:
     void addKey(Key key);
     void addTorch(Torch torch);
 
-    void removeKey(Point p);
-    void removeTorch(Point p);
+    void removeKey(const Point& p);
+    void removeTorch(const Point& p);
+    void removeObsacle(const Point& p);
 
     void addSwitch(const Switch& s); // 4. Added Switch Adder
     void addObstacle(Obstacle obs);

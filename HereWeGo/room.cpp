@@ -121,7 +121,7 @@ void Room::addTorch(Torch torch) {
 	torches.push_back(torch);
 }
 
-void Room::removeKey(Point p)
+void Room::removeKey(const Point& p)
 {
 	for (auto key = keys.begin(); key != keys.end(); key++) {
 		if (key->getPos().x == p.x && key->getPos().y == p.y) {
@@ -132,7 +132,7 @@ void Room::removeKey(Point p)
 	}
 }
 
-void Room::removeTorch(Point p)
+void Room::removeTorch(const Point& p)
 {
 	for (auto torch = torches.begin(); torch != torches.end(); torch++) {
 		if (torch->getPos().x == p.x && torch->getPos().y == p.y) {
@@ -144,6 +144,16 @@ void Room::removeTorch(Point p)
 }
 
 	
+void Room::removeObsacle(const Point& p)
+{
+	for (auto obstacle = obstacles.begin(); obstacle != obstacles.end(); obstacle++) {
+		if (obstacle->isAt(p)) {
+			obstacles.erase(obstacle);
+			return;
+		}
+	}
+}
+
 void Room::addSwitch(const Switch& s) {
 	Point SwitchPos = s.getPos();
 	if (SwitchPos.x >= 0 && SwitchPos.x < MAX_X && SwitchPos.y >= 0 && SwitchPos.y < MAX_Y) {

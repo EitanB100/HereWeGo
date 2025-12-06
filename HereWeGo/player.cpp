@@ -210,10 +210,12 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
         return;
         break;
 
-    case KEY:
-        room.addKey(Key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color));
-
+    case KEY: {
+        Key key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color);
+        key.setSeen();
+        room.addKey(key);
         break;
+    }
     case TORCH:
         room.addTorch(Torch(pos.getx(), pos.gety()));
         break;

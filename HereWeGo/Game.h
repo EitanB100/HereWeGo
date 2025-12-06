@@ -9,6 +9,8 @@ class Game {
 	Room room;
 	Player players[2];
 
+	std::vector<Obstacle> transferredObstacles; //for obstacles that are moved between rooms
+
 	void printHUD();
 public:
 	Game(); //defined in .cpp

@@ -314,8 +314,12 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 			break;
 		}
 
-		if (map[futurePart.y][futurePart.x] != ' ')
+		char tile = map[futurePart.y][futurePart.x];
+		if (tile != ' ') 
 		{
+			Door* door = isDoorThere(futurePart);
+			if (door != nullptr && door->getIsOpen()) continue; // move obstacle part through a door
+
 			canMove = false;
 			break;
 		}

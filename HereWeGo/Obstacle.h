@@ -23,9 +23,12 @@ public:
 	bool getHasMoved() { return hasMoved; }
 	void resetMove() { hasMoved = false; }
 	void markAsMoved() { hasMoved = true; }
+
+	void obstacleRoomTravel(int x, int y);
 	
 
 	bool isAt(const Point& p) const;
+	bool overLap(Point p) { return isAt(p); }
 
 	void draw();
 

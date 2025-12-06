@@ -6,134 +6,181 @@ const char p2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };
 
 void Game::initLevel1(Room& r)
 {
-	// ============================
-	// 0. MAP SETTINGS
-	// ============================
-	int top = 1;  // Leave y=0 for HUD
-	int bot = 22; // Bottom wall y-coord
+    // ==========================================
+    // 1. THE EXACT MAP DATA
+    // ==========================================
+    const char* layout[] = {
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "W T             W          * W",
+        "W     P1        W     K2   * K5                W",
+        "W               W          W                                          W",
+        "WWWWWWWWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWW    WWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "W         /D1        * ",
+        "W    P2   \\D2        * ",
+        "W                WWWWWWWWWWWWWWWWWWWWWWWW2WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "WWWWWWWWWWWWWWWWWW                             W     /D5    \\D4     \\D4    W",
+        "W    K3          W                             W                           W",
+        "W                W     /D3                     W                           W",
+        "WWWWWWWWWWWWWWW  * \\D2                     W                           W",
+        "W     W          W                             W                           W",
+        "W     W          W                             W                           W",
+        "W   /D3          W                             W    \\D4             /D5    W",
+        "W                W                             W                           W",
+        "W                * W                           W",
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW3WWWWWWWWWWWWWWWWW4WWWWWWWWWWWWW",
+        "W   W       W         W   W                       W                        WWWW",
+        "W  WW     K3  WWWW    W                                                       W",
+        "W        WWWW         W                                                       5",
+        "W   W       W WW      W                                                       W",
+        "WW  W     W                                                   /F            WWW",
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+    };
 
-	// ============================
-	// 1. PLAYERS & TORCH
-	// ============================
-	players[0].setPos(4, top + 2); // P1 (Top Left Room)
-	players[1].setPos(4, top + 6); // P2 (Room below P1)
+    int rows = sizeof(layout) / sizeof(layout[0]);
+    int offY = 1; // Start map at y=1 to leave room for HUD
 
-	r.addTorch(Torch(2, top + 1, 6)); // T (Top Left Corner)
+    // Helper to store links safely (using Coordinates instead of Pointers)
+    struct LinkInfo { Point p; int doorID; bool reqState; };
+    std::vector<LinkInfo> pendingLinks;
 
-	// ============================
-	// 2. WALLS
-	// ============================
-	// A. Outer Borders
-	for (int x = 0; x <= 60; x++) { r.addWall(Point{ x, top }); r.addWall(Point{ x, bot }); }
-	for (int y = top; y <= bot; y++) { r.addWall(Point{ 0, y }); r.addWall(Point{ 60, y }); }
+    // Helper to store Doors by ID so we can find them later
+    // (Map allows IDs 0-9)
+    Door* doorRegistry[10] = { nullptr };
 
-	// B. Internal Vertical Walls
-	// Wall x=12 (Separates Left Rooms)
-	for (int y = top; y <= bot; y++) if (y != top + 4 && y != top + 7 && y != 14 && y != 15) r.addWall(Point{ 12, y });
+    // ==========================================
+    // 2. PARSING LOOP
+    // ==========================================
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; layout[y][x] != '\0'; x++) {
 
-	// Wall x=24 (Separates Middle/Right)
-	for (int y = top; y <= 17; y++) if (y != top + 1 && y != top + 2 && y != top + 3) r.addWall(Point{ 24, y });
+            // Safety Check (Prevent Out-of-Bounds Crash)
+            if (x >= MAX_X || (y + offY) >= MAX_Y) continue;
 
-	// Wall x=36 (Partial Right Wall)
-	for (int y = top + 8; y <= 17; y++) r.addWall(Point{ 36, y });
+            char c = layout[y][x];
+            int worldY = y + offY;
 
-	// C. Internal Horizontal Walls
-	// Wall y=5 (Separates P1/P2)
-	for (int x = 0; x <= 12; x++) if (x != 8) r.addWall(Point{ x, top + 4 });
+            // --- WALLS ---
+            if (c == 'W') {
+                r.addWall(Point{ x, worldY });
+            }
 
-	// Wall y=8 (Long horizontal)
-	for (int x = 12; x <= 60; x++) r.addWall(Point{ x, top + 7 });
+            // --- OBSTACLES (With Vertical Grouping) ---
+            else if (c == '*') {
+                // If the tile above is also '*', this is part of that obstacle.
+                // We assume the top one created the object, we just add this part.
+                // But since we can't easily access the previous obstacle object,
+                // we will only create a NEW obstacle if the one above is NOT '*'.
+                // If the one above IS '*', we skip (it was handled by the row above).
 
-	// Wall y=17 (Bottom Corridor)
-	for (int x = 0; x <= 60; x++) if (x != 30 && x != 45) r.addWall(Point{ x, 17 });
+                // Wait! simpler approach for your class:
+                // Create a new obstacle for every *, BUT check if we should merge?
+                // Your Obstacle class doesn't support merging easily.
+                // Let's stick to the strategy: 
+                // "If top is *, do nothing (assume top handled it). If top is NOT *, create."
 
-	// Bottom Left Maze Walls
-	r.addWall(Point{ 6, 19 }); r.addWall(Point{ 6, 20 });
-	r.addWall(Point{ 12, 19 }); r.addWall(Point{ 12, 20 });
-	for (int x = 8; x <= 16; x++) r.addWall(Point{ x, 21 }); // Small maze wall
+                bool topIsObs = (y > 0 && layout[y - 1][x] == '*');
 
-	// ============================
-	// 3. OBSTACLES ('*')
-	// ============================
-	Obstacle obsTop; // Blocking Top Corridor (x=24)
-	obsTop.addPart(Placement(24, top + 1));
-	obsTop.addPart(Placement(24, top + 2));
-	obsTop.addPart(Placement(24, top + 3));
-	r.addObstacle(obsTop);
+                if (!topIsObs) {
+                    Obstacle obs;
+                    obs.addPart(Placement(x, worldY));
 
-	Obstacle obsLeft; // Blocking Left Vertical (x=12)
-	obsLeft.addPart(Placement(12, 14));
-	obsLeft.addPart(Placement(12, 15));
-	r.addObstacle(obsLeft);
+                    // Look ahead: Is there a * below?
+                    int nextY = y + 1;
+                    while (nextY < rows && layout[nextY][x] == '*') {
+                        obs.addPart(Placement(x, nextY + offY));
+                        nextY++;
+                    }
+                    r.addObstacle(obs);
+                }
+            }
 
-	// ============================
-	// 4. KEYS ('K')
-	// ============================
-	r.addKey(Key(16, top + 2, 10, Color::MAGENTA)); // Magenta Key (Top Middle)
-	r.addKey(Key(45, top + 2, 11, Color::GREEN));   // Green Key (Top Right)
-	r.addKey(Key(4, 13, 12, Color::RED));           // Orange Key (Left Room) - Using RED for Orange
-	r.addKey(Key(14, 19, 13, Color::GREEN));        // Green Key 2 (Bot Left Maze)
+            // --- TORCH ---
+            else if (c == 'T') {
+                r.addTorch(Torch(x, worldY, 6));
+            }
 
-	// ============================
-	// 5. SWITCHES ('/' and '\')
-	// ============================
-	Switch sGreen1(40, top + 9, 1);  // Top Right Area
-	Switch sBlue1(45, top + 9, 2);
-	Switch sBlue2(50, top + 9, 3);
+            // --- PLAYERS ---
+            else if (c == 'P') {
+                char id = layout[y][x + 1];
+                if (id == '1') players[0].setPos(x, worldY);
+                if (id == '2') players[1].setPos(x, worldY);
+            }
 
-	Switch sOrange(5, 16, 4);        // Bottom Left
+            // --- DOORS (1-9) ---
+            else if (c >= '1' && c <= '9') {
+                int id = c - '0';
+                Color color = Color::WHITE;
+                if (id == 2) color = Color::MAGENTA;
+                if (id == 3) color = Color::RED;
+                if (id == 4) color = Color::CYAN;
+                if (id == 5) color = Color::GREEN; // Exit
 
-	// THE FAKE SWITCH (Bottom Right) - ID 99
-	Switch sFake(45, 21, 99);
+                Door d(x, worldY, id, color);
 
-	r.addSwitch(sGreen1);
-	r.addSwitch(sBlue1);
-	r.addSwitch(sBlue2);
-	r.addSwitch(sOrange);
-	r.addSwitch(sFake);
+                // Add Key Requirements
+                if (id == 2) d.addRequiredKey(2);
+                if (id == 3) d.addRequiredKey(3); // Based on K3 existing
+                if (id == 5) d.addRequiredKey(5);
 
-	// Pointers for Door Logic
-	Switch* pS_Green1 = r.isSwitchThere(sGreen1.getPos());
-	Switch* pS_Blue1 = r.isSwitchThere(sBlue1.getPos());
-	Switch* pS_Blue2 = r.isSwitchThere(sBlue2.getPos());
-	Switch* pS_Orange = r.isSwitchThere(sOrange.getPos());
+                r.addDoor(d);
 
-	// ============================
-	// 6. DOORS ('D')
-	// ============================
+                // Save pointer for linking. 
+                // We search for it immediately because addDoor makes a copy.
+                doorRegistry[id] = r.isDoorThere(Point{ x, worldY });
+            }
 
-	// 1. White Door (Start P1)
-	Door dWhite(8, top + 4, 1, Color::WHITE);
-	r.addDoor(dWhite);
+            // --- KEYS (Kn) ---
+            else if (c == 'K') {
+                char dChar = layout[y][x + 1];
+                if (dChar >= '0' && dChar <= '9') {
+                    int id = dChar - '0';
+                    Color color = Color::WHITE;
+                    if (id == 2) color = Color::MAGENTA;
+                    if (id == 3) color = Color::RED;
+                    if (id == 5) color = Color::GREEN;
 
-	// 2. Magenta Door (Left Vertical)
-	Door dMag(12, top + 7, 2, Color::MAGENTA);
-	dMag.addRequiredKey(10);
-	r.addDoor(dMag);
+                    r.addKey(Key(x, worldY, id, color));
+                }
+            }
 
-	// 3. Orange Door (Opens maze or switch path)
-	// Located at (16, 10) roughly based on image
-	Door dOrange(16, 10, 3, Color::RED);
-	dOrange.addRequiredKey(12); // Needs Orange Key
-	dOrange.addRequiredSwitch(pS_Orange, true); // Needs Switch ON
-	r.addDoor(dOrange);
+            // --- SWITCHES (/ or \) ---
+            else if (c == '/' || c == '\\') {
+                bool isFake = (layout[y][x + 1] == 'F');
+                bool reqOn = (c == '/');
+                int doorID = -1;
 
-	// 4. Blue Doors (Top Right Room)
-	Door dBlue1(42, top + 9, 4, Color::CYAN);
-	dBlue1.addRequiredSwitch(pS_Blue1, false); // Switch OFF opens it
-	r.addDoor(dBlue1);
+                // Check for label like D1, D2
+                if (layout[y][x + 1] == 'D') {
+                    doorID = layout[y][x + 2] - '0';
+                }
 
-	Door dBlue2(47, top + 9, 5, Color::CYAN);
-	dBlue2.addRequiredSwitch(pS_Blue2, false); // Switch OFF opens it
-	r.addDoor(dBlue2);
+                // Create the switch
+                int sid = isFake ? 99 : (y * 100 + x); // Unique ID based on position
+                Switch s(x, worldY, sid);
+                r.addSwitch(s);
 
-	// 5. EXIT DOOR (Green) - Bottom Right
-	Door dExit(60, 20, 9, Color::GREEN);
-	dExit.addRequiredKey(11); // Needs Green Key
-	dExit.addRequiredKey(13); // Needs Green Key 2
-	dExit.addRequiredSwitch(pS_Green1, true); // Needs Green Switch ON
-	r.addDoor(dExit);
+                // If it controls a door, save the coordinate to link later
+                if (doorID != -1) {
+                    pendingLinks.push_back({ Point{x, worldY}, doorID, reqOn });
+                }
+            }
+        }
+    }
+
+    // ==========================================
+    // 3. APPLY LINKS (Safe Phase)
+    // ==========================================
+    // Now that all switches are created and the vector is stable, 
+    // we can safely get their pointers.
+    for (const auto& link : pendingLinks) {
+        Switch* sPtr = r.isSwitchThere(link.p);
+
+        if (sPtr != nullptr && doorRegistry[link.doorID] != nullptr) {
+            doorRegistry[link.doorID]->addRequiredSwitch(sPtr, link.reqState);
+        }
+    }
 }
+
 
 void Game::initLevel2(Room& r)
 {
@@ -200,8 +247,8 @@ void Game::printHUD()
 }
 
 Game::Game() : players{
-	Player(Placement(10,20),'$',1,0,p1Keys),
-	Player(Placement(9,15),'&',0,1,p2Keys)
+	Player(Placement(10,20),'$',0,0,p1Keys),
+	Player(Placement(9,15),'&',0,0,p2Keys)
 }
 {
 	init();

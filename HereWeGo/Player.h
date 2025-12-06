@@ -17,7 +17,7 @@ class Player {
 	heldItem itemInHand = { NONE, 0, Color::WHITE};
 
     //Suggested and written by gemini!
-    // added as a visual bux fix (when player 1 moved first and pushed an obstacle, 
+    // added as a fix to the following bug - when player 1 moved first and pushed an obstacle, 
     // player 2 got left behind one tile despite applying force on the obstacle as well
     // also when player 2 disposed an item while moving an obstacle, it turned invisible (yet still interactable)
     // this function takes care of both bugs!

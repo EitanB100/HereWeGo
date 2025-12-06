@@ -191,19 +191,15 @@ void Player::pickItem(Point& position, Room& room, char _symbol) //check about i
 
     Key* key = room.isKeyThere(position);
 	
-    if (key != nullptr && key->getIsActive()) {
-
-        key->takeKey();
-        
+    if (key != nullptr) {
         
         itemInHand = { KEY, key->getKeyID(), key->getColor()};
-       
-        room.clearTile(position);
+        room.removeKey(position);
     }
     Torch* torch = room.isTorchThere(position);
 	if (torch != nullptr) {
 		itemInHand = { TORCH, 0, torch->getColor()};
-		room.clearTile(position);
+		room.removeTorch(position);
 	}
 }
 
@@ -213,17 +209,14 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
     case NONE:
         return;
         break;
-    
+
     case KEY:
         room.addKey(Key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color));
 
         break;
     case TORCH:
-		room.addTorch(Torch(pos.getx(), pos.gety()));
-		break;
-    //case BOMB:
-
-        
+        room.addTorch(Torch(pos.getx(), pos.gety()));
+        break;
     }
     itemInHand = { NONE,0,Color::WHITE };
     draw();

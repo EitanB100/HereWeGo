@@ -98,7 +98,7 @@ Key* Room::isKeyThere(Point& p)
 	for (Key& key : keys)
 	{
 		Point keyPos = key.getPos();
-		if (keyPos.x == p.x && keyPos.y == p.y && key.getIsActive())
+		if (keyPos.x == p.x && keyPos.y == p.y)
 		{
 			return &key;
 		}
@@ -119,6 +119,28 @@ void Room::addTorch(Torch torch) {
 	Point TorchPos = torch.getPos();
 	map[TorchPos.y][TorchPos.x] = TORCH_TILE;
 	torches.push_back(torch);
+}
+
+void Room::removeKey(Point p)
+{
+	for (auto key = keys.begin(); key != keys.end(); key++) {
+		if (key->getPos().x == p.x && key->getPos().y == p.y) {
+			keys.erase(key);
+			map[p.y][p.x] = ' ';
+			return;
+		}
+	}
+}
+
+void Room::removeTorch(Point p)
+{
+	for (auto torch = torches.begin(); torch != torches.end(); torch++) {
+		if (torch->getPos().x == p.x && torch->getPos().y == p.y) {
+			torches.erase(torch);
+			map[p.y][p.x] = ' ';
+			return;
+		}
+	}
 }
 
 	
@@ -158,11 +180,13 @@ Switch* Room::isSwitchThere(Point& p){
 	}
 	return nullptr;
 }
+
 bool Room::isWallThere(Point p) {
 	if (map[p.y][p.x] == WALL_TILE)
 		return true;
 	return false;
 }
+
 bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham's Line Algorithm
 {
 	int distanceX = abs(x2 - x1);
@@ -349,11 +373,7 @@ char Room::getObjectAt(Point& p, Color& color)
 	Key* key = isKeyThere(p);
 	if (key != nullptr) {
 
-		if (!(key->getIsActive())) 
-    { color = Color::WHITE;
-			return ' ';
-    }
-		if (key->getIsSeen())
+	if (key->getIsSeen())
     {color = key->getColor();
 			return KEY_TILE;
     }
@@ -374,6 +394,12 @@ char Room::getObjectAt(Point& p, Color& color)
 		// handle move check function
 		//move parts function
 
+	}
+
+	Torch* torch = isTorchThere(p);
+	if (torch != nullptr) {
+		color = torch->getColor();
+		return TORCH_TILE;
 	}
 
 	return map[p.y][p.x];

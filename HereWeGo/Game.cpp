@@ -1,7 +1,7 @@
 #include "Game.h"
 
-const char p1Keys[NUM_KEYS] = { 'W','S','A','D','E','Q' };
-const char p2Keys[NUM_KEYS] = { 'I','K','J','L','U','O' };
+const char p1Keys[NUM_KEYS] = { 'W','X','A','D','S','E' };
+const char p2Keys[NUM_KEYS] = { 'I','M','J','L','K','O' };
 void Game::initLevel1(Room& r)
 {
     // ==========================================

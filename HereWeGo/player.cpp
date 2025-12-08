@@ -145,6 +145,12 @@ void Player::switchHandling(Room& room, Point& nextPoint)
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
         if (switchOnOff != nullptr) {
             switchOnOff->toggleState();          // toggle the switch state
+            if (switchOnOff->getSwitchID() == 99) //fake switch
+            {
+                gotoxy(35, 24);
+                std::cout << "Gotcha :D";
+            }
+
             room.checkSwitch(switchOnOff->getPos()); // update doors
             room.drawTopLayer();                 // redraw
             setDirection(0, 0);                  // stop player
@@ -191,19 +197,15 @@ void Player::pickItem(Point& position, Room& room, char _symbol) //check about i
 
     Key* key = room.isKeyThere(position);
 	
-    if (key != nullptr && key->getIsActive()) {
-
-        key->takeKey();
-        
+    if (key != nullptr) {
         
         itemInHand = { KEY, key->getKeyID(), key->getColor()};
-       
-        room.clearTile(position);
+        room.removeKey(position);
     }
     Torch* torch = room.isTorchThere(position);
 	if (torch != nullptr) {
 		itemInHand = { TORCH, 0, torch->getColor()};
-		room.clearTile(position);
+		room.removeTorch(position);
 	}
 }
 
@@ -213,17 +215,16 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
     case NONE:
         return;
         break;
-    
-    case KEY:
-        room.addKey(Key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color));
 
+    case KEY: {
+        Key key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color);
+        key.setSeen();
+        room.addKey(key);
         break;
+    }
     case TORCH:
-		room.addTorch(Torch(pos.getx(), pos.gety()));
-		break;
-    //case BOMB:
-
-        
+        room.addTorch(Torch(pos.getx(), pos.gety()));
+        break;
     }
     itemInHand = { NONE,0,Color::WHITE };
     draw();

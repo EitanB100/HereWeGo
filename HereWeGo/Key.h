@@ -10,7 +10,6 @@ class Key {
 
 	int keyID;
 	Color color = Color::WHITE;
-	bool isActive = true;
 	bool seen = false;
 
 public:
@@ -25,9 +24,6 @@ public:
 		return color;
 	}
 
-	bool getIsActive() const {
-		return isActive;
-	}
 
 	bool getIsSeen() const {
 		return seen;
@@ -43,7 +39,6 @@ public:
 		return pos.getPosition();
 	}
 
-	void takeKey() { isActive = false; }
 
 	void draw();
 

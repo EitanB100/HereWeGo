@@ -8,6 +8,18 @@ void Obstacle::move(int dirx, int diry)
 	}
 }
 
+void Obstacle::obstacleRoomTravel(int x, int y)
+{
+	if (parts.empty()) return;
+
+	int diffX = x - parts[0].getx();
+	int diffY = y - parts[0].gety();
+
+	for (auto& part : parts) {
+		part.move(diffX, diffY, symbol);
+	}
+}
+
 bool Obstacle::isAt(const Point& p) const { // Check if any part of the obstacle is at the given point
 	for (const auto& part : parts) {
 		if (part.getx() == p.x && part.gety() == p.y) {

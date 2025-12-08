@@ -236,6 +236,7 @@ void Player::inputManager(char input, Room& room) {
         return;
     
     }
+
     if (input == 0) return;
     input = toupper(input); // normalize input
     if (input == keys[UP])

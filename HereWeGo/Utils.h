@@ -11,7 +11,7 @@ constexpr int MAX_Y = 25;
 enum itemType { NONE, KEY, TORCH, BOMB }; // possible item types - last one for exercise 2
 
 enum class Color {
-    BLUE = 1, GREEN, CYAN, RED, MAGENTA, WHITE = 15//white is default
+    BLUE = 1, GREEN, CYAN, RED, MAGENTA,YELLOW,WHITE = 15//white is default
 };
 
 struct heldItem {

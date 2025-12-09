@@ -86,13 +86,13 @@ void Screen::Lvl2Screen() {
 		 "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 1
 		 "W        W                                                                     W", // 2 
 		 "W        W                                                                     W", // 3, 
-		 "WWWWWW   WWWWWWWWW  WWWWWWWWW  WWWWWWW  WWWWWWWWW  WWWWWWW  WWWWWWWWWWWWWWW    W", // 4, 
+		 "WWWWWW   WWWWWWWWWW WWWWWWWWWW WWWWWWWW WWWWWWWWWW WWWWWWWW WWWWWWWWWWWWWWW    W", // 4, 
 		 "W                                                                         W    W", // 5, 
 		 "W                                                                         W    W", // 6, 
 		 "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW    W", // 7, 
 		 "W             W                                                                W", // 8, 
 		 "W             W                                                                W", // 9, 
-		 "W   WWWWW     WWWWWWWWWWW  WWWWWWWW  WWWWWWWW  WWWWWWWW  WWWWWWWW   WWWWWWWWWWWW", // 10, 
+		 "W   WWWWW     WWWWWWWWWWWW WWWWWWWWW WWWWWWWWW WWWWWWWWW WWWWWWWWW  WWWWWWWWWWWW", // 10, 
 		 "W      W                                                                       W", // 11,
 		 "W      W                                                                       W", // 12, 
 		 "W      WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 13, 

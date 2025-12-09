@@ -71,7 +71,7 @@ void Game::init()
     initLevel2(levels[1]);
     initLevel3(levels[2]);
 
-    currentLevelID = 0; // Start at Level 1
+    currentLevelID = 1; // Start at Level 1
 	setGame(currentLevelID);
 }
 

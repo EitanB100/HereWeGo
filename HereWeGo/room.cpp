@@ -53,6 +53,17 @@ void Room::loadFromScreen(Screen& screen) // Load the room from the screen
 			map[y][x] = screen.getTile(x, y);
 		}
 	}
+
+	//suggested by Gemini as a bug fix for obstacles not colliding with each other when moved
+	for (const auto& obs : obstacles) {
+		// Get current parts (0,0 direction means current position)
+		std::vector<Point> parts = obs.getFutureParts(0, 0);
+		for (const auto& p : parts) {
+			if (p.x >= 0 && p.x < MAX_X && p.y >= 0 && p.y < MAX_Y) {
+				map[p.y][p.x] = OBSTACLE_TILE;
+			}
+		}
+	}
 }
 
 Door* Room::isDoorThere(Point p)
@@ -356,6 +367,7 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 		char tile = map[futurePart.y][futurePart.x];
 		if (tile != ' ') 
 		{
+			
 			Door* door = isDoorThere(futurePart);
 			if (door != nullptr && door->getIsOpen()) continue; // move obstacle part through a door
 

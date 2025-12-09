@@ -32,11 +32,7 @@ void Game::printHUD()
 		setColor(item1.color);
 		std::cout << "TORCH ";
 	}
-	//remove the comment brackets if you implemented torch!
-	/*else if (item1.type == TORCH) {
-	setColor(item1.color) -> if it has a unique color lol
-	std::cout << "TORCH";
-	*/
+	
 	else std::cout << "EMPTY ";
 	
 	setColor(Color::WHITE);

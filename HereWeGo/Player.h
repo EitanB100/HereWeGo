@@ -9,14 +9,13 @@ class Player {
 
     char symbol = ' ';
     int dirx = 0, diry = 0;
-    int force = 1; // for moving obstacles, will be changed by spring later
+    int force = 1; 
     
     bool finishedLevel = false;
         
-    char keys[NUM_KEYS];  // fixed-size array for command keys
+    char keys[NUM_KEYS];  
 
-     //Color will be used as an indicator for a picked up item, mainly key
-	heldItem itemInHand = { NONE, 0, Color::WHITE};
+    heldItem itemInHand = { NONE, 0, Color::WHITE};
 
     //Suggested and written by gemini!
     // added as a fix to the following bug - when player 1 moved first and pushed an obstacle, 
@@ -78,7 +77,6 @@ public:
 
 
     void move(Room& room, Player* otherPlayer);
-    void switchHandling(Room& room, Point& nextPoint);
     bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
 
     

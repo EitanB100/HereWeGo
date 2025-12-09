@@ -160,7 +160,7 @@ void Game::run()
 
 			// Set players at start of Level 2
 			players[0].setPos(p1StartPoints[1]);
-			players[1].setPos(p2StartPoints[2]);
+			players[1].setPos(p2StartPoints[1]);
 
 			levels[currentLevelID].drawRoom(screen);
 			levels[currentLevelID].drawTopLayer();

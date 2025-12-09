@@ -72,8 +72,15 @@ void Player::move(Room& room, Player* otherPlayer) {
     }
 
     if (tileOnMap == SWITCH_ON || tileOnMap == SWITCH_OFF) { //switch collision
-        switchHandling(room, nextPoint);
-        return;
+        Switch* switchOnOff = room.isSwitchThere(nextPoint);
+        if (switchOnOff != nullptr) {
+            switchOnOff->toggleState();      
+
+            room.checkSwitch(switchOnOff->getPos()); 
+            room.drawTopLayer();                 
+            setDirection(0, 0);                  
+            return;
+        }
     }
 
     // --- RENDERING LOGIC ---
@@ -106,19 +113,8 @@ void Player::synchronizePartner(Player* otherPlayer, Room& room) {
 
 
 
-void Player::switchHandling(Room& room, Point& nextPoint)
-{
-        Switch* switchOnOff = room.isSwitchThere(nextPoint);
-        if (switchOnOff != nullptr) {
-            switchOnOff->toggleState();          // toggle the switch state
 
-            room.checkSwitch(switchOnOff->getPos()); // update doors
-            room.drawTopLayer();                 // redraw
-            setDirection(0, 0);                  // stop player
-            return;
-        }
-    
-}
+
 
 bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 {
@@ -148,6 +144,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
         }
         return hasMoved;
     }
+    return false; //for safety
 }
 
 

@@ -63,6 +63,8 @@ public:
         return diry;
     }
 
+    char getSymbol() { return symbol; }
+
     bool isFinished() { return finishedLevel; }
     void setFinished(bool state) { finishedLevel = state; }
 

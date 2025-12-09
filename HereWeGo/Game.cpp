@@ -49,11 +49,11 @@ Game::Game() : players{
 	exitPoints[0] = exitPoints[1] = { 79,22 };
 	exitPoints[2] = { -1,-1 }; //final room
 	p1StartPoints[0] = { 6,3 };
-	p1StartPoints[1] = { 2,2 };
+	p1StartPoints[1] = { 75,17,};
 	p1StartPoints[2] = { 65,5 };
 	
 	p2StartPoints[0] = { 6,7 };
-	p2StartPoints[1] = { 4,2 };
+	p2StartPoints[1] = { 76,18 };
 	p2StartPoints[2] = { 70,16 };
 	init();
 }
@@ -65,7 +65,7 @@ void Game::init()
     initLevel2Props(levels[1]);
     initLevel3Props(levels[2]);
 
-	currentLevelID = 0;// Start at Level 1
+	currentLevelID = 1;// Start at Level 1
 	setGame(currentLevelID);
 }
 
@@ -133,7 +133,11 @@ void Game::run()
 
 			if (currentExitPoint.x != -1 && p.x == currentExitPoint.x && p.y == currentExitPoint.y) {
 				if (!players[i].isFinished())
+				{
 					players[i].setFinished(true);
+					printCentered((char)players[i].getSymbol(), 0);
+					printCentered(" Is waiting for you...", 0);
+				}
 			}
 		}
 

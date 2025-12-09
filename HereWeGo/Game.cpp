@@ -166,14 +166,14 @@ void Game::run()
 			players[0].setPos(65, 5);
 			players[1].setPos(70, 16);
 		}
-		if (currentLevelID == 2) {
+		else if (currentLevelID == 2) {
 			if ((p1.x == 37 && p1.y == 1 && p2.x == 37 && p2.y == 2) || ((p1.x == 37 && p1.y == 2 && p2.x == 37 && p2.y == 1))){
 
 				printCentered("YOU WIN!", 12);
 				levels[currentLevelID].drawRoom(screen);
 			}
 		}
-		else
+		
 
 		printHUD();
 		Sleep(75);
@@ -406,5 +406,10 @@ void Game::level3props(Room& r) {
 	r.addDoor(d6);
 	r.addDoor(d7);
 
+	
+}
+
+bool Game::bothPlayersLeftRoom(Room& r)
+{
 	
 }

@@ -27,4 +27,5 @@ public:
 	void level1props(Room& r);
 	void level2props(Room& r);
 	void level3props(Room& r);
+	bool bothPlayersLeftRoom(Room& r);
 };

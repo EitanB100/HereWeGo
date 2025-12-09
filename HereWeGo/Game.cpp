@@ -49,11 +49,11 @@ Game::Game() : players{
 	exitPoints[0] = exitPoints[1] = { 79,22 };
 	exitPoints[2] = { -1,-1 }; //final room
 	p1StartPoints[0] = { 6,3 };
-	p1StartPoints[1] = { 75,17,};
+	p1StartPoints[1] = { 2,2};
 	p1StartPoints[2] = { 65,5 };
 	
 	p2StartPoints[0] = { 6,7 };
-	p2StartPoints[1] = { 76,18 };
+	p2StartPoints[1] = { 4,2 };
 	p2StartPoints[2] = { 70,16 };
 	init();
 }
@@ -65,7 +65,7 @@ void Game::init()
     initLevel2Props(levels[1]);
     initLevel3Props(levels[2]);
 
-	currentLevelID = 1;// Start at Level 1
+	currentLevelID = 2;// Start at Level 1
 	setGame(currentLevelID);
 }
 
@@ -135,8 +135,12 @@ void Game::run()
 				if (!players[i].isFinished())
 				{
 					players[i].setFinished(true);
-					printCentered((char*)players[i].getSymbol(), 0);
-					printCentered(" Is waiting for you...", 0);
+					std::string playerFinish = "Player ";
+					playerFinish += players[i].getSymbol();
+					playerFinish += " is waiting...";
+
+					gotoxy(50, 0);
+					std::cout << playerFinish;
 				}
 			}
 		}
@@ -166,6 +170,8 @@ void Game::run()
 			players[0].setPos(p1StartPoints[1]);
 			players[1].setPos(p2StartPoints[1]);
 
+			players[0].setFinished(false);
+			players[1].setFinished(false);
 			levels[currentLevelID].drawRoom(screen);
 			levels[currentLevelID].drawTopLayer();
 		}
@@ -176,6 +182,9 @@ void Game::run()
 			setGame(currentLevelID);
 			players[0].setPos(p1StartPoints[2]);
 			players[1].setPos(p2StartPoints[2]);
+			
+			players[0].setFinished(false);
+			players[1].setFinished(false);
 		}
 		else if (currentLevelID == 2) {
 			if ((p1.x == 37 && p1.y == 1 && p2.x == 37 && p2.y == 2) || ((p1.x == 37 && p1.y == 2 && p2.x == 37 && p2.y == 1))){
@@ -183,6 +192,10 @@ void Game::run()
 				printCentered("YOU WIN!", 12);
 				levels[currentLevelID].drawRoom(screen);
 			}
+			gotoxy(45, 0);
+			setColor(Color::GREEN);
+			std::cout << "Go through the top door to finish!";
+			setColor(Color::WHITE);
 		}
 		
 
@@ -416,6 +429,7 @@ void Game::initLevel3Props(Room& r) {
 	r.addDoor(d5);
 	r.addDoor(d6);
 	r.addDoor(d7);
+
 
 	
 }

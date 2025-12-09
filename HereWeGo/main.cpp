@@ -31,17 +31,22 @@ int main() {
 		{
 			Game game;
 			game.startInLevel(0);
+			game.run();
 			break;
 		}
 		case '2':
 		{
 			Game game;
 			game.startInLevel(1);
+			game.run();
+			break;
 		}
 		case '3':
 		{
 			Game game;
 			game.startInLevel(2);
+			game.run();
+			break;
 		}
 		case '8':
 			gotoxy(MAX_X / 2, MAX_Y / 2);

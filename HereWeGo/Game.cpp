@@ -135,7 +135,7 @@ void Game::run()
 				if (!players[i].isFinished())
 				{
 					players[i].setFinished(true);
-					printCentered((char)players[i].getSymbol(), 0);
+					printCentered((char*)players[i].getSymbol(), 0);
 					printCentered(" Is waiting for you...", 0);
 				}
 			}
@@ -170,7 +170,7 @@ void Game::run()
 			levels[currentLevelID].drawTopLayer();
 		}
 		// Level 2 -> Level 3
-		else if (currentLevelID == 1 && p1.x == 79 && p1.y == 22 && p2.x == 79 && p2.y == 22)
+		else if (currentLevelID == 1 && p1.x == currentExitPoint.x && p1.y == currentExitPoint.y && p2.x == currentExitPoint.x && p2.y == currentExitPoint.y)
 		{
 			currentLevelID = 2;
 			setGame(currentLevelID);

@@ -5,15 +5,12 @@
 #include "Obstacle.h"
 #include "Tile_Chars.h"
 
+//grid initialization
 Room::Room() { 
 	for (int y = 1; y < MAX_Y; y++)
 	{
 		for (int x = 0; x < MAX_X; x++)
 		{
-			// Initialize Map Data
-			// I set the boundaries to WALL_TILE and the inside to Empty Space.
-			// PREVIOUS BUG: The map was initialized to all ' ', so the walls
-			// existed in the physics check but were invisible on screen.
 			if (y == 1 || y == MAX_Y - 1 || x == 0 || x == MAX_X - 1)
 				map[y][x] = WALL_TILE;
 			else
@@ -22,6 +19,7 @@ Room::Room() {
 	}
 }
 
+//redraws all non wall objects on top
 void Room::drawTopLayer()
 {
 	for (Door& door : doors) door.draw();
@@ -32,6 +30,7 @@ void Room::drawTopLayer()
 	getTorchesLineOfSight();
 	
 }
+
 
 void Room::drawRoom(Screen& screen) // Draw the room on the screen
 {
@@ -337,37 +336,44 @@ Obstacle* Room::isObstacleThere(Point p)
 	return nullptr;
 }
 
-
+//logic for handling obstacle movement
 bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 {
 	Obstacle* obs = isObstacleThere(p);
 	if (!obs) return false;
 	
+	//if already moved this frame
 	if (obs->getHasMoved()) return true;
 
+	//early force check
 	if (force < obs->getSize()) return false;
-
+	
+	//get all parts of obstacle for validity check
 	std::vector<Point> currentParts = obs->getFutureParts(0, 0);
 	std::vector<Point> futureParts = obs->getFutureParts(dirx, diry); // complete
 
+	//temporarily clear the map at current position to avoid self collision
 	for (const auto& part : currentParts) {
 		map[part.y][part.x] = ' ';
 	}
 
 	bool canMove = true;
 
+	//check collision for every part in the new position
 	for (auto& futurePart : futureParts)
 	{
+		//boundaries
 		if (futurePart.x < 0 || futurePart.x > MAX_X - 1 || futurePart.y < 0 || futurePart.y > MAX_Y - 1)
 		{
 			canMove = false;
 			break;
 		}
 
+		//objects
 		char tile = map[futurePart.y][futurePart.x];
 		if (tile != ' ') 
 		{
-			
+			//can move through doors
 			Door* door = isDoorThere(futurePart);
 			if (door != nullptr && door->getIsOpen()) continue; // move obstacle part through a door
 
@@ -377,6 +383,7 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 	}
 
 	if (canMove) {
+		//clear the parts from old position
 		for (const auto& part : currentParts)
 		{
 			bool staysCovered = false;
@@ -399,10 +406,13 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 			map[part.y][part.x] = OBSTACLE_TILE;
 		}
 		obs->draw();
+
+		//prevent double moving in a frame
 		obs->markAsMoved();
 		return true;
 	}
 	else {
+		//movement failed, restore for the current position
 		for (const auto& part : currentParts)
 		{
 			map[part.y][part.x] = OBSTACLE_TILE;
@@ -413,6 +423,8 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 
 }
 
+//determines what exists at a coordinate.
+//the order of checks is sorted by visual priority
 char Room::getObjectAt(Point& p)
 {
 	Color c = Color::WHITE;
@@ -421,18 +433,22 @@ char Room::getObjectAt(Point& p)
 
 char Room::getObjectAt(Point& p, Color& color)
 {
+	//boundary check
 	if (p.x < 0 || p.x > MAX_X || p.y < 0 || p.y > MAX_Y) {
 		color = Color::WHITE;
 		return ' ';
 	}
 
+	//obstacles - movable object - top priority
 	Obstacle* obstacle = isObstacleThere(p);
 	if (obstacle != nullptr) {
 		color = Color::WHITE;
 		return OBSTACLE_TILE;
 
 	}
-
+	//interactables:
+	
+	//keys
 	Key* key = isKeyThere(p);
 	if (key != nullptr) {
 
@@ -445,12 +461,15 @@ char Room::getObjectAt(Point& p, Color& color)
 		return UNKNOWN_TILE;
 	}
 
+	//torches
 	Torch* torch = isTorchThere(p);
 	if (torch != nullptr) {
 		color = torch->getColor();
 		return TORCH_TILE;
 	}
 
+	//static:
+	//doors:
 	Door* door = isDoorThere(p);
 	if (door != nullptr) {
 		if (door->getIsOpen()) color = door->getColor();
@@ -458,6 +477,7 @@ char Room::getObjectAt(Point& p, Color& color)
 		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
 	}
 
+	//switches:
 	Switch* sw = isSwitchThere(p);
 	if (sw != nullptr) { // Check if a switch is present
 		if (sw->getIsSeen()) {

@@ -108,34 +108,38 @@ void Game::setGame(int level) {
 void Game::run()
 {
 	while (true) {
-		Room& currRoom = levels[currentLevelID]; // Use CURRENT room
+		Room& currRoom = levels[currentLevelID]; //get desired room
 		char key = 0;
+		
+		//input gain:
 		if (_kbhit()) {
 			key = _getch();
 			if (key == ESC) {
 				key = _getch();
 				if (key == 'h' || key == 'H') {
 					screen.clearScreen();
-					break;
+					break; //main menu exit
 				}
 			}
 		}
-
+		//reset every frame
 		currRoom.resetObstacles();
-
 		Point currentExitPoint = exitPoints[currentLevelID];
 
+		//update (movement and collision)
 		for (int i = 0; i < 2; i++) {
 			players[i].inputManager(key, currRoom);
 			setColor(Color::WHITE);
+			//other player passed for collision checks
 			players[i].move(currRoom, &players[1 - i]);
 			
 			Point p = players[i].getPos();
 
+			//check level completion for a player
 			if (currentExitPoint.x != -1 && p.x == currentExitPoint.x && p.y == currentExitPoint.y) {
 				if (!players[i].isFinished())
 				{
-					players[i].setFinished(true);
+					players[i].setFinished(true); //freeze finished player
 					std::string playerFinish = "Player ";
 					playerFinish += players[i].getSymbol();
 					playerFinish += " is waiting...";
@@ -165,14 +169,16 @@ void Game::run()
 
 			currentLevelID = 1;
 			
-			setGame(currentLevelID);
+			setGame(currentLevelID); //load new map
 
-			// Set players at start of Level 2
+			// reset players and unfreeze them for new level
 			players[0].setPos(p1StartPoints[1]);
 			players[1].setPos(p2StartPoints[1]);
 
 			players[0].setFinished(false);
 			players[1].setFinished(false);
+
+			//draw them
 			levels[currentLevelID].drawRoom(screen);
 			levels[currentLevelID].drawTopLayer();
 		}
@@ -187,6 +193,8 @@ void Game::run()
 			players[0].setFinished(false);
 			players[1].setFinished(false);
 		}
+
+		//specific win condition for level 3
 		else if (currentLevelID == 2) {
 			if ((p1.x == 37 && p1.y == 1 && p2.x == 37 && p2.y == 2) || ((p1.x == 37 && p1.y == 2 && p2.x == 37 && p2.y == 1))){
 
@@ -201,7 +209,7 @@ void Game::run()
 			setColor(Color::WHITE);
 		}
 		
-
+		//HUD renderer
 		printHUD();
 		Sleep(75);
 	}

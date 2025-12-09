@@ -6,36 +6,41 @@
 #include "Switch.h" 
 #include "Torch.h"
 
+//Movement logic: collisions, interactions, and updates
 void Player::move(Room& room, Player* otherPlayer) {
 
     if (dirx == 0 && diry == 0) return; // No movement input
     
-    // 1. Calculate where we want to go next
+    // Calculate where we want to go next
     Point nextPoint = { pos.getx() + dirx, pos.gety() + diry };
 
-    // Look ahead at what is currently on the map
+    // whats at the target coordinate
     char tileOnMap = room.getObjectAt(nextPoint);
 
+    // Dynamic lighting mechanic for torch (lights up area around new position)
     if (this->itemInHand.type == TORCH) {
         room.CompleteLineOfSight(Torch(pos.getx() + dirx, pos.gety() + diry));
     }
     
 
-    // --- COLLISION LOGIC ---
-	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE || tileOnMap == GLASS_TILE) { //wall or unknown tile which might be collideable
+    // Collision logic
+    //static objects:
+
+	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE || tileOnMap == GLASS_TILE) {
         setDirection(0, 0); 
         return; 
     }
 
+    //between players (if one finishes, it waits at the door
+    // so to not block the other, collision checks won't happen in that case) 
+    if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint.x == otherPlayer->getPos().x && nextPoint.y == otherPlayer->getPos().y ) { 
+        setDirection(0, 0);
+        return;
+    }
     
-        if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint.x == otherPlayer->getPos().x && nextPoint.y == otherPlayer->getPos().y ) { //collision with 2nd player
-            setDirection(0, 0);
-            return;
-        }
     
-
-
-    if (isDoorTile(tileOnMap)) //collision with door, there is no door tile so this is a "workaround"
+    //door collision (checking if the player has a fitting key)
+    if (isDoorTile(tileOnMap)) 
     {
         room.checkDoor(nextPoint, itemInHand);
         setDirection(0, 0);
@@ -44,7 +49,8 @@ void Player::move(Room& room, Player* otherPlayer) {
         return;
     }
 
-    if (tileOnMap == KEY_TILE || tileOnMap == TORCH_TILE) { //key collision
+    //pickup items collision
+    if (tileOnMap == KEY_TILE || tileOnMap == TORCH_TILE) { 
      
         if (!pickItem(nextPoint, room))
         {
@@ -54,8 +60,10 @@ void Player::move(Room& room, Player* otherPlayer) {
         
     }
 
-    if (tileOnMap == OBSTACLE_TILE) { //obstacle collision
+    //obstacle collision (pushing)
+    if (tileOnMap == OBSTACLE_TILE) { 
        
+        //try to push an obstacle. return true if possible
         if (obstacleHandling(room, nextPoint, otherPlayer)) {
             Point currentPos = getPos();
             Color c = Color::WHITE;
@@ -71,7 +79,8 @@ void Player::move(Room& room, Player* otherPlayer) {
         return;
     }
 
-    if (tileOnMap == SWITCH_ON || tileOnMap == SWITCH_OFF) { //switch collision
+    //switch collision
+    if (tileOnMap == SWITCH_ON || tileOnMap == SWITCH_OFF) { 
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
         if (switchOnOff != nullptr) {
             switchOnOff->toggleState();      
@@ -83,22 +92,27 @@ void Player::move(Room& room, Player* otherPlayer) {
         }
     }
 
-    // --- RENDERING LOGIC ---
+    // execution - happens after checked if can proceed
     Point currentPos = getPos();
     Color objectColor = Color::WHITE;
+    //what the player is on so we redraw it when it moves
     char objectChar = room.getObjectAt(currentPos, objectColor);
 
     setColor(objectColor);
-    pos.draw(objectChar);
+    pos.draw(objectChar); 
     
     setColor(Color::WHITE);
-    pos.set(nextPoint.x, nextPoint.y, symbol); // Update and draw at new position
-    draw(); 
+    pos.set(nextPoint.x, nextPoint.y, symbol); // Update player position
+    draw(); //drawing it on screen
 }
 
+//Helper function that ensures that when two playes push an obstacle, 
+//both will move in sync with each other
+//Suggested by Gemini!
 void Player::synchronizePartner(Player* otherPlayer, Room& room) {
     if (otherPlayer == nullptr) return;     
-
+    
+    //redraw the tile (similar to move function)
     Point p = otherPlayer->getPos();
     Color c = Color::WHITE;
     char tileBelow = room.getObjectAt(p, c); //the tile that became invisible when disposed!
@@ -106,24 +120,23 @@ void Player::synchronizePartner(Player* otherPlayer, Room& room) {
     setColor(c);
     otherPlayer->pos.draw(tileBelow);
     setColor(Color::WHITE);
-
+    
+    //move the partner in the same direction
     otherPlayer->pos.move(dirx, diry, otherPlayer->symbol);
     otherPlayer->draw();
 }
 
-
-
-
-
-
+//Obstacle pushing logic
 bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 {
     Obstacle* obstacleToPush = room.isObstacleThere(nextPoint);
+    //if it already been moved this frame
     if (obstacleToPush != nullptr && obstacleToPush->getHasMoved()) return false;
 
-    int currentForce = this->force;
+    int currentForce = this->force; //default is 1
     bool combinedPush = false;
 
+    //if the other player is pushing same obstacle in same direction
     if (otherPlayer != nullptr && obstacleToPush != nullptr)
     {
         Point otherPos = otherPlayer->getPos();
@@ -131,32 +144,35 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
         Point otherTarget = { otherPos.x + otherPlayer->dirx, otherPos.y + otherPlayer->diry };
         Obstacle* otherObToPush = room.isObstacleThere(otherTarget);
 
-
+        //if obstacles pushed and directions matched, combine the forces
         if (obstacleToPush == otherObToPush && dirx == otherPlayer->dirx && diry == otherPlayer->diry)
         {
             currentForce += otherPlayer->force;
             combinedPush = true;
         }
+        
+        //move the obstacle with the calculated force
         bool hasMoved = room.moveObstacle(nextPoint, dirx, diry, currentForce);
-
+        
+        //if moved, move the partner too
         if (hasMoved && combinedPush) {
             synchronizePartner(otherPlayer, room);
         }
         return hasMoved;
     }
-    return false; //for safety
+    return false; 
 }
 
 
-
-bool Player::pickItem(Point& position, Room& room) //check about instead of getting a symbol, get a dynamic type object (torch/key etc.. maybe in future w/ gameobject)
+//Picks up an item if hands are empty
+bool Player::pickItem(Point& position, Room& room) 
 {
     if (itemInHand.type != NONE) return false; // already holding an item
 
     Key* key = room.isKeyThere(position);
 	
     if (key != nullptr) {
-        
+        //store data in player inventory
         itemInHand = { KEY, key->getKeyID(), key->getColor()};
         room.removeKey(position);
         return true;
@@ -178,6 +194,7 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
         break;
 
     case KEY: {
+        //create a new key on the floor at the player's position
         Key key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color);
         key.setSeen();
         room.addKey(key);
@@ -187,13 +204,14 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
         room.addTorch(Torch(pos.getx(), pos.gety()));
         break;
     }
+    //reset inventory
     itemInHand = { NONE,0,Color::WHITE };
     draw();
 }
 
 void Player::inputManager(char input, Room& room) {
 
-    if (finishedLevel) return; 
+    if (finishedLevel) return; //when a player finishes the level it freezes
     switch (input) {
     case 0:
         return;
@@ -201,7 +219,7 @@ void Player::inputManager(char input, Room& room) {
     }
 
     if (input == 0) return;
-    input = toupper(input); // normalize input
+    input = toupper(input); // normalize input to uppercase
     if (input == keys[UP])
         setDirection(0, -1);
     else if (input == keys[DOWN])

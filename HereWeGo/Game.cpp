@@ -16,6 +16,8 @@ void Game::initLevel3(Room& r)
 {
 	for (int x = 0; x < 40; x++) { r.addWall(Point{ x, 0 }); r.addWall(Point{ x, 20 }); }
 	for (int y = 0; y <= 20; y++) { r.addWall(Point{ 0, y }); r.addWall(Point{ 40, y }); }
+
+
 }
 
 

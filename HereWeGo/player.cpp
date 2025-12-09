@@ -3,7 +3,6 @@
 #include <conio.h>
 #include "Player.h"
 #include "Key.h"
-// Ensure Switch.h is included (either here or in Room.h)
 #include "Switch.h" 
 #include "Torch.h"
 
@@ -28,16 +27,12 @@ void Player::move(Room& room, Player* otherPlayer) {
         return; 
     }
 
-    /*
-        if (otherPlayer != nullptr) { //collision with 2nd player
-        Point otherPos = otherPlayer->getPos();
-        if (nextPoint.x == otherPos.x && nextPoint.y == otherPos.y)
-        {
+    
+        if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint.x == otherPlayer->getPos().x && nextPoint.y == otherPlayer->getPos().y ) { //collision with 2nd player
             setDirection(0, 0);
             return;
         }
-    }
-    */
+    
 
 
     if (isDoorTile(tileOnMap)) //collision with door, there is no door tile so this is a "workaround"
@@ -148,11 +143,6 @@ void Player::switchHandling(Room& room, Point& nextPoint)
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
         if (switchOnOff != nullptr) {
             switchOnOff->toggleState();          // toggle the switch state
-            if (switchOnOff->getSwitchID() == 99) //fake switch
-            {
-                gotoxy(35, 24);
-                std::cout << "Gotcha :D";
-            }
 
             room.checkSwitch(switchOnOff->getPos()); // update doors
             room.drawTopLayer();                 // redraw
@@ -235,6 +225,7 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
 
 void Player::inputManager(char input, Room& room) {
 
+    if (finishedLevel) return; 
     switch (input) {
     case 0:
         return;

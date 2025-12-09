@@ -58,6 +58,15 @@ Game::Game() : players{
 	Player(Placement(9,15),'&',0,0,p2Keys)
 }
 {
+	exitPoints[0] = exitPoints[1] = { 79,22 };
+	exitPoints[2] = { -1,-1 }; //final room
+	p1StartPoints[0] = { 6,3 };
+	p1StartPoints[1] = { 2,2 };
+	p1StartPoints[2] = { 65,5 };
+	
+	p2StartPoints[0] = { 6,7 };
+	p2StartPoints[1] = { 4,2 };
+	p2StartPoints[2] = { 70,16 };
 	init();
 }
 
@@ -78,18 +87,18 @@ void Game::setGame(int level) {
 	switch (level) {
 	case 0:
 		screen.Lvl1Screen();
-		players[0].setPos(6, 3);
-		players[1].setPos(5, 7);
+		players[0].setPos(p1StartPoints[0]);
+		players[1].setPos(p2StartPoints[0]);
 		break;
 	case 1:
 		screen.Lvl2Screen();
-		players[0].setPos(2, 2);
-		players[1].setPos(4, 2);
+		players[0].setPos(p1StartPoints[1]);
+		players[1].setPos(p2StartPoints[1]);
 		break;
 	case 2:
 		screen.Lvl3Screen();
-		players[0].setPos(65, 5);
-		players[1].setPos(70, 16);
+		players[0].setPos(p1StartPoints[2]);
+		players[1].setPos(p2StartPoints[2]);
 		break;
 	default:
 		screen.Lvl1Screen();
@@ -101,7 +110,10 @@ void Game::setGame(int level) {
 	levels[currentLevelID].drawRoom(screen);
 	screen.draw();
 	levels[currentLevelID].drawTopLayer();
-	for (auto& player : players) player.draw();
+	for (auto& player : players) {
+		player.draw();
+		player.setDirection(0, 0);
+	}
 }
 
 void Game::run()
@@ -122,18 +134,25 @@ void Game::run()
 
 		currRoom.resetObstacles();
 
-		for (int i = 0; i < 2; i++) {
-			players[i].inputManager(key, currRoom);
-		}
+		Point currentExitPoint = exitPoints[currentLevelID];
 
 		for (int i = 0; i < 2; i++) {
+			players[i].inputManager(key, currRoom);
 			setColor(Color::WHITE);
 			players[i].move(currRoom, &players[1 - i]);
+			
+			Point p = players[i].getPos();
+
+			if (currentExitPoint.x != -1 && p.x == currentExitPoint.x && p.y == currentExitPoint.y) {
+				if (!players[i].isFinished())
+					players[i].setFinished(true);
+			}
 		}
 
 		// --- LEVEL TRANSITIONS ---
 		Point p1 = players[0].getPos();
 		Point p2 = players[1].getPos();
+		
 
 		// Level 1 -> Level 2
 		if (currentLevelID == 0 && p1.x == 79 && p1.y == 22 && p2.x == 79 && p2.y == 22)
@@ -152,8 +171,8 @@ void Game::run()
 			setGame(currentLevelID);
 
 			// Set players at start of Level 2
-			players[0].setPos(2, 2);
-			players[1].setPos(4, 2);
+			players[0].setPos(p1StartPoints[1]);
+			players[1].setPos(p2StartPoints[2]);
 
 			levels[currentLevelID].drawRoom(screen);
 			levels[currentLevelID].drawTopLayer();
@@ -163,8 +182,8 @@ void Game::run()
 		{
 			currentLevelID = 2;
 			setGame(currentLevelID);
-			players[0].setPos(65, 5);
-			players[1].setPos(70, 16);
+			players[0].setPos(p1StartPoints[2]);
+			players[1].setPos(p2StartPoints[2]);
 		}
 		else if (currentLevelID == 2) {
 			if ((p1.x == 37 && p1.y == 1 && p2.x == 37 && p2.y == 2) || ((p1.x == 37 && p1.y == 2 && p2.x == 37 && p2.y == 1))){
@@ -279,8 +298,8 @@ void Game::level1props(Room& r) {
 	// ==========================================
 	// 5. PLAYERS
 	// ==========================================
-	players[0].setPos(6, 3);
-	players[1].setPos(5, 7);
+	players[0].setPos(p1StartPoints[0]);
+	players[1].setPos(p2StartPoints[0]);
 
 }
 
@@ -409,7 +428,7 @@ void Game::level3props(Room& r) {
 	
 }
 
-bool Game::bothPlayersLeftRoom(Room& r)
+bool Game::bothPlayersLeftRoom(Room& r, Player* atDoor, Player* waitingForYou)
 {
-	
+	return false;
 }

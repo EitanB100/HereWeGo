@@ -425,22 +425,37 @@ char Room::getObjectAt(Point& p, Color& color)
 		color = Color::WHITE;
 		return ' ';
 	}
-	Door* door = isDoorThere(p);
-	if (door != nullptr) {
-		if (door->getIsOpen()) color = door->getColor();
 
-		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
+	Obstacle* obstacle = isObstacleThere(p);
+	if (obstacle != nullptr) {
+		color = Color::WHITE;
+		return OBSTACLE_TILE;
+
 	}
 
 	Key* key = isKeyThere(p);
 	if (key != nullptr) {
 
-	if (key->getIsSeen())
-    {color = key->getColor();
+		if (key->getIsSeen())
+		{
+			color = key->getColor();
 			return KEY_TILE;
-    }
-    color = Color::WHITE;
+		}
+		color = Color::WHITE;
 		return UNKNOWN_TILE;
+	}
+
+	Torch* torch = isTorchThere(p);
+	if (torch != nullptr) {
+		color = torch->getColor();
+		return TORCH_TILE;
+	}
+
+	Door* door = isDoorThere(p);
+	if (door != nullptr) {
+		if (door->getIsOpen()) color = door->getColor();
+
+		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
 	}
 
 	Switch* sw = isSwitchThere(p);
@@ -457,18 +472,6 @@ char Room::getObjectAt(Point& p, Color& color)
 		}
 	}
 
-	Obstacle* obstacle = isObstacleThere(p);
-	if (obstacle != nullptr) {
-		color = Color::WHITE;
-		return OBSTACLE_TILE;
-
-	}
-
-	Torch* torch = isTorchThere(p);
-	if (torch != nullptr) {
-		color = torch->getColor();
-		return TORCH_TILE;
-	}
 
 	return map[p.y][p.x];
 }

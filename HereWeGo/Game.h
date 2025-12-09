@@ -10,7 +10,12 @@ class Game {
 	Screen screen;
 	Room levels[ROOM_AMOUNT];
 	Player players[PLAYER_AMOUNT];
+	Point exitPoints[ROOM_AMOUNT];
+
+	Point p1StartPoints[ROOM_AMOUNT];
 	
+	Point p2StartPoints[ROOM_AMOUNT];
+
 	int currentLevelID = 0;
 
 	void initLevel1(Room& r);
@@ -27,5 +32,5 @@ public:
 	void level1props(Room& r);
 	void level2props(Room& r);
 	void level3props(Room& r);
-	bool bothPlayersLeftRoom(Room& r);
+	bool bothPlayersLeftRoom(Room& r, Player* firstLeft, Player* waitingForYou);
 };

@@ -10,7 +10,9 @@ class Player {
     char symbol = ' ';
     int dirx = 0, diry = 0;
     int force = 1; // for moving obstacles, will be changed by spring later
-
+    
+    bool finishedLevel = false;
+        
     char keys[NUM_KEYS];  // fixed-size array for command keys
 
      //Color will be used as an indicator for a picked up item, mainly key
@@ -50,8 +52,8 @@ public:
         return { pos.getx(),pos.gety() };
     }
     
-    void setPos(int x, int y) {
-        pos.set(x, y, symbol);
+    void setPos(Point p) {
+        pos.set(p.x, p.y, symbol);
     }
 
     int getdirctX() {
@@ -61,6 +63,9 @@ public:
     int getdirctY() {
         return diry;
     }
+
+    bool isFinished() { return finishedLevel; }
+    void setFinished(bool state) { finishedLevel = state; }
 
     heldItem getItemInHand() {
         return itemInHand;

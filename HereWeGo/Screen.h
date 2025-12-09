@@ -8,7 +8,7 @@ class Screen {
 private:
     char* screen[MAX_Y];
 
-    
+    void loadMapData(const char* mapData[MAX_Y]);
 
 public:
     Screen();

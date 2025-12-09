@@ -10,21 +10,28 @@ class Game {
 	Screen screen;
 	Room levels[ROOM_AMOUNT];
 	Player players[PLAYER_AMOUNT];
-	
-	int currentLevelID = 0;
+	Point exitPoints[ROOM_AMOUNT];
 
-	void initLevel1(Room& r);
-	void initLevel2(Room& r);
-	void initLevel3(Room& r);
+	Point p1StartPoints[ROOM_AMOUNT];
+	
+	Point p2StartPoints[ROOM_AMOUNT];
+
+	int currentLevelID = 0;
 
 	void printHUD();
 
 public:
 	Game(); //defined in .cpp
 	void setGame(int level);
+
+	void startInLevel(int levelID) {
+		currentLevelID = levelID;
+		setGame(levelID);
+	}
+	
 	void init();
 	void run();
-	void level1props(Room& r);
-	void level2props(Room& r);
-	void level3props(Room& r);
+	void initLevel1Props(Room& r);
+	void initLevel2Props(Room& r);
+	void initLevel3Props(Room& r);
 };

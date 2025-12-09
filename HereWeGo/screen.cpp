@@ -16,6 +16,15 @@ void Screen::createGameScreen() {
 
 }
 
+void Screen::loadMapData(const char* mapData[MAX_Y])
+{
+	for (int y = 0; y < MAX_Y; y++) {
+		for (int x = 0; x < MAX_X; x++) {
+			setTile(x, y, mapData[y][x]);
+		}
+	}
+}
+
 Screen::Screen() {
 	for (int i = 0; i < MAX_Y; i++) {
 		screen[i] = new char[MAX_X + 1];
@@ -72,15 +81,12 @@ void Screen::Lvl1Screen() {
 		 "W     W          W    W   W        W            W                              W", // 23,  
 		 "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"  // 24
 	};
-	for (int y = 0; y < MAX_Y; y++) {
-		for (int x = 0; x < MAX_X; x++) {
-			screen[y][x] = level1Layout[y][x];
-		}
-	}
+	
+	loadMapData(level1Layout);
 }
 
 void Screen::Lvl2Screen() {
-	const char* level1Layout[MAX_Y] = {
+	const char* level2Layout[MAX_Y] = {
 		//01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		 "                                                                                ",// 0
 		 "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 1
@@ -108,15 +114,11 @@ void Screen::Lvl2Screen() {
 		 "W                W           W       W                                         W", // 23,  
 		 "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"  // 24
 	};
-	for (int y = 0; y < MAX_Y; y++) {
-		for (int x = 0; x < MAX_X; x++) {
-			screen[y][x] = level1Layout[y][x];
-		}
-	}
+	loadMapData(level2Layout);
 }
 
 void Screen::Lvl3Screen() {
-	const char* level1Layout[MAX_Y] = {
+	const char* level3Layout[MAX_Y] = {
 		//01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		 "                                    WWW                                         ",// 0
 		 "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 1
@@ -144,9 +146,6 @@ void Screen::Lvl3Screen() {
 		 "W                     W             W               W           W              W", // 23,  
 		 "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"  // 24
 	};
-	for (int y = 0; y < MAX_Y; y++) {
-		for (int x = 0; x < MAX_X; x++) {
-			screen[y][x] = level1Layout[y][x];
-		}
-	}
+
+	loadMapData(level3Layout);
 }

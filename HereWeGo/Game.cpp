@@ -3,19 +3,7 @@
 const char p1Keys[NUM_KEYS] = { 'W','X','A','D','S','E' };
 const char p2Keys[NUM_KEYS] = { 'I','M','J','L','K','O' };
 
-void Game::initLevel1(Room& r){
-	level1props(r);
-}
 
-void Game::initLevel2(Room& r)
-{
-	level2props(r);
-}
-
-void Game::initLevel3(Room& r)
-{
-	level3props(r);
-}
 
 
 void Game::printHUD()
@@ -58,15 +46,24 @@ Game::Game() : players{
 	Player(Placement(9,15),'&',0,0,p2Keys)
 }
 {
+	exitPoints[0] = exitPoints[1] = { 79,22 };
+	exitPoints[2] = { -1,-1 }; //final room
+	p1StartPoints[0] = { 6,3 };
+	p1StartPoints[1] = { 2,2};
+	p1StartPoints[2] = { 65,5 };
+	
+	p2StartPoints[0] = { 6,7 };
+	p2StartPoints[1] = { 4,2 };
+	p2StartPoints[2] = { 70,16 };
 	init();
 }
 
 void Game::init()
 {
     // Initialize ALL levels
-    initLevel1(levels[0]);
-    initLevel2(levels[1]);
-    initLevel3(levels[2]);
+    initLevel1Props(levels[0]);
+    initLevel2Props(levels[1]);
+    initLevel3Props(levels[2]);
 
 	currentLevelID = 0;// Start at Level 1
 	setGame(currentLevelID);
@@ -78,18 +75,18 @@ void Game::setGame(int level) {
 	switch (level) {
 	case 0:
 		screen.Lvl1Screen();
-		players[0].setPos(6, 3);
-		players[1].setPos(5, 7);
+		players[0].setPos(p1StartPoints[0]);
+		players[1].setPos(p2StartPoints[0]);
 		break;
 	case 1:
 		screen.Lvl2Screen();
-		players[0].setPos(2, 2);
-		players[1].setPos(4, 2);
+		players[0].setPos(p1StartPoints[1]);
+		players[1].setPos(p2StartPoints[1]);
 		break;
 	case 2:
 		screen.Lvl3Screen();
-		players[0].setPos(65, 5);
-		players[1].setPos(70, 16);
+		players[0].setPos(p1StartPoints[2]);
+		players[1].setPos(p2StartPoints[2]);
 		break;
 	default:
 		screen.Lvl1Screen();
@@ -101,42 +98,65 @@ void Game::setGame(int level) {
 	levels[currentLevelID].drawRoom(screen);
 	screen.draw();
 	levels[currentLevelID].drawTopLayer();
-	for (auto& player : players) player.draw();
+	for (auto& player : players) {
+		player.draw();
+		player.setDirection(0, 0);
+	}
 }
+
 
 void Game::run()
 {
 	while (true) {
-		Room& currRoom = levels[currentLevelID]; // Use CURRENT room
+		Room& currRoom = levels[currentLevelID]; //get desired room
 		char key = 0;
+		
+		//input gain:
 		if (_kbhit()) {
 			key = _getch();
 			if (key == ESC) {
 				key = _getch();
 				if (key == 'h' || key == 'H') {
 					screen.clearScreen();
-					break;
+					break; //main menu exit
 				}
 			}
 		}
-
+		//reset every frame
 		currRoom.resetObstacles();
+		Point currentExitPoint = exitPoints[currentLevelID];
 
+		//update (movement and collision)
 		for (int i = 0; i < 2; i++) {
 			players[i].inputManager(key, currRoom);
-		}
-
-		for (int i = 0; i < 2; i++) {
 			setColor(Color::WHITE);
+			//other player passed for collision checks
 			players[i].move(currRoom, &players[1 - i]);
+			
+			Point p = players[i].getPos();
+
+			//check level completion for a player
+			if (currentExitPoint.x != -1 && p.x == currentExitPoint.x && p.y == currentExitPoint.y) {
+				if (!players[i].isFinished())
+				{
+					players[i].setFinished(true); //freeze finished player
+					std::string playerFinish = "Player ";
+					playerFinish += players[i].getSymbol();
+					playerFinish += " is waiting...";
+
+					gotoxy(50, 0);
+					std::cout << playerFinish;
+				}
+			}
 		}
 
 		// --- LEVEL TRANSITIONS ---
 		Point p1 = players[0].getPos();
 		Point p2 = players[1].getPos();
+		
 
 		// Level 1 -> Level 2
-		if (currentLevelID == 0 && p1.x == 79 && p1.y == 22 && p2.x == 79 && p2.y == 22)
+		if (currentLevelID == 0 && p1.x == currentExitPoint.x && p1.y == currentExitPoint.y && p2.x == currentExitPoint.x && p2.y == currentExitPoint.y)
 		{
 			// Check for obstacle push
 			Obstacle* obs = currRoom.isObstacleThere({ 58, 18 });
@@ -149,38 +169,53 @@ void Game::run()
 
 			currentLevelID = 1;
 			
-			setGame(currentLevelID);
+			setGame(currentLevelID); //load new map
 
-			// Set players at start of Level 2
-			players[0].setPos(2, 2);
-			players[1].setPos(4, 2);
+			// reset players and unfreeze them for new level
+			players[0].setPos(p1StartPoints[1]);
+			players[1].setPos(p2StartPoints[1]);
 
+			players[0].setFinished(false);
+			players[1].setFinished(false);
+
+			//draw them
 			levels[currentLevelID].drawRoom(screen);
 			levels[currentLevelID].drawTopLayer();
 		}
 		// Level 2 -> Level 3
-		else if (currentLevelID == 1 && p1.x == 79 && p1.y == 22 && p2.x == 79 && p2.y == 22)
+		else if (currentLevelID == 1 && p1.x == currentExitPoint.x && p1.y == currentExitPoint.y && p2.x == currentExitPoint.x && p2.y == currentExitPoint.y)
 		{
 			currentLevelID = 2;
 			setGame(currentLevelID);
-			players[0].setPos(65, 5);
-			players[1].setPos(70, 16);
+			players[0].setPos(p1StartPoints[2]);
+			players[1].setPos(p2StartPoints[2]);
+			
+			players[0].setFinished(false);
+			players[1].setFinished(false);
 		}
-		if (currentLevelID == 2) {
+
+		//specific win condition for level 3
+		else if (currentLevelID == 2) {
 			if ((p1.x == 37 && p1.y == 1 && p2.x == 37 && p2.y == 2) || ((p1.x == 37 && p1.y == 2 && p2.x == 37 && p2.y == 1))){
 
-				printCentered("YOU WIN!", 12);
+				setColor(Color::GREEN);
+				printCentered("THANKS FOR PLAYING!", 12);
+
 				levels[currentLevelID].drawRoom(screen);
 			}
+			gotoxy(45, 0);
+			setColor(Color::GREEN);
+			std::cout << "Go through the top door to finish!";
+			setColor(Color::WHITE);
 		}
-		else
-
+		
+		//HUD renderer
 		printHUD();
 		Sleep(75);
 	}
 
 }
-void Game::level1props(Room& r) {
+void Game::initLevel1Props(Room& r) {
 
 	// 1. DOORS
 	// ==========================================
@@ -279,12 +314,12 @@ void Game::level1props(Room& r) {
 	// ==========================================
 	// 5. PLAYERS
 	// ==========================================
-	players[0].setPos(6, 3);
-	players[1].setPos(5, 7);
+	players[0].setPos(p1StartPoints[0]);
+	players[1].setPos(p2StartPoints[0]);
 
 }
 
-void Game::level2props(Room& r){
+void Game::initLevel2Props(Room& r){
 	// 1. DOORS
 	Door d1(79, 22, 1, Color::GREEN);
 	
@@ -340,7 +375,7 @@ void Game::level2props(Room& r){
 		r.addTorch(Torch(31, 20, 2));
 	}
 
-void Game::level3props(Room& r) {
+void Game::initLevel3Props(Room& r) {
 	//  1.DOORS
 	Door d1(64, 16, 4, Color::GREEN);
 	Door d2(52, 22, 3, Color::RED);
@@ -405,6 +440,7 @@ void Game::level3props(Room& r) {
 	r.addDoor(d5);
 	r.addDoor(d6);
 	r.addDoor(d7);
+
 
 	
 }

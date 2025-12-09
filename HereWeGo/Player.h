@@ -9,12 +9,13 @@ class Player {
 
     char symbol = ' ';
     int dirx = 0, diry = 0;
-    int force = 1; // for moving obstacles, will be changed by spring later
+    int force = 1; 
+    
+    bool finishedLevel = false;
+        
+    char keys[NUM_KEYS];  
 
-    char keys[NUM_KEYS];  // fixed-size array for command keys
-
-     //Color will be used as an indicator for a picked up item, mainly key
-	heldItem itemInHand = { NONE, 0, Color::WHITE};
+    heldItem itemInHand = { NONE, 0, Color::WHITE};
 
     //Suggested and written by gemini!
     // added as a fix to the following bug - when player 1 moved first and pushed an obstacle, 
@@ -50,8 +51,8 @@ public:
         return { pos.getx(),pos.gety() };
     }
     
-    void setPos(int x, int y) {
-        pos.set(x, y, symbol);
+    void setPos(Point p) {
+        pos.set(p.x, p.y, symbol);
     }
 
     int getdirctX() {
@@ -61,6 +62,11 @@ public:
     int getdirctY() {
         return diry;
     }
+
+    char getSymbol() { return symbol; }
+
+    bool isFinished() { return finishedLevel; }
+    void setFinished(bool state) { finishedLevel = state; }
 
     heldItem getItemInHand() {
         return itemInHand;
@@ -73,15 +79,11 @@ public:
 
 
     void move(Room& room, Player* otherPlayer);
-    void doorHandling(Room& room, heldItem& itemInHand);
-    bool keyHandling(Room& room, Point& nextPoint);
-    bool torchHandling(Room& room, Point& nextPoint);
-    void switchHandling(Room& room, Point& nextPoint);
     bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
 
     
 
-    void pickItem(Point& position,Room& room, char _symbol);
+    bool pickItem(Point& position,Room& room);
     void dropItem(Room& room);
 
     void inputManager(char tav, Room& room);

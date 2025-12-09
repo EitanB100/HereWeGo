@@ -166,11 +166,11 @@ void Room::removeObstacle(const Point& p)
 	}
 }
 
-void Room::addSwitch(const Switch* s) {
+void Room::addSwitch(Switch* s) {
 	Point switchPos = s->getPos();
 	if (switchPos.x >= 0 && switchPos.x < MAX_X && switchPos.y >= 0 && switchPos.y < MAX_Y) {
 		map[switchPos.y][switchPos.x] = SWITCH_OFF; // Ensure SWITCH_OFF is defined in Tile_Chars.h
-		switches.push_back(const_cast<Switch*>(s)); // Cast away constness to store in vector
+		switches.push_back(s); // Cast away constness to store in vector
 	}
 }
 

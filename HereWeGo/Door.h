@@ -9,7 +9,7 @@
 class Door {
 
     struct SwitchRequirement {
-        Switch* SW;
+        const Switch* SW;
         bool requiredState;   // false = OFF, true = ON
     };
 
@@ -19,7 +19,6 @@ class Door {
     std::vector<SwitchRequirement> requiredSwitchIDs;
     Color color = Color::WHITE;
     bool isOpen = false;
-    bool keysSatisfied = false; // all keys are used to open the door
 
 public:
 
@@ -33,30 +32,26 @@ public:
         requiredSwitchIDs.push_back({ switchOnOff, state });
     }
 
-    int getDoorID() { return id; }
+    int getDoorID() const { return id; }
 
     Color getColor() const {
         return color;
     }
     
-    // Logic for keys
-    bool setKeySatisfied(bool val) { return keysSatisfied = val; }
     
     // Open/Close logic
     void open() { isOpen = true; }
     void close() { isOpen = false; }
     bool getIsOpen() const { return isOpen; }
 
-    Placement getPos() { return pos; }
+    Placement getPos() const { return pos; }
 
     void draw();
 
-    // From 'master' / Stash
     bool tryUnlock(int keyID);
     void UpdatedFromSwitch();
 
-    // From 'harel-Switches'
     bool isAtPosition(const Point& p) const {
         return (pos.getx() == p.x && pos.gety() == p.y);
     }
-};
+};  

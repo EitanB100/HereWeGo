@@ -24,8 +24,12 @@ class Room {
 public:
 
     Room();
-	~Room() {}
-
+    ~Room() {
+        for (Switch* sw : switches) {
+            delete sw;
+        }
+        switches.clear();
+    }
     bool checkDoor(Point p, heldItem& item);
     void checkSwitch(Point p); // 3. Added Switch Check
 
@@ -43,7 +47,7 @@ public:
     void removeTorch(const Point& p);
     void removeObstacle(const Point& p);
 
-    void addSwitch(const Switch* s);
+    void addSwitch(Switch* s);
     void addObstacle(Obstacle obs);
 
     char getObjectAt(Point& p);

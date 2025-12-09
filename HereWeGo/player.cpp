@@ -23,7 +23,7 @@ void Player::move(Room& room, Player* otherPlayer) {
     
 
     // --- COLLISION LOGIC ---
-	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE) { //wall or unknown tile which might be collideable
+	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE || tileOnMap == GLASS_TILE) { //wall or unknown tile which might be collideable
         setDirection(0, 0); 
         return; 
     }

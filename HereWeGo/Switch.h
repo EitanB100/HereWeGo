@@ -43,10 +43,12 @@ public:
 		if (state) {
 			setColor(Color::GREEN);
 			pos.set(pos.getx(), pos.gety(), SWITCH_ON);
+			setColor(Color::WHITE);
 		}
 		else {
 			setColor(Color::RED);
 			pos.set(pos.getx(), pos.gety(), SWITCH_OFF);
+			setColor(Color::WHITE);
 		}
 	}
 

@@ -21,6 +21,10 @@ class Game {
 
 public:
 	Game(); //defined in .cpp
+	void setGame(int level);
 	void init();
 	void run();
+	void level1props(Room& r);
+	void level2props(Room& r);
+	void level3props(Room& r);
 };

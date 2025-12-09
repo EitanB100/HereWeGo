@@ -26,8 +26,9 @@ void Room::drawTopLayer()
 {
 	for (Door& door : doors) door.draw();
 	for (Key& key : keys) key.draw();
-	for (Switch& switchOnOff : switches) switchOnOff.draw(); // <--- Added
+	for (Switch* switchOnOff : switches) switchOnOff->draw();
 	for (Torch& torch : torches) torch.draw();
+	for (Obstacle& obstacle : obstacles) obstacle.draw();
 	getTorchesLineOfSight();
 	
 }
@@ -39,6 +40,28 @@ void Room::drawRoom(Screen& screen) // Draw the room on the screen
 		for (int x = 0; x < MAX_X; x++)
 		{
 			screen.setTile(x, y, map[y][x]);
+		}
+	}
+}
+
+void Room::loadFromScreen(Screen& screen) // Load the room from the screen
+{
+	for (int y = 0; y < MAX_Y; y++)
+	{
+		for (int x = 0; x < MAX_X; x++)
+		{
+			map[y][x] = screen.getTile(x, y);
+		}
+	}
+
+	//suggested by Gemini as a bug fix for obstacles not colliding with each other when moved
+	for (const auto& obs : obstacles) {
+		// Get current parts (0,0 direction means current position)
+		std::vector<Point> parts = obs.getFutureParts(0, 0);
+		for (const auto& p : parts) {
+			if (p.x >= 0 && p.x < MAX_X && p.y >= 0 && p.y < MAX_Y) {
+				map[p.y][p.x] = OBSTACLE_TILE;
+			}
 		}
 	}
 }
@@ -154,13 +177,14 @@ void Room::removeObstacle(const Point& p)
 	}
 }
 
-void Room::addSwitch(const Switch& s) {
-	Point SwitchPos = s.getPos();
-	if (SwitchPos.x >= 0 && SwitchPos.x < MAX_X && SwitchPos.y >= 0 && SwitchPos.y < MAX_Y) {
-		map[SwitchPos.y][SwitchPos.x] = SWITCH_OFF; // Ensure SWITCH_OFF is defined in Tile_Chars.h
-		switches.push_back(s);
+void Room::addSwitch(Switch* s) {
+	Point switchPos = s->getPos();
+	if (switchPos.x >= 0 && switchPos.x < MAX_X && switchPos.y >= 0 && switchPos.y < MAX_Y) {
+		map[switchPos.y][switchPos.x] = SWITCH_OFF; // Ensure SWITCH_OFF is defined in Tile_Chars.h
+		switches.push_back(s); // Cast away constness to store in vector
 	}
 }
+
 
 void Room::addObstacle(Obstacle obs)
 {
@@ -179,13 +203,29 @@ void Room::addWall(Point p)
 	map[p.y][p.x] = WALL_TILE;
 }
 
+Switch* Room::getSwitchByID(int id) {
+	// Iterate through all switches in the list
+	for (Switch* switchPtr : switches) {
+		if (switchPtr == nullptr) {
+			continue;
+		}
+		if (switchPtr->getSwitchID() == id) {
+			return switchPtr;
+		}
+	}
+
+	return nullptr;
+}
 
 Switch* Room::isSwitchThere(Point p){
-	for (Switch& switchOnOff : switches){
-		Point SwitchPoint = switchOnOff.getPos();
+	for (Switch* switchPtr : switches){
+		if (switchPtr == nullptr) {
+			continue;
+		}
+		Point SwitchPoint = switchPtr->getPos();
 
 		if (SwitchPoint.x == p.x && SwitchPoint.y == p.y){
-			return &switchOnOff;
+			return switchPtr;
 		}
 	}
 	return nullptr;
@@ -327,6 +367,7 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 		char tile = map[futurePart.y][futurePart.x];
 		if (tile != ' ') 
 		{
+			
 			Door* door = isDoorThere(futurePart);
 			if (door != nullptr && door->getIsOpen()) continue; // move obstacle part through a door
 
@@ -403,17 +444,23 @@ char Room::getObjectAt(Point& p, Color& color)
 	}
 
 	Switch* sw = isSwitchThere(p);
-	if (sw != nullptr) {
-		color = sw->getState() ? Color::GREEN : Color::RED;
-
-		return sw->getState() ? SWITCH_ON : SWITCH_OFF;
+	if (sw != nullptr) { // Check if a switch is present
+		if (sw->getIsSeen()) {
+			// Switch is seen, return its state
+			color = sw->getState() ? Color::GREEN : Color::RED;
+			return sw->getState() ? SWITCH_ON : SWITCH_OFF;
+		}
+		else {
+			// Switch is NOT seen, treat it as unknown/blocked for movement
+			color = Color::WHITE;
+			return UNKNOWN_TILE;
+		}
 	}
-	//work in progress - instead of obstacleMove function above!
+
 	Obstacle* obstacle = isObstacleThere(p);
 	if (obstacle != nullptr) {
-
-		// handle move check function
-		//move parts function
+		color = Color::WHITE;
+		return OBSTACLE_TILE;
 
 	}
 

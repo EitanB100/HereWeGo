@@ -12,11 +12,11 @@
 
 
 class Room {
-        
+
     char map[MAX_Y][MAX_X] = {}; // leave a room for HUD at top row
     std::vector<Door> doors;
     std::vector<Key> keys;
-    std::vector<Switch> switches; 
+    std::vector<Switch*> switches;
     std::vector<Obstacle> obstacles;
     std::vector<Torch> torches;
 
@@ -24,12 +24,18 @@ class Room {
 public:
 
     Room();
-
+    ~Room() {
+        for (Switch* sw : switches) {
+            delete sw;
+        }
+        switches.clear();
+    }
     bool checkDoor(Point p, heldItem& item);
     void checkSwitch(Point p); // 3. Added Switch Check
 
     void drawTopLayer();
     void drawRoom(Screen& screen);
+    void loadFromScreen(Screen& screen);
     void clearTile(Point& p) { map[p.y][p.x] = ' '; }
 
     void addWall(Point p);
@@ -41,14 +47,14 @@ public:
     void removeTorch(const Point& p);
     void removeObstacle(const Point& p);
 
-    void addSwitch(const Switch& s); // 4. Added Switch Adder
+    void addSwitch(Switch* s);
     void addObstacle(Obstacle obs);
 
     char getObjectAt(Point& p);
     char getObjectAt(Point& p, Color& color);
   
     bool isWallThere(Point p);
-    
+	Switch* getSwitchByID(int id);
 
     Door* isDoorThere(Point p);
     Key* isKeyThere(Point p);

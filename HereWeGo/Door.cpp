@@ -8,9 +8,6 @@ bool Door::tryUnlock(int playerKeyID)
 		{
 			requiredKeyIDs.erase(requiredKeyIDs.begin() + i);
 
-			// OLD LINE: if (requiredKeyIDs.empty()) open();
-
-			// NEW LINE: Check switches before opening!
 			if (requiredKeyIDs.empty()) UpdatedFromSwitch();
 
 			return true;
@@ -50,11 +47,22 @@ void Door::UpdatedFromSwitch()
 		}
 	}
 
-	// 3. Open or Close based on the check
+	bool stateChanged = false; 
+
 	if (conditionsMet) {
-		open();
+		if (!isOpen) {
+			open();
+			stateChanged = true;
+		}
 	}
+
 	else {
-		close();
+		if (isOpen) {
+			close();
+			stateChanged = true;
+		}
 	}
+
+	if (stateChanged)
+		draw();
 }

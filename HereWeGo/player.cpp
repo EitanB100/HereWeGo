@@ -23,12 +23,13 @@ void Player::move(Room& room, Player* otherPlayer) {
     
 
     // --- COLLISION LOGIC ---
-	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE) { //wall or unknown tile which might be collideable
+	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE || tileOnMap == GLASS_TILE) { //wall or unknown tile which might be collideable
         setDirection(0, 0); 
         return; 
     }
 
-    if (otherPlayer != nullptr) { //collision with 2nd player
+    /*
+        if (otherPlayer != nullptr) { //collision with 2nd player
         Point otherPos = otherPlayer->getPos();
         if (nextPoint.x == otherPos.x && nextPoint.y == otherPos.y)
         {
@@ -36,6 +37,8 @@ void Player::move(Room& room, Player* otherPlayer) {
             return;
         }
     }
+    */
+
 
     if (isDoorTile(tileOnMap)) //collision with door, there is no door tile so this is a "workaround"
     {

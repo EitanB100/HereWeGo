@@ -33,11 +33,7 @@ void Game::printHUD()
 		setColor(item1.color);
 		std::cout << "TORCH ";
 	}
-	//remove the comment brackets if you implemented torch!
-	/*else if (item1.type == TORCH) {
-	setColor(item1.color) -> if it has a unique color lol
-	std::cout << "TORCH";
-	*/
+	
 	else std::cout << "EMPTY ";
 	
 	setColor(Color::WHITE);
@@ -73,7 +69,7 @@ void Game::init()
     initLevel2(levels[1]);
     initLevel3(levels[2]);
 
-    currentLevelID = 1; // Start at Level 1
+    currentLevelID = 0; // Start at Level 1
 	setGame(currentLevelID);
 }
 

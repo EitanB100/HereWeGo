@@ -23,6 +23,12 @@ class Game {
 public:
 	Game(); //defined in .cpp
 	void setGame(int level);
+
+	void startInLevel(int levelID) {
+		currentLevelID = levelID;
+		setGame(levelID);
+	}
+	
 	void init();
 	void run();
 	void initLevel1Props(Room& r);

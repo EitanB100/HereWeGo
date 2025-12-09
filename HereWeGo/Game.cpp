@@ -65,7 +65,7 @@ void Game::init()
     initLevel2Props(levels[1]);
     initLevel3Props(levels[2]);
 
-	currentLevelID = 2;// Start at Level 1
+	currentLevelID = 0;// Start at Level 1
 	setGame(currentLevelID);
 }
 
@@ -103,6 +103,7 @@ void Game::setGame(int level) {
 		player.setDirection(0, 0);
 	}
 }
+
 
 void Game::run()
 {

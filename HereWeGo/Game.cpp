@@ -190,7 +190,9 @@ void Game::run()
 		else if (currentLevelID == 2) {
 			if ((p1.x == 37 && p1.y == 1 && p2.x == 37 && p2.y == 2) || ((p1.x == 37 && p1.y == 2 && p2.x == 37 && p2.y == 1))){
 
-				printCentered("YOU WIN!", 12);
+				setColor(Color::GREEN);
+				printCentered("THANKS FOR PLAYING!", 12);
+
 				levels[currentLevelID].drawRoom(screen);
 			}
 			gotoxy(45, 0);

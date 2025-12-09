@@ -14,8 +14,7 @@ void Game::initLevel2(Room& r)
 
 void Game::initLevel3(Room& r)
 {
-	for (int x = 0; x < 40; x++) { r.addWall(Point{ x, 0 }); r.addWall(Point{ x, 20 }); }
-	for (int y = 0; y <= 20; y++) { r.addWall(Point{ 0, y }); r.addWall(Point{ 40, y }); }
+	level3props(r);
 }
 
 
@@ -73,23 +72,28 @@ void Game::init()
     initLevel2(levels[1]);
     initLevel3(levels[2]);
 
-    currentLevelID = 0; // Start at Level 1
+	currentLevelID = 0;// Start at Level 1
 	setGame(currentLevelID);
 }
 
 void Game::setGame(int level) {
 	screen.clearScreen();
-	currentLevelID = level;
 
 	switch (level) {
 	case 0:
 		screen.Lvl1Screen();
+		players[0].setPos(6, 3);
+		players[1].setPos(5, 7);
 		break;
 	case 1:
 		screen.Lvl2Screen();
+		players[0].setPos(2, 2);
+		players[1].setPos(4, 2);
 		break;
 	case 2:
 		screen.Lvl3Screen();
+		players[0].setPos(65, 5);
+		players[1].setPos(70, 16);
 		break;
 	default:
 		screen.Lvl1Screen();
@@ -163,9 +167,15 @@ void Game::run()
 		{
 			currentLevelID = 2;
 			setGame(currentLevelID);
+			players[0].setPos(65, 5);
+			players[1].setPos(70, 16);
+		}
+		if (currentLevelID == 2) {
+			if ((p1.x == 37 && p1.y == 1 && p2.x == 37 && p2.y == 2) || ((p1.x == 37 && p1.y == 2 && p2.x == 37 && p2.y == 1))){
 
-			printCentered("YOU WIN!", 12);
-			levels[currentLevelID].drawRoom(screen);
+				printCentered("YOU WIN!", 12);
+				levels[currentLevelID].drawRoom(screen);
+			}
 		}
 		else
 
@@ -252,12 +262,12 @@ void Game::level1props(Room& r) {
 
 	// Group 3: Lower (y=13) at x=22
 	Obstacle obs3;
-	obs3.addPart(Placement(23, 13));
+	obs3.addPart(Placement(22, 13));
 	r.addObstacle(obs3);
 
 	// Group 4: Bottom (y=16) at x=22
 	Obstacle obs4;
-	obs4.addPart(Placement(23, 16));
+	obs4.addPart(Placement(22, 16));
 	r.addObstacle(obs4);
 
 	// ==========================================
@@ -333,3 +343,72 @@ void Game::level2props(Room& r){
 	// 4. KEYS & ITEMS
 		r.addTorch(Torch(31, 20, 2));
 	}
+
+void Game::level3props(Room& r) {
+	//  1.DOORS
+	Door d1(64, 16, 4, Color::GREEN);
+	Door d2(52, 22, 3, Color::RED);
+	Door d3(36, 22, 6, Color::MAGENTA);
+	Door d4(22, 22, 7, Color::YELLOW);
+	Door d5(9, 20, 5, Color::CYAN);
+	Door d6(9, 8, 2, Color::GREEN);
+	Door d7(22, 5, 1, Color::RED);
+	// ==========================================
+	// 2. SWITCHES
+	Switch* sD1 = new Switch(64, 2, 201);
+	r.addSwitch(sD1);
+	sD1->setSeen();
+	Switch* sD2 = new Switch(65, 2, 202);
+	r.addSwitch(sD2);
+	sD2->setSeen();
+	Switch* sD3 = new Switch(66, 2, 203);
+	r.addSwitch(sD3);
+	sD3->setSeen();
+
+
+	//Door 1
+	d1.addRequiredSwitch(r.getSwitchByID(201), true);  // Left switch must be TRUE
+	d1.addRequiredSwitch(r.getSwitchByID(202), false);  // Middle switch must be TRUE
+	d1.addRequiredSwitch(r.getSwitchByID(203), false); // Right switch must be FALSE
+
+	// Door 2
+	d2.addRequiredSwitch(r.getSwitchByID(201), false);
+	d2.addRequiredSwitch(r.getSwitchByID(202), true);
+	d2.addRequiredSwitch(r.getSwitchByID(203), true);
+
+	// Door 3
+	d3.addRequiredSwitch(r.getSwitchByID(201), true);
+	d3.addRequiredSwitch(r.getSwitchByID(202), true);
+	d3.addRequiredSwitch(r.getSwitchByID(203), false);
+
+	// Door 4
+	d4.addRequiredSwitch(r.getSwitchByID(201), true);
+	d4.addRequiredSwitch(r.getSwitchByID(202), true);
+	d4.addRequiredSwitch(r.getSwitchByID(203), true);
+
+	// Door 5
+	d5.addRequiredSwitch(r.getSwitchByID(201), true);
+	d5.addRequiredSwitch(r.getSwitchByID(202), false);
+	d5.addRequiredSwitch(r.getSwitchByID(203), true);
+
+	// Door 6
+	d6.addRequiredSwitch(r.getSwitchByID(201), false);
+	d6.addRequiredSwitch(r.getSwitchByID(202), true);
+	d6.addRequiredSwitch(r.getSwitchByID(203), false);
+
+	// Door 7
+	d7.addRequiredSwitch(r.getSwitchByID(201), false);
+	d7.addRequiredSwitch(r.getSwitchByID(202), false);
+	d7.addRequiredSwitch(r.getSwitchByID(203), true);
+
+	// ==========================================
+	r.addDoor(d1);
+	r.addDoor(d2);
+	r.addDoor(d3);
+	r.addDoor(d4);
+	r.addDoor(d5);
+	r.addDoor(d6);
+	r.addDoor(d7);
+
+	
+}

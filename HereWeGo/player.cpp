@@ -38,18 +38,20 @@ void Player::move(Room& room, Player* otherPlayer) {
     if (isDoorTile(tileOnMap)) //collision with door, there is no door tile so this is a "workaround"
     {
         room.checkDoor(nextPoint, itemInHand);
-        doorHandling(room, itemInHand);
+        setDirection(0, 0);
+        setColor(itemInHand.color);
+        pos.draw();
         return;
     }
 
-    if (tileOnMap == KEY_TILE) { //key collision
+    if (tileOnMap == KEY_TILE || tileOnMap == TORCH_TILE) { //key collision
      
-        if (!keyHandling(room, nextPoint))
-        return;
-    }
-    if (tileOnMap == TORCH_TILE) { //key collision
-        if (!keyHandling(room, nextPoint))
-        return;
+        if (!pickItem(nextPoint, room))
+        {
+            setDirection(0, 0);
+            return;
+        }
+        
     }
 
     if (tileOnMap == OBSTACLE_TILE) { //obstacle collision
@@ -102,42 +104,8 @@ void Player::synchronizePartner(Player* otherPlayer, Room& room) {
     otherPlayer->draw();
 }
 
-void Player::doorHandling(Room& room, heldItem& _itemInHand ) //room might be used in future, when we add more rooms to project!
-{
-    setDirection(0, 0);
 
-    setColor(_itemInHand.color);
-    pos.draw();
-    std::cout << std::flush;
-}
 
-bool Player::keyHandling(Room& room, Point& nextPoint)
-{
-    if (itemInHand.type == NONE)
-    {
-        pickItem(nextPoint, room, KEY);
-        return true;
-    }
-    else {
-        // Hands are full. STOP!
-        setDirection(0, 0);
-        return false;
-    }
-}
-
-bool Player::torchHandling(Room& room, Point& nextPoint)
-{
-    if (itemInHand.type == NONE)
-    {
-        pickItem(nextPoint, room, TORCH);
-        return true;
-    }
-    else {
-        // Hands are full. STOP!
-        setDirection(0, 0);
-        return false;
-    }
-}
 void Player::switchHandling(Room& room, Point& nextPoint)
 {
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
@@ -184,9 +152,9 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 
 
 
-void Player::pickItem(Point& position, Room& room, char _symbol) //check about instead of getting a symbol, get a dynamic type object (torch/key etc.. maybe in future w/ gameobject)
+bool Player::pickItem(Point& position, Room& room) //check about instead of getting a symbol, get a dynamic type object (torch/key etc.. maybe in future w/ gameobject)
 {
-    if (itemInHand.type != NONE) return; // already holding an item
+    if (itemInHand.type != NONE) return false; // already holding an item
 
     Key* key = room.isKeyThere(position);
 	
@@ -194,12 +162,15 @@ void Player::pickItem(Point& position, Room& room, char _symbol) //check about i
         
         itemInHand = { KEY, key->getKeyID(), key->getColor()};
         room.removeKey(position);
+        return true;
     }
     Torch* torch = room.isTorchThere(position);
 	if (torch != nullptr) {
 		itemInHand = { TORCH, 0, torch->getColor()};
 		room.removeTorch(position);
+        return true;
 	}
+    return false;
 }
 
 void Player::dropItem(Room& room) //item that isnt a bomb!

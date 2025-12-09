@@ -3,19 +3,7 @@
 const char p1Keys[NUM_KEYS] = { 'W','X','A','D','S','E' };
 const char p2Keys[NUM_KEYS] = { 'I','M','J','L','K','O' };
 
-void Game::initLevel1(Room& r){
-	level1props(r);
-}
 
-void Game::initLevel2(Room& r)
-{
-	level2props(r);
-}
-
-void Game::initLevel3(Room& r)
-{
-	level3props(r);
-}
 
 
 void Game::printHUD()
@@ -73,9 +61,9 @@ Game::Game() : players{
 void Game::init()
 {
     // Initialize ALL levels
-    initLevel1(levels[0]);
-    initLevel2(levels[1]);
-    initLevel3(levels[2]);
+    initLevel1Props(levels[0]);
+    initLevel2Props(levels[1]);
+    initLevel3Props(levels[2]);
 
 	currentLevelID = 0;// Start at Level 1
 	setGame(currentLevelID);
@@ -155,7 +143,7 @@ void Game::run()
 		
 
 		// Level 1 -> Level 2
-		if (currentLevelID == 0 && p1.x == 79 && p1.y == 22 && p2.x == 79 && p2.y == 22)
+		if (currentLevelID == 0 && p1.x == currentExitPoint.x && p1.y == currentExitPoint.y && p2.x == currentExitPoint.x && p2.y == currentExitPoint.y)
 		{
 			// Check for obstacle push
 			Obstacle* obs = currRoom.isObstacleThere({ 58, 18 });
@@ -199,7 +187,7 @@ void Game::run()
 	}
 
 }
-void Game::level1props(Room& r) {
+void Game::initLevel1Props(Room& r) {
 
 	// 1. DOORS
 	// ==========================================
@@ -303,7 +291,7 @@ void Game::level1props(Room& r) {
 
 }
 
-void Game::level2props(Room& r){
+void Game::initLevel2Props(Room& r){
 	// 1. DOORS
 	Door d1(79, 22, 1, Color::GREEN);
 	
@@ -359,7 +347,7 @@ void Game::level2props(Room& r){
 		r.addTorch(Torch(31, 20, 2));
 	}
 
-void Game::level3props(Room& r) {
+void Game::initLevel3Props(Room& r) {
 	//  1.DOORS
 	Door d1(64, 16, 4, Color::GREEN);
 	Door d2(52, 22, 3, Color::RED);
@@ -426,9 +414,4 @@ void Game::level3props(Room& r) {
 	r.addDoor(d7);
 
 	
-}
-
-bool Game::bothPlayersLeftRoom(Room& r, Player* atDoor, Player* waitingForYou)
-{
-	return false;
 }

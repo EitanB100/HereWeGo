@@ -79,6 +79,18 @@ void Player::move(Room& room, Player* otherPlayer) {
         return;
     }
 
+    if (tileOnMap == SPRING_TILE) {
+        Spring* s = room.isSpringThere(nextPoint);
+
+        if (s && dirx == -s->getDirection().x && diry == -s->getDirection().y) {
+            spring.compressionCount++;
+
+        }
+    }
+    else if (spring.flightTime == 0) {
+        spring.compressionCount = 0;
+    }
+
     //switch collision
     if (tileOnMap == SWITCH_ON || tileOnMap == SWITCH_OFF) { 
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
@@ -164,6 +176,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 }
 
 
+
 //Picks up an item if hands are empty
 bool Player::pickItem(Point& position, Room& room) 
 {
@@ -207,6 +220,11 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
     //reset inventory
     itemInHand = { NONE,0,Color::WHITE };
     draw();
+}
+
+void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
+{
+
 }
 
 void Player::inputManager(char input, Room& room) {

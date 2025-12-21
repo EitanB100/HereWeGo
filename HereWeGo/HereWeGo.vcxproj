@@ -133,6 +133,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Screen.h" />
+    <ClInclude Include="Spring.h" />
     <ClInclude Include="Switch.h" />
     <ClInclude Include="Tile_Chars.h" />
     <ClInclude Include="Torch.h" />

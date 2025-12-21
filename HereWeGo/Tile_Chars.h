@@ -8,6 +8,7 @@ constexpr char SWITCH_OFF = '\\';
 constexpr char TORCH_TILE = '!';
 constexpr char UNKNOWN_TILE = 'R';
 constexpr char GLASS_TILE = 'G';
+constexpr char SPRING_TILE = '#';
 
 
 // Check if character represents a door - suggested by gemini

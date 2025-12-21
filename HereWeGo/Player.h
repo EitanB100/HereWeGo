@@ -16,6 +16,13 @@ class Player {
     char keys[NUM_KEYS];  
 
     heldItem itemInHand = { NONE, 0, Color::WHITE};
+    
+    struct SpringState {
+        int compressionCount = 0; // How deep we stepped in
+        int flightTime = 0;       // How long we fly
+        int force = 1;            // Speed
+        Point launchDir = { 0,0 };  // Direction locked during flight
+    } spring;
 
     //Suggested and written by gemini!
     // added as a fix to the following bug - when player 1 moved first and pushed an obstacle, 
@@ -81,6 +88,7 @@ public:
     void move(Room& room, Player* otherPlayer);
     bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
 
+    void updateSpringPhysics(Room& room, Player* otherPlayer);
     
 
     bool pickItem(Point& position,Room& room);

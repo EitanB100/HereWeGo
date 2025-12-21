@@ -27,6 +27,7 @@ void Room::drawTopLayer()
 	for (Switch* switchOnOff : switches) switchOnOff->draw();
 	for (Torch& torch : torches) torch.draw();
 	for (Obstacle& obstacle : obstacles) obstacle.draw();
+	for (Spring& spring : springs) spring.draw();
 	getTorchesLineOfSight();
 	
 }
@@ -141,6 +142,14 @@ void Room::addTorch(Torch torch) {
 	Point TorchPos = torch.getPos();
 	map[TorchPos.y][TorchPos.x] = TORCH_TILE;
 	torches.push_back(torch);
+}
+
+void Room::addSpring(Spring spring)
+{
+	springs.push_back(spring);
+	for (const auto& part : spring.getParts()) {
+		map[part.gety()][part.getx()] = SPRING_TILE;
+	}
 }
 
 void Room::removeKey(const Point& p)
@@ -332,6 +341,14 @@ Obstacle* Room::isObstacleThere(Point p)
 	{
 		if (ob.isAt(p))
 			return &ob;
+	}
+	return nullptr;
+}
+
+Spring* Room::isSpringThere(Point p)
+{
+	for (auto& spring : springs) {
+		if (spring.isSpringPart(p)) return &spring;
 	}
 	return nullptr;
 }

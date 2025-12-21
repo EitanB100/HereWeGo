@@ -9,6 +9,7 @@
 #include "Torch.h"
 #include "Switch.h" 
 #include "Obstacle.h"
+#include "spring.h"
 
 
 class Room {
@@ -19,6 +20,7 @@ class Room {
     std::vector<Switch*> switches;
     std::vector<Obstacle> obstacles;
     std::vector<Torch> torches;
+    std::vector<Spring> springs;
 
 
 public:
@@ -42,6 +44,7 @@ public:
     void addDoor(Door door);
     void addKey(Key key);
     void addTorch(Torch torch);
+    void addSpring(Spring spring);
 
     void removeKey(const Point& p);
     void removeTorch(const Point& p);
@@ -61,7 +64,8 @@ public:
     Switch* isSwitchThere(Point p); // 5. Added Switch Getter
     Torch* isTorchThere(Point p);
     Obstacle* isObstacleThere(Point p);
-    
+    Spring* isSpringThere(Point p);
+
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
 	void CompleteLineOfSight(Torch torch);

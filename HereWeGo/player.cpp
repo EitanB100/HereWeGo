@@ -33,7 +33,7 @@ void Player::move(Room& room, Player* otherPlayer) {
 
     //between players (if one finishes, it waits at the door
     // so to not block the other, collision checks won't happen in that case) 
-    if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint.x == otherPlayer->getPos().x && nextPoint.y == otherPlayer->getPos().y ) { 
+    if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint == otherPlayer->getPos()) { 
         setDirection(0, 0);
         return;
     }
@@ -249,8 +249,17 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
         for (int i = 0; i < spring.force; i++) {
             Point startPos = getPos();
             move(room, otherPlayer);
-            if (startPos == getPos())
+            if (startPos == getPos()) {
+                spring.flightTime = 0;
+                spring.force = 1;
+                break;
+            }
         }
+        dirx = userDirx;
+        diry = userDiry;
+        
+        spring.flightTime--;
+        if (spring.flightTime <= 0) spring.force = 1;
     }
 }
 

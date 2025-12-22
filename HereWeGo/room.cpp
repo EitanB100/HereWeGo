@@ -72,7 +72,7 @@ Door* Room::isDoorThere(Point p)
 	{
 		Placement doorPos = door.getPos();
 		
-		if (doorPos.getx() == p.x && doorPos.gety() == p.y)
+		if (doorPos.getPosition() == p)
 		{
 			return &door;
 		}
@@ -121,7 +121,7 @@ Key* Room::isKeyThere(Point p)
 	for (Key& key : keys)
 	{
 		Point keyPos = key.getPos();
-		if (keyPos.x == p.x && keyPos.y == p.y)
+		if (keyPos == p)
 		{
 			return &key;
 		}
@@ -155,7 +155,7 @@ void Room::addSpring(Spring spring)
 void Room::removeKey(const Point& p)
 {
 	for (auto key = keys.begin(); key != keys.end(); key++) {
-		if (key->getPos().x == p.x && key->getPos().y == p.y) {
+		if (key->getPos() == p) {
 			keys.erase(key);
 			map[p.y][p.x] = ' ';
 			return;
@@ -166,7 +166,7 @@ void Room::removeKey(const Point& p)
 void Room::removeTorch(const Point& p)
 {
 	for (auto torch = torches.begin(); torch != torches.end(); torch++) {
-		if (torch->getPos().x == p.x && torch->getPos().y == p.y) {
+		if (torch->getPos() == p) {
 			torches.erase(torch);
 			map[p.y][p.x] = ' ';
 			return;
@@ -230,9 +230,9 @@ Switch* Room::isSwitchThere(Point p){
 		if (switchPtr == nullptr) {
 			continue;
 		}
-		Point SwitchPoint = switchPtr->getPos();
+		Point switchPoint = switchPtr->getPos();
 
-		if (SwitchPoint.x == p.x && SwitchPoint.y == p.y){
+		if (switchPoint == p){
 			return switchPtr;
 		}
 	}
@@ -327,7 +327,7 @@ Torch* Room::isTorchThere(Point p)
 	for (auto& torch : torches)
 	{
 		Point torchPos = torch.getPos();
-		if (torchPos.x == p.x && torchPos.y == p.y)
+		if (torchPos == p)
 		{
 			return &torch;
 		}
@@ -405,7 +405,7 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 		{
 			bool staysCovered = false;
 			for (const auto& newPart : futureParts) {
-				if (part.x == newPart.x && part.y == newPart.y)
+				if (part == newPart)
 				{
 					staysCovered = true; 
 					break;

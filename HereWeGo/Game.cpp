@@ -130,13 +130,15 @@ void Game::run()
 		for (int i = 0; i < 2; i++) {
 			players[i].inputManager(key, currRoom);
 			setColor(Color::WHITE);
+
+			players[i].updateSpringPhysics(currRoom, &players[1 - i]);
 			//other player passed for collision checks
 			players[i].move(currRoom, &players[1 - i]);
 			
 			Point p = players[i].getPos();
 
 			//check level completion for a player
-			if (currentExitPoint.x != -1 && p.x == currentExitPoint.x && p.y == currentExitPoint.y) {
+			if (currentExitPoint.x != -1 && p == currentExitPoint) {
 				if (!players[i].isFinished())
 				{
 					players[i].setFinished(true); //freeze finished player
@@ -156,7 +158,7 @@ void Game::run()
 		
 
 		// Level 1 -> Level 2
-		if (currentLevelID == 0 && p1.x == currentExitPoint.x && p1.y == currentExitPoint.y && p2.x == currentExitPoint.x && p2.y == currentExitPoint.y)
+		if (currentLevelID == 0 && p1 == currentExitPoint && p2 == currentExitPoint)
 		{
 			// Check for obstacle push
 			Obstacle* obs = currRoom.isObstacleThere({ 58, 18 });
@@ -183,7 +185,7 @@ void Game::run()
 			levels[currentLevelID].drawTopLayer();
 		}
 		// Level 2 -> Level 3
-		else if (currentLevelID == 1 && p1.x == currentExitPoint.x && p1.y == currentExitPoint.y && p2.x == currentExitPoint.x && p2.y == currentExitPoint.y)
+		else if (currentLevelID == 1 && p1 == currentExitPoint && p2 == currentExitPoint)
 		{
 			currentLevelID = 2;
 			setGame(currentLevelID);
@@ -196,7 +198,9 @@ void Game::run()
 
 		//specific win condition for level 3
 		else if (currentLevelID == 2) {
-			if ((p1.x == 37 && p1.y == 1 && p2.x == 37 && p2.y == 2) || ((p1.x == 37 && p1.y == 2 && p2.x == 37 && p2.y == 1))){
+			Point winA = { 37,1 };
+			Point winB = { 37,2 };
+			if ((p1 == winA && p2 == winB) || (p1 == winB && p2 == winA)){
 
 				setColor(Color::GREEN);
 				printCentered("THANKS FOR PLAYING!", 12);
@@ -396,7 +400,9 @@ void Game::initLevel3Props(Room& r) {
 	r.addSwitch(sD3);
 	sD3->setSeen();
 
-
+	Spring s({ 1, 0 });
+	s.addPart(10, 10);
+	r.addSpring(s);
 	//Door 1
 	d1.addRequiredSwitch(r.getSwitchByID(201), true);  // Left switch must be TRUE
 	d1.addRequiredSwitch(r.getSwitchByID(202), false);  // Middle switch must be TRUE

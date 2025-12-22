@@ -22,7 +22,7 @@ void Obstacle::obstacleRoomTravel(int x, int y)
 
 bool Obstacle::isAt(const Point& p) const { // Check if any part of the obstacle is at the given point
 	for (const auto& part : parts) {
-		if (part.getx() == p.x && part.gety() == p.y) {
+		if (part.getPosition() == p) {
 			return true; 
 		}
 	}

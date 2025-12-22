@@ -72,22 +72,12 @@ void Player::move(Room& room, Player* otherPlayer) {
         Spring* s = room.isSpringThere(nextPoint);
         if (s) {
             bool isOpposing = (dirx == -s->getDirection().x && diry == -s->getDirection().y);
-            int partInd = -1;
-            const auto& parts = s->getParts();
+            bool alreadyOnSpring = s->isSpringPart(pos.getPosition());
 
-            for (int i = 0; i < parts.size(); i++) {
-                if (parts[i].getPosition() == nextPoint) {
-                    partInd = i;
-                    break;
-                }
-            }
+            Point p = s->getParts()[0].getPosition();
+            bool isTip = (p == nextPoint);
 
-            if (spring.compressionCount == 0 && (partInd != 0 || !isOpposing)) {
-                setDirection(0, 0);
-                return;
-            }
-
-            else if (!isOpposing && spring.compressionCount > 0) {
+            if (spring.compressionCount == 0 && !alreadyOnSpring && (!isTip && !isOpposing)) {
                 setDirection(0, 0);
                 return;
             }
@@ -95,10 +85,18 @@ void Player::move(Room& room, Player* otherPlayer) {
             s->setCompression(spring.compressionCount);
         }
     }
+
     else if (spring.flightTime == 0 && spring.compressionCount > 0) {
         Spring* s = room.isSpringThere(pos.getPosition());
-        if (s)
+        if (s) {
+            Point sDir = s->getDirection();
+            if (dirx == sDir.x && diry == sDir.y) {
+                setDirection(0, 0);
+                return;
+            }
+
             s->setCompression(0);
+        }
         spring.compressionCount = 0;
     }
    
@@ -261,13 +259,15 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
         int userDirx = dirx; //store before changing values
         int userDiry = diry;
 
+        int originalForce = force;
+        force = spring.force;
+
         dirx = spring.launchDir.x;
         diry = spring.launchDir.y;
 
         for (int i = 0; i < spring.force; i++) {
             
             Point startPos = getPos();
-            
             move(room, otherPlayer);
             
             if (startPos == getPos()) {
@@ -276,7 +276,7 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
                 break;
             }
         }
-
+        force = originalForce;
         dirx = userDirx;
         diry = userDiry;
         

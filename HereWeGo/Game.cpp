@@ -380,12 +380,18 @@ void Game::initLevel2Props(Room& r){
 	}
 
 void Game::initLevel3Props(Room& r) {
+	// --- TEST LAB SETUP ---
+
 	// 1. "Super Strength" (Top Left)
-	// Goal: Launch Right into the box. See if it flies across the room.
+	// Goal: Launch Right into the box.
+	// Spring Points RIGHT (1, 0). 
+	// We must push LEFT to compress it. 
+	// Tip is at X=7. Base is at X=5.
+	// ORDER: Tip -> Base
 	Spring sStrength({ 1, 0 });
-	sStrength.addPart(5, 5);
+	sStrength.addPart(7, 5); // Tip (Index 0)
 	sStrength.addPart(6, 5);
-	sStrength.addPart(7, 5); // 3 Power (3^2 = 9 tiles flight)
+	sStrength.addPart(5, 5); // Base
 	r.addSpring(sStrength);
 
 	Obstacle box;
@@ -393,38 +399,45 @@ void Game::initLevel3Props(Room& r) {
 	r.addObstacle(box);
 
 	// 2. "Spring Chain" (Bottom Left)
-	// Goal: Launch Right. You will pass over the middle spring. 
-	// Do you stop? Do you compress it? (You shouldn't).
+	// Goal: Launch Right (Power 2 = 4 tiles). 
+	// Spring Points RIGHT. Tip at X=6.
 	Spring sLauncher({ 1, 0 });
-	sLauncher.addPart(5, 15);
-	sLauncher.addPart(6, 15); // Power 2 (4 tiles flight)
+	sLauncher.addPart(6, 15); // Tip
+	sLauncher.addPart(5, 15); // Base
 	r.addSpring(sLauncher);
 
-	Spring sDummy({ 0, -1 }); // Vertical spring in the way
-	sDummy.addPart(9, 15);    // Exactly in flight path
+	// The Dummy spring to fly over (Vertical)
+	// Points UP (0, -1). 
+	// We push DOWN to compress. 
+	// Tip is Top (Y=15).
+	Spring sDummy({ 0, -1 });
+	sDummy.addPart(9, 15);    // Single tile (Tip is Base)
 	r.addSpring(sDummy);
 
 	// 3. "Wall Scrape" (Top Right)
-	// Goal: Compress spring (Right). Press DOWN. 
-	// You should effectively just step Down, wasting the launch energy on the wall.
+	// Goal: Compress, then press DOWN to step off.
+	// Spring Points RIGHT. Tip at X=61.
 	Spring sScrape({ 1, 0 });
-	sScrape.addPart(60, 5);
-	sScrape.addPart(61, 5);
+	sScrape.addPart(61, 5); // Tip
+	sScrape.addPart(60, 5); // Base
 	r.addSpring(sScrape);
+
 	r.addWall({ 63, 5 }); // Wall immediately blocking the launch
 
 	// 4. "The Interceptor" (Middle Right)
-	// Goal: Put P2 on (68, 15). Launch P1 from Left to Right.
+	// Goal: P1 launches Right. P2 blocks the path.
+	// Spring Points RIGHT. Tip at X=62.
 	Spring sPvp({ 1, 0 });
-	sPvp.addPart(60, 15);
+	sPvp.addPart(62, 15); // Tip
 	sPvp.addPart(61, 15);
-	sPvp.addPart(62, 15); // Power 3
+	sPvp.addPart(60, 15); // Base
 	r.addSpring(sPvp);
 	// (Manually move Player 2 to 68,15 to test blocking)
 
-	// Required Exit (Keep this to finish level)
+	// Required Exit
 	Door dExit(37, 1, 9, Color::GREEN);
 	r.addDoor(dExit);
+
 
 	
 }

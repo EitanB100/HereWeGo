@@ -243,16 +243,14 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
         Spring* s = room.isSpringThere(pos.getPosition());
         if (s) {
             Point springDir = s->getDirection();
-            Point nextStep = { pos.getx() + springDir.x, pos.gety() + springDir.y }; //check end of spring
 
-            bool isReversing = (dirx == springDir.x && diry == springDir.y);
-            bool isStopped = (dirx == 0 && diry == 0);
-            bool hittingWall = room.isWallThere(nextStep);
-           
-            if (isStopped || isReversing || hittingWall) {
+            bool isCompressing = (dirx == -springDir.x && diry == -springDir.y);
+
+            if (!isCompressing) {
                 spring.force = spring.compressionCount;
                 spring.flightTime = spring.force * spring.force;
                 spring.launchDir = springDir;
+                
                 spring.compressionCount = 0;
                 s->setCompression(0);
             }
@@ -267,8 +265,11 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
         diry = spring.launchDir.y;
 
         for (int i = 0; i < spring.force; i++) {
+            
             Point startPos = getPos();
+            
             move(room, otherPlayer);
+            
             if (startPos == getPos()) {
                 spring.flightTime = 0;
                 spring.force = 1;
@@ -294,53 +295,34 @@ void Player::inputManager(char input, Room& room) {
 
     int requestedDirx = 0;
     int requestedDiry = 0;
-    bool isMoveKey = false;
 
     if (input == keys[UP]) {
         requestedDiry = -1;
         requestedDirx = 0;
-        isMoveKey = true;
     }
 
     else if (input == keys[DOWN]) {
 
         requestedDirx = 0;
         requestedDiry = 1;
-        isMoveKey = true;
     }
 
     else if (input == keys[LEFT]) {
         requestedDirx = -1;
         requestedDiry = 0;
-        isMoveKey = true;
     }
     else if (input == keys[RIGHT]) {
         requestedDirx = 1;
         requestedDiry = 0;
-        isMoveKey = true;
     }
+
     else if (input == keys[STAY])
         setDirection(0, 0);
+
     else if (input == keys[DISPOSE])
         dropItem(room);
     
     else return;
-    
-    if (spring.compressionCount && isMoveKey) {
-        Spring* s = room.isSpringThere(pos.getPosition());
-        if (s) {
-            Point sDir = s->getDirection();
-
-            // Rule 1: If Spring is Horizontal (y=0), BLOCK any Vertical movement
-            if (sDir.y == 0 && requestedDiry != 0) return;
-
-            // Rule 2: If Spring is Vertical (x=0), BLOCK any Horizontal movement
-            if (sDir.x == 0 && requestedDirx != 0) return;
-
-            // Result: The player presses a "wrong" key, and nothing happens (ignores input).
-            // They must press Forward, Backward, or Stay.
-        }
-    }
     
     setDirection(requestedDirx, requestedDiry);
     

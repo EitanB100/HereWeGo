@@ -32,6 +32,6 @@ public:
     void Lvl1Screen();
     void Lvl2Screen();
     void Lvl3Screen();
-
+    void Lvl4Screen();
     void draw() const;
 };

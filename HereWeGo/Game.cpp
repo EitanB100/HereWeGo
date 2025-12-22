@@ -48,6 +48,7 @@ Game::Game() : players{
 {
 	exitPoints[0] = exitPoints[1] = { 79,22 };
 	exitPoints[2] = { -1,-1 }; //final room
+	exitPoints[3] = { 79,23 }; //dummy for test room
 	p1StartPoints[0] = { 6,3 };
 	p1StartPoints[1] = { 2,2};
 	p1StartPoints[2] = { 65,5 };
@@ -55,6 +56,9 @@ Game::Game() : players{
 	p2StartPoints[0] = { 6,7 };
 	p2StartPoints[1] = { 4,2 };
 	p2StartPoints[2] = { 70,16 };
+	// for test room
+	p1StartPoints[3] = { 4, 3 };
+	p2StartPoints[3] = { 4, 4 };
 	init();
 }
 
@@ -75,32 +79,34 @@ void Game::setGame(int level) {
 	switch (level) {
 	case 0:
 		screen.Lvl1Screen();
-		players[0].setPos(p1StartPoints[0]);
-		players[1].setPos(p2StartPoints[0]);
 		break;
 	case 1:
 		screen.Lvl2Screen();
-		players[0].setPos(p1StartPoints[1]);
-		players[1].setPos(p2StartPoints[1]);
 		break;
 	case 2:
 		screen.Lvl3Screen();
-		players[0].setPos(p1StartPoints[2]);
-		players[1].setPos(p2StartPoints[2]);
+		break;
+	case 3:
+		screen.Lvl4Screen();
 		break;
 	default:
 		screen.Lvl1Screen();
-		currentLevelID = 0;
 		break;
 	}
+
+	if (level < 0 || level >= ROOM_AMOUNT) level = 0;
+
+	currentLevelID = level;
 
 	levels[currentLevelID].loadFromScreen(screen);
 	levels[currentLevelID].drawRoom(screen);
 	screen.draw();
 	levels[currentLevelID].drawTopLayer();
+
 	for (auto& player : players) {
-		player.draw();
 		player.setDirection(0, 0);
+		player.setFinished(false);
+		player.draw();
 	}
 }
 
@@ -108,10 +114,10 @@ void Game::setGame(int level) {
 void Game::run()
 {
 	while (true) {
-		Room& currRoom = levels[currentLevelID]; //get desired room
+		Room& currRoom = levels[currentLevelID]; 
 		char key = 0;
 		
-		//input gain:
+		
 		if (_kbhit()) {
 			key = _getch();
 			if (key == ESC) {
@@ -122,82 +128,36 @@ void Game::run()
 				}
 			}
 		}
-		//reset every frame
+		
 		currRoom.resetObstacles();
 		Point currentExitPoint = exitPoints[currentLevelID];
 
-		//update (movement and collision)
-		for (int i = 0; i < 2; i++) {
-			players[i].inputManager(key, currRoom);
+		//update loop
+		for (int i = 0; i < PLAYER_AMOUNT; i++) {
+			Player& p = players[i];
+			Player& other = players[1 - i];
+
+			p.inputManager(key, currRoom);
 			setColor(Color::WHITE);
 
-			players[i].updateSpringPhysics(currRoom, &players[1 - i]);
-			//other player passed for collision checks
-			players[i].move(currRoom, &players[1 - i]);
-			
-			Point p = players[i].getPos();
-
+			p.updateSpringPhysics(currRoom, &other);
+			p.move(currRoom, &other);
 			//check level completion for a player
-			if (currentExitPoint.x != -1 && p == currentExitPoint) {
-				if (!players[i].isFinished())
-				{
-					players[i].setFinished(true); //freeze finished player
-					std::string playerFinish = "Player ";
-					playerFinish += players[i].getSymbol();
-					playerFinish += " is waiting...";
-
+			if (currentExitPoint.x != -1 && p.getPos() == currentExitPoint) {
+				if (!p.isFinished()) {
+					p.setFinished(true);
 					gotoxy(50, 0);
-					std::cout << playerFinish;
+					std::cout << "Player" << p.getSymbol() << " Waiting...";
 				}
 			}
 		}
 
-		// --- LEVEL TRANSITIONS ---
-		Point p1 = players[0].getPos();
-		Point p2 = players[1].getPos();
+		checkLevelTransition(currentLevelID, players[0].getPos(), players[1].getPos());
 		
+		if (currentLevelID == 2) {
+			Point p1 = players[0].getPos();
+			Point p2 = players[1].getPos();
 
-		// Level 1 -> Level 2
-		if (currentLevelID == 0 && p1 == currentExitPoint && p2 == currentExitPoint)
-		{
-			// Check for obstacle push
-			Obstacle* obs = currRoom.isObstacleThere({ 58, 18 });
-			if (obs) {
-				Obstacle newObs = *obs;
-				newObs.obstacleRoomTravel(3, 3); // Teleport to new room entrance
-				levels[1].addObstacle(newObs);
-				currRoom.removeObstacle({ 58, 18 });
-			}
-
-			currentLevelID = 1;
-			
-			setGame(currentLevelID); //load new map
-
-			// reset players and unfreeze them for new level
-			players[0].setPos(p1StartPoints[1]);
-			players[1].setPos(p2StartPoints[1]);
-
-			players[0].setFinished(false);
-			players[1].setFinished(false);
-
-			//draw them
-			levels[currentLevelID].drawRoom(screen);
-			levels[currentLevelID].drawTopLayer();
-		}
-		// Level 2 -> Level 3
-		else if (currentLevelID == 1 && p1 == currentExitPoint && p2 == currentExitPoint)
-		{
-			currentLevelID = 2;
-			setGame(currentLevelID);
-			players[0].setPos(p1StartPoints[2]);
-			players[1].setPos(p2StartPoints[2]);
-			
-			players[0].setFinished(false);
-			players[1].setFinished(false);
-		}
-
-		//specific win condition for level 3
-		else if (currentLevelID == 2) {
 			Point winA = { 37,1 };
 			Point winB = { 37,2 };
 			if ((p1 == winA && p2 == winB) || (p1 == winB && p2 == winA)){
@@ -219,6 +179,38 @@ void Game::run()
 	}
 
 }
+
+void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
+{
+	Point exit = exitPoints[currentLevel];
+	if (exit.x == -1) return; // No standard exit
+
+	if (p1 == exit && p2 == exit)
+	{
+		// Level 1 -> Level 2 Special Case (Obstacle carry over)
+		if (currentLevel == 0) {
+			Obstacle* obs = levels[0].isObstacleThere({ 58, 18 });
+			if (obs) {
+				Obstacle newObs = *obs;
+				newObs.obstacleRoomTravel(3, 3);
+				levels[1].addObstacle(newObs);
+				levels[0].removeObstacle({ 58, 18 });
+			}
+		}
+
+		// Advance level
+		if (currentLevel < ROOM_AMOUNT - 1) {
+			currentLevel++;
+			setGame(currentLevel);
+		}
+		else {
+			// Looping back or end game state could go here
+			// For now, just reset the current level to simulate endless play
+			setGame(currentLevel);
+		}
+	}
+}
+
 void Game::initLevel1Props(Room& r) {
 
 	// 1. DOORS
@@ -447,4 +439,49 @@ void Game::initLevel3Props(Room& r) {
 
 
 	
+}
+
+void Game::initLevel4Props(Room& r) {
+	// === TEST LAB SETUP ===
+
+	// 1. Keys & Doors (Top Right)
+	// Simple Key
+	r.addKey(Key(40, 3, 1, Color::RED));
+	r.addDoor(Door(42, 3, 1, Color::RED));
+
+	// Switch Door
+	Switch* sw1 = new Switch(60, 3, 401); // ID 401
+	r.addSwitch(sw1);
+	Door dSwitch(65, 3, 0, Color::CYAN);
+	dSwitch.addRequiredSwitch(r.getSwitchByID(401), true); // Open when ON
+	r.addDoor(dSwitch);
+
+
+	// 2. Spring Chaining (Middle Left)
+	// Launch RIGHT -> Hit UP Spring -> Fly UP
+	Spring s1({ 1,0 }); // Push Right
+	s1.addPart(5, 10);
+	s1.addPart(6, 10); // Tip
+	r.addSpring(s1);
+
+	Spring s2({ 0,-1 }); // Push Up
+	s2.addPart(15, 8); // Tip
+	s2.addPart(15, 9);
+	r.addSpring(s2);
+
+	// Wall to catch the player
+	r.addWall({ 15, 4 });
+
+	// 3. Obstacles (Bottom)
+	Obstacle box;
+	box.addPart(Placement(10, 18));
+	box.addPart(Placement(11, 18)); // 2-wide box
+	r.addObstacle(box);
+
+	// 4. Torch
+	r.addTorch(Torch(35, 18, 5));
+
+	// 5. Switches controlling logic
+	Switch* lightSwitch = new Switch(70, 20, 402);
+	r.addSwitch(lightSwitch);
 }

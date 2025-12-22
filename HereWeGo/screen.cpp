@@ -149,3 +149,36 @@ void Screen::Lvl3Screen() {
 
 	loadMapData(level3Layout);
 }
+
+void Screen::Lvl4Screen()
+{
+	const char* level4Layout[MAX_Y] = {
+		//01234567890123456789012345678901234567890123456789012345678901234567890123456789
+		"                                                                                ",// 0
+		"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 1
+		"W      TEST LAB        W                       W                               W", // 2
+		"W   (Start Area)       W      (Keys & Doors)   W       (Switch Logic)          W", // 3
+		"W                      W                       W                               W", // 4
+		"W                      W                       W                               W", // 5
+		"WWWWWWWWWW     WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 6
+		"W                                                                              W", // 7
+		"W     (Spring Chain Test)                                                      W", // 8
+		"W                                                                              W", // 9
+		"W                                                                              W", // 10
+		"W                                                                              W", // 11
+		"W                                                                              W", // 12
+		"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 13
+		"W                                                                              W", // 14
+		"W                                                                              W", // 15
+		"W    (Obstacle Course)                                                         W", // 16
+		"W                                                                              W", // 17
+		"W                                                                              W", // 18
+		"W                                                                              W", // 19
+		"W                                                                              W", // 20
+		"W                                                                              W", // 21
+		"W                                                                              W", // 22
+		"W                                                                              W", // 23
+		"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"  // 24
+	};
+	loadMapData(level4Layout);
+}

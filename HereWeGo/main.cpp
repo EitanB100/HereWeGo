@@ -48,6 +48,13 @@ int main() {
 			game.run();
 			break;
 		}
+		case '4':
+		{
+			Game game;
+			game.startInLevel(3);
+			game.run();
+			break;
+		}
 		case '8':
 			gotoxy(MAX_X / 2, MAX_Y / 2);
 			printInstructions();

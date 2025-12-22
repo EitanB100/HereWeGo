@@ -133,6 +133,20 @@ void Player::move(Room& room, Player* otherPlayer) {
     //what the player is on so we redraw it when it moves
     char objectChar = room.getObjectAt(currentPos, objectColor);
 
+    if (objectChar == SPRING_TILE) {
+        Spring* s = room.isSpringThere(currentPos);
+        if (s) {
+            const auto& parts = s->getParts();
+
+            for (int i = 0; i < parts.size(); i++) {
+                if (parts[i].getPosition() == currentPos && i < s->getCompressionCount()) {
+                    objectChar = ' ';
+                    break;
+                }
+            }
+        }
+    }
+
     setColor(objectColor);
     pos.draw(objectChar); 
     

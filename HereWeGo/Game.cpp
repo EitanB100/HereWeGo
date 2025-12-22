@@ -400,7 +400,7 @@ void Game::initLevel3Props(Room& r) {
 	r.addSwitch(sD3);
 	sD3->setSeen();
 
-	Spring s({ 1, 0 });
+	Spring s({ -1, 0 });
 	s.addPart(49, 10);
 	s.addPart(50, 10);
 	s.addPart(51, 10);

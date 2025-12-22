@@ -81,16 +81,37 @@ void Player::move(Room& room, Player* otherPlayer) {
 
     if (tileOnMap == SPRING_TILE) {
         Spring* s = room.isSpringThere(nextPoint);
+        if (s) {
+            bool isOpposing = (dirx == -s->getDirection().x && diry == -s->getDirection().y);
+            int partInd = -1;
+            const auto& parts = s->getParts();
 
-        if (s && dirx == -s->getDirection().x && diry == -s->getDirection().y) {
-            spring.compressionCount++;
+            for (int i = 0; i < parts.size(); i++) {
+                if (parts[i].getPosition() == nextPoint) {
+                    partInd = i;
+                    break;
+                }
+            }
+            if (spring.compressionCount == 0) {
+                if (isOpposing && partInd == 0) {
+                    spring.compressionCount++;
+                }
+                else {
+                    if (isOpposing) {
+                        spring.compressionCount++;
+                    }
+                    else {
+                        setDirection(0, 0);
+                        return;
+                    }
+                }
 
+            }
+            else if (spring.flightTime == 0) {
+                spring.compressionCount = 0;
+            }
         }
     }
-    else if (spring.flightTime == 0) {
-        spring.compressionCount = 0;
-    }
-
     //switch collision
     if (tileOnMap == SWITCH_ON || tileOnMap == SWITCH_OFF) { 
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
@@ -243,8 +264,9 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
     if (spring.flightTime > 0) {
         int userDirx = dirx; //store before changing values
         int userDiry = diry;
-        dirx = -spring.launchDir.x;
-        diry = -spring.launchDir.y;
+
+        dirx = spring.launchDir.x;
+        diry = spring.launchDir.y;
 
         for (int i = 0; i < spring.force; i++) {
             Point startPos = getPos();
@@ -255,6 +277,7 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
                 break;
             }
         }
+
         dirx = userDirx;
         diry = userDiry;
         

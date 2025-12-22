@@ -461,13 +461,15 @@ void Game::initLevel4Props(Room& r) {
 
 	// 2. Spring Chaining (Middle Left)
 	Spring s1({ 1,0 }); 
+	s1.addPart(7, 10); 
 	s1.addPart(6, 10); 
-	s1.addPart(5, 10); 
+	s1.addPart(5, 10);
 	r.addSpring(s1);
 
 	Spring s2({ 0,-1 });
 	s2.addPart(12, 10);
 	s2.addPart(12, 11);
+	s2.addPart(12, 12);
 	r.addSpring(s2);
 
 	r.addWall({ 15, 4 });
@@ -504,4 +506,38 @@ void Game::initLevel4Props(Room& r) {
 	// Extra switch for atmosphere
 	Switch* lightSwitch = new Switch(55, 18, 402);
 	r.addSwitch(lightSwitch);
+	// === NEW TRICKY OBJECTS ===
+
+	// 1. "Ping-Pong" Springs (Bottom Right)
+	// Spring Facing Left at (75, 12)
+	Spring sPing({ -1, 0 });
+	sPing.addPart(75, 12); // Tip
+	sPing.addPart(76, 12); // Base
+	r.addSpring(sPing);
+
+	// Spring Facing Right at (70, 12)
+	Spring sPong({ 1, 0 });
+	sPong.addPart(70, 12); // Tip
+	sPong.addPart(69, 12); // Base
+	r.addSpring(sPong);
+
+	// 2. The Wall Slam (Top Left)
+	// Spring pointing UP into a wall with only 1 space gap
+	Spring sSlam({ 0, -1 });
+	sSlam.addPart(5, 5); // Tip
+	sSlam.addPart(5, 6); // Base
+	r.addSpring(sSlam);
+	r.addWall({ 5, 3 }); // The wall you will hit
+
+	// 3. Locked Door Launch (Bottom Left)
+	// Spring pointing DOWN into a door
+	Spring sDoor({ 0, 1 });
+	sDoor.addPart(20, 20); // Tip
+	sDoor.addPart(20, 19); // Base
+	r.addSpring(sDoor);
+
+	// A red locked door at (20, 23)
+	Door dTrap(20, 23, 8, Color::RED);
+	dTrap.addRequiredKey(99); // Impossible key ID
+	r.addDoor(dTrap);
 }

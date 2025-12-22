@@ -71,24 +71,8 @@ void Player::move(Room& room, Player* otherPlayer) {
         if (!handleSprings(room, nextPoint)) return;
     }
 
-    else if (spring.compressionCount > 0) {
-        Spring* s = room.isSpringThere(pos.getPosition());
-        if (s) {
-            // 1. Check if we are trying to push PAST the end of the spring
-            Point springDir = s->getDirection();
-            bool isOpposing = (dirx == -springDir.x && diry == -springDir.y);
-
-            // If pushing against spring AND fully compressed, we cannot move further back!
-            if (isOpposing && spring.compressionCount >= (int)s->getParts().size()) {
-                setDirection(0, 0);
-                return; // STOP. Do not reset, do not move.
-            }
-
-            // 2. If we are retreating (walking away), Reset the spring
-            s->setCompression(0);
-            s->draw(); // <--- Force redraw of ALL spring parts so they reappear
-        }
-        spring.compressionCount = 0;
+    else  {
+        if (!handleSpringExit(room)) return;
     }
 
     //switch collision
@@ -141,6 +125,29 @@ bool Player::handlePickups(Room& room, Point nextPoint) {
     return false;
 }
 
+bool Player::handleSpringExit(Room& room)
+{
+    if (spring.compressionCount == 0) return true;
+
+    Spring* s = room.isSpringThere(pos.getPosition());
+    if (!s) {
+        spring.compressionCount = 0;
+        return true;
+    }
+
+    Point springDir = s->getDirection();
+    bool isOpposing = (dirx == -springDir.x && diry == -springDir.y);
+    
+    if (isOpposing && spring.compressionCount >= s->getParts().size()) {
+        setDirection(0, 0);
+        return false;
+    }
+    s->setCompression(0);
+    s->draw();
+    spring.compressionCount = 0;
+    return true;
+}
+
 bool Player::handleSprings(Room& room, Point nextPoint) {
     // A. Flight Logic (Chaining)
     if (spring.flightTime > 0) {
@@ -170,7 +177,7 @@ bool Player::handleSprings(Room& room, Point nextPoint) {
         }
     }
 
-    // B. Compression Logic (Walking onto Spring)
+    // compression Logic (Walking onto Spring)
     if (spring.flightTime == 0) {
         Spring* s = room.isSpringThere(nextPoint);
         if (s) {

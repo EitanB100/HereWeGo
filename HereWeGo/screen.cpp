@@ -160,14 +160,14 @@ void Screen::Lvl4Screen()
 		"W                      W                       W                               W", // 3
 		"W                      W                       W                               W", // 4
 		"W                      W                       W                               W", // 5
-		"WWWWWWWWWW     WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 6
+		"WWWWWWWWWW     WWWWWWWWWWWWWWWWWWWWWWW   WWWWWWWWWWWWWWWWWWWWW    WWWWWWWWWWWWWW", // 6
 		"W                                                                              W", // 7
 		"W                                                                              W", // 8
 		"W                                                                              W", // 9
 		"W                                                                              W", // 10
 		"W                                                                              W", // 11
 		"W                                                                              W", // 12
-		"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 13
+		"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW            WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 13
 		"W                                                                              W", // 14
 		"W                                                                              W", // 15
 		"W                                                                              W", // 16

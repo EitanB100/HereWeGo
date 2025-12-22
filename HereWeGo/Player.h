@@ -22,9 +22,9 @@ class Player {
 
     // Helpers
     void synchronizePartner(Player* otherPlayer, Room& room);
-    bool handleSprings(Room& room, Point nextPoint); // Extracted Spring Logic
-    bool handlePickups(Room& room, Point nextPoint); // Extracted Pickup Logic
-
+    bool handleSprings(Room& room, Point nextPoint); 
+    bool handlePickups(Room& room, Point nextPoint);
+    bool handleSpringExit(Room& room);
 public:
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[NUM_KEYS])
     {

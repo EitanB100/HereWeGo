@@ -77,7 +77,7 @@ void Player::move(Room& room, Player* otherPlayer) {
             Point p = s->getParts()[0].getPosition();
             bool isTip = (p == nextPoint);
 
-            if (spring.compressionCount == 0 && !alreadyOnSpring && (!isTip && !isOpposing)) {
+            if (spring.compressionCount >= s->getParts().size() && isOpposing) {
                 setDirection(0, 0);
                 return;
             }
@@ -180,8 +180,10 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
         bool hasMoved = room.moveObstacle(nextPoint, dirx, diry, currentForce);
         
         //if moved, move the partner too
-        if (hasMoved && combinedPush) {
-            synchronizePartner(otherPlayer, room);
+        if (hasMoved) {
+            if (combinedPush) synchronizePartner(otherPlayer, room);
+            
+            if (spring.flightTime > 0) obstacleToPush->resetMove();
         }
         return hasMoved;
     }

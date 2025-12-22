@@ -69,11 +69,41 @@ void Player::move(Room& room, Player* otherPlayer) {
 
     if (tileOnMap == SPRING_TILE && spring.flightTime > 0) {
         Spring* nextSpring = room.isSpringThere(nextPoint);
-        Spring* currentSpring = room.isSpringThere(pos.getPosition()); // Where we are right now
+        Spring* currentSpring = room.isSpringThere(pos.getPosition());
 
         if (nextSpring != nullptr && nextSpring != currentSpring) {
-            setDirection(0, 0); // Stop flight immediately
-            return;
+
+            // get the tip of the target spring
+            Point tip = nextSpring->getParts()[0].getPosition();
+            bool isTip = (nextPoint == tip);
+
+            
+            
+            if (isTip) { //if colliding with tip of another spring, chain momentum in new spring's direction
+          
+                int conservedMomentum = spring.force;
+
+       
+                if (conservedMomentum > nextSpring->getParts().size()) {
+                    conservedMomentum = (int)nextSpring->getParts().size();
+                }
+
+                nextSpring->setCompression(conservedMomentum);
+                spring.compressionCount = conservedMomentum; // Update player state so they launch next frame
+
+                
+                // this ensures we land on the spring tip and don't fly past it
+                spring.flightTime = 0;
+                spring.force = 1;
+
+                
+                
+            }
+            else { //not a tip - treat as a wall.
+       
+                setDirection(0, 0);
+                return;
+            }
         }
     }
 
@@ -101,33 +131,18 @@ void Player::move(Room& room, Player* otherPlayer) {
         }
     }
 
-    if (tileOnMap == SPRING_TILE && spring.flightTime > 0) {
-        Spring* nextSpring = room.isSpringThere(nextPoint);
-        Spring* currentSpring = room.isSpringThere(pos.getPosition());
-
-        // Ensure we aren't colliding with the spring we are launching FROM
-        if (nextSpring != nullptr && nextSpring != currentSpring) {
-
-            // Check if we are hitting the TIP head-on
-            Point sDir = nextSpring->getDirection();
-            bool isOpposing = (dirx == -sDir.x && diry == -sDir.y);
-            Point tip = nextSpring->getParts()[0].getPosition();
-
-            if (isOpposing && nextPoint == tip) {
-                // CHAINING LOGIC: 
-                // We hit the tip! Don't stop. Instead, Cancel Flight and Allow Entry.
-                // This converts the flight into a "Step On" action immediately.
-                spring.flightTime = 0;
-                spring.force = 1;
-                // We do NOT return here. We let the code fall through to Section 7.
-            }
-            else {
-                // CRASH LOGIC:
-                // We hit the side or base of a spring. Treat as a Wall.
+    else if (spring.flightTime == 0 && spring.compressionCount > 0) {
+        Spring* s = room.isSpringThere(pos.getPosition());
+        if (s) {
+            Point sDir = s->getDirection();
+            if (dirx == -sDir.x && diry == -sDir.y) {
                 setDirection(0, 0);
                 return;
             }
+
+            s->setCompression(0);
         }
+        spring.compressionCount = 0;
     }
    
     //switch collision
@@ -301,9 +316,7 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
             
             Point startPos = getPos();
             move(room, otherPlayer);
-
-            if (spring.flightTime == 0) break;
-
+            
             if (startPos == getPos()) {
                 spring.flightTime = 0;
                 spring.force = 1;
@@ -314,8 +327,8 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
         dirx = userDirx;
         diry = userDiry;
         
-        spring.flightTime--;
-        if (spring.flightTime <= 0) spring.force = 1;
+        if (spring.flightTime > 0) spring.flightTime--;
+        else spring.force = 1;
     }
 }
 

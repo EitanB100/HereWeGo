@@ -380,63 +380,70 @@ void Game::initLevel2Props(Room& r){
 	}
 
 void Game::initLevel3Props(Room& r) {
-	// --- TEST LAB SETUP ---
+	//  1.DOORS
+	Door d1(64, 16, 4, Color::GREEN);
+	Door d2(52, 22, 3, Color::RED);
+	Door d3(36, 22, 6, Color::MAGENTA);
+	Door d4(22, 22, 7, Color::YELLOW);
+	Door d5(9, 20, 5, Color::CYAN);
+	Door d6(9, 8, 2, Color::GREEN);
+	Door d7(22, 5, 1, Color::RED);
+	// ==========================================
+	// 2. SWITCHES
+	Switch* sD1 = new Switch(64, 2, 201);
+	r.addSwitch(sD1);
+	sD1->setSeen();
+	Switch* sD2 = new Switch(65, 2, 202);
+	r.addSwitch(sD2);
+	sD2->setSeen();
+	Switch* sD3 = new Switch(66, 2, 203);
+	r.addSwitch(sD3);
+	sD3->setSeen();
 
-	// 1. "Super Strength" (Top Left)
-	// Goal: Launch Right into the box.
-	// Spring Points RIGHT (1, 0). 
-	// We must push LEFT to compress it. 
-	// Tip is at X=7. Base is at X=5.
-	// ORDER: Tip -> Base
-	Spring sStrength({ 1, 0 });
-	sStrength.addPart(7, 5); // Tip (Index 0)
-	sStrength.addPart(6, 5);
-	sStrength.addPart(5, 5); // Base
-	r.addSpring(sStrength);
 
-	Obstacle box;
-	box.addPart(Placement(9, 5)); // Gap of 1, then Box
-	r.addObstacle(box);
+	//Door 1
+	d1.addRequiredSwitch(r.getSwitchByID(201), true);  // Left switch must be TRUE
+	d1.addRequiredSwitch(r.getSwitchByID(202), false);  // Middle switch must be TRUE
+	d1.addRequiredSwitch(r.getSwitchByID(203), false); // Right switch must be FALSE
 
-	// 2. "Spring Chain" (Bottom Left)
-	// Goal: Launch Right (Power 2 = 4 tiles). 
-	// Spring Points RIGHT. Tip at X=6.
-	Spring sLauncher({ 1, 0 });
-	sLauncher.addPart(6, 15); // Tip
-	sLauncher.addPart(5, 15); // Base
-	r.addSpring(sLauncher);
+	// Door 2
+	d2.addRequiredSwitch(r.getSwitchByID(201), false);
+	d2.addRequiredSwitch(r.getSwitchByID(202), true);
+	d2.addRequiredSwitch(r.getSwitchByID(203), true);
 
-	// The Dummy spring to fly over (Vertical)
-	// Points UP (0, -1). 
-	// We push DOWN to compress. 
-	// Tip is Top (Y=15).
-	Spring sDummy({ 0, -1 });
-	sDummy.addPart(9, 15);    // Single tile (Tip is Base)
-	r.addSpring(sDummy);
+	// Door 3
+	d3.addRequiredSwitch(r.getSwitchByID(201), true);
+	d3.addRequiredSwitch(r.getSwitchByID(202), true);
+	d3.addRequiredSwitch(r.getSwitchByID(203), false);
 
-	// 3. "Wall Scrape" (Top Right)
-	// Goal: Compress, then press DOWN to step off.
-	// Spring Points RIGHT. Tip at X=61.
-	Spring sScrape({ 1, 0 });
-	sScrape.addPart(61, 5); // Tip
-	sScrape.addPart(60, 5); // Base
-	r.addSpring(sScrape);
+	// Door 4
+	d4.addRequiredSwitch(r.getSwitchByID(201), true);
+	d4.addRequiredSwitch(r.getSwitchByID(202), true);
+	d4.addRequiredSwitch(r.getSwitchByID(203), true);
 
-	r.addWall({ 63, 5 }); // Wall immediately blocking the launch
+	// Door 5
+	d5.addRequiredSwitch(r.getSwitchByID(201), true);
+	d5.addRequiredSwitch(r.getSwitchByID(202), false);
+	d5.addRequiredSwitch(r.getSwitchByID(203), true);
 
-	// 4. "The Interceptor" (Middle Right)
-	// Goal: P1 launches Right. P2 blocks the path.
-	// Spring Points RIGHT. Tip at X=62.
-	Spring sPvp({ 1, 0 });
-	sPvp.addPart(62, 15); // Tip
-	sPvp.addPart(61, 15);
-	sPvp.addPart(60, 15); // Base
-	r.addSpring(sPvp);
-	// (Manually move Player 2 to 68,15 to test blocking)
+	// Door 6
+	d6.addRequiredSwitch(r.getSwitchByID(201), false);
+	d6.addRequiredSwitch(r.getSwitchByID(202), true);
+	d6.addRequiredSwitch(r.getSwitchByID(203), false);
 
-	// Required Exit
-	Door dExit(37, 1, 9, Color::GREEN);
-	r.addDoor(dExit);
+	// Door 7
+	d7.addRequiredSwitch(r.getSwitchByID(201), false);
+	d7.addRequiredSwitch(r.getSwitchByID(202), false);
+	d7.addRequiredSwitch(r.getSwitchByID(203), true);
+
+	// ==========================================
+	r.addDoor(d1);
+	r.addDoor(d2);
+	r.addDoor(d3);
+	r.addDoor(d4);
+	r.addDoor(d5);
+	r.addDoor(d6);
+	r.addDoor(d7);
 
 
 	

@@ -77,6 +77,11 @@ void Player::move(Room& room, Player* otherPlayer) {
             Point p = s->getParts()[0].getPosition();
             bool isTip = (p == nextPoint);
 
+            if (!alreadyOnSpring && !isTip) {
+                setDirection(0, 0);
+                return;
+            }
+
             if (spring.compressionCount >= s->getParts().size() && isOpposing) {
                 setDirection(0, 0);
                 return;

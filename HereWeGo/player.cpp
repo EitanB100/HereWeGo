@@ -70,7 +70,27 @@ void Player::move(Room& room, Player* otherPlayer) {
     if (tileOnMap == SPRING_TILE) {
         if (!handleSprings(room, nextPoint)) return;
     }
-   
+
+    else if (spring.compressionCount > 0) {
+        Spring* s = room.isSpringThere(pos.getPosition());
+        if (s) {
+            // 1. Check if we are trying to push PAST the end of the spring
+            Point springDir = s->getDirection();
+            bool isOpposing = (dirx == -springDir.x && diry == -springDir.y);
+
+            // If pushing against spring AND fully compressed, we cannot move further back!
+            if (isOpposing && spring.compressionCount >= (int)s->getParts().size()) {
+                setDirection(0, 0);
+                return; // STOP. Do not reset, do not move.
+            }
+
+            // 2. If we are retreating (walking away), Reset the spring
+            s->setCompression(0);
+            s->draw(); // <--- Force redraw of ALL spring parts so they reappear
+        }
+        spring.compressionCount = 0;
+    }
+
     //switch collision
     if (tileOnMap == SWITCH_ON || tileOnMap == SWITCH_OFF) { 
         Switch* switchOnOff = room.isSwitchThere(nextPoint);

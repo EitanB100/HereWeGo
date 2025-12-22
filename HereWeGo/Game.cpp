@@ -460,16 +460,14 @@ void Game::initLevel4Props(Room& r) {
 	r.addDoor(dSwitch);
 
 	// 2. Spring Chaining (Middle Left)
-	// 2. Spring Chaining (Middle Left)
-	// Launch RIGHT -> Hit UP Spring -> Fly UP
-	Spring s1({ 1,0 }); // Push Right
-	s1.addPart(6, 10); // Tip (Front - Rightmost point)
-	s1.addPart(5, 10); // Base (Back - Leftmost point)
+	Spring s1({ 1,0 }); 
+	s1.addPart(6, 10); 
+	s1.addPart(5, 10); 
 	r.addSpring(s1);
 
 	Spring s2({ 0,-1 });
-	s2.addPart(15, 8);
-	s2.addPart(15, 9);
+	s2.addPart(12, 10);
+	s2.addPart(12, 11);
 	r.addSpring(s2);
 
 	r.addWall({ 15, 4 });

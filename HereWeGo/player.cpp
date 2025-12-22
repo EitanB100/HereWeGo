@@ -6,40 +6,40 @@
 #include "Switch.h" 
 #include "Torch.h"
 
+void Player::draw() {
+    if (itemInHand.type != NONE) {
+        setColor(itemInHand.color);
+    }
+    pos.draw();
+    setColor(Color::WHITE);
+}
 //Movement logic: collisions, interactions, and updates
 void Player::move(Room& room, Player* otherPlayer) {
 
     if (dirx == 0 && diry == 0) return; // No movement input
     
-    // Calculate where we want to go next
     Point nextPoint = { pos.getx() + dirx, pos.gety() + diry };
-
-    // whats at the target coordinate
     char tileOnMap = room.getObjectAt(nextPoint);
 
-    // Dynamic lighting mechanic for torch (lights up area around new position)
+    // Dynamic lighting
     if (this->itemInHand.type == TORCH) {
         room.CompleteLineOfSight(Torch(pos.getx() + dirx, pos.gety() + diry));
     }
     
-
-    // Collision logic
-    //static objects:
-
+    //Static collisions
 	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE || tileOnMap == GLASS_TILE) {
         setDirection(0, 0); 
         return; 
     }
 
-    //between players (if one finishes, it waits at the door
-    // so to not block the other, collision checks won't happen in that case) 
-    if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint.x == otherPlayer->getPos().x && nextPoint.y == otherPlayer->getPos().y ) { 
+    //Player collision 
+    if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint == otherPlayer->getPos()) { 
         setDirection(0, 0);
         return;
     }
     
     
-    //door collision (checking if the player has a fitting key)
+    //door collision
     if (isDoorTile(tileOnMap)) 
     {
         room.checkDoor(nextPoint, itemInHand);
@@ -49,10 +49,10 @@ void Player::move(Room& room, Player* otherPlayer) {
         return;
     }
 
-    //pickup items collision
+    //Pickups
     if (tileOnMap == KEY_TILE || tileOnMap == TORCH_TILE) { 
      
-        if (!pickItem(nextPoint, room))
+        if (!handlePickups(room, nextPoint))
         {
             setDirection(0, 0);
             return;
@@ -62,33 +62,17 @@ void Player::move(Room& room, Player* otherPlayer) {
 
     //obstacle collision (pushing)
     if (tileOnMap == OBSTACLE_TILE) { 
-       
+     
         //try to push an obstacle. return true if possible
-        if (obstacleHandling(room, nextPoint, otherPlayer)) {
-            Point currentPos = getPos();
-            Color c = Color::WHITE;
-            char objectHeld = room.getObjectAt(currentPos, c);
-            setColor(c);
-            pos.draw(objectHeld);
-            setColor(Color::WHITE);
-            
-            pos.set(nextPoint.x, nextPoint.y, symbol);
-            draw();
-        }
-        
-        return;
+        if (!obstacleHandling(room, nextPoint, otherPlayer)) return;
     }
 
     if (tileOnMap == SPRING_TILE) {
-        Spring* s = room.isSpringThere(nextPoint);
-
-        if (s && dirx == -s->getDirection().x && diry == -s->getDirection().y) {
-            spring.compressionCount++;
-
-        }
+        if (!handleSprings(room, nextPoint)) return;
     }
-    else if (spring.flightTime == 0) {
-        spring.compressionCount = 0;
+
+    else  {
+        if (!handleSpringExit(room)) return;
     }
 
     //switch collision
@@ -110,12 +94,113 @@ void Player::move(Room& room, Player* otherPlayer) {
     //what the player is on so we redraw it when it moves
     char objectChar = room.getObjectAt(currentPos, objectColor);
 
+    if (objectChar == SPRING_TILE && spring.compressionCount > 0) {
+        objectChar = ' ';
+    }
+
     setColor(objectColor);
     pos.draw(objectChar); 
     
     setColor(Color::WHITE);
-    pos.set(nextPoint.x, nextPoint.y, symbol); // Update player position
-    draw(); //drawing it on screen
+    pos.set(nextPoint.x, nextPoint.y, symbol); 
+    draw(); 
+}
+
+bool Player::handlePickups(Room& room, Point nextPoint) {
+    if (itemInHand.type != NONE) return false; // Hands full
+
+    Key* key = room.isKeyThere(nextPoint);
+    if (key != nullptr) {
+        itemInHand = { KEY, key->getKeyID(), key->getColor() };
+        room.removeKey(nextPoint);
+        return true;
+    }
+
+    Torch* torch = room.isTorchThere(nextPoint);
+    if (torch != nullptr) {
+        itemInHand = { TORCH, 0, torch->getColor() };
+        room.removeTorch(nextPoint);
+        return true;
+    }
+    return false;
+}
+
+bool Player::handleSpringExit(Room& room)
+{
+    if (spring.compressionCount == 0) return true;
+
+    Spring* s = room.isSpringThere(pos.getPosition());
+    if (!s) {
+        spring.compressionCount = 0;
+        return true;
+    }
+
+    Point springDir = s->getDirection();
+    bool isOpposing = (dirx == -springDir.x && diry == -springDir.y);
+    
+    if (isOpposing && spring.compressionCount >= s->getParts().size()) {
+        setDirection(0, 0);
+        return false;
+    }
+    s->setCompression(0);
+    s->draw();
+    spring.compressionCount = 0;
+    return true;
+}
+
+bool Player::handleSprings(Room& room, Point nextPoint) {
+    // A. Flight Logic (Chaining)
+    if (spring.flightTime > 0) {
+        Spring* nextSpring = room.isSpringThere(nextPoint);
+        Spring* currentSpring = room.isSpringThere(pos.getPosition());
+
+        if (nextSpring != nullptr && nextSpring != currentSpring) {
+            Point tip = nextSpring->getParts()[0].getPosition();
+
+            // Hit Tip -> Chain
+            if (nextPoint == tip) {
+                int conservedMomentum = spring.force;
+                if (conservedMomentum > (int)nextSpring->getParts().size()) {
+                    conservedMomentum = (int)nextSpring->getParts().size();
+                }
+                nextSpring->setCompression(conservedMomentum);
+                spring.compressionCount = conservedMomentum;
+                spring.flightTime = 0; // Stop flight, land on spring
+                spring.force = 1;
+                return true; // Continue move logic (step onto spring)
+            }
+            else {
+                // Hit Side -> Crash
+                setDirection(0, 0);
+                return false;
+            }
+        }
+    }
+
+    // compression Logic (Walking onto Spring)
+    if (spring.flightTime == 0) {
+        Spring* s = room.isSpringThere(nextPoint);
+        if (s) {
+            bool isOpposing = (dirx == -s->getDirection().x && diry == -s->getDirection().y);
+            bool alreadyOnSpring = s->isSpringPart(pos.getPosition());
+            Point tip = s->getParts()[0].getPosition();
+
+            // Only allow entry from the tip or if already on it
+            if (!alreadyOnSpring && nextPoint != tip) {
+                setDirection(0, 0);
+                return false;
+            }
+
+            // Stop if fully compressed
+            if (spring.compressionCount >= (int)s->getParts().size() && isOpposing) {
+                setDirection(0, 0);
+                return false;
+            }
+            spring.compressionCount++;
+            s->setCompression(spring.compressionCount);
+        }
+    }
+    return true;
 }
 
 //Helper function that ensures that when two playes push an obstacle, 
@@ -167,36 +252,14 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
         bool hasMoved = room.moveObstacle(nextPoint, dirx, diry, currentForce);
         
         //if moved, move the partner too
-        if (hasMoved && combinedPush) {
-            synchronizePartner(otherPlayer, room);
+        if (hasMoved) {
+            if (combinedPush) synchronizePartner(otherPlayer, room);
+            
+            if (spring.flightTime > 0) obstacleToPush->resetMove();
         }
         return hasMoved;
     }
     return false; 
-}
-
-
-
-//Picks up an item if hands are empty
-bool Player::pickItem(Point& position, Room& room) 
-{
-    if (itemInHand.type != NONE) return false; // already holding an item
-
-    Key* key = room.isKeyThere(position);
-	
-    if (key != nullptr) {
-        //store data in player inventory
-        itemInHand = { KEY, key->getKeyID(), key->getColor()};
-        room.removeKey(position);
-        return true;
-    }
-    Torch* torch = room.isTorchThere(position);
-	if (torch != nullptr) {
-		itemInHand = { TORCH, 0, torch->getColor()};
-		room.removeTorch(position);
-        return true;
-	}
-    return false;
 }
 
 void Player::dropItem(Room& room) //item that isnt a bomb!
@@ -228,14 +291,16 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
         Spring* s = room.isSpringThere(pos.getPosition());
         if (s) {
             Point springDir = s->getDirection();
-            bool isReversing = (dirx == springDir.x && diry == springDir.y);
-            bool isStopped = (dirx == 0 && diry == 0);
-            Point nextStep = { pos.getx() + springDir.x, pos.gety() + springDir.y }; //check end of spring
-            if (isStopped || isReversing || room.isWallThere(nextStep)) {
+
+            bool isCompressing = (dirx == -springDir.x && diry == -springDir.y);
+
+            if (!isCompressing) {
                 spring.force = spring.compressionCount;
                 spring.flightTime = spring.force * spring.force;
                 spring.launchDir = springDir;
+                
                 spring.compressionCount = 0;
+                s->setCompression(0);
             }
         }
     }
@@ -243,39 +308,72 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
     if (spring.flightTime > 0) {
         int userDirx = dirx; //store before changing values
         int userDiry = diry;
+
+        int originalForce = force;
+        force = spring.force;
+
         dirx = spring.launchDir.x;
         diry = spring.launchDir.y;
 
         for (int i = 0; i < spring.force; i++) {
+            
             Point startPos = getPos();
             move(room, otherPlayer);
-            if (startPos == getPos())
+            
+            if (startPos == getPos()) {
+                spring.flightTime = 0;
+                spring.force = 1;
+                break;
+            }
         }
+        force = originalForce;
+        dirx = userDirx;
+        diry = userDiry;
+        
+        if (spring.flightTime > 0) spring.flightTime--;
+        else spring.force = 1;
     }
 }
 
 void Player::inputManager(char input, Room& room) {
 
     if (finishedLevel) return; //when a player finishes the level it freezes
-    switch (input) {
-    case 0:
-        return;
-    
-    }
 
     if (input == 0) return;
+
     input = toupper(input); // normalize input to uppercase
-    if (input == keys[UP])
-        setDirection(0, -1);
-    else if (input == keys[DOWN])
-        setDirection(0, 1);
-    else if (input == keys[LEFT])
-        setDirection(-1, 0);
-    else if (input == keys[RIGHT])
-        setDirection(1, 0);
+
+    int requestedDirx = 0;
+    int requestedDiry = 0;
+
+    if (input == keys[UP]) {
+        requestedDiry = -1;
+        requestedDirx = 0;
+    }
+
+    else if (input == keys[DOWN]) {
+
+        requestedDirx = 0;
+        requestedDiry = 1;
+    }
+
+    else if (input == keys[LEFT]) {
+        requestedDirx = -1;
+        requestedDiry = 0;
+    }
+    else if (input == keys[RIGHT]) {
+        requestedDirx = 1;
+        requestedDiry = 0;
+    }
+
     else if (input == keys[STAY])
         setDirection(0, 0);
+
     else if (input == keys[DISPOSE])
         dropItem(room);
+    
+    else return;
+    
+    setDirection(requestedDirx, requestedDiry);
     
 }

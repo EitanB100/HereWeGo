@@ -48,6 +48,7 @@ Game::Game() : players{
 {
 	exitPoints[0] = exitPoints[1] = { 79,22 };
 	exitPoints[2] = { -1,-1 }; //final room
+	exitPoints[3] = { 79,23 }; //dummy for test room
 	p1StartPoints[0] = { 6,3 };
 	p1StartPoints[1] = { 2,2};
 	p1StartPoints[2] = { 65,5 };
@@ -55,6 +56,9 @@ Game::Game() : players{
 	p2StartPoints[0] = { 6,7 };
 	p2StartPoints[1] = { 4,2 };
 	p2StartPoints[2] = { 70,16 };
+	// for test room
+	p1StartPoints[3] = { 4, 3 };
+	p2StartPoints[3] = { 4, 4 };
 	init();
 }
 
@@ -64,6 +68,7 @@ void Game::init()
     initLevel1Props(levels[0]);
     initLevel2Props(levels[1]);
     initLevel3Props(levels[2]);
+	initLevel4Props(levels[3]);
 
 	currentLevelID = 0;// Start at Level 1
 	setGame(currentLevelID);
@@ -75,32 +80,37 @@ void Game::setGame(int level) {
 	switch (level) {
 	case 0:
 		screen.Lvl1Screen();
-		players[0].setPos(p1StartPoints[0]);
-		players[1].setPos(p2StartPoints[0]);
 		break;
 	case 1:
 		screen.Lvl2Screen();
-		players[0].setPos(p1StartPoints[1]);
-		players[1].setPos(p2StartPoints[1]);
 		break;
 	case 2:
 		screen.Lvl3Screen();
-		players[0].setPos(p1StartPoints[2]);
-		players[1].setPos(p2StartPoints[2]);
+		break;
+	case 3:
+		screen.Lvl4Screen();
 		break;
 	default:
 		screen.Lvl1Screen();
-		currentLevelID = 0;
 		break;
 	}
+
+	if (level < 0 || level >= ROOM_AMOUNT) level = 0;
+
+	currentLevelID = level;
 
 	levels[currentLevelID].loadFromScreen(screen);
 	levels[currentLevelID].drawRoom(screen);
 	screen.draw();
 	levels[currentLevelID].drawTopLayer();
+
+	players[0].setPos(p1StartPoints[currentLevelID]);
+	players[1].setPos(p2StartPoints[currentLevelID]);
+
 	for (auto& player : players) {
-		player.draw();
 		player.setDirection(0, 0);
+		player.setFinished(false);
+		player.draw();
 	}
 }
 
@@ -108,10 +118,10 @@ void Game::setGame(int level) {
 void Game::run()
 {
 	while (true) {
-		Room& currRoom = levels[currentLevelID]; //get desired room
+		Room& currRoom = levels[currentLevelID]; 
 		char key = 0;
 		
-		//input gain:
+		
 		if (_kbhit()) {
 			key = _getch();
 			if (key == ESC) {
@@ -122,81 +132,39 @@ void Game::run()
 				}
 			}
 		}
-		//reset every frame
+		
 		currRoom.resetObstacles();
 		Point currentExitPoint = exitPoints[currentLevelID];
 
-		//update (movement and collision)
-		for (int i = 0; i < 2; i++) {
-			players[i].inputManager(key, currRoom);
+		//update loop
+		for (int i = 0; i < PLAYER_AMOUNT; i++) {
+			Player& p = players[i];
+			Player& other = players[1 - i];
+
+			p.inputManager(key, currRoom);
 			setColor(Color::WHITE);
-			//other player passed for collision checks
-			players[i].move(currRoom, &players[1 - i]);
-			
-			Point p = players[i].getPos();
 
+			p.updateSpringPhysics(currRoom, &other);
+			p.move(currRoom, &other);
 			//check level completion for a player
-			if (currentExitPoint.x != -1 && p.x == currentExitPoint.x && p.y == currentExitPoint.y) {
-				if (!players[i].isFinished())
-				{
-					players[i].setFinished(true); //freeze finished player
-					std::string playerFinish = "Player ";
-					playerFinish += players[i].getSymbol();
-					playerFinish += " is waiting...";
-
+			if (currentExitPoint.x != -1 && p.getPos() == currentExitPoint) {
+				if (!p.isFinished()) {
+					p.setFinished(true);
 					gotoxy(50, 0);
-					std::cout << playerFinish;
+					std::cout << "Player " << p.getSymbol() << " Is waiting...";
 				}
 			}
 		}
 
-		// --- LEVEL TRANSITIONS ---
-		Point p1 = players[0].getPos();
-		Point p2 = players[1].getPos();
+		checkLevelTransition(currentLevelID, players[0].getPos(), players[1].getPos());
 		
+		if (currentLevelID == 2) {
+			Point p1 = players[0].getPos();
+			Point p2 = players[1].getPos();
 
-		// Level 1 -> Level 2
-		if (currentLevelID == 0 && p1.x == currentExitPoint.x && p1.y == currentExitPoint.y && p2.x == currentExitPoint.x && p2.y == currentExitPoint.y)
-		{
-			// Check for obstacle push
-			Obstacle* obs = currRoom.isObstacleThere({ 58, 18 });
-			if (obs) {
-				Obstacle newObs = *obs;
-				newObs.obstacleRoomTravel(3, 3); // Teleport to new room entrance
-				levels[1].addObstacle(newObs);
-				currRoom.removeObstacle({ 58, 18 });
-			}
-
-			currentLevelID = 1;
-			
-			setGame(currentLevelID); //load new map
-
-			// reset players and unfreeze them for new level
-			players[0].setPos(p1StartPoints[1]);
-			players[1].setPos(p2StartPoints[1]);
-
-			players[0].setFinished(false);
-			players[1].setFinished(false);
-
-			//draw them
-			levels[currentLevelID].drawRoom(screen);
-			levels[currentLevelID].drawTopLayer();
-		}
-		// Level 2 -> Level 3
-		else if (currentLevelID == 1 && p1.x == currentExitPoint.x && p1.y == currentExitPoint.y && p2.x == currentExitPoint.x && p2.y == currentExitPoint.y)
-		{
-			currentLevelID = 2;
-			setGame(currentLevelID);
-			players[0].setPos(p1StartPoints[2]);
-			players[1].setPos(p2StartPoints[2]);
-			
-			players[0].setFinished(false);
-			players[1].setFinished(false);
-		}
-
-		//specific win condition for level 3
-		else if (currentLevelID == 2) {
-			if ((p1.x == 37 && p1.y == 1 && p2.x == 37 && p2.y == 2) || ((p1.x == 37 && p1.y == 2 && p2.x == 37 && p2.y == 1))){
+			Point winA = { 37,1 };
+			Point winB = { 37,2 };
+			if ((p1 == winA && p2 == winB) || (p1 == winB && p2 == winA)){
 
 				setColor(Color::GREEN);
 				printCentered("THANKS FOR PLAYING!", 12);
@@ -215,6 +183,38 @@ void Game::run()
 	}
 
 }
+
+void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
+{
+	Point exit = exitPoints[currentLevel];
+	if (exit.x == -1) return; // No standard exit
+
+	if (p1 == exit && p2 == exit)
+	{
+		// Level 1 -> Level 2 Special Case (Obstacle carry over)
+		if (currentLevel == 0) {
+			Obstacle* obs = levels[0].isObstacleThere({ 58, 18 });
+			if (obs) {
+				Obstacle newObs = *obs;
+				newObs.obstacleRoomTravel(3, 3);
+				levels[1].addObstacle(newObs);
+				levels[0].removeObstacle({ 58, 18 });
+			}
+		}
+
+		// Advance level
+		if (currentLevel < ROOM_AMOUNT - 1) {
+			currentLevel++;
+			setGame(currentLevel);
+		}
+		else {
+			// Looping back or end game state could go here
+			// For now, just reset the current level to simulate endless play
+			setGame(currentLevel);
+		}
+	}
+}
+
 void Game::initLevel1Props(Room& r) {
 
 	// 1. DOORS
@@ -443,4 +443,101 @@ void Game::initLevel3Props(Room& r) {
 
 
 	
+}
+
+void Game::initLevel4Props(Room& r) {
+	// === TEST LAB SETUP ===
+
+	// 1. Keys & Doors (Top Right)
+	r.addKey(Key(40, 3, 1, Color::RED));
+	r.addDoor(Door(42, 3, 1, Color::RED));
+
+	// Switch Door
+	Switch* sw1 = new Switch(60, 3, 401);
+	r.addSwitch(sw1);
+	Door dSwitch(65, 3, 0, Color::CYAN);
+	dSwitch.addRequiredSwitch(r.getSwitchByID(401), true);
+	r.addDoor(dSwitch);
+
+	// 2. Spring Chaining (Middle Left)
+	Spring s1({ 1,0 }); 
+	s1.addPart(7, 10); 
+	s1.addPart(6, 10); 
+	s1.addPart(5, 10);
+	r.addSpring(s1);
+
+	Spring s2({ 0,-1 });
+	s2.addPart(12, 10);
+	s2.addPart(12, 11);
+	s2.addPart(12, 12);
+	r.addSpring(s2);
+
+	r.addWall({ 15, 4 });
+
+	// 3. Obstacles (Bottom)
+	Obstacle box;
+	box.addPart(Placement(10, 18));
+	box.addPart(Placement(11, 18));
+	r.addObstacle(box);
+
+	// 4. Torch
+	r.addTorch(Torch(35, 18, 5));
+
+	// === NEW OBJECTS ADDED ===
+
+	// A cage area defined by walls
+	for (int x = 50; x < 60; x++) { r.addWall({ x, 15 }); r.addWall({ x, 22 }); }
+	for (int y = 15; y <= 22; y++) { r.addWall({ 50, y }); r.addWall({ 60, y }); }
+
+	// A door protecting the cage entrance
+	Door cageDoor(55, 15, 9, Color::MAGENTA);
+	cageDoor.addRequiredKey(9);
+	r.addDoor(cageDoor);
+
+	// The key for the cage (hidden behind obstacles)
+	r.addKey(Key(70, 20, 9, Color::MAGENTA));
+
+	// Obstacles blocking the key
+	Obstacle block;
+	block.addPart(Placement(68, 20));
+	block.addPart(Placement(68, 21));
+	r.addObstacle(block);
+
+	// Extra switch for atmosphere
+	Switch* lightSwitch = new Switch(55, 18, 402);
+	r.addSwitch(lightSwitch);
+	// === NEW TRICKY OBJECTS ===
+
+	// 1. "Ping-Pong" Springs (Bottom Right)
+	// Spring Facing Left at (75, 12)
+	Spring sPing({ -1, 0 });
+	sPing.addPart(75, 12); // Tip
+	sPing.addPart(76, 12); // Base
+	r.addSpring(sPing);
+
+	// Spring Facing Right at (70, 12)
+	Spring sPong({ 1, 0 });
+	sPong.addPart(70, 12); // Tip
+	sPong.addPart(69, 12); // Base
+	r.addSpring(sPong);
+
+	// 2. The Wall Slam (Top Left)
+	// Spring pointing UP into a wall with only 1 space gap
+	Spring sSlam({ 0, -1 });
+	sSlam.addPart(5, 5); // Tip
+	sSlam.addPart(5, 6); // Base
+	r.addSpring(sSlam);
+	r.addWall({ 5, 3 }); // The wall you will hit
+
+	// 3. Locked Door Launch (Bottom Left)
+	// Spring pointing DOWN into a door
+	Spring sDoor({ 0, 1 });
+	sDoor.addPart(20, 20); // Tip
+	sDoor.addPart(20, 19); // Base
+	r.addSpring(sDoor);
+
+	// A red locked door at (20, 23)
+	Door dTrap(20, 23, 8, Color::RED);
+	dTrap.addRequiredKey(99); // Impossible key ID
+	r.addDoor(dTrap);
 }

@@ -54,6 +54,9 @@
     <ClInclude Include="Torch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Spring.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="key.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spring.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

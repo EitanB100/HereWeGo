@@ -6,9 +6,15 @@
 class Spring {
     std::vector<Placement> parts;
     Point direction; // The direction the spring pushes (e.g., 1,0 for Right)
-
+    int compressedCount = 0;
 public:
     Spring(Point dir) : direction(dir) {}
+
+    Point getDirection() const { return direction; }
+
+    const std::vector<Placement>& getParts() const { return parts; }
+
+    int getCompressionCount() { return compressedCount; }
 
     // Add a tile to the spring (springs can be multiple tiles long)
     void addPart(int x, int y) {
@@ -23,12 +29,9 @@ public:
         return false;
     }
 
-    Point getDirection() const { return direction; }
-    const std::vector<Placement>& getParts() const { return parts; }
+ 
 
-    void draw() {
-        for (auto& part : parts) {
-            part.draw();
-        }
-    }
+    void setCompression(int count) { compressedCount = count; }
+
+    void draw();
 };

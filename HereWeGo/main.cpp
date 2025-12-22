@@ -21,6 +21,7 @@ int main() {
 		std::cout << "for easy playtesting:" << std::endl;
 		std::cout << "(2) Skip to level 2" << std::endl;
 		std::cout << "(3) Skip to level 3" << std::endl;
+		std::cout << "(4) Test Space" << std::endl;
 		
 		char selection = _getch();
 
@@ -45,6 +46,13 @@ int main() {
 		{
 			Game game;
 			game.startInLevel(2);
+			game.run();
+			break;
+		}
+		case '4':
+		{
+			Game game;
+			game.startInLevel(3);
 			game.run();
 			break;
 		}

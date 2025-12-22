@@ -25,6 +25,14 @@ struct heldItem {
 
 struct Point { // simple struct for position getting
     int x, y;
+
+    bool operator== (const Point& other) const{
+        return x == other.x && y == other.y;
+    }
+    
+    bool operator!= (const Point& other) const {
+        return x != other.x || y != other.y;
+    }
 };
 
 

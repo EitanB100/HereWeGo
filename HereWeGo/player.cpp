@@ -224,7 +224,34 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
 
 void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
 {
+    if (spring.compressionCount > 0) {    //is a spring compressed?
+        Spring* s = room.isSpringThere(pos.getPosition());
+        if (s) {
+            Point springDir = s->getDirection();
+            bool isReversing = (dirx == springDir.x && diry == springDir.y);
+            bool isStopped = (dirx == 0 && diry == 0);
+            Point nextStep = { pos.getx() + springDir.x, pos.gety() + springDir.y }; //check end of spring
+            if (isStopped || isReversing || room.isWallThere(nextStep)) {
+                spring.force = spring.compressionCount;
+                spring.flightTime = spring.force * spring.force;
+                spring.launchDir = springDir;
+                spring.compressionCount = 0;
+            }
+        }
+    }
+    //launch loop
+    if (spring.flightTime > 0) {
+        int userDirx = dirx; //store before changing values
+        int userDiry = diry;
+        dirx = spring.launchDir.x;
+        diry = spring.launchDir.y;
 
+        for (int i = 0; i < spring.force; i++) {
+            Point startPos = getPos();
+            move(room, otherPlayer);
+            if (startPos == getPos())
+        }
+    }
 }
 
 void Player::inputManager(char input, Room& room) {

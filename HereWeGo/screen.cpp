@@ -156,13 +156,13 @@ void Screen::Lvl4Screen()
 		//01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		"                                                                                ",// 0
 		"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 1
-		"W      TEST LAB        W                       W                               W", // 2
-		"W   (Start Area)       W      (Keys & Doors)   W       (Switch Logic)          W", // 3
+		"W                      W                       W                               W", // 2
+		"W                      W                       W                               W", // 3
 		"W                      W                       W                               W", // 4
 		"W                      W                       W                               W", // 5
 		"WWWWWWWWWW     WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 6
 		"W                                                                              W", // 7
-		"W     (Spring Chain Test)                                                      W", // 8
+		"W                                                                              W", // 8
 		"W                                                                              W", // 9
 		"W                                                                              W", // 10
 		"W                                                                              W", // 11
@@ -170,7 +170,7 @@ void Screen::Lvl4Screen()
 		"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 13
 		"W                                                                              W", // 14
 		"W                                                                              W", // 15
-		"W    (Obstacle Course)                                                         W", // 16
+		"W                                                                              W", // 16
 		"W                                                                              W", // 17
 		"W                                                                              W", // 18
 		"W                                                                              W", // 19

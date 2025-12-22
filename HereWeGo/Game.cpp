@@ -68,6 +68,7 @@ void Game::init()
     initLevel1Props(levels[0]);
     initLevel2Props(levels[1]);
     initLevel3Props(levels[2]);
+	initLevel4Props(levels[3]);
 
 	currentLevelID = 0;// Start at Level 1
 	setGame(currentLevelID);
@@ -150,7 +151,7 @@ void Game::run()
 				if (!p.isFinished()) {
 					p.setFinished(true);
 					gotoxy(50, 0);
-					std::cout << "Player" << p.getSymbol() << " Waiting...";
+					std::cout << "Player " << p.getSymbol() << " Is waiting...";
 				}
 			}
 		}
@@ -448,43 +449,61 @@ void Game::initLevel4Props(Room& r) {
 	// === TEST LAB SETUP ===
 
 	// 1. Keys & Doors (Top Right)
-	// Simple Key
 	r.addKey(Key(40, 3, 1, Color::RED));
 	r.addDoor(Door(42, 3, 1, Color::RED));
 
 	// Switch Door
-	Switch* sw1 = new Switch(60, 3, 401); // ID 401
+	Switch* sw1 = new Switch(60, 3, 401);
 	r.addSwitch(sw1);
 	Door dSwitch(65, 3, 0, Color::CYAN);
-	dSwitch.addRequiredSwitch(r.getSwitchByID(401), true); // Open when ON
+	dSwitch.addRequiredSwitch(r.getSwitchByID(401), true);
 	r.addDoor(dSwitch);
 
-
+	// 2. Spring Chaining (Middle Left)
 	// 2. Spring Chaining (Middle Left)
 	// Launch RIGHT -> Hit UP Spring -> Fly UP
 	Spring s1({ 1,0 }); // Push Right
-	s1.addPart(5, 10);
-	s1.addPart(6, 10); // Tip
+	s1.addPart(6, 10); // Tip (Front - Rightmost point)
+	s1.addPart(5, 10); // Base (Back - Leftmost point)
 	r.addSpring(s1);
 
-	Spring s2({ 0,-1 }); // Push Up
-	s2.addPart(15, 8); // Tip
+	Spring s2({ 0,-1 });
+	s2.addPart(15, 8);
 	s2.addPart(15, 9);
 	r.addSpring(s2);
 
-	// Wall to catch the player
 	r.addWall({ 15, 4 });
 
 	// 3. Obstacles (Bottom)
 	Obstacle box;
 	box.addPart(Placement(10, 18));
-	box.addPart(Placement(11, 18)); // 2-wide box
+	box.addPart(Placement(11, 18));
 	r.addObstacle(box);
 
 	// 4. Torch
 	r.addTorch(Torch(35, 18, 5));
 
-	// 5. Switches controlling logic
-	Switch* lightSwitch = new Switch(70, 20, 402);
+	// === NEW OBJECTS ADDED ===
+
+	// A cage area defined by walls
+	for (int x = 50; x < 60; x++) { r.addWall({ x, 15 }); r.addWall({ x, 22 }); }
+	for (int y = 15; y <= 22; y++) { r.addWall({ 50, y }); r.addWall({ 60, y }); }
+
+	// A door protecting the cage entrance
+	Door cageDoor(55, 15, 9, Color::MAGENTA);
+	cageDoor.addRequiredKey(9);
+	r.addDoor(cageDoor);
+
+	// The key for the cage (hidden behind obstacles)
+	r.addKey(Key(70, 20, 9, Color::MAGENTA));
+
+	// Obstacles blocking the key
+	Obstacle block;
+	block.addPart(Placement(68, 20));
+	block.addPart(Placement(68, 21));
+	r.addObstacle(block);
+
+	// Extra switch for atmosphere
+	Switch* lightSwitch = new Switch(55, 18, 402);
 	r.addSwitch(lightSwitch);
 }

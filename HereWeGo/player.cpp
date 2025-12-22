@@ -79,7 +79,7 @@ void Player::move(Room& room, Player* otherPlayer) {
         return;
     }
 
-    if (tileOnMap == SPRING_TILE) {
+    if (tileOnMap == SPRING_TILE && spring.flightTime == 0) {
         Spring* s = room.isSpringThere(nextPoint);
         if (s) {
             bool isOpposing = (dirx == -s->getDirection().x && diry == -s->getDirection().y);

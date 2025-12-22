@@ -287,25 +287,61 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
 void Player::inputManager(char input, Room& room) {
 
     if (finishedLevel) return; //when a player finishes the level it freezes
-    switch (input) {
-    case 0:
-        return;
-    
-    }
 
     if (input == 0) return;
+
     input = toupper(input); // normalize input to uppercase
-    if (input == keys[UP])
-        setDirection(0, -1);
-    else if (input == keys[DOWN])
-        setDirection(0, 1);
-    else if (input == keys[LEFT])
-        setDirection(-1, 0);
-    else if (input == keys[RIGHT])
-        setDirection(1, 0);
+
+    int requestedDirx = 0;
+    int requestedDiry = 0;
+    bool isMoveKey = false;
+
+    if (input == keys[UP]) {
+        requestedDiry = -1;
+        requestedDirx = 0;
+        isMoveKey = true;
+    }
+
+    else if (input == keys[DOWN]) {
+
+        requestedDirx = 0;
+        requestedDiry = 1;
+        isMoveKey = true;
+    }
+
+    else if (input == keys[LEFT]) {
+        requestedDirx = -1;
+        requestedDiry = 0;
+        isMoveKey = true;
+    }
+    else if (input == keys[RIGHT]) {
+        requestedDirx = 1;
+        requestedDiry = 0;
+        isMoveKey = true;
+    }
     else if (input == keys[STAY])
         setDirection(0, 0);
     else if (input == keys[DISPOSE])
         dropItem(room);
+    
+    else return;
+    
+    if (spring.compressionCount && isMoveKey) {
+        Spring* s = room.isSpringThere(pos.getPosition());
+        if (s) {
+            Point sDir = s->getDirection();
+
+            // Rule 1: If Spring is Horizontal (y=0), BLOCK any Vertical movement
+            if (sDir.y == 0 && requestedDiry != 0) return;
+
+            // Rule 2: If Spring is Vertical (x=0), BLOCK any Horizontal movement
+            if (sDir.x == 0 && requestedDirx != 0) return;
+
+            // Result: The player presses a "wrong" key, and nothing happens (ignores input).
+            // They must press Forward, Backward, or Stay.
+        }
+    }
+    
+    setDirection(requestedDirx, requestedDiry);
     
 }

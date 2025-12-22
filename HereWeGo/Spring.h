@@ -6,7 +6,7 @@
 class Spring {
     std::vector<Placement> parts;
     Point direction; // The direction the spring pushes (e.g., 1,0 for Right)
-
+    int compressedCount = 0;
 public:
     Spring(Point dir) : direction(dir) {}
 
@@ -26,9 +26,7 @@ public:
     Point getDirection() const { return direction; }
     const std::vector<Placement>& getParts() const { return parts; }
 
-    void draw() {
-        for (auto& part : parts) {
-            part.draw();
-        }
-    }
+    void setCompression(int count) { compressedCount = count; }
+
+    void draw();
 };

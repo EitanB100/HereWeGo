@@ -80,6 +80,7 @@ void Player::move(Room& room, Player* otherPlayer) {
     }
 
     if (tileOnMap == SPRING_TILE && spring.flightTime == 0) {
+
         Spring* s = room.isSpringThere(nextPoint);
         if (s) {
             bool isOpposing = (dirx == -s->getDirection().x && diry == -s->getDirection().y);
@@ -92,26 +93,27 @@ void Player::move(Room& room, Player* otherPlayer) {
                     break;
                 }
             }
-            if (spring.compressionCount == 0) {
-                if (isOpposing && partInd == 0) {
-                    spring.compressionCount++;
-                }
-                else {
-                    if (isOpposing) {
-                        spring.compressionCount++;
-                    }
-                    else {
-                        setDirection(0, 0);
-                        return;
-                    }
-                }
 
+            if (spring.compressionCount == 0 && (partInd != 0 || !isOpposing)) {
+                setDirection(0, 0);
+                return;
             }
-            else if (spring.flightTime == 0) {
-                spring.compressionCount = 0;
+
+            else if (!isOpposing && spring.compressionCount > 0) {
+                setDirection(0, 0);
+                return;
             }
+            spring.compressionCount++;
+            s->setCompression(spring.compressionCount);
         }
     }
+    else if (spring.flightTime == 0 && spring.compressionCount > 0) {
+        Spring* s = room.isSpringThere(pos.getPosition());
+        if (s)
+            s->setCompression(0);
+        spring.compressionCount = 0;
+    }
+   
     //switch collision
     if (tileOnMap == SWITCH_ON || tileOnMap == SWITCH_OFF) { 
         Switch* switchOnOff = room.isSwitchThere(nextPoint);
@@ -249,14 +251,18 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
         Spring* s = room.isSpringThere(pos.getPosition());
         if (s) {
             Point springDir = s->getDirection();
+            Point nextStep = { pos.getx() + springDir.x, pos.gety() + springDir.y }; //check end of spring
+
             bool isReversing = (dirx == springDir.x && diry == springDir.y);
             bool isStopped = (dirx == 0 && diry == 0);
-            Point nextStep = { pos.getx() + springDir.x, pos.gety() + springDir.y }; //check end of spring
-            if (isStopped || isReversing || room.isWallThere(nextStep)) {
+            bool hittingWall = room.isWallThere(nextStep);
+           
+            if (isStopped || isReversing || hittingWall) {
                 spring.force = spring.compressionCount;
                 spring.flightTime = spring.force * spring.force;
                 spring.launchDir = springDir;
                 spring.compressionCount = 0;
+                s->setCompression(0);
             }
         }
     }

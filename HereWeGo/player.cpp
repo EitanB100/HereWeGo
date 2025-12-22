@@ -62,21 +62,9 @@ void Player::move(Room& room, Player* otherPlayer) {
 
     //obstacle collision (pushing)
     if (tileOnMap == OBSTACLE_TILE) { 
-       
+     
         //try to push an obstacle. return true if possible
-        if (obstacleHandling(room, nextPoint, otherPlayer)) {
-            Point currentPos = getPos();
-            Color c = Color::WHITE;
-            char objectHeld = room.getObjectAt(currentPos, c);
-            setColor(c);
-            pos.draw(objectHeld);
-            setColor(Color::WHITE);
-            
-            pos.set(nextPoint.x, nextPoint.y, symbol);
-            draw();
-        }
-        
-        return;
+        if (!obstacleHandling(room,nextPoint,otherPlayer)) return;
     }
 
     if (tileOnMap == SPRING_TILE && spring.flightTime == 0) {
@@ -133,18 +121,8 @@ void Player::move(Room& room, Player* otherPlayer) {
     //what the player is on so we redraw it when it moves
     char objectChar = room.getObjectAt(currentPos, objectColor);
 
-    if (objectChar == SPRING_TILE) {
-        Spring* s = room.isSpringThere(currentPos);
-        if (s) {
-            const auto& parts = s->getParts();
-
-            for (int i = 0; i < parts.size(); i++) {
-                if (parts[i].getPosition() == currentPos && i < s->getCompressionCount()) {
-                    objectChar = ' ';
-                    break;
-                }
-            }
-        }
+    if (objectChar == SPRING_TILE && spring.compressionCount > 0) {
+        objectChar = ' ';
     }
 
     setColor(objectColor);

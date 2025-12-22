@@ -90,7 +90,7 @@ void Player::move(Room& room, Player* otherPlayer) {
         Spring* s = room.isSpringThere(pos.getPosition());
         if (s) {
             Point sDir = s->getDirection();
-            if (dirx == sDir.x && diry == sDir.y) {
+            if (dirx == -sDir.x && diry == -sDir.y) {
                 setDirection(0, 0);
                 return;
             }

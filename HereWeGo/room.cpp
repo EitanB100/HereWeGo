@@ -64,6 +64,12 @@ void Room::loadFromScreen(Screen& screen) // Load the room from the screen
 			}
 		}
 	}
+
+	for (Spring& spring : springs) {
+		for (const auto& part : spring.getParts()) {
+			map[part.gety()][part.getx()] = SPRING_TILE;
+		}
+	}
 }
 
 Door* Room::isDoorThere(Point p)

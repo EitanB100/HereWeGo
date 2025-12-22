@@ -243,8 +243,8 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
     if (spring.flightTime > 0) {
         int userDirx = dirx; //store before changing values
         int userDiry = diry;
-        dirx = spring.launchDir.x;
-        diry = spring.launchDir.y;
+        dirx = -spring.launchDir.x;
+        diry = -spring.launchDir.y;
 
         for (int i = 0; i < spring.force; i++) {
             Point startPos = getPos();

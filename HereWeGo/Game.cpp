@@ -401,7 +401,9 @@ void Game::initLevel3Props(Room& r) {
 	sD3->setSeen();
 
 	Spring s({ 1, 0 });
-	s.addPart(10, 10);
+	s.addPart(49, 10);
+	s.addPart(50, 10);
+	s.addPart(51, 10);
 	r.addSpring(s);
 	//Door 1
 	d1.addRequiredSwitch(r.getSwitchByID(201), true);  // Left switch must be TRUE

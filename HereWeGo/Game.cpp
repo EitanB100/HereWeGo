@@ -103,6 +103,9 @@ void Game::setGame(int level) {
 	screen.draw();
 	levels[currentLevelID].drawTopLayer();
 
+	players[0].setPos(p1StartPoints[currentLevelID]);
+	players[1].setPos(p2StartPoints[currentLevelID]);
+
 	for (auto& player : players) {
 		player.setDirection(0, 0);
 		player.setFinished(false);

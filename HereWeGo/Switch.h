@@ -52,6 +52,10 @@ public:
 		}
 	}
 
+	char stateChar() const {
+		return state ? SWITCH_ON : SWITCH_OFF;
+	}
+
 	void draw() {
 		if (seen) {
 			if (state) {

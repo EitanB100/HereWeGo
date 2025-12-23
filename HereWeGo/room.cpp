@@ -3,6 +3,8 @@
 #include "Door.h"
 #include "Switch.h"  
 #include "Obstacle.h"
+#include "Bomb.h"
+#include "Player.h"
 #include "Tile_Chars.h"
 
 //grid initialization
@@ -28,20 +30,14 @@ void Room::drawTopLayer()
 	for (Torch& torch : torches) torch.draw();
 	for (Obstacle& obstacle : obstacles) obstacle.draw();
 	for (Spring& spring : springs) spring.draw();
+	for (Bomb& bomb : bombs) bomb.draw();
 	getTorchesLineOfSight();
 	
 }
 
 
-void Room::drawRoom(Screen& screen) // Draw the room on the screen
-{
-	for (int y = 0; y < MAX_Y; y++)
-	{
-		for (int x = 0; x < MAX_X; x++)
-		{
-			screen.setTile(x, y, map[y][x]);
-		}
-	}
+void Room::drawRoom(Screen& screen) {
+	screen.loadMapFromRoom(this->map);
 }
 
 void Room::loadFromScreen(Screen& screen) // Load the room from the screen
@@ -135,6 +131,7 @@ Key* Room::isKeyThere(Point p)
 	return nullptr;
 }
 
+
 void Room::addKey(Key key) {
 	Point keyPos = key.getPos();
 	if (key.getIsSeen())
@@ -156,6 +153,15 @@ void Room::addSpring(Spring spring)
 	for (const auto& part : spring.getParts()) {
 		map[part.gety()][part.getx()] = SPRING_TILE;
 	}
+}
+
+void Room::addBomb(Bomb bomb){
+	Point bombPos = bomb.getPos();
+	if (bomb.getIsSeen())
+		map[bombPos.y][bombPos.x] = BOMB_TILE;
+	else
+		map[bombPos.y][bombPos.x] = UNKNOWN_TILE; // Draw as unknown if not seen
+	bombs.push_back(bomb);
 }
 
 void Room::removeKey(const Point& p)
@@ -191,6 +197,16 @@ void Room::removeObstacle(const Point& p)
 	}
 }
 
+void Room::removeSpring(const Point& p)
+{
+	for (auto spring = springs.begin(); spring != springs.end(); spring++) {
+		if (spring->isSpringPart(p)) {
+			springs.erase(spring);
+			return;
+		}
+	}
+} // ask if remove all or just one part of spring
+
 void Room::addSwitch(Switch* s) {
 	Point switchPos = s->getPos();
 	if (switchPos.x >= 0 && switchPos.x < MAX_X && switchPos.y >= 0 && switchPos.y < MAX_Y) {
@@ -199,6 +215,27 @@ void Room::addSwitch(Switch* s) {
 	}
 }
 
+void Room::removeSwitch(const Point& p)
+{
+	for (auto sw = switches.begin(); sw != switches.end(); sw++) {
+		if ((*sw)->getPos() == p) {
+			delete *sw; // Free the memory allocated for the switch
+			switches.erase(sw);
+			map[p.y][p.x] = ' ';
+			return;
+		}
+	}
+}
+
+void Room::removeBomb(const Point& p) {
+	for (auto bomb = bombs.begin(); bomb != bombs.end(); bomb++) {
+		if (bomb->getPos() == p) {
+			bombs.erase(bomb);
+			map[p.y][p.x] = ' ';
+			return;
+		}
+	}
+}
 
 void Room::addObstacle(Obstacle obs)
 {
@@ -309,6 +346,15 @@ void Room::CompleteLineOfSight(Torch torch) {
 					key->draw();
 				}
 			}
+			if (isBombThere(p)) // if bomb there , make it seen
+			{
+				Bomb* bomb = isBombThere(p);
+				if (bomb && !(bomb->getIsSeen())) {
+					bomb->setSeen();
+					map[p.y][p.x] = BOMB_TILE; // update map tile
+					bomb->draw();
+				}
+			}
 			if (isSwitchThere(p)) // if switch there , make it seen
 			{
 				Switch* sw = isSwitchThere(p);
@@ -321,6 +367,7 @@ void Room::CompleteLineOfSight(Torch torch) {
 		}
 	}
 }
+
 
 void Room::getTorchesLineOfSight() {
 	for (auto& torch : torches) {
@@ -355,6 +402,19 @@ Spring* Room::isSpringThere(Point p)
 {
 	for (auto& spring : springs) {
 		if (spring.isSpringPart(p)) return &spring;
+	}
+	return nullptr;
+}
+
+Bomb* Room::isBombThere(Point p)
+{
+	for (auto& bomb : bombs)
+	{
+		Point bombPos = bomb.getPos();
+		if (bombPos == p)
+		{
+			return &bomb;
+		}
 	}
 	return nullptr;
 }
@@ -499,6 +559,18 @@ char Room::getObjectAt(Point& p, Color& color)
 
 		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
 	}
+	//bombs
+	Bomb* bomb = isBombThere(p);
+	if (bomb != nullptr) {
+		if (bomb->getIsSeen()) {
+			color = bomb->getColor();
+			return BOMB_TILE;
+		}
+		else {
+			color = Color::WHITE;
+			return UNKNOWN_TILE;
+		}
+	}
 
 	//switches:
 	Switch* sw = isSwitchThere(p);
@@ -516,5 +588,89 @@ char Room::getObjectAt(Point& p, Color& color)
 	}
 
 
+
 	return map[p.y][p.x];
+}
+void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& screen) {
+	Point blastCenter = bomb->getPos();
+	int blastRadius = bomb->getBlastRadius();
+
+	//Apply damage to players
+	for (int i = 0; i < playerCount; ++i) {
+		Point pPos = players[i].getPos();
+		int dx = abs(pPos.x - blastCenter.x);
+		int dy = abs(pPos.y - blastCenter.y);
+		int distance = (dx > dy) ? dx : dy;
+
+		if (distance <= blastRadius && PointhasLineOfSight(blastCenter.x, blastCenter.y, pPos.x, pPos.y)) {
+			int damage = (blastRadius - distance + 1) * 5;
+			players[i].takeDamage(damage);
+		}
+	}
+
+	for (int d = blastRadius; d >= 0; d--) { 	// Loop from the outside (blastRadius) down to the center , needed so walls and obstacles which block clearned last
+		for (int y = blastCenter.y - d; y <= blastCenter.y + d; y++) { 		// Iterate through the square shell at distance 'd'
+			for (int x = blastCenter.x - d; x <= blastCenter.x + d; x++) {
+				if (abs(x - blastCenter.x) == d || abs(y - blastCenter.y) == d) { // We only want to process the "border" of the current square shell this ensures we go ring-by-ring
+					if (x < 0 || y < 0 || x >= MAX_X || y >= MAX_Y) continue;
+					Point p{ x, y };
+					if (PointhasLineOfSight(blastCenter.x, blastCenter.y, x, y)) {
+						// Clear items and obstacles 
+						if (isKeyThere(p)) removeKey(p);
+						if (isSwitchThere(p)) removeSwitch(p);
+						if (isObstacleThere(p)) removeObstacle(p);
+						if (isWallThere(p)) map[p.y][p.x] = ' ';
+						if (isTorchThere(p)) removeTorch(p);
+						if (isSpringThere(p)) removeSpring(p);
+						if (isBombThere(p)) {
+							Bomb* otherBomb = isBombThere(p);
+							if (otherBomb != nullptr && otherBomb != bomb) {
+								otherBomb->activate(); // Chain reaction
+							}
+						}
+
+						// Draw the explosion char onto the room map buffer
+						map[y][x] = bomb->getExplosionChar();
+					}
+				}
+			}
+		}
+	}
+}
+
+void Room::updateBombs(Player* players, int playerCount, Screen& screen) {
+	for (int i = 0; i < bombs.size(); ) {
+		bombs[i].gonnaExplode();
+
+		if (bombs[i].getTimer() <= 0) {
+			bombExplode(&bombs[i], players, playerCount, screen); // Pass screen
+			bombs.erase(bombs.begin() + i);
+			drawRoom(screen);     
+			screen.draw();        
+			drawTopLayer();       
+		}
+		else {
+			i++;
+		}
+	}
+}
+
+void Room::clearExplosions() {
+	for (int y = 0; y < MAX_Y; y++) {
+		for (int x = 0; x < MAX_X; x++) {
+			// Check if the tile is an explosion character
+			if (map[y][x] == EXPLOSION_TILE) {
+				map[y][x] = ' '; // Revert to empty floor
+			}
+		}
+	}
+}
+
+bool Room::hasExplosions() {
+	for (int y = 0; y < MAX_Y; y++) {
+		for (int x = 0; x < MAX_X; x++) {
+			if (map[y][x] == EXPLOSION_TILE) return true;
+		}
+	}
+	return false;
 }

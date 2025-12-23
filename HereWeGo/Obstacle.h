@@ -23,6 +23,9 @@ public:
 	bool getHasMoved() { return hasMoved; }
 	void resetMove() { hasMoved = false; }
 	void markAsMoved() { hasMoved = true; }
+	void getParts(std::vector<Placement>& outParts) const {
+		outParts = parts;
+	}
 
 	void obstacleRoomTravel(int x, int y);
 	

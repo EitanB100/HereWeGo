@@ -20,6 +20,9 @@ class Player {
         Point launchDir = { 0,0 };
     } spring;
 
+	int HP = 15;
+    bool alive = true;
+
     // Helpers
     void synchronizePartner(Player* otherPlayer, Room& room);
     bool handleSprings(Room& room, Point nextPoint); 
@@ -47,10 +50,22 @@ public:
     heldItem getItemInHand() { return itemInHand; }
     void setDirection(int dx, int dy) { dirx = dx; diry = dy; }
 
+    int getHP() const { return HP; }
+    void takeDamage(int amount) {
+        HP -= amount;
+        if (HP <= 0) {
+            HP = 0;
+            alive = false; // Mark as dead
+        }
+    }
+    bool isDead() const { return !alive; }
+    bool isAlive() const { return alive; }
+
     // Core Logic
     void move(Room& room, Player* otherPlayer);
     bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
     void updateSpringPhysics(Room& room, Player* otherPlayer);
     void dropItem(Room& room);
     void inputManager(char tav, Room& room);
+
 };

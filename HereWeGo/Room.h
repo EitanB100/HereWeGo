@@ -10,7 +10,10 @@
 #include "Switch.h" 
 #include "Obstacle.h"
 #include "spring.h"
+#include "Bomb.h"
 
+
+class Player; // forward decloraion
 
 class Room {
 
@@ -21,6 +24,7 @@ class Room {
     std::vector<Obstacle> obstacles;
     std::vector<Torch> torches;
     std::vector<Spring> springs;
+	std::vector<Bomb> bombs;
 
 
 public:
@@ -31,6 +35,9 @@ public:
             delete sw;
         }
         switches.clear();
+    }
+    const char (*getMap() const)[MAX_X] {
+        return map;
     }
     bool checkDoor(Point p, heldItem& item);
     void checkSwitch(Point p); // 3. Added Switch Check
@@ -45,10 +52,14 @@ public:
     void addKey(Key key);
     void addTorch(Torch torch);
     void addSpring(Spring spring);
+	void addBomb(Bomb bomb);
 
     void removeKey(const Point& p);
     void removeTorch(const Point& p);
     void removeObstacle(const Point& p);
+	void removeSpring(const Point& p);
+	void removeSwitch(const Point& p);
+	void removeBomb(const Point& p);
 
     void addSwitch(Switch* s);
     void addObstacle(Obstacle obs);
@@ -61,10 +72,11 @@ public:
 
     Door* isDoorThere(Point p);
     Key* isKeyThere(Point p);
-    Switch* isSwitchThere(Point p); // 5. Added Switch Getter
+    Switch* isSwitchThere(Point p);
     Torch* isTorchThere(Point p);
     Obstacle* isObstacleThere(Point p);
     Spring* isSpringThere(Point p);
+	Bomb* isBombThere(Point p);
 
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
@@ -78,6 +90,12 @@ public:
             o.resetMove();
         }
     }
+
+	void bombExplode(Bomb* bomb, Player* players, int playerCount , Screen& screen);
+    void updateBombs(Player* players, int playerCount, Screen& screen);
+    void clearExplosions();
+    bool hasExplosions();
+
     
    //bool moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce);
 };

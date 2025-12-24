@@ -172,6 +172,7 @@ void Game::run()
 			if (key == ESC) {
 				key = _getch();
 				if (key == 'h' || key == 'H') {
+					setColor(Color::WHITE);
 					screen.clearScreen();
 					break; //main menu exit
 				}
@@ -224,18 +225,22 @@ void Game::run()
 		if (boomDustCleaningNeeded) {
 			currRoom.clearExplosions();
 			currRoom.drawRoom(screen);
+			
 			screen.draw(); 
+			currRoom.drawTopLayer();
 			boomDustCleaningNeeded = false;
 		}
 		
 		currRoom.updateBombs(players, PLAYER_AMOUNT , screen); // update bombs
-		currRoom.drawTopLayer();
+		
 		if (currRoom.hasExplosions()) {
 			boomDustCleaningNeeded = true;
+			
 		}
 
 		bool gameOver = false;
 		for (int i = 0; i < PLAYER_AMOUNT; i++) {
+			players[i].draw();
 			if (players[i].isDead()) {
 				gameOver = true;
 				break;
@@ -245,18 +250,19 @@ void Game::run()
 		if (gameOver) {
 			screen.clearScreen();
 			gotoxy(35, 10);
-			setColor(Color::RED);
-			std::cout << "G A M E   O V E R";
-
-			gotoxy(30, 12);
+			//setColor(Color::RED);
+			//std::cout << "G A M E   O V E R";
+			printCentered("GAME OVER", 10);
+			//gotoxy(30, 12);
 			setColor(Color::WHITE);
-			std::cout << "Press 'H' to Exit to Menu";
-
+			//std::cout << "Press 'H' to Exit to Menu";
+			printCentered("LOL U SUCK", 12);
 			while (true) {
 				if (_kbhit()) {
 					char choice = _getch();
 					if (choice == 'h' || choice == 'H') {
 						// This exits Game::run and goes back to main()
+						setColor(Color::WHITE);
 						return;
 					}
 				}
@@ -280,7 +286,7 @@ void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
 		// 1. Calculate Score BEFORE resetting the level timer
 		// This ensures the player is rewarded based on the time spent on the level they just finished
 		auto now = std::chrono::steady_clock::now();
-		long long levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
+		int levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
 		score += (100000 / (levelSeconds + 1));
 
 		// 2. Handle Special Case (Obstacle carry over)

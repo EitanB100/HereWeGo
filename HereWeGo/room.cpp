@@ -639,7 +639,7 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 }
 
 void Room::updateBombs(Player* players, int playerCount, Screen& screen) {
-	for (int i = 0; i < bombs.size(); ) {
+	for (int i = 0; i < bombs.size(); i++) {
 		bombs[i].gonnaExplode();
 
 		if (bombs[i].getTimer() <= 0) {
@@ -648,9 +648,6 @@ void Room::updateBombs(Player* players, int playerCount, Screen& screen) {
 			drawRoom(screen);     
 			screen.draw();        
 			drawTopLayer();       
-		}
-		else {
-			i++;
 		}
 	}
 }

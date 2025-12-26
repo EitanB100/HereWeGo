@@ -28,15 +28,17 @@ class Game {
 	void resetLevelTimer();
 	void checkLevelTransition(int& currentLevel, Point p1, Point p2);
 	void printScore();
+	void updatePlayerKeys(char keys[], int playerNum);
+
 
 public:
 	Game(); //defined in .cpp
-	void setGame(int level);
+	void setGame(int level, bool firstSettings);
 
 
 	void startInLevel(int levelID) {
 		currentLevelID = levelID;
-		setGame(levelID);
+		setGame(levelID , false);
 	}
 	
 	void init();
@@ -46,4 +48,5 @@ public:
 	void initLevel2Props(Room& r);
 	void initLevel3Props(Room& r);
 	void initLevel4Props(Room& r);
+	void settingsMenu();
 };

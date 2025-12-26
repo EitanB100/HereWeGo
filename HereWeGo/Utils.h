@@ -4,6 +4,7 @@
 #include <conio.h>
 
 constexpr char ESC = 27;
+constexpr char ENTER = 13;
 
 constexpr int MAX_X = 80;
 constexpr int MAX_Y = 25;

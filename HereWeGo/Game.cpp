@@ -3,8 +3,8 @@
 #include <sstream> 
 #include <iomanip>  
 #include <string>
-const char p1Keys[NUM_KEYS] = { 'W','X','A','D','S','E' };
-const char p2Keys[NUM_KEYS] = { 'I','M','J','L','K','O' };
+char p1Keys[NUM_KEYS] = { 'W','X','A','D','S','E' };
+char p2Keys[NUM_KEYS] = { 'I','M','J','L','K','O' };
 
 
 
@@ -105,6 +105,98 @@ Game::Game() : players{
 	init();
 }
 
+void Game::settingsMenu() {
+	bool inSettings = true;
+	while (inSettings) {
+		system("cls");
+		printCentered("Change Players Keys", 3);
+		printCentered("(1) Change P1 keys", 5);
+		printCentered("(2) Change P2 keys", 7);
+		printCentered("(9) Back to menu", 9);
+
+		char selection = _getch();
+
+		switch (selection)
+		{
+		case '1':
+		{
+			updatePlayerKeys(p1Keys, 1);
+			break;
+		}
+		case '2':
+		{
+			updatePlayerKeys(p2Keys, 2);
+			break;
+		}
+
+		case '9':
+		{
+			inSettings = false;
+			break;
+		}
+		}
+	}
+}
+
+void Game::updatePlayerKeys(char keys[], int playerNum) {
+	const char* commandNames[] = { "UP", "DOWN", "LEFT", "RIGHT", "STAY", "DISPOSE" , ""};
+	bool finishing = false;
+
+	while (!finishing) {
+		system("cls");
+		printCentered("PLAYER " + std::to_string(playerNum) + " CONTROLS", 2);
+
+		// Display current mapping
+		for (int i = 0; i < NUM_KEYS; i++) {
+			std::string row = "(" + std::to_string(i + 1) + ") " + commandNames[i] + ": [" + keys[i] + "]";
+			printCentered(row, 4 + i);
+		}
+
+		printCentered("(ESC or Enter) Save and Exit", 12);
+		printCentered("Select a number to rebind:", 14);
+
+		char choice = _getch();
+
+		if (choice == ESC || choice == ENTER) {
+			finishing = true;
+		}
+		else {
+			int index = -1;
+			// Check if choice is a number 1-6
+			if (choice >= '1' && choice <= '6') {
+				index = choice - '1';
+			}
+			// Check if choice is the actual command key
+			else {
+				for (int i = 0; i < NUM_KEYS; i++) {
+					if (toupper(choice) == keys[i]) {
+						index = i;
+						break;
+					}
+				}
+			}
+			if (index != -1) {
+				system("cls");
+				printCentered("Changing " + std::string(commandNames[index]), 10);
+				printCentered("Press new key...", 12);
+
+				char newKey = _getch();
+
+				// Validation: Check if newKey is ESC or ENTER
+				if (newKey == ESC || newKey == ENTER) {
+					printCentered("ERROR: ESC and ENTER are reserved!", 14);
+					Sleep(250);
+				}
+				else {
+					keys[index] = toupper(newKey);
+					printCentered("SAVED!", 14);
+					Sleep(150);
+				}
+			}
+		}
+	}
+}
+
 void Game::init()
 {
     // Initialize ALL levels
@@ -114,10 +206,10 @@ void Game::init()
 	initLevel4Props(levels[3]);
 
 	currentLevelID = 0;// Start at Level 1
-	setGame(currentLevelID);
+	setGame(currentLevelID , true);
 }
 
-void Game::setGame(int level) {
+void Game::setGame(int level , bool firstSettings) {
 	screen.clearScreen();
 
 	switch (level) {
@@ -138,14 +230,17 @@ void Game::setGame(int level) {
 		break;
 	}
 
+
 	if (level < 0 || level >= ROOM_AMOUNT) level = 0;
 
 	currentLevelID = level;
 
 	levels[currentLevelID].loadFromScreen(screen);
 	levels[currentLevelID].drawRoom(screen);
-	screen.draw();
-	levels[currentLevelID].drawTopLayer();
+	if (!(firstSettings)) {
+		screen.draw();
+		levels[currentLevelID].drawTopLayer();
+	}
 
 	players[0].setPos(p1StartPoints[currentLevelID]);
 	players[1].setPos(p2StartPoints[currentLevelID]);
@@ -306,7 +401,7 @@ void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
 		}
 
 		// Reset the game state for the new currentLevel
-		setGame(currentLevel);
+		setGame(currentLevel, false );
 
 		// RESET TIMER HERE: This sets levelStartTime to 'now', making the HUD show 00:00
 		resetLevelTimer();

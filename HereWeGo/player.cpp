@@ -144,6 +144,7 @@ bool Player::handlePickups(Room& room, Point nextPoint) {
 
 bool Player::handleSpringExit(Room& room)
 {
+
     if (spring.compressionCount == 0) return true;
 
     Spring* s = room.isSpringThere(pos.getPosition());

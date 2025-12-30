@@ -52,32 +52,20 @@ const Obstacle* Room::isObstacleThere(const Point& p) const {
 
 // Spring finders
 Spring* Room::isSpringThere(const Point& p) {
-	for (auto& spring : springs) {
-		if (spring.isSpringPart(p)) return &spring;
-	}
-	return nullptr;
+	return findBy(springs, [&](Spring& spring) {return spring.isSpringPart(p); });
 }
 
 const Spring* Room::isSpringThere(const Point& p) const {
-	for (const auto& spring : springs) {
-		if (spring.isSpringPart(p)) return &spring;
-	}
-	return nullptr;
+	return findBy(springs, [&](const Spring& spring) {return spring.isSpringPart(p); });
 }
 
 // Bomb finders
 Bomb* Room::isBombThere(const Point& p) {
-	for (auto& bomb : bombs) {
-		if (bomb.getPos() == p) return &bomb;
-	}
-	return nullptr;
+	return findBy(bombs, [&](Bomb& bomb) {return bomb.getPos() == p; });
 }
 
 const Bomb* Room::isBombThere(const Point& p) const {
-	for (const auto& bomb : bombs) {
-		if (bomb.getPos() == p) return &bomb;
-	}
-	return nullptr;
+	return findBy(bombs, [&](const Bomb& bomb) {return bomb.getPos() == p; });
 }
 
 

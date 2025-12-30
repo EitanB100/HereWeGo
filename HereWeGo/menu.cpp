@@ -37,8 +37,10 @@ void Game::settingsMenu() {
 				printCentered("Color enabled!", 20);
 			}
 			else {
+				setColor(Color::WHITE);
 				printCentered("Color disabled!", 20);
 			}
+			setColor(Color::WHITE);
 			Sleep(600);
 			break;
 		}

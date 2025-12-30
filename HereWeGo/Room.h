@@ -46,6 +46,7 @@ class Room {
 public:
 
     Room();
+    //changed switches to be unique_ptrs, but just in case did those anyway
     Room(const Room&) = delete;
     Room& operator=(const Room&) = delete;
     ~Room() = default;
@@ -53,6 +54,9 @@ public:
     const char (*getMap() const)[MAX_X] {
         return map;
     }
+
+    void resetRoom();
+
     bool checkDoor(Point p, heldItem& item);
     void checkSwitch(Point p); // 3. Added Switch Check
 

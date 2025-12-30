@@ -71,6 +71,17 @@ void Room::loadFromScreen(Screen& screen) // Load the room from the screen
 
 
 
+void Room::resetRoom()
+{
+	doors.clear();
+	keys.clear();
+	switches.clear(); 
+	obstacles.clear();
+	torches.clear();
+	springs.clear();
+	bombs.clear();
+}
+
 bool Room::checkDoor(Point p, heldItem& item)
 {
 	Door* door = isDoorThere(p);

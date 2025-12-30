@@ -7,6 +7,7 @@
 
 int main() {
 
+	
 	constexpr char MENU_LVL1 = '1';
 	constexpr char MENU_LVL2 = '2';
 	constexpr char MENU_LVL3 = '3';
@@ -16,6 +17,7 @@ int main() {
 	constexpr char MENU_EXIT = '9';
 
 	bool exitProgram = false;
+	
 	hideCursor();
 	while (!exitProgram)
 	{
@@ -33,7 +35,7 @@ int main() {
 		std::cout << "(4) Test Space" << std::endl;
 
 		char selection = _getch();
-		Game game;
+
 		switch (selection)
 		{
 			
@@ -71,14 +73,16 @@ int main() {
 			game.settingsMenu();
 			break;
 		}
-		case MENU_INSTRUCTIONS: {
+		case MENU_INSTRUCTIONS: 
+		{
+			Game game;
 			gotoxy(MAX_X / 2, MAX_Y / 2);
 			printInstructions();
 			break;
 		}
 		case MENU_EXIT:
 		{
-
+			Game game;
 			system("cls");
 			printCentered("Goodbye :3", 10);
 			exitProgram = true;

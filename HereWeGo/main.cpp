@@ -33,10 +33,10 @@ int main() {
 		std::cout << "(4) Test Space" << std::endl;
 
 		char selection = _getch();
-
+		Game game;
 		switch (selection)
 		{
-
+			
 		case MENU_LVL1:	
 		{
 			Game game;

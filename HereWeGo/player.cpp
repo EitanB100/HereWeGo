@@ -187,9 +187,11 @@ bool Player::handleSprings(Room& room, Point nextPoint) {
                 return true; // Continue move logic (step onto spring)
             }
             else {
-                // Hit Side -> Crash
-                setDirection(0, 0);
-                return false;
+                if (spring.flightTime == 0) {
+                    setDirection(0, 0);
+                    return false;
+                }
+                return true;
             }
         }
     }

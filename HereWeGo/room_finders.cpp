@@ -90,7 +90,7 @@ char Room::getObjectAt(const Point& p) const
 char Room::getObjectAt(const Point& p, Color& color) const
 {
 	//boundary check
-	if (p.x < 0 || p.x > MAX_X || p.y < 0 || p.y > MAX_Y) {
+	if (p.x < 0 || p.x >= MAX_X || p.y < 0 || p.y >= MAX_Y) {
 		color = Color::WHITE;
 		return ' ';
 	}

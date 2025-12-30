@@ -47,12 +47,14 @@ public:
     void loadFromScreen(Screen& screen);
     void clearTile(Point& p) { map[p.y][p.x] = ' '; }
 
-    void addWall(Point p);
-    void addDoor(Door door);
-    void addKey(Key key);
-    void addTorch(Torch torch);
-    void addSpring(Spring spring);
-	void addBomb(Bomb bomb);
+    void addWall(const Point& p);
+    void addDoor(const Door& door);
+    void addKey(const Key& key);
+    void addTorch(const Torch& torch);
+    void addSpring(const Spring& spring);
+	void addBomb(const Bomb& bomb);
+    void addSwitch(Switch* s);
+    void addObstacle(const Obstacle& obs);
 
     void removeKey(const Point& p);
     void removeTorch(const Point& p);
@@ -61,8 +63,6 @@ public:
 	void removeSwitch(const Point& p);
 	void removeBomb(const Point& p);
 
-    void addSwitch(Switch* s);
-    void addObstacle(Obstacle obs);
 
     char getObjectAt(Point& p);
     char getObjectAt(Point& p, Color& color);

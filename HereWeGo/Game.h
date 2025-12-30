@@ -37,10 +37,7 @@ public:
 	void setGame(int level, bool firstSettings);
 
 
-	void startInLevel(int levelID) {
-		currentLevelID = levelID;
-		setGame(levelID , false);
-	}
+	void startInLevel(Level level);
 	
 	void init();
 	void run();

@@ -12,7 +12,3 @@ enum class CommandKeys {
    
 };
 
-bool operator==  (CommandKeys& key, char& input)  { 
-    input = toupper(input);
-    return false;
-}

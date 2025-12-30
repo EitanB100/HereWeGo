@@ -242,6 +242,12 @@ void Game::handleGameOver()
 	}
 }
 
+void Game::startInLevel(Level level)
+{
+	currentLevelID = static_cast<int>(level);
+	setGame(currentLevelID, false);
+}
+
 void Game::init()
 {
     // Initialize ALL levels

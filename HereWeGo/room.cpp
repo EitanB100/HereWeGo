@@ -219,7 +219,6 @@ void Room::removeSwitch(const Point& p)
 {
 	for (auto sw = switches.begin(); sw != switches.end(); sw++) {
 		if ((*sw)->getPos() == p) {
-			delete *sw; // Free the memory allocated for the switch
 			switches.erase(sw);
 			map[p.y][p.x] = ' ';
 			return;
@@ -256,12 +255,9 @@ void Room::addWall(const Point& p)
 
 Switch* Room::getSwitchByID(int id) {
 	// Iterate through all switches in the list
-	for (Switch* switchPtr : switches) {
-		if (switchPtr == nullptr) {
-			continue;
-		}
-		if (switchPtr->getSwitchID() == id) {
-			return switchPtr;
+	for (const auto& sw : switches) {
+		if (sw && sw->getSwitchID() == id) {
+			return sw.get();
 		}
 	}
 
@@ -269,7 +265,7 @@ Switch* Room::getSwitchByID(int id) {
 }
 
 Switch* Room::isSwitchThere(Point p){
-	for (Switch* switchPtr : switches){
+	for (const auto& switchPtr : switches){
 		if (switchPtr == nullptr) {
 			continue;
 		}

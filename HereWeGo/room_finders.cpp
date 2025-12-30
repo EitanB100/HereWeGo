@@ -125,14 +125,6 @@ char Room::getObjectAt(const Point& p) const
 	return getObjectAt(p, c);
 }
 
-//determines what exists at a coordinate.
-//the order of checks is sorted by visual priority
-char Room::getObjectAt(const Point& p) const
-{
-	Color c = Color::WHITE;
-	return getObjectAt(p, c);
-}
-
 char Room::getObjectAt(const Point& p, Color& color) const
 {
 	//boundary check

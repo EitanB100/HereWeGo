@@ -220,6 +220,26 @@ void Game::updatePlayerKeys(char keys[], int playerNum) {
 	}
 }
 
+void Game::handleGameOver()
+{
+	screen.clearScreen();
+	gotoxy(35, 10);
+	setColor(Color::RED);
+	
+	printCentered("G A M E   O V E R", 10);
+	printCentered("Press 'H' to exit to menu", 12);
+	while (true) {
+		if (_kbhit()) {
+			char choice = _getch();
+			if (choice == 'h' || choice == 'H') {
+				// This exits Game::run and goes back to main()
+				setColor(Color::WHITE);
+				return;
+			}
+		}
+	}
+}
+
 void Game::init()
 {
     // Initialize ALL levels
@@ -366,25 +386,7 @@ void Game::run()
 		}
 
 		if (gameOver) {
-			screen.clearScreen();
-			gotoxy(35, 10);
-			//setColor(Color::RED);
-			//std::cout << "G A M E   O V E R";
-			printCentered("GAME OVER", 10);
-			//gotoxy(30, 12);
-			setColor(Color::WHITE);
-			//std::cout << "Press 'H' to Exit to Menu";
-			printCentered("LOL U SUCK", 12);
-			while (true) {
-				if (_kbhit()) {
-					char choice = _getch();
-					if (choice == 'h' || choice == 'H') {
-						// This exits Game::run and goes back to main()
-						setColor(Color::WHITE);
-						return;
-					}
-				}
-			}
+		
 		}
 		//HUD renderer
 		printHUD();

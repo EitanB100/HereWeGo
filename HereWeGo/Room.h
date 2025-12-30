@@ -2,19 +2,19 @@
 #include <vector>
 #include <iostream>
 #include <memory>
-#include "Screen.h"
 #include "Placement.h"
 #include "Tile_Chars.h"
 #include "Door.h"
 #include "Key.h"
 #include "Torch.h"
-#include "Switch.h" 
 #include "Obstacle.h"
 #include "spring.h"
 #include "Bomb.h"
 
 
-class Player; // forward decloraion
+class Player; // forward declaration
+class Switch;
+class Screen;
 
 class Room {
 
@@ -31,7 +31,10 @@ class Room {
 public:
 
     Room();
-    
+    Room(const Room&) = delete;
+    Room& operator=(const Room&) = delete;
+    ~Room() = default;
+
     const char (*getMap() const)[MAX_X] {
         return map;
     }

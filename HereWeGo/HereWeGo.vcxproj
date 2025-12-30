@@ -147,9 +147,12 @@
     <ClCompile Include="key.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="obstacle.cpp" />
+    <ClCompile Include="physics.cpp" />
     <ClCompile Include="placement.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="room.cpp" />
+    <ClCompile Include="room_finders.cpp" />
+    <ClCompile Include="room_modifications.cpp" />
     <ClCompile Include="screen.cpp" />
     <ClCompile Include="spring.cpp" />
     <ClCompile Include="Switch.cpp" />

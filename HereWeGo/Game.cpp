@@ -1,7 +1,10 @@
 #include "Game.h"
-
-const char p1Keys[NUM_KEYS] = { 'W','X','A','D','S','E' };
-const char p2Keys[NUM_KEYS] = { 'I','M','J','L','K','O' };
+#include <iostream>
+#include <sstream> 
+#include <iomanip>  
+#include <string>
+char p1Keys[NUM_KEYS] = { 'W','X','A','D','S','E' };
+char p2Keys[NUM_KEYS] = { 'I','M','J','L','K','O' };
 
 
 
@@ -22,14 +25,15 @@ void Game::printHUD()
 	}
 	
 	else std::cout << "EMPTY ";
-	
 	setColor(Color::WHITE);
+
+	std::cout <<" Hitpoints " << players[0].getHP() << "/15 ";
 	
 	std::cout << "| Player 2: ";
 	const heldItem& item2 = players[1].getItemInHand();
 	if (item2.type == KEY) {
 		setColor(item2.color);
-		std::cout << "KEY  ";
+		std::cout << "KEY ";
 	}
 
 	else if (item2.type == TORCH) {
@@ -37,8 +41,46 @@ void Game::printHUD()
 		std::cout << "TORCH ";
 	}
 
-	else std::cout << "EMPTY  ";
+	else std::cout << "EMPTY ";
 	setColor(Color::WHITE);
+	std::cout << " Hitpoints " << players[1].getHP() << "/15 ";
+}
+
+
+void Game::printTimer() {
+	auto currentTime = std::chrono::steady_clock::now();
+
+	// Calculate Total Time from the very beginning of the game
+	auto totalElapsed = std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count();
+
+	// Calculate Level Time from the last reset (start of level)
+	auto levelElapsed = std::chrono::duration_cast<std::chrono::seconds>(currentTime - levelStartTime).count();
+
+	// Lambda to format seconds into MM:SS
+	auto formatTime = [](long long totalSeconds) -> std::string {
+		int m = static_cast<int>((totalSeconds % 3600) / 60);
+		int s = static_cast<int>(totalSeconds % 60);
+		std::stringstream ss;
+		ss << std::setfill('0') << std::setw(2) << m << ":"
+			<< std::setfill('0') << std::setw(2) << s;
+		return ss.str();
+		};
+
+	gotoxy(0, 1);
+	setColor(Color::YELLOW);
+	std::cout << "Total Time: " << formatTime(totalElapsed)
+		<< " | Level Time: " << formatTime(levelElapsed) << " ";
+
+	printScore();
+}
+
+void Game::resetLevelTimer() {
+	levelStartTime = std::chrono::steady_clock::now();
+}
+void Game::printScore() {
+	setColor(Color::YELLOW);
+	gotoxy(55, 1);
+	std::cout << "Score: " << score;
 }
 
 Game::Game() : players{
@@ -59,7 +101,100 @@ Game::Game() : players{
 	// for test room
 	p1StartPoints[3] = { 4, 3 };
 	p2StartPoints[3] = { 4, 4 };
+	startTime = std::chrono::steady_clock::now();
 	init();
+}
+
+void Game::settingsMenu() {
+	bool inSettings = true;
+	while (inSettings) {
+		system("cls");
+		printCentered("Change Players Keys", 3);
+		printCentered("(1) Change P1 keys", 5);
+		printCentered("(2) Change P2 keys", 7);
+		printCentered("(9) Back to menu", 9);
+
+		char selection = _getch();
+
+		switch (selection)
+		{
+		case '1':
+		{
+			updatePlayerKeys(p1Keys, 1);
+			break;
+		}
+		case '2':
+		{
+			updatePlayerKeys(p2Keys, 2);
+			break;
+		}
+
+		case '9':
+		{
+			inSettings = false;
+			break;
+		}
+		}
+	}
+}
+
+void Game::updatePlayerKeys(char keys[], int playerNum) {
+	const char* commandNames[] = { "UP", "DOWN", "LEFT", "RIGHT", "STAY", "DISPOSE" , ""};
+	bool finishing = false;
+
+	while (!finishing) {
+		system("cls");
+		printCentered("PLAYER " + std::to_string(playerNum) + " CONTROLS", 2);
+
+		// Display current mapping
+		for (int i = 0; i < NUM_KEYS; i++) {
+			std::string row = "(" + std::to_string(i + 1) + ") " + commandNames[i] + ": [" + keys[i] + "]";
+			printCentered(row, 4 + i);
+		}
+
+		printCentered("(ESC or Enter) Save and Exit", 12);
+		printCentered("Select a number to rebind:", 14);
+
+		char choice = _getch();
+
+		if (choice == ESC || choice == ENTER) {
+			finishing = true;
+		}
+		else {
+			int index = -1;
+			// Check if choice is a number 1-6
+			if (choice >= '1' && choice <= '6') {
+				index = choice - '1';
+			}
+			// Check if choice is the actual command key
+			else {
+				for (int i = 0; i < NUM_KEYS; i++) {
+					if (toupper(choice) == keys[i]) {
+						index = i;
+						break;
+					}
+				}
+			}
+			if (index != -1) {
+				system("cls");
+				printCentered("Changing " + std::string(commandNames[index]), 10);
+				printCentered("Press new key...", 12);
+
+				char newKey = _getch();
+
+				// Validation: Check if newKey is ESC or ENTER
+				if (newKey == ESC || newKey == ENTER) {
+					printCentered("ERROR: ESC and ENTER are reserved!", 14);
+					Sleep(250);
+				}
+				else {
+					keys[index] = toupper(newKey);
+					printCentered("SAVED!", 14);
+					Sleep(150);
+				}
+			}
+		}
+	}
 }
 
 void Game::init()
@@ -71,10 +206,10 @@ void Game::init()
 	initLevel4Props(levels[3]);
 
 	currentLevelID = 0;// Start at Level 1
-	setGame(currentLevelID);
+	setGame(currentLevelID , true);
 }
 
-void Game::setGame(int level) {
+void Game::setGame(int level , bool firstSettings) {
 	screen.clearScreen();
 
 	switch (level) {
@@ -95,14 +230,17 @@ void Game::setGame(int level) {
 		break;
 	}
 
+
 	if (level < 0 || level >= ROOM_AMOUNT) level = 0;
 
 	currentLevelID = level;
 
 	levels[currentLevelID].loadFromScreen(screen);
 	levels[currentLevelID].drawRoom(screen);
-	screen.draw();
-	levels[currentLevelID].drawTopLayer();
+	if (!(firstSettings)) {
+		screen.draw();
+		levels[currentLevelID].drawTopLayer();
+	}
 
 	players[0].setPos(p1StartPoints[currentLevelID]);
 	players[1].setPos(p2StartPoints[currentLevelID]);
@@ -117,6 +255,8 @@ void Game::setGame(int level) {
 
 void Game::run()
 {
+	resetLevelTimer();
+	bool boomDustCleaningNeeded = false;
 	while (true) {
 		Room& currRoom = levels[currentLevelID]; 
 		char key = 0;
@@ -127,6 +267,7 @@ void Game::run()
 			if (key == ESC) {
 				key = _getch();
 				if (key == 'h' || key == 'H') {
+					setColor(Color::WHITE);
 					screen.clearScreen();
 					break; //main menu exit
 				}
@@ -176,10 +317,56 @@ void Game::run()
 			std::cout << "Go through the top door to finish!";
 			setColor(Color::WHITE);
 		}
+		if (boomDustCleaningNeeded) {
+			currRoom.clearExplosions();
+			currRoom.drawRoom(screen);
+			
+			screen.draw(); 
+			currRoom.drawTopLayer();
+			boomDustCleaningNeeded = false;
+		}
 		
+		currRoom.updateBombs(players, PLAYER_AMOUNT , screen); // update bombs
+		
+		if (currRoom.hasExplosions()) {
+			boomDustCleaningNeeded = true;
+			
+		}
+
+		bool gameOver = false;
+		for (int i = 0; i < PLAYER_AMOUNT; i++) {
+			players[i].draw();
+			if (players[i].isDead()) {
+				gameOver = true;
+				break;
+			}
+		}
+
+		if (gameOver) {
+			screen.clearScreen();
+			gotoxy(35, 10);
+			//setColor(Color::RED);
+			//std::cout << "G A M E   O V E R";
+			printCentered("GAME OVER", 10);
+			//gotoxy(30, 12);
+			setColor(Color::WHITE);
+			//std::cout << "Press 'H' to Exit to Menu";
+			printCentered("LOL U SUCK", 12);
+			while (true) {
+				if (_kbhit()) {
+					char choice = _getch();
+					if (choice == 'h' || choice == 'H') {
+						// This exits Game::run and goes back to main()
+						setColor(Color::WHITE);
+						return;
+					}
+				}
+			}
+		}
 		//HUD renderer
 		printHUD();
-		Sleep(75);
+		printTimer();
+		Sleep(100);
 	}
 
 }
@@ -191,7 +378,13 @@ void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
 
 	if (p1 == exit && p2 == exit)
 	{
-		// Level 1 -> Level 2 Special Case (Obstacle carry over)
+		// 1. Calculate Score BEFORE resetting the level timer
+		// This ensures the player is rewarded based on the time spent on the level they just finished
+		auto now = std::chrono::steady_clock::now();
+		int levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
+		score += (100000 / (levelSeconds + 1));
+
+		// 2. Handle Special Case (Obstacle carry over)
 		if (currentLevel == 0) {
 			Obstacle* obs = levels[0].isObstacleThere({ 58, 18 });
 			if (obs) {
@@ -202,16 +395,19 @@ void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
 			}
 		}
 
-		// Advance level
+		// 3. Advance Level and Reset Timer
 		if (currentLevel < ROOM_AMOUNT - 1) {
 			currentLevel++;
-			setGame(currentLevel);
 		}
-		else {
-			// Looping back or end game state could go here
-			// For now, just reset the current level to simulate endless play
-			setGame(currentLevel);
-		}
+
+		// Reset the game state for the new currentLevel
+		setGame(currentLevel, false );
+
+		// RESET TIMER HERE: This sets levelStartTime to 'now', making the HUD show 00:00
+		resetLevelTimer();
+
+		// Update HUD
+		printTimer(); // Force a timer update immediately so it doesn't show the old time for 75ms
 	}
 }
 
@@ -540,4 +736,11 @@ void Game::initLevel4Props(Room& r) {
 	Door dTrap(20, 23, 8, Color::RED);
 	dTrap.addRequiredKey(99); // Impossible key ID
 	r.addDoor(dTrap);
+
+	Bomb b1(40, 18, 1);
+	Bomb b2(42, 22, 2);
+	Bomb b3(42, 20, 2);
+	r.addBomb(b1);
+	r.addBomb(b2);
+	r.addBomb(b3);
 }

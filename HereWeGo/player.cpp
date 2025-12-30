@@ -5,6 +5,7 @@
 #include "Key.h"
 #include "Switch.h" 
 #include "Torch.h"
+#include "Bomb.h"
 
 void Player::draw() {
     if (itemInHand.type != NONE) {
@@ -50,7 +51,7 @@ void Player::move(Room& room, Player* otherPlayer) {
     }
 
     //Pickups
-    if (tileOnMap == KEY_TILE || tileOnMap == TORCH_TILE) { 
+    if (tileOnMap == KEY_TILE || tileOnMap == TORCH_TILE || tileOnMap == BOMB_TILE) { 
      
         if (!handlePickups(room, nextPoint))
         {
@@ -120,6 +121,12 @@ bool Player::handlePickups(Room& room, Point nextPoint) {
     if (torch != nullptr) {
         itemInHand = { TORCH, 0, torch->getColor() };
         room.removeTorch(nextPoint);
+        return true;
+    }
+    Bomb* bomb = room.isBombThere(nextPoint);
+    if (bomb != nullptr) {
+        itemInHand = { BOMB, bomb->getBombID(), bomb->getColor()};
+        room.removeBomb(nextPoint);
         return true;
     }
     return false;
@@ -279,7 +286,15 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
     case TORCH:
         room.addTorch(Torch(pos.getx(), pos.gety()));
         break;
-    }
+
+    case BOMB:
+        Bomb newBomb(pos.getx(), pos.gety(), itemInHand.id, 5);
+        newBomb.setSeen();
+        newBomb.activate();
+        room.addBomb(newBomb); // This sends it "down" to the room's vector
+        break;
+}
+
     //reset inventory
     itemInHand = { NONE,0,Color::WHITE };
     draw();

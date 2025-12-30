@@ -6,28 +6,29 @@
 
 
 int main() {
-	
+
 	bool exitProgram = false;
 	hideCursor();
 	while (!exitProgram)
 	{
 		system("cls");
 
-		printCentered("Welcome to the game!", 5);
-		printCentered("(1) Start new game", 8);
-		printCentered("(8) Instructions", 10);
-		printCentered("(9) EXIT", 12);
-		gotoxy(0, 15);
+		printCentered("Welcome to the game!", 4);
+		printCentered("(1) Start new game", 7);
+		printCentered("(7) Settings", 9);
+		printCentered("(8) Instructions", 11);
+		printCentered("(9) EXIT", 13);
+		gotoxy(0, 16);
 		std::cout << "for easy playtesting:" << std::endl;
 		std::cout << "(2) Skip to level 2" << std::endl;
 		std::cout << "(3) Skip to level 3" << std::endl;
 		std::cout << "(4) Test Space" << std::endl;
-		
+
 		char selection = _getch();
 
 		switch (selection)
 		{
-		
+
 		case '1':
 		{
 			Game game;
@@ -56,23 +57,29 @@ int main() {
 			game.run();
 			break;
 		}
+		case '7':
+		{
+			Game game;
+			game.settingsMenu();
+			break;
+		}
 		case '8':
 			gotoxy(MAX_X / 2, MAX_Y / 2);
 			printInstructions();
 			break;
-		
+
 		case '9':
 		{
-			
+
 			system("cls");
 			printCentered("Goodbye :3", 10);
 			exitProgram = true;
 			break;
 		}
-			
+
 		}
 
 	}
-	
+
 	return 0;
 }

@@ -25,6 +25,14 @@ void Screen::loadMapData(const char* mapData[MAX_Y])
 	}
 }
 
+void Screen::loadMapFromRoom(const char mapData[MAX_Y][MAX_X]) {
+	for (int y = 0; y < MAX_Y; y++) {
+		for (int x = 0; x < MAX_X; x++) {
+			this->screen[y][x] = mapData[y][x];
+		}
+	}
+}
+
 Screen::Screen() {
 	for (int i = 0; i < MAX_Y; i++) {
 		screen[i] = new char[MAX_X + 1];
@@ -155,8 +163,8 @@ void Screen::Lvl4Screen()
 	const char* level4Layout[MAX_Y] = {
 		//01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		"                                                                                ",// 0
-		"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 1
-		"W                      W                       W                               W", // 2
+		"                                                                                ", // 1
+		"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", // 2
 		"W                      W                       W                               W", // 3
 		"W                      W                       W                               W", // 4
 		"W                      W                       W                               W", // 5

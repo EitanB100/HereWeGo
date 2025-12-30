@@ -7,13 +7,14 @@ class Screen {
 
 private:
     char* screen[MAX_Y];
-
     void loadMapData(const char* mapData[MAX_Y]);
 
 public:
     Screen();
     ~Screen();
 
+
+    void loadMapFromRoom(const char mapData[MAX_Y][MAX_X]);
     void createGameScreen();
 
     void setTile(int x, int y, char symbol) ;

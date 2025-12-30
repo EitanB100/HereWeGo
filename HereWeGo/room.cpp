@@ -101,24 +101,6 @@ void Room::checkSwitch(Point p) {
 	}
 }
 
-
-void Room::addObstacle(const Obstacle& obs)
-{
-	obstacles.push_back(obs);
-
-	std::vector<Point> currParts = obs.getFutureParts(0, 0);
-	for (const auto& part : currParts)
-	{
-
-		map[part.y][part.x] = OBSTACLE_TILE;
-	}
-}
-
-void Room::addWall(const Point& p)
-{
-	map[p.y][p.x] = WALL_TILE;
-}
-
 Switch* Room::getSwitchByID(int id) {
 	// Iterate through all switches in the list
 	for (const auto& sw : switches) {

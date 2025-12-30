@@ -68,13 +68,11 @@ void Room::loadFromScreen(Screen& screen) // Load the room from the screen
 	}
 }
 
-Door* Room::isDoorThere(Point p)
+const Door* Room::isDoorThere(const Point& p) const
 {
-	for (Door& door : doors)
+	for (const auto& door : doors)
 	{
-		Placement doorPos = door.getPos();
-		
-		if (doorPos.getPosition() == p)
+		if (door.getPos().getPosition() == p)
 		{
 			return &door;
 		}
@@ -118,9 +116,9 @@ void Room::addDoor(const Door& door) {
 	doors.push_back(door);
 }
 
-Key* Room::isKeyThere(Point p)
+const Key* Room::isKeyThere(const Point& p) const
 {
-	for (Key& key : keys)
+	for (const auto& key : keys)
 	{
 		Point keyPos = key.getPos();
 		if (keyPos == p)
@@ -264,7 +262,7 @@ Switch* Room::getSwitchByID(int id) {
 	return nullptr;
 }
 
-Switch* Room::isSwitchThere(Point p){
+const Switch* Room::isSwitchThere(const Point& p) const {
 	for (const auto& switchPtr : switches){
 		if (switchPtr == nullptr) {
 			continue;
@@ -272,7 +270,7 @@ Switch* Room::isSwitchThere(Point p){
 		Point switchPoint = switchPtr->getPos();
 
 		if (switchPoint == p){
-			return switchPtr;
+			return switchPtr.get();
 		}
 	}
 	return nullptr;
@@ -371,7 +369,7 @@ void Room::getTorchesLineOfSight() {
 	}
 }
 
-Torch* Room::isTorchThere(Point p)
+const Torch* Room::isTorchThere(const Point& p) const
 {
 	for (auto& torch : torches)
 	{
@@ -384,7 +382,7 @@ Torch* Room::isTorchThere(Point p)
 	return nullptr;
 }
 
-Obstacle* Room::isObstacleThere(Point p)
+const Obstacle* Room::isObstacleThere(const Point& p) const
 {
 	for (auto& ob : obstacles)
 	{
@@ -394,15 +392,15 @@ Obstacle* Room::isObstacleThere(Point p)
 	return nullptr;
 }
 
-Spring* Room::isSpringThere(Point p)
+const Spring* Room::isSpringThere(const Point& p) const
 {
-	for (auto& spring : springs) {
+	for (const auto& spring : springs) {
 		if (spring.isSpringPart(p)) return &spring;
 	}
 	return nullptr;
 }
 
-Bomb* Room::isBombThere(Point p)
+const Bomb* Room::isBombThere(const Point& p) const
 {
 	for (auto& bomb : bombs)
 	{

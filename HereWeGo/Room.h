@@ -66,13 +66,13 @@ public:
     bool isWallThere(Point p);
 	Switch* getSwitchByID(int id);
 
-    Door* isDoorThere(Point p);
-    Key* isKeyThere(Point p);
-    Switch* isSwitchThere(Point p);
-    Torch* isTorchThere(Point p);
-    Obstacle* isObstacleThere(Point p);
-    Spring* isSpringThere(Point p);
-	Bomb* isBombThere(Point p);
+    const Door* isDoorThere(const Point& p) const;
+    const Key* isKeyThere(const Point& p) const;
+    const Switch* isSwitchThere(const Point& p) const;
+    const Torch* isTorchThere(const Point& p) const;
+    const Obstacle* isObstacleThere(const Point& p) const;
+    const Spring* isSpringThere(const Point& p) const;
+	const Bomb* isBombThere(const Point& p) const;
 
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);

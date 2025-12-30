@@ -6,12 +6,11 @@
 class Screen {
 
 private:
-    char* screen[MAX_Y];
+    char screen[MAX_Y][MAX_X + 1];
     void loadMapData(const char* mapData[MAX_Y]);
 
 public:
     Screen();
-    ~Screen();
 
 
     void loadMapFromRoom(const char mapData[MAX_Y][MAX_X]);

@@ -156,11 +156,14 @@ void Game::updatePlayerKeys(char keys[], int playerNum) {
 		printCentered("Select a number to rebind:", 14);
 
 		char choice = _getch();
+		bool isConflict = false;
 
 		if (choice == ESC || choice == ENTER) {
 			finishing = true;
 		}
 		else {
+
+
 			int index = -1;
 			// Check if choice is a number 1-6
 			if (choice >= '1' && choice <= '6') {
@@ -181,18 +184,38 @@ void Game::updatePlayerKeys(char keys[], int playerNum) {
 				printCentered("Press new key...", 12);
 
 				char newKey = _getch();
+				newKey = toupper(newKey);
+
+				for (int i = 0; i < NUM_KEYS; i++) {
+					if (newKey == p1Keys[i]) {
+						printCentered("Key is already used as " + std::string(commandNames[i]) + " for Player 1...", 14);
+						isConflict = true;
+						break;
+					}
+				}
+
+				if (!isConflict) {
+					for (int i = 0; i < NUM_KEYS; i++) {
+						if (newKey == p2Keys[i]) {
+							printCentered("Key is already used as " + std::string(commandNames[i]) + " for Player 2...", 14);
+							isConflict = true;
+							break;
+						}
+					}
+				}
 
 				// Validation: Check if newKey is ESC or ENTER
 				if (newKey == ESC || newKey == ENTER) {
 					printCentered("ERROR: ESC and ENTER are reserved!", 14);
-					Sleep(250);
+					
 				}
-				else {
+				else if (!isConflict) {
 					keys[index] = toupper(newKey);
 					printCentered("SAVED!", 14);
-					Sleep(150);
+					
 				}
 			}
+			Sleep(600);
 		}
 	}
 }

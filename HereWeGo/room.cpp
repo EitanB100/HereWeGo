@@ -180,3 +180,89 @@ bool Room::hasExplosions() {
 	}
 	return false;
 }
+
+//determines what exists at a coordinate.
+//the order of checks is sorted by visual priority
+char Room::getObjectAt(const Point& p) const
+{
+	Color c = Color::WHITE;
+	return getObjectAt(p, c);
+}
+
+char Room::getObjectAt(const Point& p, Color& color) const
+{
+	//boundary check
+	if (p.x < 0 || p.x >= MAX_X || p.y < 0 || p.y >= MAX_Y) {
+		color = Color::WHITE;
+		return ' ';
+	}
+
+	//obstacles - movable object - top priority
+	auto obstacle = isObstacleThere(p);
+	if (obstacle != nullptr) {
+		color = Color::WHITE;
+		return OBSTACLE_TILE;
+
+	}
+	//interactables:
+
+	//keys
+	auto key = isKeyThere(p);
+	if (key != nullptr) {
+
+		if (key->getIsSeen())
+		{
+			color = key->getColor();
+			return KEY_TILE;
+		}
+		color = Color::WHITE;
+		return UNKNOWN_TILE;
+	}
+
+	//torches
+	auto torch = isTorchThere(p);
+	if (torch != nullptr) {
+		color = torch->getColor();
+		return TORCH_TILE;
+	}
+
+	//static:
+	//doors:
+	auto door = isDoorThere(p);
+	if (door != nullptr) {
+		if (door->getIsOpen()) color = door->getColor();
+
+		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
+	}
+	//bombs
+	auto bomb = isBombThere(p);
+	if (bomb != nullptr) {
+		if (bomb->getIsSeen()) {
+			color = bomb->getColor();
+			return BOMB_TILE;
+		}
+		else {
+			color = Color::WHITE;
+			return UNKNOWN_TILE;
+		}
+	}
+
+	//switches:
+	auto sw = isSwitchThere(p);
+	if (sw != nullptr) { // Check if a switch is present
+		if (sw->getIsSeen()) {
+			// Switch is seen, return its state
+			color = sw->getState() ? Color::GREEN : Color::RED;
+			return sw->getState() ? SWITCH_ON : SWITCH_OFF;
+		}
+		else {
+			// Switch is NOT seen, treat it as unknown/blocked for movement
+			color = Color::WHITE;
+			return UNKNOWN_TILE;
+		}
+	}
+
+
+
+	return map[p.y][p.x];
+}

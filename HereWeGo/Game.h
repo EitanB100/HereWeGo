@@ -12,6 +12,10 @@ static constexpr int ROOM_AMOUNT = 4; //4th is test room
 static constexpr int PLAYER_AMOUNT = 2;
 static constexpr int MAX_SCORE = 100000;
 
+static constexpr int KEY_COUNT = static_cast<int>(CommandKeys::NUM_KEYS);
+char p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
+char p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
+
 class Game {
 	Screen screen;
 	Room levels[ROOM_AMOUNT];

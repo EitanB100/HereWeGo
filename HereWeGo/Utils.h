@@ -51,6 +51,7 @@ void printInstructions();
 
 void setColor(Color c);
  
+void setColor(Color c, bool allowColor);
 
 void gotoxy(int x, int y);
 

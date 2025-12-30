@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "utils.h"
+#include "Game.h"
 
 
 
@@ -25,8 +26,18 @@ void hideCursor() {
 
 void setColor(Color c) // set console text color - logic suggested by gemini
 {
+	setColor(c, true);
+}
+
+void setColor(Color c, bool allowColor)
+{
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, int(c));  
+	if (allowColor) {
+		
+		SetConsoleTextAttribute(hConsole, int(c));
+	}
+	else
+		SetConsoleTextAttribute(hConsole, static_cast<int>(Color::WHITE));
 }
 
 

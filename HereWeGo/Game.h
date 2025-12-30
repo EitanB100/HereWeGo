@@ -27,6 +27,7 @@ class Game {
 	std::chrono::steady_clock::time_point levelStartTime; // Current level time
 	Level currentLevelID;
 	int score = 0;
+	bool useColor = true;
 
 	void printHUD();
 	void printTimer();
@@ -41,6 +42,8 @@ public:
 	Game(); //defined in .cpp
 	void setGame(Level level, bool firstSettings);
 
+	bool getUseColor() { return useColor; }
+	void toggleColor() {useColor = !useColor;}
 
 	void startInLevel(Level level);
 	

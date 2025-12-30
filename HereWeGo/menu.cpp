@@ -11,7 +11,8 @@ void Game::settingsMenu() {
 		printCentered("Change Players Keys", 3);
 		printCentered("(1) Change P1 keys", 5);
 		printCentered("(2) Change P2 keys", 7);
-		printCentered("(9) Back to menu", 9);
+		printCentered("(3) Toggle color", 9);
+		printCentered("(9) Back to menu", 11);
 
 		char selection = _getch();
 
@@ -27,7 +28,10 @@ void Game::settingsMenu() {
 			updatePlayerKeys(p2Keys, 2);
 			break;
 		}
-
+		case '3': 
+		{
+			toggleColor();
+		}
 		case '9':
 		{
 			inSettings = false;

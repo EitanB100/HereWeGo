@@ -15,7 +15,7 @@ enum class Level {ONE = 0, TWO, THREE, TEST, COUNT};
 inline int operator*(Level level) { return static_cast<int>(level); }
 inline bool operator<(Level level, int i) { return static_cast<int>(level) < i; }
 
-inline Level& operator++ (Level level) {
+inline Level& operator++ (Level& level) {
     level = static_cast<Level>(static_cast<int>(level) + 1);
     return level;
 }

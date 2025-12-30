@@ -542,7 +542,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 	}
 
 	//obstacles - movable object - top priority
-	Obstacle* obstacle = isObstacleThere(p);
+	auto obstacle = isObstacleThere(p);
 	if (obstacle != nullptr) {
 		color = Color::WHITE;
 		return OBSTACLE_TILE;
@@ -551,7 +551,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 	//interactables:
 	
 	//keys
-	Key* key = isKeyThere(p);
+	auto key = isKeyThere(p);
 	if (key != nullptr) {
 
 		if (key->getIsSeen())
@@ -564,7 +564,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 	}
 
 	//torches
-	Torch* torch = isTorchThere(p);
+	auto torch = isTorchThere(p);
 	if (torch != nullptr) {
 		color = torch->getColor();
 		return TORCH_TILE;
@@ -572,14 +572,14 @@ char Room::getObjectAt(const Point& p, Color& color) const
 
 	//static:
 	//doors:
-	Door* door = isDoorThere(p);
+	auto door = isDoorThere(p);
 	if (door != nullptr) {
 		if (door->getIsOpen()) color = door->getColor();
 
 		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
 	}
 	//bombs
-	Bomb* bomb = isBombThere(p);
+	auto bomb = isBombThere(p);
 	if (bomb != nullptr) {
 		if (bomb->getIsSeen()) {
 			color = bomb->getColor();
@@ -592,7 +592,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 	}
 
 	//switches:
-	Switch* sw = isSwitchThere(p);
+	auto sw = isSwitchThere(p);
 	if (sw != nullptr) { // Check if a switch is present
 		if (sw->getIsSeen()) {
 			// Switch is seen, return its state

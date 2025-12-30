@@ -325,7 +325,7 @@ void Game::run()
 		}
 		
 		currRoom.resetObstacles();
-		Point currentExitPoint = exitPoints[currentLevelID];
+		Point currentExitPoint = exitPoints[*currentLevelID];
 
 		//update loop
 		for (int i = 0; i < PLAYER_AMOUNT; i++) {
@@ -349,7 +349,7 @@ void Game::run()
 
 		checkLevelTransition(currentLevelID, players[0].getPos(), players[1].getPos());
 		
-		if (currentLevelID == 2) {
+		if (*currentLevelID == 2) {
 			Point p1 = players[0].getPos();
 			Point p2 = players[1].getPos();
 
@@ -360,7 +360,7 @@ void Game::run()
 				setColor(Color::GREEN);
 				printCentered("THANKS FOR PLAYING!", 12);
 
-				levels[currentLevelID].drawRoom(screen);
+				levels[*currentLevelID].drawRoom(screen);
 			}
 			gotoxy(45, 0);
 			setColor(Color::GREEN);

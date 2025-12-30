@@ -12,6 +12,13 @@ constexpr int MAX_Y = 25;
 enum class ItemType { NONE, KEY, TORCH, BOMB }; // possible item types - 
 
 enum class Level {ONE = 0, TWO, THREE, TEST, COUNT};
+int operator*(Level level) { return static_cast<int>(level); }
+bool operator<(Level level, int i) { return static_cast<int>(level) < i; }
+
+Level& operator++ (Level level) {
+    level = static_cast<Level>(static_cast<int>(level) + 1);
+    return level;
+}
 
 enum class Color {
     BLUE = 1, GREEN, CYAN, RED, MAGENTA,YELLOW,WHITE = 15//white is default

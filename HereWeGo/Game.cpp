@@ -282,7 +282,6 @@ void Game::setGame(Level level , bool firstSettings) {
 	}
 
 
-	if (level < 0 || level >= ROOM_AMOUNT) level = 0;
 
 	currentLevelID = level;
 
@@ -309,7 +308,7 @@ void Game::run()
 	resetLevelTimer();
 	bool boomDustCleaningNeeded = false;
 	while (true) {
-		Room& currRoom = levels[currentLevelID]; 
+		Room& currRoom = levels[*currentLevelID]; 
 		char key = 0;
 		
 		
@@ -406,7 +405,7 @@ void Game::run()
 
 void Game::checkLevelTransition(Level& currentLevel, Point p1, Point p2)
 {
-	Point exit = exitPoints[currentLevel];
+	Point exit = exitPoints[*currentLevel];
 	if (exit.x == -1) return; // No standard exit
 
 	if (p1 == exit && p2 == exit)
@@ -418,7 +417,7 @@ void Game::checkLevelTransition(Level& currentLevel, Point p1, Point p2)
 		score += (MAX_SCORE / (levelSeconds + 1));
 
 		// 2. Handle Special Case (Obstacle carry over)
-		if (currentLevel == 0) {
+		if (*currentLevel == 0) {
 			Obstacle* obs = levels[0].isObstacleThere({ 58, 18 });
 			if (obs) {
 				Obstacle newObs = *obs;
@@ -429,8 +428,8 @@ void Game::checkLevelTransition(Level& currentLevel, Point p1, Point p2)
 		}
 
 		// 3. Advance Level and Reset Timer
-		if (currentLevel < ROOM_AMOUNT - 1) {
-			currentLevel++;
+		if (*currentLevel < ROOM_AMOUNT - 1) {
+			++currentLevel;
 		}
 
 		// Reset the game state for the new currentLevel

@@ -402,7 +402,7 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 			
 			if (isKeyThere(p)) // if key there , make it seen
 			{
-				Key* key = isKeyThere(p);
+				auto key = isKeyThere(p);
 				if (key && !(key->getIsSeen())) {
 					key->setSeen();
 					map[p.y][p.x] = KEY_TILE; // update map tile

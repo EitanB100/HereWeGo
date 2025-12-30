@@ -29,7 +29,7 @@ void Game::printHUD()
 	else std::cout << "EMPTY ";
 	setColor(Color::WHITE);
 
-	std::cout <<" Hitpoints " << players[0].getHP() << "/" << Player::move;
+	std::cout <<" Hitpoints " << players[0].getHP() << "/" << Player::STARTING_HP;
 	
 	std::cout << "| Player 2: ";
 	const heldItem& item2 = players[1].getItemInHand();
@@ -149,7 +149,7 @@ void Game::updatePlayerKeys(char keys[], int playerNum) {
 		printCentered("PLAYER " + std::to_string(playerNum) + " CONTROLS", 2);
 
 		// Display current mapping
-		for (int i = 0; i < NUM_KEYS; i++) {
+		for (int i = 0; i < KEY_COUNT; i++) {
 			std::string row = "(" + std::to_string(i + 1) + ") " + commandNames[i] + ": [" + keys[i] + "]";
 			printCentered(row, 4 + i);
 		}
@@ -173,7 +173,7 @@ void Game::updatePlayerKeys(char keys[], int playerNum) {
 			}
 			// Check if choice is the actual command key
 			else {
-				for (int i = 0; i < NUM_KEYS; i++) {
+				for (int i = 0; i < KEY_COUNT; i++) {
 					if (toupper(choice) == keys[i]) {
 						index = i;
 						break;
@@ -188,7 +188,7 @@ void Game::updatePlayerKeys(char keys[], int playerNum) {
 				char newKey = _getch();
 				newKey = toupper(newKey);
 
-				for (int i = 0; i < NUM_KEYS; i++) {
+				for (int i = 0; i < KEY_COUNT; i++) {
 					if (newKey == p1Keys[i]) {
 						printCentered("Key is already used as " + std::string(commandNames[i]) + " for Player 1...", 14);
 						isConflict = true;
@@ -197,7 +197,7 @@ void Game::updatePlayerKeys(char keys[], int playerNum) {
 				}
 
 				if (!isConflict) {
-					for (int i = 0; i < NUM_KEYS; i++) {
+					for (int i = 0; i < KEY_COUNT; i++) {
 						if (newKey == p2Keys[i]) {
 							printCentered("Key is already used as " + std::string(commandNames[i]) + " for Player 2...", 14);
 							isConflict = true;
@@ -404,7 +404,7 @@ void Game::run()
 
 }
 
-void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
+void Game::checkLevelTransition(Level& currentLevel, Point p1, Point p2)
 {
 	Point exit = exitPoints[currentLevel];
 	if (exit.x == -1) return; // No standard exit

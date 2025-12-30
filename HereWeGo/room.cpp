@@ -194,11 +194,11 @@ bool Room::checkDoor(Point p, heldItem& item)
 	// If door is already open, we can pass (optional check)
 	if (door->getIsOpen()) return true;
 
-	if (item.type == KEY) 
+	if (item.type == ItemType::KEY) 
 	{
 		if (door->tryUnlock(item.id))
 		{
-			item = { NONE, 0, Color::WHITE}; // Consume key
+			item = { ItemType::NONE, 0, Color::WHITE}; // Consume key
 			door->draw();
 		}
 	}
@@ -402,7 +402,7 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 			
 			if (isKeyThere(p)) // if key there , make it seen
 			{
-				const Key* key = isKeyThere(p);
+				Key* key = isKeyThere(p);
 				if (key && !(key->getIsSeen())) {
 					key->setSeen();
 					map[p.y][p.x] = KEY_TILE; // update map tile

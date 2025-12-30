@@ -1,6 +1,6 @@
 #include "Spring.h"
 
-bool Spring::isSpringPart(const Point& p)
+bool Spring::isSpringPart(const Point& p) const
 {
 	for (const auto& part : parts) {
 		if (part.getx() == p.x && part.gety() == p.y) return true;

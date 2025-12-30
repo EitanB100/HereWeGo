@@ -22,7 +22,7 @@ public:
     }
 
     // Check if a specific point is part of this spring
-    bool isSpringPart(const Point& p);
+    bool isSpringPart(const Point& p) const;
 
  
 

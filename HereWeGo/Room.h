@@ -27,6 +27,21 @@ class Room {
     std::vector<Spring> springs;
 	std::vector<Bomb> bombs;
 
+    template <typename T, typename Predicate>
+    T* findBy(std::vector<T>& obj, Predicate pred) {
+        for (auto& item : obj) {
+            if (pred(item)) return &item;
+        }
+        return nullptr;
+    }
+
+    template <typename T, typename Predicate>
+    const T* findBy(const std::vector<T>& obj, Predicate pred) const {
+        for (const auto& item : obj) {
+            if (pred(item)) return &item;
+        }
+        return nullptr;
+    }
 
 public:
 

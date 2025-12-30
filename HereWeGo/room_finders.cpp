@@ -3,17 +3,11 @@
 
 // Door finders
 Door* Room::isDoorThere(const Point& p) {
-	for (auto& door : doors) {
-		if (door.getPos().getPosition() == p) return &door;
-	}
-	return nullptr;
+	return findBy(doors, [&](Door& d) {return d.getPos().getPosition() == p; });
 }
 
 const Door* Room::isDoorThere(const Point& p) const {
-	for (const auto& door : doors) {
-		if (door.getPos().getPosition() == p) return &door;
-	}
-	return nullptr;
+	return findBy(doors, [&](const Door& d) {return d.getPos().getPosition() == p; });
 }
 
 // Key finders

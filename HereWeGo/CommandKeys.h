@@ -1,5 +1,5 @@
 #pragma once
-enum CommandKeys {
+enum class CommandKeys {
     UP,        // move up 1 tile
     DOWN,      // move down 1 tile
     LEFT,      // move left 1 tile
@@ -8,4 +8,11 @@ enum CommandKeys {
     DISPOSE,   // drop item
 
     NUM_KEYS   //to see how much kinds of moves we have
+
+   
 };
+
+bool operator==  (CommandKeys& key, char& input)  { 
+    input = toupper(input);
+    return false;
+}

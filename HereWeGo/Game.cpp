@@ -3,8 +3,10 @@
 #include <sstream> 
 #include <iomanip>  
 #include <string>
-char p1Keys[NUM_KEYS] = { 'W','X','A','D','S','E' };
-char p2Keys[NUM_KEYS] = { 'I','M','J','L','K','O' };
+
+static constexpr int KEY_COUNT = static_cast<int>(CommandKeys::NUM_KEYS);
+char p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
+char p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
 
 
 
@@ -15,11 +17,11 @@ void Game::printHUD()
 	setColor(Color::WHITE);
 	std::cout << "Player 1: ";
 	const heldItem& item1 = players[0].getItemInHand();
-	if (item1.type == KEY) {
+	if (item1.type == ItemType::KEY) {
 		setColor(item1.color);
 		std::cout << "KEY ";
 	}
-	else if (item1.type == TORCH) {
+	else if (item1.type == ItemType::TORCH) {
 		setColor(item1.color);
 		std::cout << "TORCH ";
 	}
@@ -31,12 +33,12 @@ void Game::printHUD()
 	
 	std::cout << "| Player 2: ";
 	const heldItem& item2 = players[1].getItemInHand();
-	if (item2.type == KEY) {
+	if (item2.type == ItemType::KEY) {
 		setColor(item2.color);
 		std::cout << "KEY ";
 	}
 
-	else if (item2.type == TORCH) {
+	else if (item2.type == ItemType::TORCH) {
 		setColor(item2.color);
 		std::cout << "TORCH ";
 	}

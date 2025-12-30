@@ -7,8 +7,18 @@
 #include "Torch.h"
 #include "Bomb.h"
 
+Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount])
+{
+    symbol = c;
+    pos.set(p.getx(), p.gety(), symbol);
+    dirx = directx;
+    diry = directy;
+    for (int i = 0; i < keyAmount; ++i)
+        keys[i] = keyArray[i];
+}
+
 void Player::draw() {
-    if (itemInHand.type != NONE) {
+    if (itemInHand.type != ItemType::NONE) {
         setColor(itemInHand.color);
     }
     pos.draw();
@@ -23,7 +33,7 @@ void Player::move(Room& room, Player* otherPlayer) {
     char tileOnMap = room.getObjectAt(nextPoint);
 
     // Dynamic lighting
-    if (this->itemInHand.type == TORCH) {
+    if (this->itemInHand.type == ItemType::TORCH) {
         room.CompleteLineOfSight(Torch(pos.getx() + dirx, pos.gety() + diry));
     }
     
@@ -108,24 +118,24 @@ void Player::move(Room& room, Player* otherPlayer) {
 }
 
 bool Player::handlePickups(Room& room, Point nextPoint) {
-    if (itemInHand.type != NONE) return false; // Hands full
+    if (itemInHand.type != ItemType::NONE) return false; // Hands full
 
     Key* key = room.isKeyThere(nextPoint);
     if (key != nullptr) {
-        itemInHand = { KEY, key->getKeyID(), key->getColor() };
+        itemInHand = { ItemType::KEY, key->getKeyID(), key->getColor() };
         room.removeKey(nextPoint);
         return true;
     }
 
     Torch* torch = room.isTorchThere(nextPoint);
     if (torch != nullptr) {
-        itemInHand = { TORCH, 0, torch->getColor() };
+        itemInHand = { ItemType::TORCH, 0, torch->getColor() };
         room.removeTorch(nextPoint);
         return true;
     }
     Bomb* bomb = room.isBombThere(nextPoint);
     if (bomb != nullptr) {
-        itemInHand = { BOMB, bomb->getBombID(), bomb->getColor()};
+        itemInHand = { ItemType::BOMB, bomb->getBombID(), bomb->getColor()};
         room.removeBomb(nextPoint);
         return true;
     }
@@ -272,22 +282,22 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 void Player::dropItem(Room& room) //item that isnt a bomb!
 {
     switch (itemInHand.type) {
-    case NONE:
+    case ItemType::NONE:
         return;
         break;
 
-    case KEY: {
+    case ItemType::KEY: {
         //create a new key on the floor at the player's position
         Key key(pos.getx(), pos.gety(), itemInHand.id, itemInHand.color);
         key.setSeen();
         room.addKey(key);
         break;
     }
-    case TORCH:
+    case ItemType::TORCH:
         room.addTorch(Torch(pos.getx(), pos.gety()));
         break;
 
-    case BOMB:
+    case ItemType::BOMB:
         Bomb newBomb(pos.getx(), pos.gety(), itemInHand.id, 5);
         newBomb.setSeen();
         newBomb.activate();
@@ -296,7 +306,7 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
 }
 
     //reset inventory
-    itemInHand = { NONE,0,Color::WHITE };
+    itemInHand = { ItemType::NONE,0,Color::WHITE };
     draw();
 }
 
@@ -361,30 +371,30 @@ void Player::inputManager(char input, Room& room) {
     int requestedDirx = 0;
     int requestedDiry = 0;
 
-    if (input == keys[UP]) {
+    if (isCommand(input,CommandKeys::UP)) {
         requestedDiry = -1;
         requestedDirx = 0;
     }
 
-    else if (input == keys[DOWN]) {
+    else if (isCommand(input,CommandKeys::DOWN)) {
 
         requestedDirx = 0;
         requestedDiry = 1;
     }
 
-    else if (input == keys[LEFT]) {
+    else if (isCommand(input,CommandKeys::LEFT)) {
         requestedDirx = -1;
         requestedDiry = 0;
     }
-    else if (input == keys[RIGHT]) {
+    else if (isCommand(input,CommandKeys::RIGHT)) {
         requestedDirx = 1;
         requestedDiry = 0;
     }
 
-    else if (input == keys[STAY])
+    else if (isCommand(input,CommandKeys::STAY))
         setDirection(0, 0);
 
-    else if (input == keys[DISPOSE])
+    else if (isCommand(input,CommandKeys::DISPOSE))
         dropItem(room);
     
     else return;

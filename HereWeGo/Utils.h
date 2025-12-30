@@ -9,14 +9,16 @@ constexpr char ENTER = 13;
 constexpr int MAX_X = 80;
 constexpr int MAX_Y = 25;
 
-enum itemType { NONE, KEY, TORCH, BOMB }; // possible item types - 
+enum class ItemType { NONE, KEY, TORCH, BOMB }; // possible item types - 
+
+enum class Level {ONE = 0, TWO, THREE, TEST, COUNT};
 
 enum class Color {
     BLUE = 1, GREEN, CYAN, RED, MAGENTA,YELLOW,WHITE = 15//white is default
 };
 
 struct heldItem {
-    itemType type = NONE;
+    ItemType type = ItemType::NONE;
     int id = 0; // key ID or bomb timer
     
 

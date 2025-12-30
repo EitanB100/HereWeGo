@@ -477,28 +477,21 @@ void Game::initLevel1Props(Room& r) {
 	// ==========================================
 
 	// -- Area1-2 Switches (The "Same Switch" Group) --
-	Switch* sD1 = new Switch(12, 8, 101);
-	r.addSwitch(sD1);
+	r.addSwitch(std::make_unique<Switch>(12, 8, 101));
 	r.isDoorThere(Point{ 12, 6 })->addRequiredSwitch(r.getSwitchByID(101), true);  // D1 needs S(12,8) ON
 	r.isDoorThere(Point{ 44, 9 })->addRequiredSwitch(r.getSwitchByID(101), false); // D2 needs S(12,8) OFF
-	Switch* sD2 = new Switch(23, 11, 102);
-	r.addSwitch(sD2);
+	r.addSwitch(std::make_unique<Switch>(23, 11, 102));
 	r.isDoorThere(Point{ 44, 9 })->addRequiredSwitch(r.getSwitchByID(102), false); // D2 needs S(23,11) OFF
 	r.isDoorThere(Point{ 44, 17 })->addRequiredSwitch(r.getSwitchByID(102), true); // D3 needs S(23,11) ON
-	Switch* sD3 = new Switch(10, 14, 103);
-	r.addSwitch(sD3);
+	
+	r.addSwitch(std::make_unique<Switch>(10,14,103));
 	r.isDoorThere(Point{ 44, 17 })->addRequiredSwitch(r.getSwitchByID(103), true); // D3 needs S(10,14) ON
 	//-- Area3 Switches and 4--
-	Switch* sD4 = new Switch(50, 14, 104);
-	Switch* sD5 = new Switch(57, 10, 105);
-	Switch* sD6 = new Switch(64, 10, 106);
-	Switch* sD7 = new Switch(71, 10, 107);
-	Switch* sD8 = new Switch(78, 14, 108);
-	r.addSwitch(sD4);
-	r.addSwitch(sD5);
-	r.addSwitch(sD6);
-	r.addSwitch(sD7);
-	r.addSwitch(sD8);
+	r.addSwitch(std::make_unique<Switch>(50, 14, 104));
+	r.addSwitch(std::make_unique<Switch>(57, 10, 105));
+	r.addSwitch(std::make_unique<Switch>(64, 10, 106));
+	r.addSwitch(std::make_unique<Switch>(71, 10, 107));
+	r.addSwitch(std::make_unique<Switch>(78, 14, 108));
 	r.isDoorThere(Point{ 63, 17 })->addRequiredSwitch(r.getSwitchByID(104), false); // D4 needs S(49,14) OFF
 	r.isDoorThere(Point{ 63, 17 })->addRequiredSwitch(r.getSwitchByID(106), false); // D4 needs S(64,10) OFF
 	r.isDoorThere(Point{ 63, 17 })->addRequiredSwitch(r.getSwitchByID(107), false); // D4 needs S(71,10) OFF
@@ -557,14 +550,18 @@ void Game::initLevel2Props(Room& r){
 	// 2. SWITCHES
 	// ==========================================
 	for (int i = 1; i <= 16; i++) {
-		Switch* temp = new Switch(i, 23, i);
-		r.addSwitch(temp);
+
+		auto temp = std::make_unique<Switch>(i,23,i);
 		if (i % 2 == 0)
 			temp->toggleState();
+		
+		r.addSwitch(std::move(temp));
+
 	}
 	for (int i = 50; i <= 65; i++) {
-		Switch* realS = new Switch(i, 18, i);
-		r.addSwitch(realS);
+	
+		r.addSwitch(std::make_unique<Switch>(i, 18, i));
+
 		if (i % 2 == 1)
 			d1.addRequiredSwitch(r.getSwitchByID(i), true);
 		else
@@ -615,15 +612,17 @@ void Game::initLevel3Props(Room& r) {
 	Door d7(22, 5, 1, Color::RED);
 	// ==========================================
 	// 2. SWITCHES
-	Switch* sD1 = new Switch(64, 2, 201);
-	r.addSwitch(sD1);
+	
+	auto sD1 = std::make_unique<Switch>(64,2,201);
 	sD1->setSeen();
-	Switch* sD2 = new Switch(65, 2, 202);
-	r.addSwitch(sD2);
+	r.addSwitch(std::move(sD1));
+
+	auto sD2 = std::make_unique<Switch>(65, 2, 202);
 	sD2->setSeen();
-	Switch* sD3 = new Switch(66, 2, 203);
-	r.addSwitch(sD3);
+	r.addSwitch(std::move(sD2));
+	auto sD3 = std::make_unique<Switch>(66, 2, 203);
 	sD3->setSeen();
+	r.addSwitch(std::move(sD3));
 
 
 	//Door 1
@@ -682,8 +681,8 @@ void Game::initLevel4Props(Room& r) {
 	r.addDoor(Door(42, 3, 1, Color::RED));
 
 	// Switch Door
-	Switch* sw1 = new Switch(60, 3, 401);
-	r.addSwitch(sw1);
+
+	r.addSwitch(std::make_unique<Switch>(60,3,401));
 	Door dSwitch(65, 3, 0, Color::CYAN);
 	dSwitch.addRequiredSwitch(r.getSwitchByID(401), true);
 	r.addDoor(dSwitch);
@@ -733,8 +732,7 @@ void Game::initLevel4Props(Room& r) {
 	r.addObstacle(block);
 
 	// Extra switch for atmosphere
-	Switch* lightSwitch = new Switch(55, 18, 402);
-	r.addSwitch(lightSwitch);
+	r.addSwitch(std::make_unique<Switch>(55,18,402));
 	// === NEW TRICKY OBJECTS ===
 
 	// 1. "Ping-Pong" Springs (Bottom Right)

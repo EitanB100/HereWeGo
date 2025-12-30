@@ -60,8 +60,8 @@ public:
 	void removeBomb(const Point& p);
 
 
-    char getObjectAt(Point& p);
-    char getObjectAt(Point& p, Color& color);
+    char getObjectAt(const Point& p) const;
+    char getObjectAt(const Point& p, Color& color) const;
   
     bool isWallThere(Point p);
 	Switch* getSwitchByID(int id);
@@ -74,9 +74,16 @@ public:
     const Spring* isSpringThere(const Point& p) const;
 	const Bomb* isBombThere(const Point& p) const;
 
+    Door* isDoorThere(const Point& p);
+    Key* isKeyThere(const Point& p);
+    Switch* isSwitchThere(const Point& p);
+    Torch* isTorchThere(const Point& p);
+    Obstacle* isObstacleThere(const Point& p);
+    Spring* isSpringThere(const Point& p);
+    Bomb* isBombThere(const Point& p);
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
-	void CompleteLineOfSight(Torch torch);
+	void CompleteLineOfSight(const Torch& torch);
 	void getTorchesLineOfSight();
 
 

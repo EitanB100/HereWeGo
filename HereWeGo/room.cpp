@@ -68,17 +68,123 @@ void Room::loadFromScreen(Screen& screen) // Load the room from the screen
 	}
 }
 
-const Door* Room::isDoorThere(const Point& p) const
-{
-	for (const auto& door : doors)
-	{
-		if (door.getPos().getPosition() == p)
-		{
-			return &door;
-		}
+
+// Door finders
+Door* Room::isDoorThere(const Point& p) {
+	for (auto& door : doors) {
+		if (door.getPos().getPosition() == p) return &door;
 	}
 	return nullptr;
 }
+
+const Door* Room::isDoorThere(const Point& p) const {
+	for (const auto& door : doors) {
+		if (door.getPos().getPosition() == p) return &door;
+	}
+	return nullptr;
+}
+
+// Key finders
+Key* Room::isKeyThere(const Point& p) {
+	for (auto& key : keys) {
+		if (key.getPos() == p) return &key;
+	}
+	return nullptr;
+}
+
+const Key* Room::isKeyThere(const Point& p) const {
+	for (const auto& key : keys) {
+		if (key.getPos() == p) return &key;
+	}
+	return nullptr;
+}
+
+// Switch finders
+Switch* Room::isSwitchThere(const Point& p) {
+	for (auto& sw : switches) {
+		if (sw && sw->getPos() == p) return sw.get();
+	}
+	return nullptr;
+}
+
+const Switch* Room::isSwitchThere(const Point& p) const {
+	for (const auto& sw : switches) {
+		if (sw && sw->getPos() == p) return sw.get();
+	}
+	return nullptr;
+}
+
+//Torch finders
+Torch* Room::isTorchThere(const Point& p) {
+	for (auto& torch : torches) {
+		if (torch.getPos() == p) return &torch;
+	}
+	return nullptr;
+}
+
+const Torch* Room::isTorchThere(const Point& p) const {
+	for (const auto& torch : torches) {
+		if (torch.getPos() == p) return &torch;
+	}
+	return nullptr;
+}
+
+//Obstacle finders
+Obstacle* Room::isObstacleThere(const Point& p) {
+	for (auto& ob : obstacles) {
+		if (ob.isAt(p)) return &ob;
+	}
+	return nullptr;
+}
+
+const Obstacle* Room::isObstacleThere(const Point& p) const {
+	for (const auto& ob : obstacles) {
+		if (ob.isAt(p)) return &ob;
+	}
+	return nullptr;
+}
+
+// Spring finders
+Spring* Room::isSpringThere(const Point& p) {
+	for (auto& spring : springs) {
+		if (spring.isSpringPart(p)) return &spring;
+	}
+	return nullptr;
+}
+
+const Spring* Room::isSpringThere(const Point& p) const {
+	for (const auto& spring : springs) {
+		if (spring.isSpringPart(p)) return &spring;
+	}
+	return nullptr;
+}
+
+// Bomb finders
+Bomb* Room::isBombThere(const Point& p) {
+	for (auto& bomb : bombs) {
+		if (bomb.getPos() == p) return &bomb;
+	}
+	return nullptr;
+}
+
+const Bomb* Room::isBombThere(const Point& p) const {
+	for (const auto& bomb : bombs) {
+		if (bomb.getPos() == p) return &bomb;
+	}
+	return nullptr;
+}
+
+
+bool Room::isWallThere(Point p) {
+	//world edge boundary check
+	if (p.x < 0 || p.x >= MAX_X || p.y < 0 || p.y >= MAX_Y)
+		return true;
+
+	if (map[p.y][p.x] == WALL_TILE)
+		return true;
+	return false;
+}
+
 
 bool Room::checkDoor(Point p, heldItem& item)
 {
@@ -114,19 +220,6 @@ void Room::addDoor(const Door& door) {
 	Placement doorPos = door.getPos();
 	map[doorPos.gety()][doorPos.getx()] = doorPos.getTileChar();
 	doors.push_back(door);
-}
-
-const Key* Room::isKeyThere(const Point& p) const
-{
-	for (const auto& key : keys)
-	{
-		Point keyPos = key.getPos();
-		if (keyPos == p)
-		{
-			return &key;
-		}
-	}
-	return nullptr;
 }
 
 
@@ -262,30 +355,6 @@ Switch* Room::getSwitchByID(int id) {
 	return nullptr;
 }
 
-const Switch* Room::isSwitchThere(const Point& p) const {
-	for (const auto& switchPtr : switches){
-		if (switchPtr == nullptr) {
-			continue;
-		}
-		Point switchPoint = switchPtr->getPos();
-
-		if (switchPoint == p){
-			return switchPtr.get();
-		}
-	}
-	return nullptr;
-}
-
-bool Room::isWallThere(Point p) {
-	//world edge boundary check
-	if (p.x < 0 || p.x >= MAX_X || p.y < 0 || p.y >= MAX_Y)
-		return true; 
-
-	if (map[p.y][p.x] == WALL_TILE)
-		return true;
-	return false;
-}
-
 bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham's Line Algorithm
 {
 	int distanceX = abs(x2 - x1);
@@ -310,7 +379,7 @@ bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham
 	}
 }
 
-void Room::CompleteLineOfSight(Torch torch) {
+void Room::CompleteLineOfSight(const Torch& torch) {
 	Point torchPoint = torch.getPos();
 	int Dist = torch.getLineOfSight();
 
@@ -333,7 +402,7 @@ void Room::CompleteLineOfSight(Torch torch) {
 			
 			if (isKeyThere(p)) // if key there , make it seen
 			{
-				Key* key = isKeyThere(p);
+				const Key* key = isKeyThere(p);
 				if (key && !(key->getIsSeen())) {
 					key->setSeen();
 					map[p.y][p.x] = KEY_TILE; // update map tile
@@ -367,50 +436,6 @@ void Room::getTorchesLineOfSight() {
 	for (auto& torch : torches) {
 		CompleteLineOfSight(torch);
 	}
-}
-
-const Torch* Room::isTorchThere(const Point& p) const
-{
-	for (auto& torch : torches)
-	{
-		Point torchPos = torch.getPos();
-		if (torchPos == p)
-		{
-			return &torch;
-		}
-	}
-	return nullptr;
-}
-
-const Obstacle* Room::isObstacleThere(const Point& p) const
-{
-	for (auto& ob : obstacles)
-	{
-		if (ob.isAt(p))
-			return &ob;
-	}
-	return nullptr;
-}
-
-const Spring* Room::isSpringThere(const Point& p) const
-{
-	for (const auto& spring : springs) {
-		if (spring.isSpringPart(p)) return &spring;
-	}
-	return nullptr;
-}
-
-const Bomb* Room::isBombThere(const Point& p) const
-{
-	for (auto& bomb : bombs)
-	{
-		Point bombPos = bomb.getPos();
-		if (bombPos == p)
-		{
-			return &bomb;
-		}
-	}
-	return nullptr;
 }
 
 //logic for handling obstacle movement
@@ -502,13 +527,13 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 
 //determines what exists at a coordinate.
 //the order of checks is sorted by visual priority
-char Room::getObjectAt(Point& p)
+char Room::getObjectAt(const Point& p) const
 {
 	Color c = Color::WHITE;
 	return getObjectAt(p, c);
 }
 
-char Room::getObjectAt(Point& p, Color& color)
+char Room::getObjectAt(const Point& p, Color& color) const
 {
 	//boundary check
 	if (p.x < 0 || p.x > MAX_X || p.y < 0 || p.y > MAX_Y) {
@@ -585,6 +610,9 @@ char Room::getObjectAt(Point& p, Color& color)
 
 	return map[p.y][p.x];
 }
+
+
+
 void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& screen) {
 	Point blastCenter = bomb->getPos();
 	int blastRadius = bomb->getBlastRadius();

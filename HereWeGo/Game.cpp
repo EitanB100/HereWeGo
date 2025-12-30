@@ -285,15 +285,15 @@ void Game::setGame(Level level , bool firstSettings) {
 
 	currentLevelID = level;
 
-	levels[currentLevelID].loadFromScreen(screen);
-	levels[currentLevelID].drawRoom(screen);
+	levels[*currentLevelID].loadFromScreen(screen);
+	levels[*currentLevelID].drawRoom(screen);
 	if (!(firstSettings)) {
 		screen.draw();
-		levels[currentLevelID].drawTopLayer();
+		levels[*currentLevelID].drawTopLayer();
 	}
 
-	players[0].setPos(p1StartPoints[currentLevelID]);
-	players[1].setPos(p2StartPoints[currentLevelID]);
+	players[0].setPos(p1StartPoints[*currentLevelID]);
+	players[1].setPos(p2StartPoints[*currentLevelID]);
 
 	for (auto& player : players) {
 		player.setDirection(0, 0);

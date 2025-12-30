@@ -26,7 +26,7 @@ void Room::drawTopLayer()
 {
 	for (Door& door : doors) door.draw();
 	for (Key& key : keys) key.draw();
-	for (Switch* switchOnOff : switches) switchOnOff->draw();
+	for (auto& switchOnOff : switches) switchOnOff->draw();
 	for (Torch& torch : torches) torch.draw();
 	for (Obstacle& obstacle : obstacles) obstacle.draw();
 	for (Spring& spring : springs) spring.draw();

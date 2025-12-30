@@ -12,10 +12,10 @@ constexpr int MAX_Y = 25;
 enum class ItemType { NONE, KEY, TORCH, BOMB }; // possible item types - 
 
 enum class Level {ONE = 0, TWO, THREE, TEST, COUNT};
-int operator*(Level level) { return static_cast<int>(level); }
-bool operator<(Level level, int i) { return static_cast<int>(level) < i; }
+inline int operator*(Level level) { return static_cast<int>(level); }
+inline bool operator<(Level level, int i) { return static_cast<int>(level) < i; }
 
-Level& operator++ (Level level) {
+inline Level& operator++ (Level level) {
     level = static_cast<Level>(static_cast<int>(level) + 1);
     return level;
 }

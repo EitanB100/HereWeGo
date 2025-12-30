@@ -10,6 +10,7 @@
 
 static constexpr int ROOM_AMOUNT = 4; //4th is test room
 static constexpr int PLAYER_AMOUNT = 2;
+static constexpr int MAX_SCORE = 100000;
 
 class Game {
 	Screen screen;

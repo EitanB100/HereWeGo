@@ -29,7 +29,7 @@ void Game::printHUD()
 	else std::cout << "EMPTY ";
 	setColor(Color::WHITE);
 
-	std::cout <<" Hitpoints " << players[0].getHP() << "/15 ";
+	std::cout <<" Hitpoints " << players[0].getHP() << "/" << Player::move;
 	
 	std::cout << "| Player 2: ";
 	const heldItem& item2 = players[1].getItemInHand();
@@ -415,7 +415,7 @@ void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
 		// This ensures the player is rewarded based on the time spent on the level they just finished
 		auto now = std::chrono::steady_clock::now();
 		int levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
-		score += (100000 / (levelSeconds + 1));
+		score += (MAX_SCORE / (levelSeconds + 1));
 
 		// 2. Handle Special Case (Obstacle carry over)
 		if (currentLevel == 0) {

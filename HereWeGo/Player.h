@@ -11,6 +11,7 @@ class Player {
     int force = 1;
     bool finishedLevel = false;
     static constexpr int keyAmount = static_cast<int>(CommandKeys::NUM_KEYS);
+    
 
     char keys[keyAmount];
     heldItem itemInHand = { ItemType::NONE, 0, Color::WHITE };
@@ -22,7 +23,7 @@ class Player {
         Point launchDir = { 0,0 };
     } spring;
 
-	int HP = 15;
+	int HP = STARTING_HP;
     bool alive = true;
 
     // Helpers
@@ -32,6 +33,8 @@ class Player {
     bool handleSpringExit(Room& room);
 public:
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount]);
+
+    static constexpr int STARTING_HP = 15;
 
     void draw();
 

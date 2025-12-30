@@ -153,6 +153,7 @@
     <ClCompile Include="screen.cpp" />
     <ClCompile Include="spring.cpp" />
     <ClCompile Include="Switch.cpp" />
+    <ClCompile Include="torch.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

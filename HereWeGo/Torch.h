@@ -30,11 +30,7 @@ public:
 		return pos.getPosition();
 	}
 
-	void draw() {
-		setColor(Color::MAGENTA);
-		pos.draw();
-		setColor(Color::WHITE);
-	}
+	void draw();
 
 
 };

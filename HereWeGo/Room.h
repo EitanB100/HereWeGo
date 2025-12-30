@@ -99,6 +99,4 @@ public:
     void clearExplosions();
     bool hasExplosions();
 
-    
-   //bool moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce);
 };

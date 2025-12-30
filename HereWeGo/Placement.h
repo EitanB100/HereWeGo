@@ -60,11 +60,6 @@ public:
 
 private:
     void inLimit();
-
-    static bool isBlockingTile(char t) {
-        return (t == 'W' || t == 'w');
-    }
-
 };
 
 

@@ -40,28 +40,28 @@ int main() {
 		case MENU_LVL1:	
 		{
 			Game game;
-			game.startInLevel(static_cast<int>(Level::ONE));
+			game.startInLevel(Level::ONE);
 			game.run();
 			break;
 		}
 		case MENU_LVL2:
 		{
 			Game game;
-			game.startInLevel(static_cast<int>(Level::TWO));
+			game.startInLevel(Level::TWO);
 			game.run();
 			break;
 		}
 		case MENU_LVL3:
 		{
 			Game game;
-			game.startInLevel(static_cast<int>(Level::THREE));
+			game.startInLevel(Level::THREE);
 			game.run();
 			break;
 		}
 		case MENU_TEST:
 		{
 			Game game;
-			game.startInLevel(static_cast<int>(Level::TEST));
+			game.startInLevel(Level::TEST);
 			game.run();
 			break;
 		}

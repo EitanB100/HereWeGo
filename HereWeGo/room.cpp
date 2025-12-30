@@ -112,7 +112,7 @@ void Room::checkSwitch(Point p) {
 	}
 }
 
-void Room::addDoor(Door door) {
+void Room::addDoor(const Door& door) {
 	Placement doorPos = door.getPos();
 	map[doorPos.gety()][doorPos.getx()] = doorPos.getTileChar();
 	doors.push_back(door);
@@ -132,7 +132,7 @@ Key* Room::isKeyThere(Point p)
 }
 
 
-void Room::addKey(Key key) {
+void Room::addKey(const Key& key) {
 	Point keyPos = key.getPos();
 	if (key.getIsSeen())
 		map[keyPos.y][keyPos.x] = KEY_TILE;
@@ -141,13 +141,13 @@ void Room::addKey(Key key) {
 	keys.push_back(key);
 }
 
-void Room::addTorch(Torch torch) {
+void Room::addTorch(const Torch& torch) {
 	Point TorchPos = torch.getPos();
 	map[TorchPos.y][TorchPos.x] = TORCH_TILE;
 	torches.push_back(torch);
 }
 
-void Room::addSpring(Spring spring)
+void Room::addSpring(const Spring& spring)
 {
 	springs.push_back(spring);
 	for (const auto& part : spring.getParts()) {
@@ -155,7 +155,7 @@ void Room::addSpring(Spring spring)
 	}
 }
 
-void Room::addBomb(Bomb bomb){
+void Room::addBomb(const Bomb& bomb){
 	Point bombPos = bomb.getPos();
 	if (bomb.getIsSeen())
 		map[bombPos.y][bombPos.x] = BOMB_TILE;
@@ -237,7 +237,7 @@ void Room::removeBomb(const Point& p) {
 	}
 }
 
-void Room::addObstacle(Obstacle obs)
+void Room::addObstacle(const Obstacle& obs)
 {
 	obstacles.push_back(obs);
 
@@ -249,7 +249,7 @@ void Room::addObstacle(Obstacle obs)
 	}
 }
 
-void Room::addWall(Point p)
+void Room::addWall(const Point& p)
 {
 	map[p.y][p.x] = WALL_TILE;
 }

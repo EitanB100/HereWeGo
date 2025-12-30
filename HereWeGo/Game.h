@@ -20,7 +20,7 @@ class Game {
 	Point p2StartPoints[ROOM_AMOUNT];
 	std::chrono::steady_clock::time_point startTime;      // Total game time
 	std::chrono::steady_clock::time_point levelStartTime; // Current level time
-	int currentLevelID = 0;
+	Level currentLevelID;
 	int score = 0;
 
 	void printHUD();
@@ -34,7 +34,7 @@ class Game {
 
 public:
 	Game(); //defined in .cpp
-	void setGame(int level, bool firstSettings);
+	void setGame(Level level, bool firstSettings);
 
 
 	void startInLevel(Level level);

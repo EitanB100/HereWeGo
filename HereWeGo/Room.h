@@ -30,6 +30,9 @@ class Room {
 public:
 
     Room();
+    Room(const Room&) = delete;
+    Room& operator=(const Room&) = delete;
+
     ~Room() {
         for (Switch* sw : switches) {
             delete sw;

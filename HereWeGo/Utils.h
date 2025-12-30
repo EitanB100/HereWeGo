@@ -49,8 +49,8 @@ struct Point { // simple struct for position getting
 void printCentered(std::string text, int y); //to print the menu in the center
 void printInstructions();
 
+void setColorMode(bool useColor);
 void setColor(Color c);
- 
 void setColor(Color c, bool allowColor);
 
 void gotoxy(int x, int y);

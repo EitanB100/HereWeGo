@@ -31,6 +31,15 @@ void Game::settingsMenu() {
 		case '3': 
 		{
 			toggleColor();
+			if (useColor)
+			{
+				setColor(Color::BLUE);
+				printCentered("Color enabled!", 20);
+			}
+			else {
+				printCentered("Color disabled!", 20);
+			}
+			Sleep(600);
 		}
 		case '9':
 		{

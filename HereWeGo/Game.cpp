@@ -55,6 +55,11 @@ void Game::handleGameOver()
 	}
 }
 
+void Game::toggleColor(){ 
+	useColor = !useColor; 
+	setColorMode(useColor);
+}
+
 void Game::startInLevel(Level level)
 {
 	currentLevelID = level;

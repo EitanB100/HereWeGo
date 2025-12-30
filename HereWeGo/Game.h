@@ -43,7 +43,7 @@ public:
 	void setGame(Level level, bool firstSettings);
 
 	bool getUseColor() { return useColor; }
-	void toggleColor() {useColor = !useColor;}
+	void toggleColor();
 
 	void startInLevel(Level level);
 	

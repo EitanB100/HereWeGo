@@ -244,7 +244,7 @@ void Game::handleGameOver()
 
 void Game::startInLevel(Level level)
 {
-	currentLevelID = static_cast<int>(level);
+	currentLevelID = level;
 	setGame(currentLevelID, false);
 }
 
@@ -256,24 +256,24 @@ void Game::init()
     initLevel3Props(levels[2]);
 	initLevel4Props(levels[3]);
 
-	currentLevelID = 0;// Start at Level 1
+	currentLevelID = Level::ONE;// Start at Level 1
 	setGame(currentLevelID , true);
 }
 
-void Game::setGame(int level , bool firstSettings) {
+void Game::setGame(Level level , bool firstSettings) {
 	screen.clearScreen();
 
 	switch (level) {
-	case 0:
+	case Level::ONE:
 		screen.Lvl1Screen();
 		break;
-	case 1:
+	case Level::TWO:
 		screen.Lvl2Screen();
 		break;
-	case 2:
+	case Level::THREE:
 		screen.Lvl3Screen();
 		break;
-	case 3:
+	case Level::TEST:
 		screen.Lvl4Screen();
 		break;
 	default:

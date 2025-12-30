@@ -207,11 +207,11 @@ void Room::removeSpring(const Point& p)
 	}
 } // ask if remove all or just one part of spring
 
-void Room::addSwitch(Switch* s) {
+void Room::addSwitch(std::unique_ptr<Switch> s) {
 	Point switchPos = s->getPos();
 	if (switchPos.x >= 0 && switchPos.x < MAX_X && switchPos.y >= 0 && switchPos.y < MAX_Y) {
 		map[switchPos.y][switchPos.x] = SWITCH_OFF; // Ensure SWITCH_OFF is defined in Tile_Chars.h
-		switches.push_back(s); // Cast away constness to store in vector
+		switches.push_back(std::move(s)); 
 	}
 }
 

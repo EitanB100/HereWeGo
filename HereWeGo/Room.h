@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <memory>
 #include "Screen.h"
 #include "Placement.h"
 #include "Tile_Chars.h"
@@ -20,7 +21,7 @@ class Room {
     char map[MAX_Y][MAX_X] = {}; // leave a room for HUD at top row
     std::vector<Door> doors;
     std::vector<Key> keys;
-    std::vector<Switch*> switches;
+    std::vector<std::unique_ptr<Switch>> switches;
     std::vector<Obstacle> obstacles;
     std::vector<Torch> torches;
     std::vector<Spring> springs;
@@ -30,15 +31,7 @@ class Room {
 public:
 
     Room();
-    Room(const Room&) = delete;
-    Room& operator=(const Room&) = delete;
-
-    ~Room() {
-        for (Switch* sw : switches) {
-            delete sw;
-        }
-        switches.clear();
-    }
+    
     const char (*getMap() const)[MAX_X] {
         return map;
     }
@@ -56,7 +49,7 @@ public:
     void addTorch(const Torch& torch);
     void addSpring(const Spring& spring);
 	void addBomb(const Bomb& bomb);
-    void addSwitch(Switch* s);
+    void addSwitch(std::unique_ptr<Switch> s);
     void addObstacle(const Obstacle& obs);
 
     void removeKey(const Point& p);

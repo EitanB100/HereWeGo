@@ -11,7 +11,7 @@ void Game::resetLevelTimer() {
 	levelStartTime = std::chrono::steady_clock::now();
 }
 
-Game::Game() : players{
+Game::Game() : useColor(getColorMode()), players{
 	Player(Placement(10,20),'$',0,0,p1Keys),
 	Player(Placement(9,15),'&',0,0,p2Keys)
 }

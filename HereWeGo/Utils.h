@@ -50,6 +50,7 @@ void printCentered(std::string text, int y); //to print the menu in the center
 void printInstructions();
 
 void setColorMode(bool useColor);
+bool getColorMode();
 void setColor(Color c);
 void setColor(Color c, bool allowColor);
 

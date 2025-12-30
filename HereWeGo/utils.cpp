@@ -30,6 +30,11 @@ void setColorMode(bool useColor)
 	colorEnabled = useColor;
 }
 
+bool getColorMode()
+{
+	return colorEnabled;
+}
+
 void setColor(Color c) // set console text color - logic suggested by gemini
 {
 	setColor(c, colorEnabled);

@@ -13,8 +13,8 @@ static constexpr int PLAYER_AMOUNT = 2;
 static constexpr int MAX_SCORE = 100000;
 
 static constexpr int KEY_COUNT = static_cast<int>(CommandKeys::NUM_KEYS);
-extern char p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
-extern char p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
+extern char p1Keys[KEY_COUNT];
+extern char p2Keys[KEY_COUNT];
 
 class Game {
 	Screen screen;

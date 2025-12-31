@@ -2,10 +2,10 @@
 #include <vector>
 #include "Utils.h"
 #include "Placement.h"
+#include "Tile_Chars.h"
 
 class Obstacle {
 	std::vector<Placement> parts;
-	char symbol = '*';
 	bool hasMoved = false;
 
 public:

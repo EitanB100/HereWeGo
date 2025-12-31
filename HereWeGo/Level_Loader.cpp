@@ -72,7 +72,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			continue;
 		}
 
-		std::stringstream ss(line);
+		std::stringstream parser(line);
 
 		if (section == "MAP") {
 			if (mapRow < MAX_Y) {
@@ -94,5 +94,127 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 				mapRow++;
 			}
 		}
+		
+		else if (section == "SWITCHES") {
+			int id, x, y, seen;
+			if (parser >> id >> x >> y >> seen) {
+				auto sw = std::make_unique<Switch>(x, y, id);
+				if (seen) sw->setSeen();
+				room.addSwitch(std::move(sw));
+			}
+		}
+
+		else if (section == "KEYS") {
+			int id, x, y, color, seen;
+			if (parser >> id >> x >> y >> color >> seen) {
+				Key key (x, y, id, static_cast<Color>(color));
+				if (seen) key.setSeen();
+				room.addKey(key);
+			}
+		}
+
+		else if (section == "DOORS") {
+			int id, x, y, color, keyCount, switchCount;
+
+			if (parser >> id >> x >> y >> color >> keyCount) {
+				Door door(x, y, id, static_cast<Color>(color));
+
+				while (parser.peek() == ' ' || parser.peek() == '[') 
+					parser.ignore();
+
+				for (int i = 0; i < keyCount; i++) {
+					int keyID;
+					if (parser >> keyID) {
+						door.addRequiredKey(keyID);
+					}
+				}
+				while (parser.peek() == ' ' || parser.peek() == ']')
+					parser.ignore();
+
+				if (parser >> switchCount) {
+					
+					while (parser.peek() == ' ' || parser.peek() == ']')
+						parser.ignore();
+
+					for (int i = 0; i < switchCount; i++) {
+						int switchID, switchState;
+						if (parser >> switchID >> switchState) {
+							Switch* sw = room.getSwitchByID(switchID);
+							if (sw) {
+								door.addRequiredSwitch(sw, (bool)switchState);
+							} 
+							else {
+								std::cerr << "Warning - door " << id << "missing switch " << switchID << std::endl;
+							}
+						}
+					}
+					while (parser.peek() == ' ' || parser.peek() == ']')
+						parser.ignore();
+				}
+				door.UpdatedFromSwitch();
+				room.addDoor(door);
+			}
+		}
+
+		else if (section == "OBSTACLES") {
+			int partCount;
+			if (parser >> partCount) {
+				Obstacle obstacle;
+
+				for (int i = 0; i < partCount; i++) {
+					while (parser.peek() == ' ' || parser.peek() == '[')
+						parser.ignore();
+
+					int px, py;
+
+					if (parser >> px >> py)
+						obstacle.addPart(Placement(px, py, OBSTACLE_TILE));
+					
+					while (parser.peek() == ' ' || parser.peek() == ']')
+						parser.ignore();
+				}
+				room.addObstacle(obstacle);
+			}
+		}
+
+		else if (section == "TORCHES") {
+			int x, y, radius;
+			if (parser >> x >> y >> radius) {
+				Torch torch(x, y, radius);
+				room.addTorch(torch);
+			}
+		}
+
+		else if (section == "BOMBS") {
+			int id, x, y, timer;
+			
+			if (parser >> id >> x >> y >> timer) {
+				Bomb bomb(x, y, id, timer);
+				room.addBomb(bomb);
+			}
+		}
+
+		else if (section == "POTIONS") {
+			int x, y;
+			if (parser >> x >> y) {
+				Potion potion(x, y);
+				room.addPotion(potion);
+			}
+		}
+
+		else if (section == "SPRINGS") {
+			int dirx, diry, count;
+			
+			if (parser >> dirx >> diry >> count) {
+				Spring spring({ dirx,diry });
+				for (int i = 0; i < count; i++) {
+					int px, py;
+					if (parser >> px >> py)
+						spring.addPart(px, py);
+				}
+				room.addSpring(spring);
+			}
+		}
 	}
+	file.close();
 }

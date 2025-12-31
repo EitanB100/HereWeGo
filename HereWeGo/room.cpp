@@ -285,5 +285,6 @@ char Room::getObjectAt(const Point& p, Color& color) const
 		return UNKNOWN_TILE;
 	}
 
-	return map[p.y][p.x];
+	color = Color::WHITE;
+	return mapChar;
 }

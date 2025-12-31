@@ -31,6 +31,7 @@ void Room::drawTopLayer()
 	for (Obstacle& obstacle : obstacles) obstacle.draw();
 	for (Spring& spring : springs) spring.draw();
 	for (Bomb& bomb : bombs) bomb.draw();
+	for (Potion& potion : potions) potion.draw();
 	getTorchesLineOfSight();
 	
 }
@@ -65,6 +66,53 @@ void Room::loadFromScreen(Screen& screen) // Load the room from the screen
 		for (const auto& part : spring.getParts()) {
 			map[part.gety()][part.getx()] = SPRING_TILE;
 		}
+	}
+
+	for (const auto& key : keys) {
+		Point p = key.getPos();
+		if (key.getIsSeen())
+			map[p.y][p.x] = KEY_TILE;
+		else
+			map[p.y][p.x] = UNKNOWN_TILE;
+	}
+
+	for (const auto& door : doors) {
+		Point p = door.getPos().getPosition();
+		// If door is closed, mark it. If open, leave it as space (passable)
+		if (!door.getIsOpen()) {
+			map[p.y][p.x] = door.getDoorID() + '0';
+		}
+	}
+
+	for (const auto& torch : torches) {
+		Point p = torch.getPos();
+		map[p.y][p.x] = TORCH_TILE;
+	}
+
+	for (const auto& bomb : bombs) {
+		Point p = bomb.getPos();
+		if (bomb.getIsSeen())
+			map[p.y][p.x] = BOMB_TILE;
+		else
+			map[p.y][p.x] = UNKNOWN_TILE;
+	}
+
+	for (const auto& sw : switches) {
+		if (sw) {
+			Point p = sw->getPos();
+			if (sw->getIsSeen())
+				map[p.y][p.x] = sw->getState() ? SWITCH_ON : SWITCH_OFF;
+			else
+				map[p.y][p.x] = UNKNOWN_TILE;
+		}
+	}
+	
+	for (const auto& potion : potions) {
+		Point p = potion.getPos();
+		if (potion.getIsSeen())
+			map[p.y][p.x] = POTION_TILE;
+		else
+			map[p.y][p.x] = UNKNOWN_TILE;
 	}
 }
 
@@ -138,7 +186,7 @@ bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham
 
 		Point p{ x1, y1 };
 
-		if (isObstacleThere(p) || isWallThere(p)) //  obstacle or wall in the way
+		if (map[y1][x1] == WALL_TILE || map[y1][x1] == OBSTACLE_TILE) //  obstacle or wall in the way
 			return false;
 
 		int comperedError = 2 * balance; // go back one tile in x or y direction close to the torch
@@ -207,73 +255,92 @@ char Room::getObjectAt(const Point& p, Color& color) const
 		color = Color::WHITE;
 		return ' ';
 	}
+	
+	char mapChar = map[p.y][p.x];
+
+	if (mapChar == ' ' || mapChar == WALL_TILE || mapChar == SPRING_TILE || mapChar == GLASS_TILE) {
+		color = Color::WHITE;
+
+		return mapChar;
+	}
 
 	//obstacles - movable object - top priority
-	auto obstacle = isObstacleThere(p);
-	if (obstacle != nullptr) {
+	if (mapChar == OBSTACLE_TILE) {
+
 		color = Color::WHITE;
 		return OBSTACLE_TILE;
 
 	}
+
+	
 	//interactables:
 
 	//keys
-	auto key = isKeyThere(p);
-	if (key != nullptr) {
-
-		if (key->getIsSeen())
-		{
+	if (mapChar == KEY_TILE) {
+		auto key = isKeyThere(p);
+		if (key != nullptr) {
 			color = key->getColor();
 			return KEY_TILE;
 		}
-		color = Color::WHITE;
-		return UNKNOWN_TILE;
 	}
 
 	//torches
-	auto torch = isTorchThere(p);
-	if (torch != nullptr) {
-		color = torch->getColor();
-		return TORCH_TILE;
+	if (mapChar == TORCH_TILE) {
+		auto torch = isTorchThere(p);
+		if (torch != nullptr) {
+			color = torch->getColor();
+			return TORCH_TILE;
+		}
 	}
-
-	//static:
-	//doors:
-	auto door = isDoorThere(p);
-	if (door != nullptr) {
-		if (door->getIsOpen()) color = door->getColor();
-
-		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
+	//doors
+	if (isDoorTile(mapChar)) {
+		auto door = isDoorThere(p);
+		if (door != nullptr) {
+			// Note: Map keeps the '1' even if open, so we check state here
+			if (door->getIsOpen()) {
+				color = door->getColor();
+				return ' '; // Draw space if open
+			}
+			color = door->getColor();
+			return mapChar;
+		}
 	}
 	//bombs
-	auto bomb = isBombThere(p);
-	if (bomb != nullptr) {
-		if (bomb->getIsSeen()) {
+	if (mapChar == BOMB_TILE) {
+		auto bomb = isBombThere(p);
+		if (bomb != nullptr) {
 			color = bomb->getColor();
 			return BOMB_TILE;
-		}
-		else {
-			color = Color::WHITE;
-			return UNKNOWN_TILE;
 		}
 	}
 
 	//switches:
-	auto sw = isSwitchThere(p);
-	if (sw != nullptr) { // Check if a switch is present
-		if (sw->getIsSeen()) {
-			// Switch is seen, return its state
-			color = sw->getState() ? Color::GREEN : Color::RED;
-			return sw->getState() ? SWITCH_ON : SWITCH_OFF;
+	if (isSwitchTile(mapChar)) {
+		auto sw = isSwitchThere(p);
+		if (sw != nullptr) {
+			// Map might say OFF ('\') but switch is ON ('/'), so we trust the object
+			if (sw->getIsSeen()) {
+				color = sw->getState() ? Color::GREEN : Color::RED;
+				return sw->getState() ? SWITCH_ON : SWITCH_OFF;
+			}
+			// If not seen, it falls through to UNKNOWN_TILE logic usually, 
+			// but if map has the switch char, we treat it as visible.
 		}
-		else {
-			// Switch is NOT seen, treat it as unknown/blocked for movement
-			color = Color::WHITE;
-			return UNKNOWN_TILE;
+	}
+	
+	if (mapChar == POTION_TILE) {
+		auto potion = isPotionThere(p);
+		if (potion != nullptr) {
+			color = potion->getColor();
+			return POTION_TILE;
 		}
 	}
 
+	if (mapChar == UNKNOWN_TILE) {
+		color = Color::WHITE;
+		return UNKNOWN_TILE;
+	}
 
-
-	return map[p.y][p.x];
+	color = Color::WHITE;
+	return mapChar;
 }

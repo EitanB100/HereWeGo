@@ -68,6 +68,14 @@ const Bomb* Room::isBombThere(const Point& p) const {
 	return findBy(bombs, [&](const Bomb& bomb) {return bomb.getPos() == p; });
 }
 
+//Potion finders
+Potion* Room::isPotionThere(const Point& p) {
+	return findBy(potions, [&](Potion& potion) {return potion.getPos() == p; });
+}
+
+const Potion* Room::isPotionThere(const Point& p) const {
+	return findBy(potions, [&](const Potion& potion) {return potion.getPos() == p; });
+}
 
 bool Room::isWallThere(Point p) {
 	//world edge boundary check

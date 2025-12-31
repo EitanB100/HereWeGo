@@ -99,6 +99,23 @@ void Player::move(Room& room, Player* otherPlayer) {
         }
     }
 
+    if (tileOnMap == POTION_TILE) {
+        Potion* potion = room.isPotionThere(nextPoint);
+        if (potion) {
+            if (hp < MAX_HP) {
+                hp += 5;
+                if (hp > MAX_HP) hp = MAX_HP;
+                room.removePotion(nextPoint);
+            }
+            else {
+                setDirection(0, 0);
+                return;
+            }
+           
+        }
+         
+    }
+
     // execution - happens after checked if can proceed
     Point currentPos = getPos();
     Color objectColor = Color::WHITE;

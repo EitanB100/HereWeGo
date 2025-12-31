@@ -150,8 +150,12 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 				continue;
 			Point p{ x, y };
 
+			char tileChar = map[y][x];
 			int distanceFromTorchX = x - torchPoint.x;
 			int distanceFromTorchY = y - torchPoint.y;
+
+			if (tileChar == ' ' || tileChar == WALL_TILE || tileChar == SPRING_TILE)
+				continue;
 
 			if (distanceFromTorchX * distanceFromTorchX + distanceFromTorchY * distanceFromTorchY > Dist * Dist) // out of circle , distance formula
 				continue;
@@ -159,33 +163,55 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 			if (!(PointhasLineOfSight(torchPoint.x, torchPoint.y, x, y))) // check if torch can see that object
 				continue;
 
-			if (isKeyThere(p)) // if key there , make it seen
-			{
+			if (tileChar == UNKNOWN_TILE || tileChar == KEY_TILE) {
 				auto key = isKeyThere(p);
-				if (key && !(key->getIsSeen())) {
-					key->setSeen();
-					map[p.y][p.x] = KEY_TILE; // update map tile
-					key->draw();
+
+				if (key) // if key there , make it seen
+				{
+					if (!(key->getIsSeen())) {
+						key->setSeen();
+						map[p.y][p.x] = KEY_TILE; // update map tile
+						key->draw();
+					}
 				}
 			}
-			if (isBombThere(p)) // if bomb there , make it seen
-			{
-				Bomb* bomb = isBombThere(p);
-				if (bomb && !(bomb->getIsSeen())) {
-					bomb->setSeen();
-					map[p.y][p.x] = BOMB_TILE; // update map tile
-					bomb->draw();
+
+			if (tileChar == UNKNOWN_TILE || tileChar == BOMB_TILE) {
+				auto bomb = isBombThere(p);
+				if (bomb) // if bomb there , make it seen
+				{
+					if (!(bomb->getIsSeen())) {
+						bomb->setSeen();
+						map[p.y][p.x] = BOMB_TILE; // update map tile
+						bomb->draw();
+					}
 				}
 			}
-			if (isSwitchThere(p)) // if switch there , make it seen
-			{
-				Switch* sw = isSwitchThere(p);
-				if (sw && !(sw->getIsSeen())) {
-					sw->setSeen();
-					map[p.y][p.x] = sw->getState() ? SWITCH_ON : SWITCH_OFF; // update map tile
-					sw->draw();
+			if (tileChar == UNKNOWN_TILE || tileChar == SWITCH_OFF || tileChar == SWITCH_ON) {
+				auto sw = isSwitchThere(p);
+
+				if (sw) // if switch there , make it seen
+				{
+					if (!(sw->getIsSeen())) {
+						sw->setSeen();
+						map[p.y][p.x] = sw->getState() ? SWITCH_ON : SWITCH_OFF; // update map tile
+						sw->draw();
+					}
+				}
+			}
+			if (tileChar == UNKNOWN_TILE || tileChar == POTION_TILE) {
+				auto potion = isPotionThere(p);
+
+				if (potion)
+				{
+					if (!(potion->getIsSeen())) {
+						potion->setSeen();
+						map[p.y][p.x] = POTION_TILE;
+						potion->draw();
+					}
 				}
 			}
 		}
 	}
+
 }

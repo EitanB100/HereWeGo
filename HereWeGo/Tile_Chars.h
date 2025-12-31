@@ -11,6 +11,7 @@ constexpr char GLASS_TILE = 'G';
 constexpr char SPRING_TILE = '#';
 constexpr char BOMB_TILE = '@';
 constexpr char EXPLOSION_TILE = 'X';
+constexpr char POTION_TILE = 'P';
 
 
 // Check if character represents a door - suggested by gemini

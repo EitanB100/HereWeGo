@@ -10,6 +10,7 @@
 #include "Obstacle.h"
 #include "spring.h"
 #include "Bomb.h"
+#include "Potion.h"
 
 
 class Player; // forward declaration
@@ -26,6 +27,7 @@ class Room {
     std::vector<Torch> torches;
     std::vector<Spring> springs;
 	std::vector<Bomb> bombs;
+    std::vector<Potion> potions;
 
     template <typename T, typename Predicate>
     T* findBy(std::vector<T>& obj, Predicate pred) {
@@ -73,6 +75,7 @@ public:
 	void addBomb(const Bomb& bomb);
     void addSwitch(std::unique_ptr<Switch> s);
     void addObstacle(const Obstacle& obs);
+    void addPotion(const Potion& potion);
 
     void removeKey(const Point& p);
     void removeTorch(const Point& p);
@@ -80,6 +83,7 @@ public:
 	void removeSpring(const Point& p);
 	void removeSwitch(const Point& p);
 	void removeBomb(const Point& p);
+    void removePotion(const Point& p);
 
 
     char getObjectAt(const Point& p) const;
@@ -103,6 +107,7 @@ public:
     Obstacle* isObstacleThere(const Point& p);
     Spring* isSpringThere(const Point& p);
     Bomb* isBombThere(const Point& p);
+    Potion* isPotionThere(const Point& p);
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
 	void CompleteLineOfSight(const Torch& torch);

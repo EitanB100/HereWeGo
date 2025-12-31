@@ -51,6 +51,13 @@ void Room::addObstacle(const Obstacle& obs)
 	}
 }
 
+void Room::addPotion(const Potion& potion)
+{
+	Point potionPos = potion.getPos();
+	map[potionPos.y][potionPos.x] = POTION_TILE;
+	potions.push_back(potion);
+}
+
 void Room::addWall(const Point& p)
 {
 	map[p.y][p.x] = WALL_TILE;
@@ -125,5 +132,12 @@ void Room::removeBomb(const Point& p) {
 			map[p.y][p.x] = ' ';
 			return;
 		}
+	}
+}
+
+void Room::removePotion(const Point& p)
+{
+	for (auto potion : potions) {
+
 	}
 }

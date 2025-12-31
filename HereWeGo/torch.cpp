@@ -1,7 +1,7 @@
 #include "Torch.h"
 
 void Torch::draw() {
-	setColor(Color::MAGENTA);
+	setColor(color);
 	pos.draw();
 	setColor(Color::WHITE);
 }

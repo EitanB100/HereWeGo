@@ -207,14 +207,23 @@ char Room::getObjectAt(const Point& p, Color& color) const
 		color = Color::WHITE;
 		return ' ';
 	}
+	
+	char mapChar = map[p.y][p.x];
+
+	if (mapChar == ' ' || mapChar == WALL_TILE || mapChar == SPRING_TILE || mapChar == GLASS_TILE) {
+		color = Color::WHITE;
+		return mapChar;
+	}
 
 	//obstacles - movable object - top priority
-	auto obstacle = isObstacleThere(p);
-	if (obstacle != nullptr) {
+	if (mapChar == OBSTACLE_TILE) {
+
 		color = Color::WHITE;
 		return OBSTACLE_TILE;
 
 	}
+
+	
 	//interactables:
 
 	//keys

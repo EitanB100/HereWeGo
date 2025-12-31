@@ -591,4 +591,8 @@ void Game::initLevel4Props(Room& r) {
 	r.addBomb(b1);
 	r.addBomb(b2);
 	r.addBomb(b3);
+	Potion potion1(30, 17);
+	Potion potion2(31, 18);
+	r.addPotion(potion1);
+	r.addPotion(potion2);
 }

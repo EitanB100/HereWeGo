@@ -23,7 +23,7 @@ class Player {
         Point launchDir = { 0,0 };
     } spring;
 
-	int HP = STARTING_HP;
+	int hp = MAX_HP;
     bool alive = true;
 
     // Helpers
@@ -34,7 +34,7 @@ class Player {
 public:
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount]);
 
-    static constexpr int STARTING_HP = 15;
+    static constexpr int MAX_HP = 15;
 
     void draw();
 
@@ -47,11 +47,11 @@ public:
     heldItem getItemInHand() { return itemInHand; }
     void setDirection(int dx, int dy) { dirx = dx; diry = dy; }
 
-    int getHP() const { return HP; }
+    int getHP() const { return hp; }
     void takeDamage(int amount) {
-        HP -= amount;
-        if (HP <= 0) {
-            HP = 0;
+        hp -= amount;
+        if (hp <= 0) {
+            hp = 0;
             alive = false; // Mark as dead
         }
     }

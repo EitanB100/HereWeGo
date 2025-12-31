@@ -74,7 +74,7 @@ Potion* Room::isPotionThere(const Point& p) {
 }
 
 const Potion* Room::isPotionThere(const Point& p) const {
-	return findBy(potions, [&](Potion& potion) {return potion.getPos() == p; });
+	return findBy(potions, [&](const Potion& potion) {return potion.getPos() == p; });
 }
 
 bool Room::isWallThere(Point p) {

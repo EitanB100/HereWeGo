@@ -20,7 +20,7 @@ void Game::printHUD()
 	else std::cout << "EMPTY ";
 	setColor(Color::WHITE);
 
-	std::cout << " Hitpoints " << players[0].getHP() << "/" << Player::STARTING_HP;
+	std::cout << " Hitpoints " << players[0].getHP() << "/" << Player::MAX_HP;
 
 	std::cout << "| Player 2: ";
 	const heldItem& item2 = players[1].getItemInHand();

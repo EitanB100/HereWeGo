@@ -211,7 +211,8 @@ void Game::run()
 		}
 
 		if (gameOver) {
-		
+			handleGameOver();
+			break;
 		}
 		//HUD renderer
 		printHUD();

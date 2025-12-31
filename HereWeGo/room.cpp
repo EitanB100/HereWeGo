@@ -212,6 +212,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 
 	if (mapChar == ' ' || mapChar == WALL_TILE || mapChar == SPRING_TILE || mapChar == GLASS_TILE) {
 		color = Color::WHITE;
+
 		return mapChar;
 	}
 
@@ -227,62 +228,62 @@ char Room::getObjectAt(const Point& p, Color& color) const
 	//interactables:
 
 	//keys
-	auto key = isKeyThere(p);
-	if (key != nullptr) {
-
-		if (key->getIsSeen())
-		{
+	if (mapChar == KEY_TILE) {
+		auto key = isKeyThere(p);
+		if (key != nullptr) {
 			color = key->getColor();
 			return KEY_TILE;
 		}
-		color = Color::WHITE;
-		return UNKNOWN_TILE;
 	}
 
 	//torches
-	auto torch = isTorchThere(p);
-	if (torch != nullptr) {
-		color = torch->getColor();
-		return TORCH_TILE;
+	if (mapChar == TORCH_TILE) {
+		auto torch = isTorchThere(p);
+		if (torch != nullptr) {
+			color = torch->getColor();
+			return TORCH_TILE;
+		}
 	}
-
-	//static:
-	//doors:
-	auto door = isDoorThere(p);
-	if (door != nullptr) {
-		if (door->getIsOpen()) color = door->getColor();
-
-		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
+	//doors
+	if (isDoorTile(mapChar)) {
+		auto door = isDoorThere(p);
+		if (door != nullptr) {
+			// Note: Map keeps the '1' even if open, so we check state here
+			if (door->getIsOpen()) {
+				color = door->getColor();
+				return ' '; // Draw space if open
+			}
+			color = door->getColor();
+			return mapChar;
+		}
 	}
 	//bombs
-	auto bomb = isBombThere(p);
-	if (bomb != nullptr) {
-		if (bomb->getIsSeen()) {
+	if (mapChar == BOMB_TILE) {
+		auto bomb = isBombThere(p);
+		if (bomb != nullptr) {
 			color = bomb->getColor();
 			return BOMB_TILE;
-		}
-		else {
-			color = Color::WHITE;
-			return UNKNOWN_TILE;
 		}
 	}
 
 	//switches:
-	auto sw = isSwitchThere(p);
-	if (sw != nullptr) { // Check if a switch is present
-		if (sw->getIsSeen()) {
-			// Switch is seen, return its state
-			color = sw->getState() ? Color::GREEN : Color::RED;
-			return sw->getState() ? SWITCH_ON : SWITCH_OFF;
-		}
-		else {
-			// Switch is NOT seen, treat it as unknown/blocked for movement
-			color = Color::WHITE;
-			return UNKNOWN_TILE;
+	if (isSwitchTile(mapChar)) {
+		auto sw = isSwitchThere(p);
+		if (sw != nullptr) {
+			// Map might say OFF ('\') but switch is ON ('/'), so we trust the object
+			if (sw->getIsSeen()) {
+				color = sw->getState() ? Color::GREEN : Color::RED;
+				return sw->getState() ? SWITCH_ON : SWITCH_OFF;
+			}
+			// If not seen, it falls through to UNKNOWN_TILE logic usually, 
+			// but if map has the switch char, we treat it as visible.
 		}
 	}
 
-
+	if (mapChar == UNKNOWN_TILE) {
+		color = Color::WHITE;
+		return UNKNOWN_TILE;
+	}
 
 	return map[p.y][p.x];
 }

@@ -519,6 +519,10 @@ void Game::initLevel4Props(Room& r) {
 	box.addPart(Placement(10, 18));
 	box.addPart(Placement(11, 18));
 	r.addObstacle(box);
+	
+	Obstacle one;
+	one.addPart(Placement(10,20));
+	r.addObstacle(one);
 
 	// 4. Torch
 	r.addTorch(Torch(35, 18, 5));

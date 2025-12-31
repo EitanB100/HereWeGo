@@ -9,6 +9,13 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
     Obstacle* obstacleToPush = room.isObstacleThere(nextPoint);
     //if it already been moved this frame
     if (obstacleToPush != nullptr && obstacleToPush->getHasMoved()) return false;
+    
+    if (otherPlayer) {
+        std::vector<Point> futureParts = obstacleToPush->getFutureParts(dirx,diry);
+        for (const auto& part : futureParts) {
+            if (part == otherPlayer->getPos()) return false;
+        }
+    }
 
     int currentForce = this->force; //default is 1
     bool combinedPush = false;

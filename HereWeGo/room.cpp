@@ -66,6 +66,50 @@ void Room::loadFromScreen(Screen& screen) // Load the room from the screen
 			map[part.gety()][part.getx()] = SPRING_TILE;
 		}
 	}
+
+	for (const auto& key : keys) {
+		Point p = key.getPos();
+		if (key.getIsSeen())
+			map[p.y][p.x] = KEY_TILE;
+		else
+			map[p.y][p.x] = UNKNOWN_TILE;
+	}
+
+	for (const auto& door : doors) {
+		Point p = door.getPos().getPosition();
+		// If door is closed, mark it. If open, leave it as space (passable)
+		if (!door.getIsOpen()) {
+			map[p.y][p.x] = door.getDoorID() + '0';
+		}
+	}
+
+	for (const auto& torch : torches) {
+		Point p = torch.getPos();
+		map[p.y][p.x] = TORCH_TILE;
+	}
+
+	for (const auto& bomb : bombs) {
+		Point p = bomb.getPos();
+		if (bomb.getIsSeen())
+			map[p.y][p.x] = BOMB_TILE;
+		else
+			map[p.y][p.x] = UNKNOWN_TILE;
+	}
+
+	for (const auto& sw : switches) {
+		if (sw) {
+			Point p = sw->getPos();
+			if (sw->getIsSeen())
+				map[p.y][p.x] = sw->getState() ? SWITCH_ON : SWITCH_OFF;
+			else
+				map[p.y][p.x] = UNKNOWN_TILE;
+		}
+	}
+	
+	for (const auto& potion : potions) {
+		Point p = potion.getPos();
+		map[p.y][p.x] = POTION_TILE;
+	}
 }
 
 

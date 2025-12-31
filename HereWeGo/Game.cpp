@@ -507,16 +507,10 @@ void Game::initLevel4Props(Room& r) {
 
 	// 2. Spring Chaining (Middle Left)
 	Spring s1({ 1,0 }); 
-	s1.addPart(7, 10); 
-	s1.addPart(6, 10); 
-	s1.addPart(5, 10);
+	s1.addPart(10, 10); 
+	s1.addPart(9, 10); 
+	s1.addPart(8, 10);
 	r.addSpring(s1);
-
-	Spring s2({ 0,-1 });
-	s2.addPart(12, 10);
-	s2.addPart(12, 11);
-	s2.addPart(12, 12);
-	r.addSpring(s2);
 
 	r.addWall({ 15, 4 });
 
@@ -581,6 +575,11 @@ void Game::initLevel4Props(Room& r) {
 	sDoor.addPart(20, 19); // Base
 	r.addSpring(sDoor);
 
+	Spring chain1({ 0,1 });
+	chain1.addPart(10, 4);
+	chain1.addPart(10, 3);
+	
+	r.addSpring(chain1);
 	// A red locked door at (20, 23)
 	Door dTrap(20, 23, 8, Color::RED);
 	dTrap.addRequiredKey(99); // Impossible key ID
@@ -593,7 +592,7 @@ void Game::initLevel4Props(Room& r) {
 	r.addBomb(b2);
 	r.addBomb(b3);
 	Potion potion1(30, 17);
-	Potion potion2(31, 18);
+	Potion potion2(31, 10);
 	r.addPotion(potion1);
 	r.addPotion(potion2);
 }

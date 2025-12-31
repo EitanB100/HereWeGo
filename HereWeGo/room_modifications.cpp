@@ -30,6 +30,14 @@ void Room::addSpring(const Spring& spring)
 	}
 }
 
+void Room::addSwitch(std::unique_ptr<Switch> s) {
+	Point switchPos = s->getPos();
+	if (switchPos.x >= 0 && switchPos.x < MAX_X && switchPos.y >= 0 && switchPos.y < MAX_Y) {
+		map[switchPos.y][switchPos.x] = SWITCH_OFF; // Ensure SWITCH_OFF is defined in Tile_Chars.h
+		switches.push_back(std::move(s));
+	}
+}
+
 void Room::addBomb(const Bomb& bomb) {
 	Point bombPos = bomb.getPos();
 	if (bomb.getIsSeen())
@@ -106,13 +114,6 @@ void Room::removeSpring(const Point& p)
 	}
 } // ask if remove all or just one part of spring
 
-void Room::addSwitch(std::unique_ptr<Switch> s) {
-	Point switchPos = s->getPos();
-	if (switchPos.x >= 0 && switchPos.x < MAX_X && switchPos.y >= 0 && switchPos.y < MAX_Y) {
-		map[switchPos.y][switchPos.x] = SWITCH_OFF; // Ensure SWITCH_OFF is defined in Tile_Chars.h
-		switches.push_back(std::move(s));
-	}
-}
 
 void Room::removeSwitch(const Point& p)
 {
@@ -137,7 +138,11 @@ void Room::removeBomb(const Point& p) {
 
 void Room::removePotion(const Point& p)
 {
-	for (auto potion : potions) {
-
+	for (auto potion = potions.begin(); potion != potions.end(); potion++) {
+		if (potion->getPos() == p) {
+			potions.erase(potion);
+			map[p.y][p.x] = ' ';
+			return;
+		}
 	}
 }

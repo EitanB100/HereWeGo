@@ -99,6 +99,7 @@ public:
     const Obstacle* isObstacleThere(const Point& p) const;
     const Spring* isSpringThere(const Point& p) const;
 	const Bomb* isBombThere(const Point& p) const;
+    const Potion* isPotionThere(const Point& p) const;
 
     Door* isDoorThere(const Point& p);
     Key* isKeyThere(const Point& p);
@@ -108,6 +109,7 @@ public:
     Spring* isSpringThere(const Point& p);
     Bomb* isBombThere(const Point& p);
     Potion* isPotionThere(const Point& p);
+
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
 	void CompleteLineOfSight(const Torch& torch);

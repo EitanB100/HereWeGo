@@ -323,6 +323,14 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			// but if map has the switch char, we treat it as visible.
 		}
 	}
+	
+	if (mapChar == POTION_TILE) {
+		auto potion = isPotionThere(p);
+		if (potion != nullptr) {
+			color = potion->getColor();
+			return POTION_TILE;
+		}
+	}
 
 	if (mapChar == UNKNOWN_TILE) {
 		color = Color::WHITE;

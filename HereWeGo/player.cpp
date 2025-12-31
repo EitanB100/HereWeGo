@@ -113,7 +113,7 @@ void Player::move(Room& room, Player* otherPlayer) {
             }
            
         }
-        
+         
     }
 
     // execution - happens after checked if can proceed

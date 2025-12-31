@@ -7,16 +7,16 @@
 class Switch {
 
 	Placement pos;
-	int SwtichID;
-	Color color = Color::RED; //defult color of Off
+	int SwitchID;
+	Color color = Color::RED; //defult color for Off
 	bool state = false;
-	bool seen = false; // if player has seen the switch yet  (for future use)
+	bool seen = false; 
 
 public:
-	Switch(int x, int y, int id) : pos(x, y, SWITCH_OFF), SwtichID(id) {}
+	Switch(int x, int y, int id) : pos(x, y, SWITCH_OFF), SwitchID(id) {}
 
 	int getSwitchID() const {
-		return SwtichID;
+		return SwitchID;
 	}
 
 	Color getColor() const {

@@ -16,9 +16,9 @@
 class Player; // forward declaration
 class Switch;
 class Screen;
-
+class Level_Loader;
 class Room {
-
+    friend class Level_Loader;
     char map[MAX_Y][MAX_X] = {}; // leave a room for HUD at top row
     std::vector<Door> doors;
     std::vector<Key> keys;

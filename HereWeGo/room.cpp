@@ -184,8 +184,6 @@ bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham
 		if (x1 == x2 && y1 == y2)
 			return true;
 
-		Point p{ x1, y1 };
-
 		if (map[y1][x1] == WALL_TILE || map[y1][x1] == OBSTACLE_TILE) //  obstacle or wall in the way
 			return false;
 
@@ -258,18 +256,10 @@ char Room::getObjectAt(const Point& p, Color& color) const
 	
 	char mapChar = map[p.y][p.x];
 
-	if (mapChar == ' ' || mapChar == WALL_TILE || mapChar == SPRING_TILE || mapChar == GLASS_TILE) {
+	if (mapChar == ' ' || mapChar == WALL_TILE || mapChar == SPRING_TILE || mapChar == GLASS_TILE || mapChar == OBSTACLE_TILE) {
 		color = Color::WHITE;
 
 		return mapChar;
-	}
-
-	//obstacles - movable object - top priority
-	if (mapChar == OBSTACLE_TILE) {
-
-		color = Color::WHITE;
-		return OBSTACLE_TILE;
-
 	}
 
 	

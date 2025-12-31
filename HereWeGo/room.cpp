@@ -31,6 +31,7 @@ void Room::drawTopLayer()
 	for (Obstacle& obstacle : obstacles) obstacle.draw();
 	for (Spring& spring : springs) spring.draw();
 	for (Bomb& bomb : bombs) bomb.draw();
+	for (Potion& potion : potions) potion.draw();
 	getTorchesLineOfSight();
 	
 }
@@ -108,7 +109,10 @@ void Room::loadFromScreen(Screen& screen) // Load the room from the screen
 	
 	for (const auto& potion : potions) {
 		Point p = potion.getPos();
-		map[p.y][p.x] = POTION_TILE;
+		if (potion.getIsSeen())
+			map[p.y][p.x] = POTION_TILE;
+		else
+			map[p.y][p.x] = UNKNOWN_TILE;
 	}
 }
 

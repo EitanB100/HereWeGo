@@ -62,7 +62,11 @@ void Room::addObstacle(const Obstacle& obs)
 void Room::addPotion(const Potion& potion)
 {
 	Point potionPos = potion.getPos();
-	map[potionPos.y][potionPos.x] = POTION_TILE;
+	if (potion.getIsSeen())
+		map[potionPos.y][potionPos.x] = POTION_TILE;
+	else
+		map[potionPos.y][potionPos.x] = UNKNOWN_TILE;
+
 	potions.push_back(potion);
 }
 

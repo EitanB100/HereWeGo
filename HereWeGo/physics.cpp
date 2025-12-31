@@ -186,6 +186,16 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 					sw->draw();
 				}
 			}
+
+			if (isPotionThere(p)) 
+			{
+				Potion* potion = isPotionThere(p);
+				if (potion && !(potion->getIsSeen())) {
+					potion->setSeen();
+					map[p.y][p.x] = POTION_TILE;
+					potion->draw();
+				}
+			}
 		}
 	}
 }

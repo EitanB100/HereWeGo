@@ -212,6 +212,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 
 	if (mapChar == ' ' || mapChar == WALL_TILE || mapChar == SPRING_TILE || mapChar == GLASS_TILE) {
 		color = Color::WHITE;
+		char ch;
 		return mapChar;
 	}
 

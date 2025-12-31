@@ -1,7 +1,5 @@
 #include "Level_Loader.h"
 
-
-
 void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 {
 	std::ifstream file(fileName);

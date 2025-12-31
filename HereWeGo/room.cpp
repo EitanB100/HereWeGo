@@ -186,7 +186,7 @@ bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham
 
 		Point p{ x1, y1 };
 
-		if (isObstacleThere(p) || isWallThere(p)) //  obstacle or wall in the way
+		if (map[y1][x1] == WALL_TILE || map[y1][x1] == OBSTACLE_TILE) //  obstacle or wall in the way
 			return false;
 
 		int comperedError = 2 * balance; // go back one tile in x or y direction close to the torch

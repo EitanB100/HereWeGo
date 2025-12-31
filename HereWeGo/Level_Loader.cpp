@@ -21,7 +21,6 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 	room.resetRoom();
 	std::string line;
 	std::string section = "";
-	int mapRow = 0;
 
 	while (std::getline(file, line)) {
 		if (line.empty() || line[0] == '#') continue;
@@ -74,8 +73,22 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 		std::stringstream ss(line);
 
 		if (section == "MAP") {
-			if (mapRow < MAX_Y) {
-				for (int )
+			for (int y = 0; y < MAX_Y && section == "MAP"; y++) {
+				for (int x = 0; x < MAX_X && x < line.length(); x++) {
+					char c = line[x];
+					
+					if (c == 'L') {
+						room.legendLocation = { x, y };
+						room.map[y][x] = ' ';
+					}
+					else {
+						room.map[y][x] = c;
+					}
+				}
+
+				for (int x = line.length(); x < MAX_X; x++) {
+					room.map[y][x] = ' ';
+				}
 			}
 		}
 	}

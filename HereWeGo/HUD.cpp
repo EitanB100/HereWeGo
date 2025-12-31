@@ -4,7 +4,10 @@
 #include <sstream>
 void Game::printHUD()
 {
-	gotoxy(0, 0);
+	Point hudPos = levels[*currentLevelID].getLegendLoc();
+
+	gotoxy(hudPos.x, hudPos.y);
+
 	setColor(Color::WHITE);
 	std::cout << "Player 1: ";
 	const heldItem& item1 = players[0].getItemInHand();
@@ -41,6 +44,10 @@ void Game::printHUD()
 
 
 void Game::printTimer() {
+
+	Point hudPos = levels[*currentLevelID].getLegendLoc();
+	gotoxy(hudPos.x, hudPos.y + 1);
+	
 	auto currentTime = std::chrono::steady_clock::now();
 
 	// Calculate Total Time from the very beginning of the game
@@ -63,7 +70,7 @@ void Game::printTimer() {
 	setColor(Color::YELLOW);
 	std::cout << "Total Time: " << formatTime(totalElapsed)
 		<< " | Level Time: " << formatTime(levelElapsed) << " ";
-
+	gotoxy(hudPos.x + 20, hudPos.y + 1);
 	printScore();
 }
 

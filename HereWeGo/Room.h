@@ -17,6 +17,7 @@ class Player; // forward declaration
 class Switch;
 class Screen;
 class Level_Loader;
+
 class Room {
     friend class Level_Loader;
     char map[MAX_Y][MAX_X] = {}; // leave a room for HUD at top row
@@ -45,6 +46,7 @@ class Room {
         return nullptr;
     }
 
+    Point legendLocation = { 0,0 };
 public:
 
     Room();
@@ -56,6 +58,8 @@ public:
     const char (*getMap() const)[MAX_X] {
         return map;
     }
+
+    Point getLegendLoc() const { return legendLocation; }
 
     void resetRoom();
 

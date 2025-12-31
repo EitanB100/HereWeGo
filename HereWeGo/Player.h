@@ -35,7 +35,7 @@ public:
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount]);
 
     static constexpr int MAX_HP = 15;
-
+    static constexpr int DEAD_HP = 0;
     void draw();
 
     // Getters / Setters
@@ -50,8 +50,8 @@ public:
     int getHP() const { return hp; }
     void takeDamage(int amount) {
         hp -= amount;
-        if (hp <= 0) {
-            hp = 0;
+        if (hp <= DEAD_HP) {
+            hp = DEAD_HP;
             alive = false; // Mark as dead
         }
     }

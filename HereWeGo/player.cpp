@@ -109,8 +109,9 @@ void Player::move(Room& room, Player* otherPlayer) {
             }
             else {
                 setDirection(0, 0);
+                return;
             }
-            return;
+           
         }
         
     }

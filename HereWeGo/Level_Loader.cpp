@@ -1,14 +1,7 @@
 #include "Level_Loader.h"
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include "Switch.h"
-#include "Door.h"
-#include "Key.h"
-#include "Obstacle.h"
-#include "Bomb.h"  
-#include "Potion.h"
-#include "Torch.h"
+
+
+
 void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 {
 	std::ifstream file(fileName);

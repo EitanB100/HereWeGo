@@ -3,87 +3,15 @@
 #include <sstream> 
 #include <iomanip>  
 #include <string>
-char p1Keys[NUM_KEYS] = { 'W','X','A','D','S','E' };
-char p2Keys[NUM_KEYS] = { 'I','M','J','L','K','O' };
 
-
-
-
-void Game::printHUD()
-{
-	gotoxy(0, 0);
-	setColor(Color::WHITE);
-	std::cout << "Player 1: ";
-	const heldItem& item1 = players[0].getItemInHand();
-	if (item1.type == KEY) {
-		setColor(item1.color);
-		std::cout << "KEY ";
-	}
-	else if (item1.type == TORCH) {
-		setColor(item1.color);
-		std::cout << "TORCH ";
-	}
-	
-	else std::cout << "EMPTY ";
-	setColor(Color::WHITE);
-
-	std::cout <<" Hitpoints " << players[0].getHP() << "/15 ";
-	
-	std::cout << "| Player 2: ";
-	const heldItem& item2 = players[1].getItemInHand();
-	if (item2.type == KEY) {
-		setColor(item2.color);
-		std::cout << "KEY ";
-	}
-
-	else if (item2.type == TORCH) {
-		setColor(item2.color);
-		std::cout << "TORCH ";
-	}
-
-	else std::cout << "EMPTY ";
-	setColor(Color::WHITE);
-	std::cout << " Hitpoints " << players[1].getHP() << "/15 ";
-}
-
-
-void Game::printTimer() {
-	auto currentTime = std::chrono::steady_clock::now();
-
-	// Calculate Total Time from the very beginning of the game
-	auto totalElapsed = std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count();
-
-	// Calculate Level Time from the last reset (start of level)
-	auto levelElapsed = std::chrono::duration_cast<std::chrono::seconds>(currentTime - levelStartTime).count();
-
-	// Lambda to format seconds into MM:SS
-	auto formatTime = [](long long totalSeconds) -> std::string {
-		int m = static_cast<int>((totalSeconds % 3600) / 60);
-		int s = static_cast<int>(totalSeconds % 60);
-		std::stringstream ss;
-		ss << std::setfill('0') << std::setw(2) << m << ":"
-			<< std::setfill('0') << std::setw(2) << s;
-		return ss.str();
-		};
-
-	gotoxy(0, 1);
-	setColor(Color::YELLOW);
-	std::cout << "Total Time: " << formatTime(totalElapsed)
-		<< " | Level Time: " << formatTime(levelElapsed) << " ";
-
-	printScore();
-}
+char p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
+char p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
 
 void Game::resetLevelTimer() {
 	levelStartTime = std::chrono::steady_clock::now();
 }
-void Game::printScore() {
-	setColor(Color::YELLOW);
-	gotoxy(55, 1);
-	std::cout << "Score: " << score;
-}
 
-Game::Game() : players{
+Game::Game() : useColor(getColorMode()), players{
 	Player(Placement(10,20),'$',0,0,p1Keys),
 	Player(Placement(9,15),'&',0,0,p2Keys)
 }
@@ -105,119 +33,37 @@ Game::Game() : players{
 	init();
 }
 
-void Game::settingsMenu() {
-	bool inSettings = true;
-	while (inSettings) {
-		system("cls");
-		printCentered("Change Players Keys", 3);
-		printCentered("(1) Change P1 keys", 5);
-		printCentered("(2) Change P2 keys", 7);
-		printCentered("(9) Back to menu", 9);
 
-		char selection = _getch();
 
-		switch (selection)
-		{
-		case '1':
-		{
-			updatePlayerKeys(p1Keys, 1);
-			break;
-		}
-		case '2':
-		{
-			updatePlayerKeys(p2Keys, 2);
-			break;
-		}
-
-		case '9':
-		{
-			inSettings = false;
-			break;
-		}
+void Game::handleGameOver()
+{
+	screen.clearScreen();
+	gotoxy(35, 10);
+	setColor(Color::RED);
+	
+	printCentered("G A M E   O V E R", 10);
+	printCentered("Press 'H' to exit to menu", 12);
+	while (true) {
+		if (_kbhit()) {
+			char choice = _getch();
+			if (choice == 'h' || choice == 'H') {
+				// This exits Game::run and goes back to main()
+				setColor(Color::WHITE);
+				return;
+			}
 		}
 	}
 }
 
-void Game::updatePlayerKeys(char keys[], int playerNum) {
-	const char* commandNames[] = { "UP", "DOWN", "LEFT", "RIGHT", "STAY", "DISPOSE" , ""};
-	bool finishing = false;
+void Game::toggleColor(){ 
+	useColor = !useColor; 
+	setColorMode(useColor);
+}
 
-	while (!finishing) {
-		system("cls");
-		printCentered("PLAYER " + std::to_string(playerNum) + " CONTROLS", 2);
-
-		// Display current mapping
-		for (int i = 0; i < NUM_KEYS; i++) {
-			std::string row = "(" + std::to_string(i + 1) + ") " + commandNames[i] + ": [" + keys[i] + "]";
-			printCentered(row, 4 + i);
-		}
-
-		printCentered("(ESC or Enter) Save and Exit", 12);
-		printCentered("Select a number to rebind:", 14);
-
-		char choice = _getch();
-		bool isConflict = false;
-
-		if (choice == ESC || choice == ENTER) {
-			finishing = true;
-		}
-		else {
-
-
-			int index = -1;
-			// Check if choice is a number 1-6
-			if (choice >= '1' && choice <= '6') {
-				index = choice - '1';
-			}
-			// Check if choice is the actual command key
-			else {
-				for (int i = 0; i < NUM_KEYS; i++) {
-					if (toupper(choice) == keys[i]) {
-						index = i;
-						break;
-					}
-				}
-			}
-			if (index != -1) {
-				system("cls");
-				printCentered("Changing " + std::string(commandNames[index]), 10);
-				printCentered("Press new key...", 12);
-
-				char newKey = _getch();
-				newKey = toupper(newKey);
-
-				for (int i = 0; i < NUM_KEYS; i++) {
-					if (newKey == p1Keys[i]) {
-						printCentered("Key is already used as " + std::string(commandNames[i]) + " for Player 1...", 14);
-						isConflict = true;
-						break;
-					}
-				}
-
-				if (!isConflict) {
-					for (int i = 0; i < NUM_KEYS; i++) {
-						if (newKey == p2Keys[i]) {
-							printCentered("Key is already used as " + std::string(commandNames[i]) + " for Player 2...", 14);
-							isConflict = true;
-							break;
-						}
-					}
-				}
-
-				// Validation: Check if newKey is ESC or ENTER
-				if (newKey == ESC || newKey == ENTER) {
-					printCentered("ERROR: ESC and ENTER are reserved!", 14);
-					
-				}
-				else if (!isConflict) {
-					keys[index] = toupper(newKey);
-					printCentered("SAVED!", 14);
-					
-				}
-			}
-			Sleep(600);
-		}
-	}
+void Game::startInLevel(Level level)
+{
+	currentLevelID = level;
+	setGame(currentLevelID, false);
 }
 
 void Game::init()
@@ -228,24 +74,24 @@ void Game::init()
     initLevel3Props(levels[2]);
 	initLevel4Props(levels[3]);
 
-	currentLevelID = 0;// Start at Level 1
+	currentLevelID = Level::ONE;// Start at Level 1
 	setGame(currentLevelID , true);
 }
 
-void Game::setGame(int level , bool firstSettings) {
+void Game::setGame(Level level , bool firstSettings) {
 	screen.clearScreen();
 
 	switch (level) {
-	case 0:
+	case Level::ONE:
 		screen.Lvl1Screen();
 		break;
-	case 1:
+	case Level::TWO:
 		screen.Lvl2Screen();
 		break;
-	case 2:
+	case Level::THREE:
 		screen.Lvl3Screen();
 		break;
-	case 3:
+	case Level::TEST:
 		screen.Lvl4Screen();
 		break;
 	default:
@@ -254,19 +100,18 @@ void Game::setGame(int level , bool firstSettings) {
 	}
 
 
-	if (level < 0 || level >= ROOM_AMOUNT) level = 0;
 
 	currentLevelID = level;
 
-	levels[currentLevelID].loadFromScreen(screen);
-	levels[currentLevelID].drawRoom(screen);
+	levels[*currentLevelID].loadFromScreen(screen);
+	levels[*currentLevelID].drawRoom(screen);
 	if (!(firstSettings)) {
 		screen.draw();
-		levels[currentLevelID].drawTopLayer();
+		levels[*currentLevelID].drawTopLayer();
 	}
 
-	players[0].setPos(p1StartPoints[currentLevelID]);
-	players[1].setPos(p2StartPoints[currentLevelID]);
+	players[0].setPos(p1StartPoints[*currentLevelID]);
+	players[1].setPos(p2StartPoints[*currentLevelID]);
 
 	for (auto& player : players) {
 		player.setDirection(0, 0);
@@ -281,7 +126,7 @@ void Game::run()
 	resetLevelTimer();
 	bool boomDustCleaningNeeded = false;
 	while (true) {
-		Room& currRoom = levels[currentLevelID]; 
+		Room& currRoom = levels[*currentLevelID]; 
 		char key = 0;
 		
 		
@@ -298,7 +143,7 @@ void Game::run()
 		}
 		
 		currRoom.resetObstacles();
-		Point currentExitPoint = exitPoints[currentLevelID];
+		Point currentExitPoint = exitPoints[*currentLevelID];
 
 		//update loop
 		for (int i = 0; i < PLAYER_AMOUNT; i++) {
@@ -322,7 +167,7 @@ void Game::run()
 
 		checkLevelTransition(currentLevelID, players[0].getPos(), players[1].getPos());
 		
-		if (currentLevelID == 2) {
+		if (*currentLevelID == 2) {
 			Point p1 = players[0].getPos();
 			Point p2 = players[1].getPos();
 
@@ -333,7 +178,7 @@ void Game::run()
 				setColor(Color::GREEN);
 				printCentered("THANKS FOR PLAYING!", 12);
 
-				levels[currentLevelID].drawRoom(screen);
+				levels[*currentLevelID].drawRoom(screen);
 			}
 			gotoxy(45, 0);
 			setColor(Color::GREEN);
@@ -366,25 +211,7 @@ void Game::run()
 		}
 
 		if (gameOver) {
-			screen.clearScreen();
-			gotoxy(35, 10);
-			//setColor(Color::RED);
-			//std::cout << "G A M E   O V E R";
-			printCentered("GAME OVER", 10);
-			//gotoxy(30, 12);
-			setColor(Color::WHITE);
-			//std::cout << "Press 'H' to Exit to Menu";
-			printCentered("LOL U SUCK", 12);
-			while (true) {
-				if (_kbhit()) {
-					char choice = _getch();
-					if (choice == 'h' || choice == 'H') {
-						// This exits Game::run and goes back to main()
-						setColor(Color::WHITE);
-						return;
-					}
-				}
-			}
+		
 		}
 		//HUD renderer
 		printHUD();
@@ -394,9 +221,9 @@ void Game::run()
 
 }
 
-void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
+void Game::checkLevelTransition(Level& currentLevel, Point p1, Point p2)
 {
-	Point exit = exitPoints[currentLevel];
+	Point exit = exitPoints[*currentLevel];
 	if (exit.x == -1) return; // No standard exit
 
 	if (p1 == exit && p2 == exit)
@@ -405,10 +232,10 @@ void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
 		// This ensures the player is rewarded based on the time spent on the level they just finished
 		auto now = std::chrono::steady_clock::now();
 		int levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
-		score += (100000 / (levelSeconds + 1));
+		score += (MAX_SCORE / (levelSeconds + 1));
 
 		// 2. Handle Special Case (Obstacle carry over)
-		if (currentLevel == 0) {
+		if (*currentLevel == 0) {
 			Obstacle* obs = levels[0].isObstacleThere({ 58, 18 });
 			if (obs) {
 				Obstacle newObs = *obs;
@@ -419,8 +246,8 @@ void Game::checkLevelTransition(int& currentLevel, Point p1, Point p2)
 		}
 
 		// 3. Advance Level and Reset Timer
-		if (currentLevel < ROOM_AMOUNT - 1) {
-			currentLevel++;
+		if (*currentLevel < ROOM_AMOUNT - 1) {
+			++currentLevel;
 		}
 
 		// Reset the game state for the new currentLevel
@@ -467,28 +294,21 @@ void Game::initLevel1Props(Room& r) {
 	// ==========================================
 
 	// -- Area1-2 Switches (The "Same Switch" Group) --
-	Switch* sD1 = new Switch(12, 8, 101);
-	r.addSwitch(sD1);
+	r.addSwitch(std::make_unique<Switch>(12, 8, 101));
 	r.isDoorThere(Point{ 12, 6 })->addRequiredSwitch(r.getSwitchByID(101), true);  // D1 needs S(12,8) ON
 	r.isDoorThere(Point{ 44, 9 })->addRequiredSwitch(r.getSwitchByID(101), false); // D2 needs S(12,8) OFF
-	Switch* sD2 = new Switch(23, 11, 102);
-	r.addSwitch(sD2);
+	r.addSwitch(std::make_unique<Switch>(23, 11, 102));
 	r.isDoorThere(Point{ 44, 9 })->addRequiredSwitch(r.getSwitchByID(102), false); // D2 needs S(23,11) OFF
 	r.isDoorThere(Point{ 44, 17 })->addRequiredSwitch(r.getSwitchByID(102), true); // D3 needs S(23,11) ON
-	Switch* sD3 = new Switch(10, 14, 103);
-	r.addSwitch(sD3);
+	
+	r.addSwitch(std::make_unique<Switch>(10,14,103));
 	r.isDoorThere(Point{ 44, 17 })->addRequiredSwitch(r.getSwitchByID(103), true); // D3 needs S(10,14) ON
 	//-- Area3 Switches and 4--
-	Switch* sD4 = new Switch(50, 14, 104);
-	Switch* sD5 = new Switch(57, 10, 105);
-	Switch* sD6 = new Switch(64, 10, 106);
-	Switch* sD7 = new Switch(71, 10, 107);
-	Switch* sD8 = new Switch(78, 14, 108);
-	r.addSwitch(sD4);
-	r.addSwitch(sD5);
-	r.addSwitch(sD6);
-	r.addSwitch(sD7);
-	r.addSwitch(sD8);
+	r.addSwitch(std::make_unique<Switch>(50, 14, 104));
+	r.addSwitch(std::make_unique<Switch>(57, 10, 105));
+	r.addSwitch(std::make_unique<Switch>(64, 10, 106));
+	r.addSwitch(std::make_unique<Switch>(71, 10, 107));
+	r.addSwitch(std::make_unique<Switch>(78, 14, 108));
 	r.isDoorThere(Point{ 63, 17 })->addRequiredSwitch(r.getSwitchByID(104), false); // D4 needs S(49,14) OFF
 	r.isDoorThere(Point{ 63, 17 })->addRequiredSwitch(r.getSwitchByID(106), false); // D4 needs S(64,10) OFF
 	r.isDoorThere(Point{ 63, 17 })->addRequiredSwitch(r.getSwitchByID(107), false); // D4 needs S(71,10) OFF
@@ -547,14 +367,18 @@ void Game::initLevel2Props(Room& r){
 	// 2. SWITCHES
 	// ==========================================
 	for (int i = 1; i <= 16; i++) {
-		Switch* temp = new Switch(i, 23, i);
-		r.addSwitch(temp);
+
+		auto temp = std::make_unique<Switch>(i,23,i);
 		if (i % 2 == 0)
 			temp->toggleState();
+		
+		r.addSwitch(std::move(temp));
+
 	}
 	for (int i = 50; i <= 65; i++) {
-		Switch* realS = new Switch(i, 18, i);
-		r.addSwitch(realS);
+	
+		r.addSwitch(std::make_unique<Switch>(i, 18, i));
+
 		if (i % 2 == 1)
 			d1.addRequiredSwitch(r.getSwitchByID(i), true);
 		else
@@ -605,15 +429,17 @@ void Game::initLevel3Props(Room& r) {
 	Door d7(22, 5, 1, Color::RED);
 	// ==========================================
 	// 2. SWITCHES
-	Switch* sD1 = new Switch(64, 2, 201);
-	r.addSwitch(sD1);
+	
+	auto sD1 = std::make_unique<Switch>(64,2,201);
 	sD1->setSeen();
-	Switch* sD2 = new Switch(65, 2, 202);
-	r.addSwitch(sD2);
+	r.addSwitch(std::move(sD1));
+
+	auto sD2 = std::make_unique<Switch>(65, 2, 202);
 	sD2->setSeen();
-	Switch* sD3 = new Switch(66, 2, 203);
-	r.addSwitch(sD3);
+	r.addSwitch(std::move(sD2));
+	auto sD3 = std::make_unique<Switch>(66, 2, 203);
 	sD3->setSeen();
+	r.addSwitch(std::move(sD3));
 
 
 	//Door 1
@@ -672,8 +498,8 @@ void Game::initLevel4Props(Room& r) {
 	r.addDoor(Door(42, 3, 1, Color::RED));
 
 	// Switch Door
-	Switch* sw1 = new Switch(60, 3, 401);
-	r.addSwitch(sw1);
+
+	r.addSwitch(std::make_unique<Switch>(60,3,401));
 	Door dSwitch(65, 3, 0, Color::CYAN);
 	dSwitch.addRequiredSwitch(r.getSwitchByID(401), true);
 	r.addDoor(dSwitch);
@@ -723,8 +549,7 @@ void Game::initLevel4Props(Room& r) {
 	r.addObstacle(block);
 
 	// Extra switch for atmosphere
-	Switch* lightSwitch = new Switch(55, 18, 402);
-	r.addSwitch(lightSwitch);
+	r.addSwitch(std::make_unique<Switch>(55,18,402));
 	// === NEW TRICKY OBJECTS ===
 
 	// 1. "Ping-Pong" Springs (Bottom Right)

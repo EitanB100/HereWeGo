@@ -1,44 +1,62 @@
 #pragma once
 #include <vector>
 #include <iostream>
-#include "Screen.h"
+#include <memory>
 #include "Placement.h"
 #include "Tile_Chars.h"
 #include "Door.h"
 #include "Key.h"
 #include "Torch.h"
-#include "Switch.h" 
 #include "Obstacle.h"
 #include "spring.h"
 #include "Bomb.h"
 
 
-class Player; // forward decloraion
+class Player; // forward declaration
+class Switch;
+class Screen;
 
 class Room {
 
     char map[MAX_Y][MAX_X] = {}; // leave a room for HUD at top row
     std::vector<Door> doors;
     std::vector<Key> keys;
-    std::vector<Switch*> switches;
+    std::vector<std::unique_ptr<Switch>> switches;
     std::vector<Obstacle> obstacles;
     std::vector<Torch> torches;
     std::vector<Spring> springs;
 	std::vector<Bomb> bombs;
 
+    template <typename T, typename Predicate>
+    T* findBy(std::vector<T>& obj, Predicate pred) {
+        for (auto& item : obj) {
+            if (pred(item)) return &item;
+        }
+        return nullptr;
+    }
+
+    template <typename T, typename Predicate>
+    const T* findBy(const std::vector<T>& obj, Predicate pred) const {
+        for (const auto& item : obj) {
+            if (pred(item)) return &item;
+        }
+        return nullptr;
+    }
 
 public:
 
     Room();
-    ~Room() {
-        for (Switch* sw : switches) {
-            delete sw;
-        }
-        switches.clear();
-    }
+    //changed switches to be unique_ptrs, but just in case did those anyway
+    Room(const Room&) = delete;
+    Room& operator=(const Room&) = delete;
+    ~Room() = default;
+
     const char (*getMap() const)[MAX_X] {
         return map;
     }
+
+    void resetRoom();
+
     bool checkDoor(Point p, heldItem& item);
     void checkSwitch(Point p); // 3. Added Switch Check
 
@@ -47,12 +65,14 @@ public:
     void loadFromScreen(Screen& screen);
     void clearTile(Point& p) { map[p.y][p.x] = ' '; }
 
-    void addWall(Point p);
-    void addDoor(Door door);
-    void addKey(Key key);
-    void addTorch(Torch torch);
-    void addSpring(Spring spring);
-	void addBomb(Bomb bomb);
+    void addWall(const Point& p);
+    void addDoor(const Door& door);
+    void addKey(const Key& key);
+    void addTorch(const Torch& torch);
+    void addSpring(const Spring& spring);
+	void addBomb(const Bomb& bomb);
+    void addSwitch(std::unique_ptr<Switch> s);
+    void addObstacle(const Obstacle& obs);
 
     void removeKey(const Point& p);
     void removeTorch(const Point& p);
@@ -61,26 +81,31 @@ public:
 	void removeSwitch(const Point& p);
 	void removeBomb(const Point& p);
 
-    void addSwitch(Switch* s);
-    void addObstacle(Obstacle obs);
 
-    char getObjectAt(Point& p);
-    char getObjectAt(Point& p, Color& color);
+    char getObjectAt(const Point& p) const;
+    char getObjectAt(const Point& p, Color& color) const;
   
     bool isWallThere(Point p);
 	Switch* getSwitchByID(int id);
 
-    Door* isDoorThere(Point p);
-    Key* isKeyThere(Point p);
-    Switch* isSwitchThere(Point p);
-    Torch* isTorchThere(Point p);
-    Obstacle* isObstacleThere(Point p);
-    Spring* isSpringThere(Point p);
-	Bomb* isBombThere(Point p);
+    const Door* isDoorThere(const Point& p) const;
+    const Key* isKeyThere(const Point& p) const;
+    const Switch* isSwitchThere(const Point& p) const;
+    const Torch* isTorchThere(const Point& p) const;
+    const Obstacle* isObstacleThere(const Point& p) const;
+    const Spring* isSpringThere(const Point& p) const;
+	const Bomb* isBombThere(const Point& p) const;
 
+    Door* isDoorThere(const Point& p);
+    Key* isKeyThere(const Point& p);
+    Switch* isSwitchThere(const Point& p);
+    Torch* isTorchThere(const Point& p);
+    Obstacle* isObstacleThere(const Point& p);
+    Spring* isSpringThere(const Point& p);
+    Bomb* isBombThere(const Point& p);
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
-	void CompleteLineOfSight(Torch torch);
+	void CompleteLineOfSight(const Torch& torch);
 	void getTorchesLineOfSight();
 
 
@@ -96,6 +121,4 @@ public:
     void clearExplosions();
     bool hasExplosions();
 
-    
-   //bool moveObstacle(Obstacle* obstacle, int dirx, int diry, int playerForce);
 };

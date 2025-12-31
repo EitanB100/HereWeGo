@@ -35,16 +35,9 @@ void Screen::loadMapFromRoom(const char mapData[MAX_Y][MAX_X]) {
 
 Screen::Screen() {
 	for (int i = 0; i < MAX_Y; i++) {
-		screen[i] = new char[MAX_X + 1];
 		screen[i][MAX_X] = '\0';
 	}
 	createGameScreen();
-}
-
-Screen::~Screen() {  // Destructor to free allocated memory
-	for (int i = 0; i < MAX_Y; i++) {
-		delete[] screen[i];
-	}
 }
 
 

@@ -1,5 +1,13 @@
 #include "Spring.h"
 
+bool Spring::isSpringPart(const Point& p) const
+{
+	for (const auto& part : parts) {
+		if (part.getx() == p.x && part.gety() == p.y) return true;
+	}
+	return false;
+}
+
 void Spring::draw() {
 	
 	for (int i = 0; i < parts.size(); i++) {

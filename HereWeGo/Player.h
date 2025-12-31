@@ -10,8 +10,11 @@ class Player {
     int dirx = 0, diry = 0;
     int force = 1;
     bool finishedLevel = false;
-    char keys[NUM_KEYS];
-    heldItem itemInHand = { NONE, 0, Color::WHITE };
+    static constexpr int keyAmount = static_cast<int>(CommandKeys::NUM_KEYS);
+    
+
+    char keys[keyAmount];
+    heldItem itemInHand = { ItemType::NONE, 0, Color::WHITE };
 
     struct SpringState {
         int compressionCount = 0;
@@ -20,7 +23,7 @@ class Player {
         Point launchDir = { 0,0 };
     } spring;
 
-	int HP = 15;
+	int HP = STARTING_HP;
     bool alive = true;
 
     // Helpers
@@ -29,15 +32,9 @@ class Player {
     bool handlePickups(Room& room, Point nextPoint);
     bool handleSpringExit(Room& room);
 public:
-    Player(const Placement& p, char c, int directx, int directy, const char keyArray[NUM_KEYS])
-    {
-        symbol = c;
-        pos.set(p.getx(), p.gety(), symbol);
-        dirx = directx;
-        diry = directy;
-        for (int i = 0; i < NUM_KEYS; ++i)
-            keys[i] = keyArray[i];
-    }
+    Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount]);
+
+    static constexpr int STARTING_HP = 15;
 
     void draw();
 
@@ -66,6 +63,11 @@ public:
     bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
     void updateSpringPhysics(Room& room, Player* otherPlayer);
     void dropItem(Room& room);
+
+    bool isCommand(char input, CommandKeys key) const {
+        int index = static_cast<int>(key);
+        return toupper(input) == keys[index];
+    }
     void inputManager(char tav, Room& room);
 
 };

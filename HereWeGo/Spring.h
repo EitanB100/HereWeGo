@@ -22,12 +22,7 @@ public:
     }
 
     // Check if a specific point is part of this spring
-    bool isSpringPart(const Point& p) {
-        for (const auto& part : parts) {
-            if (part.getx() == p.x && part.gety() == p.y) return true;
-        }
-        return false;
-    }
+    bool isSpringPart(const Point& p) const;
 
  
 

@@ -9,14 +9,23 @@ constexpr char ENTER = 13;
 constexpr int MAX_X = 80;
 constexpr int MAX_Y = 25;
 
-enum itemType { NONE, KEY, TORCH, BOMB }; // possible item types - 
+enum class ItemType { NONE, KEY, TORCH, BOMB }; // possible item types - 
+
+enum class Level {ONE = 0, TWO, THREE, TEST, COUNT};
+inline int operator*(Level level) { return static_cast<int>(level); }
+inline bool operator<(Level level, int i) { return static_cast<int>(level) < i; }
+
+inline Level& operator++ (Level& level) {
+    level = static_cast<Level>(static_cast<int>(level) + 1);
+    return level;
+}
 
 enum class Color {
     BLUE = 1, GREEN, CYAN, RED, MAGENTA,YELLOW,WHITE = 15//white is default
 };
 
 struct heldItem {
-    itemType type = NONE;
+    ItemType type = ItemType::NONE;
     int id = 0; // key ID or bomb timer
     
 
@@ -40,8 +49,10 @@ struct Point { // simple struct for position getting
 void printCentered(std::string text, int y); //to print the menu in the center
 void printInstructions();
 
+void setColorMode(bool useColor);
+bool getColorMode();
 void setColor(Color c);
- 
+void setColor(Color c, bool allowColor);
 
 void gotoxy(int x, int y);
 

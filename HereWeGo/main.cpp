@@ -7,7 +7,17 @@
 
 int main() {
 
+	
+	constexpr char MENU_LVL1 = '1';
+	constexpr char MENU_LVL2 = '2';
+	constexpr char MENU_LVL3 = '3';
+	constexpr char MENU_TEST = '4';
+	constexpr char MENU_SETTINGS = '7';
+	constexpr char MENU_INSTRUCTIONS = '8';
+	constexpr char MENU_EXIT = '9';
+
 	bool exitProgram = false;
+	
 	hideCursor();
 	while (!exitProgram)
 	{
@@ -28,49 +38,51 @@ int main() {
 
 		switch (selection)
 		{
-
-		case '1':
+			
+		case MENU_LVL1:	
 		{
 			Game game;
-			game.startInLevel(0);
+			game.startInLevel(Level::ONE);
 			game.run();
 			break;
 		}
-		case '2':
+		case MENU_LVL2:
 		{
 			Game game;
-			game.startInLevel(1);
+			game.startInLevel(Level::TWO);
 			game.run();
 			break;
 		}
-		case '3':
+		case MENU_LVL3:
 		{
 			Game game;
-			game.startInLevel(2);
+			game.startInLevel(Level::THREE);
 			game.run();
 			break;
 		}
-		case '4':
+		case MENU_TEST:
 		{
 			Game game;
-			game.startInLevel(3);
+			game.startInLevel(Level::TEST);
 			game.run();
 			break;
 		}
-		case '7':
+		case MENU_SETTINGS:
 		{
 			Game game;
 			game.settingsMenu();
 			break;
 		}
-		case '8':
+		case MENU_INSTRUCTIONS: 
+		{
+			Game game;
 			gotoxy(MAX_X / 2, MAX_Y / 2);
 			printInstructions();
 			break;
-
-		case '9':
+		}
+		case MENU_EXIT:
 		{
-
+			Game game;
 			system("cls");
 			printCentered("Goodbye :3", 10);
 			exitProgram = true;

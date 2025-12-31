@@ -2,8 +2,10 @@
 #include <iostream>
 #include <cstdlib>
 #include "utils.h"
+#include "Game.h"
 
 
+static bool colorEnabled = true;
 
 void gotoxy(int x, int y) {
     std::cout.flush();
@@ -23,10 +25,30 @@ void hideCursor() {
 
 
 
+void setColorMode(bool useColor)
+{
+	colorEnabled = useColor;
+}
+
+bool getColorMode()
+{
+	return colorEnabled;
+}
+
 void setColor(Color c) // set console text color - logic suggested by gemini
 {
+	setColor(c, colorEnabled);
+}
+
+void setColor(Color c, bool allowColor)
+{
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, int(c));  
+	if (allowColor) {
+		
+		SetConsoleTextAttribute(hConsole, int(c));
+	}
+	else
+		SetConsoleTextAttribute(hConsole, static_cast<int>(Color::WHITE));
 }
 
 

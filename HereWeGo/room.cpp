@@ -26,7 +26,7 @@ void Room::drawTopLayer()
 {
 	for (Door& door : doors) door.draw();
 	for (Key& key : keys) key.draw();
-	for (Switch* switchOnOff : switches) switchOnOff->draw();
+	for (auto& switchOnOff : switches) switchOnOff->draw();
 	for (Torch& torch : torches) torch.draw();
 	for (Obstacle& obstacle : obstacles) obstacle.draw();
 	for (Spring& spring : springs) spring.draw();
@@ -68,18 +68,18 @@ void Room::loadFromScreen(Screen& screen) // Load the room from the screen
 	}
 }
 
-Door* Room::isDoorThere(Point p)
+
+
+
+void Room::resetRoom()
 {
-	for (Door& door : doors)
-	{
-		Placement doorPos = door.getPos();
-		
-		if (doorPos.getPosition() == p)
-		{
-			return &door;
-		}
-	}
-	return nullptr;
+	doors.clear();
+	keys.clear();
+	switches.clear(); 
+	obstacles.clear();
+	torches.clear();
+	springs.clear();
+	bombs.clear();
 }
 
 bool Room::checkDoor(Point p, heldItem& item)
@@ -90,11 +90,11 @@ bool Room::checkDoor(Point p, heldItem& item)
 	// If door is already open, we can pass (optional check)
 	if (door->getIsOpen()) return true;
 
-	if (item.type == KEY) 
+	if (item.type == ItemType::KEY) 
 	{
 		if (door->tryUnlock(item.id))
 		{
-			item = { NONE, 0, Color::WHITE}; // Consume key
+			item = { ItemType::NONE, 0, Color::WHITE}; // Consume key
 			door->draw();
 		}
 	}
@@ -112,184 +112,15 @@ void Room::checkSwitch(Point p) {
 	}
 }
 
-void Room::addDoor(Door door) {
-	Placement doorPos = door.getPos();
-	map[doorPos.gety()][doorPos.getx()] = doorPos.getTileChar();
-	doors.push_back(door);
-}
-
-Key* Room::isKeyThere(Point p)
-{
-	for (Key& key : keys)
-	{
-		Point keyPos = key.getPos();
-		if (keyPos == p)
-		{
-			return &key;
-		}
-	}
-	return nullptr;
-}
-
-
-void Room::addKey(Key key) {
-	Point keyPos = key.getPos();
-	if (key.getIsSeen())
-		map[keyPos.y][keyPos.x] = KEY_TILE;
-	else
-		map[keyPos.y][keyPos.x] = UNKNOWN_TILE; // Draw as unknown if not seen
-	keys.push_back(key);
-}
-
-void Room::addTorch(Torch torch) {
-	Point TorchPos = torch.getPos();
-	map[TorchPos.y][TorchPos.x] = TORCH_TILE;
-	torches.push_back(torch);
-}
-
-void Room::addSpring(Spring spring)
-{
-	springs.push_back(spring);
-	for (const auto& part : spring.getParts()) {
-		map[part.gety()][part.getx()] = SPRING_TILE;
-	}
-}
-
-void Room::addBomb(Bomb bomb){
-	Point bombPos = bomb.getPos();
-	if (bomb.getIsSeen())
-		map[bombPos.y][bombPos.x] = BOMB_TILE;
-	else
-		map[bombPos.y][bombPos.x] = UNKNOWN_TILE; // Draw as unknown if not seen
-	bombs.push_back(bomb);
-}
-
-void Room::removeKey(const Point& p)
-{
-	for (auto key = keys.begin(); key != keys.end(); key++) {
-		if (key->getPos() == p) {
-			keys.erase(key);
-			map[p.y][p.x] = ' ';
-			return;
-		}
-	}
-}
-
-void Room::removeTorch(const Point& p)
-{
-	for (auto torch = torches.begin(); torch != torches.end(); torch++) {
-		if (torch->getPos() == p) {
-			torches.erase(torch);
-			map[p.y][p.x] = ' ';
-			return;
-		}
-	}
-}
-
-	
-void Room::removeObstacle(const Point& p)
-{
-	for (auto obstacle = obstacles.begin(); obstacle != obstacles.end(); obstacle++) {
-		if (obstacle->isAt(p)) {
-			obstacles.erase(obstacle);
-			return;
-		}
-	}
-}
-
-void Room::removeSpring(const Point& p)
-{
-	for (auto spring = springs.begin(); spring != springs.end(); spring++) {
-		if (spring->isSpringPart(p)) {
-			springs.erase(spring);
-			return;
-		}
-	}
-} // ask if remove all or just one part of spring
-
-void Room::addSwitch(Switch* s) {
-	Point switchPos = s->getPos();
-	if (switchPos.x >= 0 && switchPos.x < MAX_X && switchPos.y >= 0 && switchPos.y < MAX_Y) {
-		map[switchPos.y][switchPos.x] = SWITCH_OFF; // Ensure SWITCH_OFF is defined in Tile_Chars.h
-		switches.push_back(s); // Cast away constness to store in vector
-	}
-}
-
-void Room::removeSwitch(const Point& p)
-{
-	for (auto sw = switches.begin(); sw != switches.end(); sw++) {
-		if ((*sw)->getPos() == p) {
-			delete *sw; // Free the memory allocated for the switch
-			switches.erase(sw);
-			map[p.y][p.x] = ' ';
-			return;
-		}
-	}
-}
-
-void Room::removeBomb(const Point& p) {
-	for (auto bomb = bombs.begin(); bomb != bombs.end(); bomb++) {
-		if (bomb->getPos() == p) {
-			bombs.erase(bomb);
-			map[p.y][p.x] = ' ';
-			return;
-		}
-	}
-}
-
-void Room::addObstacle(Obstacle obs)
-{
-	obstacles.push_back(obs);
-
-	std::vector<Point> currParts = obs.getFutureParts(0, 0);
-	for (const auto& part : currParts)
-	{
-
-		map[part.y][part.x] = OBSTACLE_TILE;
-	}
-}
-
-void Room::addWall(Point p)
-{
-	map[p.y][p.x] = WALL_TILE;
-}
-
 Switch* Room::getSwitchByID(int id) {
 	// Iterate through all switches in the list
-	for (Switch* switchPtr : switches) {
-		if (switchPtr == nullptr) {
-			continue;
-		}
-		if (switchPtr->getSwitchID() == id) {
-			return switchPtr;
+	for (const auto& sw : switches) {
+		if (sw && sw->getSwitchID() == id) {
+			return sw.get();
 		}
 	}
 
 	return nullptr;
-}
-
-Switch* Room::isSwitchThere(Point p){
-	for (Switch* switchPtr : switches){
-		if (switchPtr == nullptr) {
-			continue;
-		}
-		Point switchPoint = switchPtr->getPos();
-
-		if (switchPoint == p){
-			return switchPtr;
-		}
-	}
-	return nullptr;
-}
-
-bool Room::isWallThere(Point p) {
-	//world edge boundary check
-	if (p.x < 0 || p.x >= MAX_X || p.y < 0 || p.y >= MAX_Y)
-		return true; 
-
-	if (map[p.y][p.x] == WALL_TILE)
-		return true;
-	return false;
 }
 
 bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham's Line Algorithm
@@ -316,58 +147,6 @@ bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham
 	}
 }
 
-void Room::CompleteLineOfSight(Torch torch) {
-	Point torchPoint = torch.getPos();
-	int Dist = torch.getLineOfSight();
-
-	for (int y = torchPoint.y - Dist; y <= torchPoint.y + Dist; y++) // running on possable points of LOS
-	{
-		for (int x = torchPoint.x - Dist; x <= torchPoint.x + Dist; x++)
-		{
-			if (x < 0 || y < 0 || x >= MAX_X || y >= MAX_Y) // out of bounds
-				continue;
-			Point p{ x, y };
-
-			int distanceFromTorchX = x - torchPoint.x;
-			int distanceFromTorchY = y - torchPoint.y;
-			
-			if (distanceFromTorchX * distanceFromTorchX + distanceFromTorchY * distanceFromTorchY > Dist * Dist) // out of circle , distance formula
-				continue;
-			
-			if (!(PointhasLineOfSight(torchPoint.x, torchPoint.y, x, y))) // check if torch can see that object
-				continue;
-			
-			if (isKeyThere(p)) // if key there , make it seen
-			{
-				Key* key = isKeyThere(p);
-				if (key && !(key->getIsSeen())) {
-					key->setSeen();
-					map[p.y][p.x] = KEY_TILE; // update map tile
-					key->draw();
-				}
-			}
-			if (isBombThere(p)) // if bomb there , make it seen
-			{
-				Bomb* bomb = isBombThere(p);
-				if (bomb && !(bomb->getIsSeen())) {
-					bomb->setSeen();
-					map[p.y][p.x] = BOMB_TILE; // update map tile
-					bomb->draw();
-				}
-			}
-			if (isSwitchThere(p)) // if switch there , make it seen
-			{
-				Switch* sw = isSwitchThere(p);
-				if (sw && !(sw->getIsSeen())) {
-					sw->setSeen();
-					map[p.y][p.x] = sw->getState() ? SWITCH_ON : SWITCH_OFF; // update map tile
-					sw->draw();
-				}
-			}		
-		}
-	}
-}
-
 
 void Room::getTorchesLineOfSight() {
 	for (auto& torch : torches) {
@@ -375,268 +154,9 @@ void Room::getTorchesLineOfSight() {
 	}
 }
 
-Torch* Room::isTorchThere(Point p)
-{
-	for (auto& torch : torches)
-	{
-		Point torchPos = torch.getPos();
-		if (torchPos == p)
-		{
-			return &torch;
-		}
-	}
-	return nullptr;
-}
-
-Obstacle* Room::isObstacleThere(Point p)
-{
-	for (auto& ob : obstacles)
-	{
-		if (ob.isAt(p))
-			return &ob;
-	}
-	return nullptr;
-}
-
-Spring* Room::isSpringThere(Point p)
-{
-	for (auto& spring : springs) {
-		if (spring.isSpringPart(p)) return &spring;
-	}
-	return nullptr;
-}
-
-Bomb* Room::isBombThere(Point p)
-{
-	for (auto& bomb : bombs)
-	{
-		Point bombPos = bomb.getPos();
-		if (bombPos == p)
-		{
-			return &bomb;
-		}
-	}
-	return nullptr;
-}
-
-//logic for handling obstacle movement
-bool Room::moveObstacle(Point p, int dirx, int diry, int force)
-{
-	Obstacle* obs = isObstacleThere(p);
-	if (!obs) return false;
-	
-	//if already moved this frame
-	if (obs->getHasMoved()) return true;
-
-	//early force check
-	if (force < obs->getSize()) return false;
-	
-	//get all parts of obstacle for validity check
-	std::vector<Point> currentParts = obs->getFutureParts(0, 0);
-	std::vector<Point> futureParts = obs->getFutureParts(dirx, diry); // complete
-
-	//temporarily clear the map at current position to avoid self collision
-	for (const auto& part : currentParts) {
-		map[part.y][part.x] = ' ';
-	}
-
-	bool canMove = true;
-
-	//check collision for every part in the new position
-	for (auto& futurePart : futureParts)
-	{
-		//boundaries
-		if (futurePart.x < 0 || futurePart.x > MAX_X - 1 || futurePart.y < 0 || futurePart.y > MAX_Y - 1)
-		{
-			canMove = false;
-			break;
-		}
-
-		//objects
-		char tile = map[futurePart.y][futurePart.x];
-		if (tile != ' ') 
-		{
-			//can move through doors
-			Door* door = isDoorThere(futurePart);
-			if (door != nullptr && door->getIsOpen()) continue; // move obstacle part through a door
-
-			canMove = false;
-			break;
-		}
-	}
-
-	if (canMove) {
-		//clear the parts from old position
-		for (const auto& part : currentParts)
-		{
-			bool staysCovered = false;
-			for (const auto& newPart : futureParts) {
-				if (part == newPart)
-				{
-					staysCovered = true; 
-					break;
-				}
-			}
-			if (!staysCovered)
-			{
-				gotoxy(part.x, part.y);
-				std::cout << ' ';
-			}
-		}
-
-		obs->move(dirx, diry);
-		for (const auto& part : futureParts) {
-			map[part.y][part.x] = OBSTACLE_TILE;
-		}
-		obs->draw();
-
-		//prevent double moving in a frame
-		obs->markAsMoved();
-		return true;
-	}
-	else {
-		//movement failed, restore for the current position
-		for (const auto& part : currentParts)
-		{
-			map[part.y][part.x] = OBSTACLE_TILE;
-		}
-		obs->draw();
-		return false;
-	}
-
-}
-
-//determines what exists at a coordinate.
-//the order of checks is sorted by visual priority
-char Room::getObjectAt(Point& p)
-{
-	Color c = Color::WHITE;
-	return getObjectAt(p, c);
-}
-
-char Room::getObjectAt(Point& p, Color& color)
-{
-	//boundary check
-	if (p.x < 0 || p.x > MAX_X || p.y < 0 || p.y > MAX_Y) {
-		color = Color::WHITE;
-		return ' ';
-	}
-
-	//obstacles - movable object - top priority
-	Obstacle* obstacle = isObstacleThere(p);
-	if (obstacle != nullptr) {
-		color = Color::WHITE;
-		return OBSTACLE_TILE;
-
-	}
-	//interactables:
-	
-	//keys
-	Key* key = isKeyThere(p);
-	if (key != nullptr) {
-
-		if (key->getIsSeen())
-		{
-			color = key->getColor();
-			return KEY_TILE;
-		}
-		color = Color::WHITE;
-		return UNKNOWN_TILE;
-	}
-
-	//torches
-	Torch* torch = isTorchThere(p);
-	if (torch != nullptr) {
-		color = torch->getColor();
-		return TORCH_TILE;
-	}
-
-	//static:
-	//doors:
-	Door* door = isDoorThere(p);
-	if (door != nullptr) {
-		if (door->getIsOpen()) color = door->getColor();
-
-		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
-	}
-	//bombs
-	Bomb* bomb = isBombThere(p);
-	if (bomb != nullptr) {
-		if (bomb->getIsSeen()) {
-			color = bomb->getColor();
-			return BOMB_TILE;
-		}
-		else {
-			color = Color::WHITE;
-			return UNKNOWN_TILE;
-		}
-	}
-
-	//switches:
-	Switch* sw = isSwitchThere(p);
-	if (sw != nullptr) { // Check if a switch is present
-		if (sw->getIsSeen()) {
-			// Switch is seen, return its state
-			color = sw->getState() ? Color::GREEN : Color::RED;
-			return sw->getState() ? SWITCH_ON : SWITCH_OFF;
-		}
-		else {
-			// Switch is NOT seen, treat it as unknown/blocked for movement
-			color = Color::WHITE;
-			return UNKNOWN_TILE;
-		}
-	}
 
 
 
-	return map[p.y][p.x];
-}
-void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& screen) {
-	Point blastCenter = bomb->getPos();
-	int blastRadius = bomb->getBlastRadius();
-
-	//Apply damage to players
-	for (int i = 0; i < playerCount; ++i) {
-		Point pPos = players[i].getPos();
-		int dx = abs(pPos.x - blastCenter.x);
-		int dy = abs(pPos.y - blastCenter.y);
-		int distance = (dx > dy) ? dx : dy;
-
-		if (distance <= blastRadius && PointhasLineOfSight(blastCenter.x, blastCenter.y, pPos.x, pPos.y)) {
-			int damage = (blastRadius - distance + 1) * 5;
-			players[i].takeDamage(damage);
-		}
-	}
-
-	for (int d = blastRadius; d >= 0; d--) { 	// Loop from the outside (blastRadius) down to the center , needed so walls and obstacles which block clearned last
-		for (int y = blastCenter.y - d; y <= blastCenter.y + d; y++) { 		// Iterate through the square shell at distance 'd'
-			for (int x = blastCenter.x - d; x <= blastCenter.x + d; x++) {
-				if (abs(x - blastCenter.x) == d || abs(y - blastCenter.y) == d) { // We only want to process the "border" of the current square shell this ensures we go ring-by-ring
-					if (x < 0 || y < 0 || x >= MAX_X || y >= MAX_Y) continue;
-					Point p{ x, y };
-					if (PointhasLineOfSight(blastCenter.x, blastCenter.y, x, y)) {
-						// Clear items and obstacles 
-						if (isKeyThere(p)) removeKey(p);
-						if (isSwitchThere(p)) removeSwitch(p);
-						if (isObstacleThere(p)) removeObstacle(p);
-						if (isWallThere(p)) map[p.y][p.x] = ' ';
-						if (isTorchThere(p)) removeTorch(p);
-						if (isSpringThere(p)) removeSpring(p);
-						if (isBombThere(p)) {
-							Bomb* otherBomb = isBombThere(p);
-							if (otherBomb != nullptr && otherBomb != bomb) {
-								otherBomb->activate(); // Chain reaction
-							}
-						}
-
-						// Draw the explosion char onto the room map buffer
-						map[y][x] = bomb->getExplosionChar();
-					}
-				}
-			}
-		}
-	}
-}
 
 void Room::updateBombs(Player* players, int playerCount, Screen& screen) {
 	for (int i = bombs.size() - 1; i >= 0; i--) {
@@ -670,4 +190,90 @@ bool Room::hasExplosions() {
 		}
 	}
 	return false;
+}
+
+//determines what exists at a coordinate.
+//the order of checks is sorted by visual priority
+char Room::getObjectAt(const Point& p) const
+{
+	Color c = Color::WHITE;
+	return getObjectAt(p, c);
+}
+
+char Room::getObjectAt(const Point& p, Color& color) const
+{
+	//boundary check
+	if (p.x < 0 || p.x >= MAX_X || p.y < 0 || p.y >= MAX_Y) {
+		color = Color::WHITE;
+		return ' ';
+	}
+
+	//obstacles - movable object - top priority
+	auto obstacle = isObstacleThere(p);
+	if (obstacle != nullptr) {
+		color = Color::WHITE;
+		return OBSTACLE_TILE;
+
+	}
+	//interactables:
+
+	//keys
+	auto key = isKeyThere(p);
+	if (key != nullptr) {
+
+		if (key->getIsSeen())
+		{
+			color = key->getColor();
+			return KEY_TILE;
+		}
+		color = Color::WHITE;
+		return UNKNOWN_TILE;
+	}
+
+	//torches
+	auto torch = isTorchThere(p);
+	if (torch != nullptr) {
+		color = torch->getColor();
+		return TORCH_TILE;
+	}
+
+	//static:
+	//doors:
+	auto door = isDoorThere(p);
+	if (door != nullptr) {
+		if (door->getIsOpen()) color = door->getColor();
+
+		return door->getIsOpen() ? ' ' : door->getPos().getTileChar();
+	}
+	//bombs
+	auto bomb = isBombThere(p);
+	if (bomb != nullptr) {
+		if (bomb->getIsSeen()) {
+			color = bomb->getColor();
+			return BOMB_TILE;
+		}
+		else {
+			color = Color::WHITE;
+			return UNKNOWN_TILE;
+		}
+	}
+
+	//switches:
+	auto sw = isSwitchThere(p);
+	if (sw != nullptr) { // Check if a switch is present
+		if (sw->getIsSeen()) {
+			// Switch is seen, return its state
+			color = sw->getState() ? Color::GREEN : Color::RED;
+			return sw->getState() ? SWITCH_ON : SWITCH_OFF;
+		}
+		else {
+			// Switch is NOT seen, treat it as unknown/blocked for movement
+			color = Color::WHITE;
+			return UNKNOWN_TILE;
+		}
+	}
+
+
+
+	return map[p.y][p.x];
 }

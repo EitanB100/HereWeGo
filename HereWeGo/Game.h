@@ -10,6 +10,11 @@
 
 static constexpr int ROOM_AMOUNT = 4; //4th is test room
 static constexpr int PLAYER_AMOUNT = 2;
+static constexpr int MAX_SCORE = 100000;
+
+static constexpr int KEY_COUNT = static_cast<int>(CommandKeys::NUM_KEYS);
+extern char p1Keys[KEY_COUNT];
+extern char p2Keys[KEY_COUNT];
 
 class Game {
 	Screen screen;
@@ -20,26 +25,27 @@ class Game {
 	Point p2StartPoints[ROOM_AMOUNT];
 	std::chrono::steady_clock::time_point startTime;      // Total game time
 	std::chrono::steady_clock::time_point levelStartTime; // Current level time
-	int currentLevelID = 0;
+	Level currentLevelID;
 	int score = 0;
+	bool useColor;
 
 	void printHUD();
 	void printTimer();
 	void resetLevelTimer();
-	void checkLevelTransition(int& currentLevel, Point p1, Point p2);
+	void checkLevelTransition(Level& currentLevel, Point p1, Point p2);
 	void printScore();
 	void updatePlayerKeys(char keys[], int playerNum);
+	void handleGameOver();
 
 
 public:
 	Game(); //defined in .cpp
-	void setGame(int level, bool firstSettings);
+	void setGame(Level level, bool firstSettings);
 
+	bool getUseColor() { return useColor; }
+	void toggleColor();
 
-	void startInLevel(int levelID) {
-		currentLevelID = levelID;
-		setGame(levelID , false);
-	}
+	void startInLevel(Level level);
 	
 	void init();
 	void run();

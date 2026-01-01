@@ -238,6 +238,13 @@ bool Room::hasExplosions() {
 	return false;
 }
 
+int Room::getRiddleID(const Point& p) const
+{
+	const RiddlePos* riddle = isRiddleThere(p);
+	if (riddle) return riddle->id;
+	return 0;
+}
+
 //determines what exists at a coordinate.
 //the order of checks is sorted by visual priority
 char Room::getObjectAt(const Point& p) const

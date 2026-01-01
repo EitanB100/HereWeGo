@@ -121,7 +121,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 					}
 
 					switch (c) {
-					
+
 					case KEY_TILE:
 						foundKeys.push_back(curr);
 						break;
@@ -134,8 +134,16 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 					case POTION_TILE:
 						foundPotions.push_back(curr);
 						break;
+					case RIDDLE_TILE:
+						foundRiddles.push_back(curr);
+						break;
+					case SWITCH_ON:
+					case SWITCH_OFF:
+						foundSwitches.push_back(curr);
+						break;
 					}
-					
+
+
 					if (c >= '1' && c <= '9') {
 						foundDoors[c - '0'] = curr;
 					}
@@ -174,6 +182,11 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 		
 		if (line == "[BOMBS]") {
 			section = "BOMBS";
+			continue;
+		}
+
+		if (line == "[SPRINGS]") {
+			section = "SPRINGS";
 			continue;
 		}
 
@@ -312,6 +325,10 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 					bombInd++;
 				}
 			}
+		}
+
+		else if (section == "SPRINGS") {
+			int direction = 0;
 		}
 
 		else if (section == "POTIONS") {

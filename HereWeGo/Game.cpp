@@ -71,7 +71,7 @@ void Game::init()
 {
 	Level_Loader::loadRiddles("riddles.txt", riddles);
 
-	Level_Loader::loadLevel(levels[0], "adv-world_01.screen");
+	Level_Loader::loadLevel(levels[0], "adv_world_01.screen");
     // Initialize ALL levels
     initLevel2Props(levels[1]);
     initLevel3Props(levels[2]);

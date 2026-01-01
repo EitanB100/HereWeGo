@@ -70,6 +70,11 @@ void Room::addPotion(const Potion& potion)
 	potions.push_back(potion);
 }
 
+void Room::addRiddle(const Riddle& riddle)
+{
+
+}
+
 void Room::addWall(const Point& p)
 {
 	map[p.y][p.x] = WALL_TILE;

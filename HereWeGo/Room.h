@@ -11,6 +11,7 @@
 #include "spring.h"
 #include "Bomb.h"
 #include "Potion.h"
+#include "Riddle.h"
 
 
 class Player; // forward declaration
@@ -80,6 +81,7 @@ public:
     void addSwitch(std::unique_ptr<Switch> s);
     void addObstacle(const Obstacle& obs);
     void addPotion(const Potion& potion);
+    void addRiddle(const Riddle& riddle);
 
     void removeKey(const Point& p);
     void removeTorch(const Point& p);

@@ -239,7 +239,7 @@ void Level_Loader::loadRiddles(const std::string& fileName, std::vector<Riddle>&
 
 	std::string line;
 	Riddle currentRiddle;
-	bool isReading = false;
+	bool isReadingRiddle = false;
 
 	while (std::getline(file, line)) {
 		if (line.empty()) continue;
@@ -250,10 +250,11 @@ void Level_Loader::loadRiddles(const std::string& fileName, std::vector<Riddle>&
 		if (!(parser >> section)) continue;
 			
 		if (section == "[RIDDLE]") {
-				if (isReading) 
+				if (isReadingRiddle) 
 					outRiddles.push_back(currentRiddle);
+				
 				currentRiddle = Riddle();
-				isReading = true;
+				isReadingRiddle = true;
 			}
 
 		else if (section == "ID") {
@@ -286,4 +287,8 @@ void Level_Loader::loadRiddles(const std::string& fileName, std::vector<Riddle>&
 		}
 	}
 	
+	if (isReadingRiddle) {
+		outRiddles.push_back(currentRiddle);
+	}
+	file.close();
 }

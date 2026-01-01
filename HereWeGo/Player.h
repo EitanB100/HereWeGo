@@ -41,21 +41,20 @@ public:
 
     // Getters / Setters
     Point getPos() const { return { pos.getx(),pos.gety() }; }
-    void setPos(Point p) { pos.set(p.x, p.y, symbol); }
+    heldItem getItemInHand() { return itemInHand; }
     char getSymbol() { return symbol; }
     bool isFinished() { return finishedLevel; }
+    int getDirX() { return dirx; }
+    int getDirY() { return diry; }
+
+    void setPos(Point p) { pos.set(p.x, p.y, symbol); }
     void setFinished(bool state) { finishedLevel = state; }
-    heldItem getItemInHand() { return itemInHand; }
     void setDirection(int dx, int dy) { dirx = dx; diry = dy; }
 
     int getHP() const { return hp; }
-    void takeDamage(int amount) {
-        hp -= amount;
-        if (hp <= DEAD_HP) {
-            hp = DEAD_HP;
-            alive = false; // Mark as dead
-        }
-    }
+    void takeDamage(int amount);
+    bool increaseHP(int amount);
+       
     bool isDead() const { return !alive; }
     bool isAlive() const { return alive; }
 

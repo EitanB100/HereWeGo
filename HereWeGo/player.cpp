@@ -25,7 +25,26 @@ void Player::draw() {
     setColor(Color::WHITE);
 }
 
+void Player::takeDamage(int amount)
+{
+    hp -= amount;
+    if (hp <= DEAD_HP) {
+        hp = DEAD_HP;
+        alive = false; // Mark as dead
+    }
+}
 
+bool Player::increaseHP(int amount)
+{
+    if (hp >= MAX_HP) {
+        hp = MAX_HP;
+        return false;
+    }
+
+    hp += amount;
+    if (hp > MAX_HP) hp = MAX_HP;
+    return true;
+}
 
 //Movement logic: collisions, interactions, and updates
 int Player::move(Room& room, Player* otherPlayer) {
@@ -105,11 +124,8 @@ int Player::move(Room& room, Player* otherPlayer) {
     if (tileOnMap == POTION_TILE) {
         Potion* potion = room.isPotionThere(nextPoint);
         if (potion) {
-            if (hp < MAX_HP) {
-                hp += 5;
-                if (hp > MAX_HP) hp = MAX_HP;
+            if (increaseHP(HP_INCREASE))
                 room.removePotion(nextPoint);
-            }
             else {
                 setDirection(0, 0);
                 return 0;

@@ -158,7 +158,7 @@ void Game::run()
 			int eventID = p.move(currRoom, &other);
 			
 			if (eventID != 0) {
-				handleRiddle(eventID ,p , currRoom)
+				handleRiddle(eventID, p, currRoom);
 			}
 
 			//check level completion for a player

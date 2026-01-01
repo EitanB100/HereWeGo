@@ -29,6 +29,9 @@ class Game {
 	int score = 0;
 	bool useColor;
 
+	std::vector<Riddle> riddles;
+	void handleRiddle(int riddleID, Player& player, Room& room);
+
 	void printHUD();
 	void printTimer();
 	void resetLevelTimer();

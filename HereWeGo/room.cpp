@@ -279,6 +279,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = key->getColor();
 			return KEY_TILE;
 		}
+		return ' ';
 	}
 
 	//torches
@@ -288,6 +289,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = torch->getColor();
 			return TORCH_TILE;
 		}
+		return ' ';
 	}
 	//doors
 	if (isDoorTile(mapChar)) {
@@ -301,6 +303,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = door->getColor();
 			return mapChar;
 		}
+		return ' ';
 	}
 	//bombs
 	if (mapChar == BOMB_TILE) {
@@ -309,6 +312,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = bomb->getColor();
 			return BOMB_TILE;
 		}
+		return ' ';
 	}
 
 	//switches:
@@ -323,6 +327,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			// If not seen, it falls through to UNKNOWN_TILE logic usually, 
 			// but if map has the switch char, we treat it as visible.
 		}
+		return ' ';
 	}
 	
 	if (mapChar == POTION_TILE) {
@@ -331,6 +336,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = potion->getColor();
 			return POTION_TILE;
 		}
+		return ' ';
 	}
 
 	if (mapChar == UNKNOWN_TILE) {

@@ -140,7 +140,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 
 				if (parser >> switchCount) {
 					
-					while (parser.peek() == ' ' || parser.peek() == ']')
+					while (parser.peek() == ' ' || parser.peek() == '[')
 						parser.ignore();
 
 					for (int i = 0; i < switchCount; i++) {

@@ -124,11 +124,10 @@ void Game::printTimer() {
 		return ss.str();
 		};
 
-	gotoxy(0, 1);
 	setColor(Color::YELLOW);
 	std::cout << "Total Time: " << formatTime(totalElapsed)
 		<< " | Level Time: " << formatTime(levelElapsed) << " ";
-	gotoxy(hudPos.x + 20, hudPos.y + 1);
+	gotoxy(hudPos.x + 50, hudPos.y + 1);
 	printScore();
 }
 

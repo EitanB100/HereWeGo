@@ -38,6 +38,7 @@ public:
     static constexpr int DEAD_HP = 0;
     void draw();
 
+
     // Getters / Setters
     Point getPos() const { return { pos.getx(),pos.gety() }; }
     void setPos(Point p) { pos.set(p.x, p.y, symbol); }
@@ -59,7 +60,7 @@ public:
     bool isAlive() const { return alive; }
 
     // Core Logic
-    void move(Room& room, Player* otherPlayer);
+    int move(Room& room, Player* otherPlayer);
     bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
     void updateSpringPhysics(Room& room, Player* otherPlayer);
     void dropItem(Room& room);

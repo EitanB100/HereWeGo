@@ -24,10 +24,13 @@ void Player::draw() {
     pos.draw();
     setColor(Color::WHITE);
 }
-//Movement logic: collisions, interactions, and updates
-void Player::move(Room& room, Player* otherPlayer) {
 
-    if (dirx == 0 && diry == 0) return; // No movement input
+
+
+//Movement logic: collisions, interactions, and updates
+int Player::move(Room& room, Player* otherPlayer) {
+
+    if (dirx == 0 && diry == 0) return 0; // No movement input
     
     Point nextPoint = { pos.getx() + dirx, pos.gety() + diry };
     char tileOnMap = room.getObjectAt(nextPoint);
@@ -40,13 +43,13 @@ void Player::move(Room& room, Player* otherPlayer) {
     //Static collisions
 	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE || tileOnMap == GLASS_TILE) {
         setDirection(0, 0); 
-        return; 
+        return 0; 
     }
 
     //Player collision 
     if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint == otherPlayer->getPos()) { 
         setDirection(0, 0);
-        return;
+        return 0;
     }
     
     
@@ -57,7 +60,7 @@ void Player::move(Room& room, Player* otherPlayer) {
         setDirection(0, 0);
         setColor(itemInHand.color);
         pos.draw();
-        return;
+        return 0;
     }
 
     //Pickups
@@ -66,7 +69,7 @@ void Player::move(Room& room, Player* otherPlayer) {
         if (!handlePickups(room, nextPoint))
         {
             setDirection(0, 0);
-            return;
+            return 0;
         }
         
     }
@@ -75,15 +78,15 @@ void Player::move(Room& room, Player* otherPlayer) {
     if (tileOnMap == OBSTACLE_TILE) { 
      
         //try to push an obstacle. return true if possible
-        if (!obstacleHandling(room, nextPoint, otherPlayer)) return;
+        if (!obstacleHandling(room, nextPoint, otherPlayer)) return 0;
     }
 
     if (tileOnMap == SPRING_TILE) {
-        if (!handleSprings(room, nextPoint)) return;
+        if (!handleSprings(room, nextPoint)) return 0;
     }
 
     else  {
-        if (!handleSpringExit(room)) return;
+        if (!handleSpringExit(room)) return 0;
     }
 
     //switch collision
@@ -95,7 +98,7 @@ void Player::move(Room& room, Player* otherPlayer) {
             room.checkSwitch(switchOnOff->getPos()); 
             room.drawTopLayer();                 
             setDirection(0, 0);                  
-            return;
+            return 0;
         }
     }
 
@@ -109,11 +112,18 @@ void Player::move(Room& room, Player* otherPlayer) {
             }
             else {
                 setDirection(0, 0);
-                return;
+                return 0;
             }
            
         }
          
+    }
+    
+    if (tileOnMap == RIDDLE_TILE) {
+        int id = room.getRiddleID(nextPoint);
+
+        setDirection(0, 0);
+        return id;
     }
 
     // execution - happens after checked if can proceed

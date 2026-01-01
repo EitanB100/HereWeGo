@@ -12,7 +12,7 @@ constexpr char SPRING_TILE = '#';
 constexpr char BOMB_TILE = '@';
 constexpr char EXPLOSION_TILE = 'X';
 constexpr char POTION_TILE = 'P';
-
+constexpr char RIDDLE_TILE = '?';
 
 // Check if character represents a door - suggested by gemini
 inline bool isDoorTile(char c) {

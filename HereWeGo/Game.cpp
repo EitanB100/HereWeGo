@@ -154,7 +154,13 @@ void Game::run()
 			setColor(Color::WHITE);
 
 			p.updateSpringPhysics(currRoom, &other);
-			p.move(currRoom, &other);
+			
+			int eventID = p.move(currRoom, &other);
+			
+			if (eventID != 0) {
+				handleRiddle(eventID ,p , currRoom)
+			}
+
 			//check level completion for a player
 			if (currentExitPoint.x != -1 && p.getPos() == currentExitPoint) {
 				if (!p.isFinished()) {

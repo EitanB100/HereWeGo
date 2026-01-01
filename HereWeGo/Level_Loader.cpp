@@ -16,23 +16,25 @@ static std::string readCleanLine(std::stringstream& parser) {
 	return "";
 }
 
-//suggested by gemini to find adjacent obstacle parts in a tilemap and connect them to the appropriate size
-static void collectConnectedParts(Room& room, int x, int y, char targetCh, std::vector<Point>& outParts, std::vector<std::vector<bool>>& visited)
+// Helper: Finds connected parts and REMOVES them from the map so they aren't processed twice.
+static void consumeConnectedParts(Room& room, int x, int y, char targetCh, std::vector<Point>& outParts)
 {
-	// 1. Safety Checks
+	// 1. Bounds Check
 	if (x < 0 || x >= MAX_X || y < 0 || y >= MAX_Y) return;
-	if (visited[y][x]) return;
+
+	// 2. Stop if it's not the target (or if it's already been eaten/turned to space)
 	if (room.getObjectAt({ x, y }) != targetCh) return;
 
-	// 2. Add to list and mark visited
-	visited[y][x] = true;
+	// 3. "Eat" the tile (Remove it from the map)
+	// This is the trick! We modify the map in-place so the main loop skips this tile later.
+	room.map[y][x] = ' ';
 	outParts.push_back({ x, y });
 
-	// 3. Search Neighbors
-	collectConnectedParts(room, x + 1, y, targetCh, outParts, visited);
-	collectConnectedParts(room, x - 1, y, targetCh, outParts, visited);
-	collectConnectedParts(room, x, y + 1, targetCh, outParts, visited);
-	collectConnectedParts(room, x, y - 1, targetCh, outParts, visited);
+	// 4. Recurse neighbors
+	consumeConnectedParts(room, x + 1, y, targetCh, outParts);
+	consumeConnectedParts(room, x - 1, y, targetCh, outParts);
+	consumeConnectedParts(room, x, y + 1, targetCh, outParts);
+	consumeConnectedParts(room, x, y - 1, targetCh, outParts);
 }
 
 void Level_Loader::loadLevel(Room& room, const std::string& fileName)
@@ -75,18 +77,44 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			for (int y = 0; y < MAX_Y; y++) {
 				for (int x = 0; x < MAX_X; x++) {
 					Point curr = { x,y };
-					char c = room.getObjectAt(curr);
+					char c = room.getObjectAt({x,y});
+					if (c == OBSTACLE_TILE) {
+						Obstacle obstacle;
+						std::vector<Point> parts;
 
-					switch (c) {
-					case OBSTACLE_TILE:
-					{
-						if (!visited[y][x]) {
-							Obstacle obstacle;
-							std::vector<Point> parts;
-							collectConnectedParts(room, x, y, OBSTACLE_TILE, parts, visited);
+						consumeConnectedParts(room, x, y, OBSTACLE_TILE, parts);
+						for (Point part : parts) {
+							obstacle.addPart(Placement(part.x,part.y,OBSTACLE_TILE));
 						}
+
+						room.addObstacle(obstacle);
+					}
+					else if (c == SPRING_TILE) {
+						std::vector<Point> parts;
+						consumeConnectedParts(room, x, y, SPRING_TILE, parts);
+
+						int dirX = 0, dirY = 0;
+						bool dirFound = false;
+
+						for (Point part : parts) {
+							if (part.y > 0 && room.getObjectAt(Point{ part.x, part.y - 1 }) == 'W') { dirX = 0; dirY = 1; dirFound = true; break; }
+							if (part.y < MAX_Y - 1 && room.getObjectAt(Point{ part.x, part.y + 1 }) == 'W') { dirX = 0; dirY = -1; dirFound = true; break; }
+							if (part.x > 0 && room.getObjectAt(Point{ part.x - 1, part.y }) == 'W') { dirX = 1; dirY = 0; dirFound = true; break; }
+							if (part.x < MAX_X - 1 && room.getObjectAt(Point{ part.x + 1, part.y }) == 'W') { dirX = -1; dirY = 0; dirFound = true; break; }
+						}
+						if (!dirFound) {
+							dirX = 0;
+							dirY = -1;
+						}
+						Spring spring({ dirX,dirY });
+						for (Point part : parts) {
+							spring.addPart(part.x,part.y);
+						}
+						room.addSpring(spring);
 					}
 
+					switch (c) {
+					
 					case KEY_TILE:
 						foundKeys.push_back(curr);
 						break;

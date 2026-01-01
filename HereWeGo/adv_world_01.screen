@@ -1,0 +1,63 @@
+[MAP]
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+W  Start -> @           W      ?       W                          W            W
+W  $                    W              W                          W      K     W
+W                       W              W                          W            W
+W      \      /         W      ?       W                          W            W
+W                       W              W             1            W            W
+WWWWWWWWWWWW WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW   WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+W           \                                                                  W
+W                                                                              W
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+W     K              W                           W       \      \      \       W
+W                    W                           W                             W
+W                    W                           W                             W
+WWWWWWWWWWWWWWWWWWWW   W                         W                             W
+W                  W   W                         W                             W
+W                  W   W                         W                             W
+W                  W                             W                             W
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW WWWWWWWWWWWWWWWWWW WWWWWWWWWWWWWWWW
+[/MAP]
+
+[SWITCHES]
+# ORDER MATTERS: Top-Left -> Bottom-Right
+# 1. Row 4, Left '\'  (ID 101)
+# 2. Row 4, Right '/' (ID 102)
+# 3. Row 7, '\'       (ID 103)
+# 4. Row 10, '\'      (ID 104)
+# 5. Row 10, '\'      (ID 105)
+# 6. Row 10, '\'      (ID 106)
+
+101 1
+102 1
+103 1
+104 1
+105 1
+106 1
+
+[RIDDLES]
+# ORDER MATTERS:
+# 1. Row 2 '?' (ID 1)
+# 2. Row 4 '?' (ID 2)
+1
+2
+
+[KEYS]
+# 1. Row 2 'K' (ID 50)
+# 2. Row 10 'K' (ID 51)
+50 6 1
+51 4 1
+
+[DOORS]
+# Door 1 at Row 5 requires 3 switches
+# 101 must be OFF (0), 102 must be ON (1), 103 must be ON (1)
+1 15 0 3 101 0 102 1 103 1
+
+[TORCHES]
+5
+
+[OBSTACLES]
+
+[BOMBS]
+
+[POTIONS]

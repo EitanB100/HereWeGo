@@ -16,6 +16,25 @@ static std::string readCleanLine(std::stringstream& parser) {
 	return "";
 }
 
+//suggested by gemini to find adjacent obstacle parts in a tilemap and connect them to the appropriate size
+void Level_Loader::collectConnectedParts(Room& room, int x, int y, char targetCh, std::vector<Point>& outParts, std::vector<std::vector<bool>>& visited)
+{
+	// 1. Safety Checks
+	if (x < 0 || x >= MAX_X || y < 0 || y >= MAX_Y) return;
+	if (visited[y][x]) return;
+	if (room.getObjectAt({ x, y }) != targetCh) return;
+
+	// 2. Add to list and mark visited
+	visited[y][x] = true;
+	outParts.push_back({ x, y });
+
+	// 3. Search Neighbors
+	collectConnectedParts(room, x + 1, y, targetCh, outParts, visited);
+	collectConnectedParts(room, x - 1, y, targetCh, outParts, visited);
+	collectConnectedParts(room, x, y + 1, targetCh, outParts, visited);
+	collectConnectedParts(room, x, y - 1, targetCh, outParts, visited);
+}
+
 void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 {
 	std::ifstream file(fileName);

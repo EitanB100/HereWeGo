@@ -15,7 +15,7 @@
 
 class Level_Loader {
 public:
-
+	void collectConnectedParts(Room& room, int x, int y, char targetCh, std::vector<Point>& outParts, std::vector<std::vector<bool>>& visited);
 	static void loadLevel(Room& room, const std::string& fileName);
 	static void loadRiddles(const std::string& fileName, std::vector<Riddle>& outRiddles);
 };

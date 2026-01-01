@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-class Riddle {
+struct Riddle {
 	int id = 0;
 	std::string question;
 	std::vector<std::string> options;

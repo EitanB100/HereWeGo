@@ -1,5 +1,19 @@
 #include "Level_Loader.h"
 
+static std::string trimWhiteSpaces(const std::string& str) {
+	int first = str.find_first_not_of(" \t");
+	if (first == std::string::npos) return "";
+	return str.substr(first);
+}
+
+static std::string readCleanLine(std::stringstream& parser) {
+	std::string txt;
+	if (std::getline(parser, txt)) {
+		return trimWhiteSpaces(txt);
+	}
+	else c
+}
+
 void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 {
 	std::ifstream file(fileName);
@@ -206,6 +220,13 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 				room.addSpring(spring);
 			}
 		}
+
+		else if (section == "RIDDLES") {
+			int id, x, y;
+			if (parser >> id >> x >> y) {
+				room.addRiddle(x, y, id);
+			}
+		}
 	}
 	file.close();
 }
@@ -235,10 +256,15 @@ void Level_Loader::loadRiddles(const std::string& fileName, std::vector<Riddle>&
 
 		else if (section == "ID") {
 			int tempID;
-			if (parser >> tempID) {
-			currentRiddle.id
+			if (parser >> tempID) 
+				currentRiddle.id = tempID;
 		}
 
+		else if (section == "Q:") {
+			std::string question;
+			if (std::getline(parser, question)) {
+				int first = question.find
+			}
 		}
 	}
 	

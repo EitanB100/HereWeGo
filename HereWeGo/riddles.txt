@@ -1,0 +1,7 @@
+[RIDDLE]
+ID 1
+Q: What has keys but cannot open locks?
+A: A Piano
+A: A Map
+A: A Banana
+CORRECT: 0

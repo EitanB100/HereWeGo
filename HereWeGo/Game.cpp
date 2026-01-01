@@ -116,8 +116,8 @@ void Game::setGame(Level level , bool firstSettings) {
 		levels[*currentLevelID].drawTopLayer();
 	}
 
-	players[0].setPos(p1StartPoints[*currentLevelID]);
-	players[1].setPos(p2StartPoints[*currentLevelID]);
+	players[0].setPos(levels[*currentLevelID].getP1Start());
+	players[1].setPos(levels[*currentLevelID].getP2Start());
 
 	for (auto& player : players) {
 		player.setDirection(0, 0);

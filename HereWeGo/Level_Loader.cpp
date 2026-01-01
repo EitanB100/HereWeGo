@@ -84,7 +84,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			for (int y = 0; y < MAX_Y; y++) {
 				for (int x = 0; x < MAX_X; x++) {
 					Point curr = { x,y };
-					char c = room.getObjectAt({x,y});
+					char c = room.map[y][x];
 					if (c == OBSTACLE_TILE) {
 						Obstacle obstacle;
 						std::vector<Point> parts;
@@ -207,10 +207,15 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 						room.legendLocation = { x, mapRow };
 						room.map[mapRow][x] = ' ';
 					}
-					else if (c == '$' || c == '&') { //change to constexpr player sprites later 
+					else if (c == '$' ) {//change to constexpr player sprites later 
+						room.setP1Start({ x,mapRow });
 						room.map[mapRow][x] = ' ';
 					}
-					else {
+					else if (c == '&') {
+						room.setP2Start({ x,mapRow });
+						room.map[mapRow][x] = ' ';
+					}
+					else 
 						room.map[mapRow][x] = c;
 					}
 				}
@@ -220,7 +225,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 				}
 				mapRow++;
 			}
-		}
+		
 		
 		else if (section == "SWITCHES") {
 			int id, seen;

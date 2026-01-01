@@ -53,6 +53,9 @@ class Room {
         return nullptr;
     }
 
+    Point p1Start = { 1,1 };
+    Point p2Start = { 2,1 };
+
     Point legendLocation = { 0,0 };
 public:
 
@@ -72,6 +75,11 @@ public:
 
     bool checkDoor(Point p, heldItem& item);
     void checkSwitch(Point p); // 3. Added Switch Check
+
+    Point getP1Start() const { return p1Start; }
+    void setP1Start(const Point& p) { p1Start = p; }
+    Point getP2Start() const { return p2Start; }
+    void setP2Start(const Point& p) { p2Start = p; }
 
     void drawTopLayer();
     void drawRoom(Screen& screen);

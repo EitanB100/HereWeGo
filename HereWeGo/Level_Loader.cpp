@@ -17,7 +17,7 @@ static std::string readCleanLine(std::stringstream& parser) {
 }
 
 //suggested by gemini to find adjacent obstacle parts in a tilemap and connect them to the appropriate size
-void Level_Loader::collectConnectedParts(Room& room, int x, int y, char targetCh, std::vector<Point>& outParts, std::vector<std::vector<bool>>& visited)
+static void collectConnectedParts(Room& room, int x, int y, char targetCh, std::vector<Point>& outParts, std::vector<std::vector<bool>>& visited)
 {
 	// 1. Safety Checks
 	if (x < 0 || x >= MAX_X || y < 0 || y >= MAX_Y) return;
@@ -70,22 +70,33 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 
 		if (line == "[/MAP]") {
 			section = "";
+			bool visited[MAX_Y][MAX_X] = { 0 };
+
 			for (int y = 0; y < MAX_Y; y++) {
 				for (int x = 0; x < MAX_X; x++) {
 					Point curr = { x,y };
 					char c = room.getObjectAt(curr);
 
 					switch (c) {
-					case 'K':
+					case OBSTACLE_TILE:
+					{
+						if (!visited[y][x]) {
+							Obstacle obstacle;
+							std::vector<Point> parts;
+							collectConnectedParts(room, x, y, OBSTACLE_TILE, parts, visited);
+						}
+					}
+
+					case KEY_TILE:
 						foundKeys.push_back(curr);
 						break;
-					case '@':
+					case BOMB_TILE:
 						foundBombs.push_back(curr);
 						break;
-					case '!':
+					case TORCH_TILE:
 						foundTorches.push_back(curr);
 						break;
-					case 'P':
+					case POTION_TILE:
 						foundPotions.push_back(curr);
 						break;
 					}

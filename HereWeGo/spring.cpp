@@ -9,7 +9,7 @@ bool Spring::isSpringPart(const Point& p) const
 }
 
 void Spring::draw() {
-	
+	setColor(color);
 	for (int i = 0; i < parts.size(); i++) {
 		if (i < compressedCount) {
 			parts[i].draw(' ');
@@ -18,4 +18,5 @@ void Spring::draw() {
 			parts[i].draw(SPRING_TILE);
 		}
 	}
+	setColor(Color::WHITE);
 }

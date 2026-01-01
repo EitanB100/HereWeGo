@@ -283,7 +283,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 		}
 
 		else if (section == "TORCHES") {
-			int  radius;
+			int  radius, color;
 			if (parser >> radius) {
 				if (torchInd < foundTorches.size()) {
 					Point p = foundTorches[torchInd];

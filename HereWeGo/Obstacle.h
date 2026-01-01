@@ -7,6 +7,7 @@
 class Obstacle {
 	std::vector<Placement> parts;
 	bool hasMoved = false;
+	Color color = Color::WHITE;
 
 public:
 	Obstacle() {}
@@ -26,6 +27,9 @@ public:
 	void getParts(std::vector<Placement>& outParts) const {
 		outParts = parts;
 	}
+
+	void setColor(Color c) { color = c; }
+	Color getColor() const { return color; }
 
 	void obstacleRoomTravel(int x, int y);
 	

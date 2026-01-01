@@ -30,9 +30,11 @@ bool Obstacle::isAt(const Point& p) const { // Check if any part of the obstacle
 }
 
 void Obstacle::draw() { // Draw the entire obstacle on screen
+	setColor(color);
 	for (auto& part : parts) {
 		part.draw(OBSTACLE_TILE); // Draw each part of the obstacle
 	}
+	setColor(Color::WHITE);
 }
 
 std::vector<Point> Obstacle::getFutureParts(int dirx, int diry) const

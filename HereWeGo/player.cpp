@@ -158,6 +158,7 @@ int Player::move(Room& room, Player* otherPlayer) {
     setColor(Color::WHITE);
     pos.set(nextPoint.x, nextPoint.y, symbol); 
     draw();
+    return 0;
 }
 
 void Player::dropItem(Room& room) //item that isnt a bomb!

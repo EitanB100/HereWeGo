@@ -2,7 +2,9 @@
 
 static std::string trimWhiteSpaces(const std::string& str) {
 	int first = str.find_first_not_of(" \t");
-	if (first == std::string::npos) return "";
+	if (first == std::string::npos) 
+		return "";
+
 	return str.substr(first);
 }
 
@@ -11,7 +13,7 @@ static std::string readCleanLine(std::stringstream& parser) {
 	if (std::getline(parser, txt)) {
 		return trimWhiteSpaces(txt);
 	}
-	else c
+	return "";
 }
 
 void Level_Loader::loadLevel(Room& room, const std::string& fileName)
@@ -261,9 +263,25 @@ void Level_Loader::loadRiddles(const std::string& fileName, std::vector<Riddle>&
 		}
 
 		else if (section == "Q:") {
-			std::string question;
-			if (std::getline(parser, question)) {
-				int first = question.find
+			currentRiddle.question = readCleanLine(parser);
+		}
+
+		else if (section == "A:") {
+			std::string option = readCleanLine(parser);
+
+			if (!option.empty())
+				currentRiddle.options.push_back(option);
+		}
+
+		else if (section == "CORRECT:") {
+			int val;
+			
+			if (parser >> val) {
+				currentRiddle.correctAnswer = val;
+			}
+			else {
+				std::cerr << "Warning - invalid index for correct answer for riddle" << currentRiddle.id << std::endl;
+				currentRiddle.correctAnswer = -1;
 			}
 		}
 	}

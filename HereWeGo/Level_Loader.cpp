@@ -27,7 +27,8 @@ static void consumeConnectedParts(Room& room, int x, int y, char targetCh, std::
 
 	// 3. "Eat" the tile (Remove it from the map)
 	// This is the trick! We modify the map in-place so the main loop skips this tile later.
-	room.map[y][x] = ' ';
+	Point p = { x,y };
+	room.clearTile(p);
 	outParts.push_back({ x, y });
 
 	// 4. Recurse neighbors
@@ -72,8 +73,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 
 		if (line == "[/MAP]") {
 			section = "";
-			bool visited[MAX_Y][MAX_X] = { 0 };
-
+			
 			for (int y = 0; y < MAX_Y; y++) {
 				for (int x = 0; x < MAX_X; x++) {
 					Point curr = { x,y };

@@ -17,7 +17,6 @@
 class Player; // forward declaration
 class Switch;
 class Screen;
-class Level_Loader;
 
 class Room {
     friend class Level_Loader;

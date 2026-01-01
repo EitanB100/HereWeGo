@@ -132,7 +132,9 @@ void Game::printTimer() {
 }
 
 void Game::printScore() {
+	Point hudPos = levels[*currentLevelID].getLegendLoc();
+	gotoxy(hudPos.x + 45, hudPos.y + 1);
+
 	setColor(Color::YELLOW);
-	gotoxy(55, 1);
 	std::cout << "Score: " << score;
 }

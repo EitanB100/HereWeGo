@@ -1,64 +1,56 @@
 [MAP]
 L                                              WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW                               W
-W !                     W                                    W                 W
-W                       W                 K                  W                 W
-W                     K W            W                       W                 W
-W     $       1         W            W                       W                 W
-W                       W                                    W                 W
-W           \                                                                  W
-W                                    2                                         W
-W     &     K                                                                  W
-W                    W             \      \      \           W                 W
-W                    W           \               W                             W
-W                    W                           W                             W
-W                    W                           W             \               W
-W                  \ W                           W           \               3 W
-W                  W W                           W                             W
-W                                                W           4                 W
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW WWWWWWWWWWWWWWWWWW WWWWWWWWWWWWWWWW
+W $      W     &             W                 W                               W
+W        1                   W                 W                               W
+W        W     \             W                 W                               W
+W        W                   W                 W                               W
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW                 W                               W
+W        #                                     W                               W
+W                                              W                               W
+W                                              W                               W
+W        K          WWWWWWWWWWWWWWWWWWWWWWWWWWWW                               W
+W                   W                          W                               W
+W                   W                          W                               W
+W                   W             * W                               W
+W                   W                          W                               W
+W                   W                          W                               W
+W                                              W                               W
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW   WWWWWWWWWWWWWWWWWW WWWWWWWWWWWWWW
 W       W          W               W            W                              W
-W       W  K       WWWWWWWWWWWWW   W            W                              W
+W       W          WWWWWWWWWWWWW   W            W                              W
 W     WWW          W               W                                           W
-W           WWWWWWWW WWWWWWWWWWW   W                                           5
-WWW  WW     W         W        W                                                
+W           WWWWWWWW WWWWWWWWWWW   W                                           W
+WWW  WW     W         W        W                                          ?    2
 W     W          W    W   W        W            W                              W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [/MAP]
 
 [KEYS]
-# Format: ID Color(14=Yellow, 2=Green, 4=Red) Seen(1=Yes)
-# Note: These MUST be listed in the order they appear on the map (Y first, then X)
-4 2 1
-2 14 1
-3 4 1
-5 2 1
+# Key at (9, 10): ID 10, Color 2 (Green), Seen 1
+10 2 1
 
 [DOORS]
-# Format: ID Color KeyCount [KeyIDs] SwitchCount [SwitchID State]
-# Door 1 (White) needs Switch 101 ON
-1 15 0 0 1 101 1
-# Door 2 (Yellow) needs Key 2, Switch 101 OFF, Switch 102 OFF
-2 14 1 2 2 101 0 102 0
-# Door 3 (Red) needs Key 3, Switch 102 ON, Switch 103 ON
-3 4 1 3 2 102 1 103 1
-# Door 4 (Cyan) needs Switch 104 OFF, 106 OFF, 107 OFF
-4 3 0 0 3 104 0 106 0 107 0
-# Door 5 (Green) needs Keys 4 & 5, Switch 105 ON, 108 ON
-5 2 2 4 5 2 105 1 108 1
+# Door 1 at (9, 3): ID 1, Color 14 (Yellow), 0 Keys, 1 Switch (ID 100 ON)
+1 14 0 0 1 100 1
+
+# Door 2 (Exit) at (79, 22): ID 2, Color 2 (Green), 1 Key (ID 10), 0 Switches
+2 2 1 10 0
 
 [SWITCHES]
-# Format: ID Seen(1=Yes)
-# Sorted by map position (Top->Bottom, Left->Right)
-101 1
-105 1
-106 1
-107 1
-102 1
-103 1
-104 1
-108 1
+# Switch at (15, 4): ID 100, Seen 1
+100 1
+
+[RIDDLES]
+# Riddle at (74, 22): ID 1
+1
+
+[SPRINGS]
+# Spring at (9, 7): Coords(9,7) PushDir(0,1 i.e. DOWN)
+# This forces the spring to push you DOWN towards the Key
+9 7 0 1
 
 [TORCHES]
-# Format: Radius
-6
+[OBSTACLES]
+[BOMBS]
+[POTIONS]

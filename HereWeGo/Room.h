@@ -21,6 +21,12 @@ class Level_Loader;
 
 class Room {
     friend class Level_Loader;
+    
+    struct RiddlePos {
+        Point p;
+        int id;
+    };
+
     char map[MAX_Y][MAX_X] = {}; // leave a room for HUD at top row
     std::vector<Door> doors;
     std::vector<Key> keys;
@@ -30,6 +36,7 @@ class Room {
     std::vector<Spring> springs;
 	std::vector<Bomb> bombs;
     std::vector<Potion> potions;
+    std::vector<RiddlePos> riddleLocations;
 
     template <typename T, typename Predicate>
     T* findBy(std::vector<T>& obj, Predicate pred) {
@@ -81,7 +88,7 @@ public:
     void addSwitch(std::unique_ptr<Switch> s);
     void addObstacle(const Obstacle& obs);
     void addPotion(const Potion& potion);
-    void addRiddle(const Riddle& riddle);
+    void addRiddle(int x, int y, int id);
 
     void removeKey(const Point& p);
     void removeTorch(const Point& p);
@@ -90,7 +97,7 @@ public:
 	void removeSwitch(const Point& p);
 	void removeBomb(const Point& p);
     void removePotion(const Point& p);
-
+    void removeRiddle(const Point& p);
 
     char getObjectAt(const Point& p) const;
     char getObjectAt(const Point& p, Color& color) const;
@@ -106,6 +113,7 @@ public:
     const Spring* isSpringThere(const Point& p) const;
 	const Bomb* isBombThere(const Point& p) const;
     const Potion* isPotionThere(const Point& p) const;
+    const RiddlePos* isRiddleThere(const Point& p) const;
 
     Door* isDoorThere(const Point& p);
     Key* isKeyThere(const Point& p);
@@ -115,7 +123,7 @@ public:
     Spring* isSpringThere(const Point& p);
     Bomb* isBombThere(const Point& p);
     Potion* isPotionThere(const Point& p);
-
+    Riddle* isRiddleThere(const Point& p);
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
 	void CompleteLineOfSight(const Torch& torch);
@@ -134,4 +142,5 @@ public:
     void clearExplosions();
     bool hasExplosions();
 
+    int getRiddleID(const Point& p) const;
 };

@@ -70,9 +70,10 @@ void Room::addPotion(const Potion& potion)
 	potions.push_back(potion);
 }
 
-void Room::addRiddle(const Riddle& riddle)
+void Room::addRiddle(int x, int y, int id)
 {
-
+	riddleLocations.push_back({ {x,y},id });
+	map[y][x] = RIDDLE_TILE;
 }
 
 void Room::addWall(const Point& p)
@@ -154,4 +155,9 @@ void Room::removePotion(const Point& p)
 			return;
 		}
 	}
+}
+
+void Room::removeRiddle(const Point& p)
+{
+	
 }

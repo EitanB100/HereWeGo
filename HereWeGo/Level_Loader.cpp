@@ -30,7 +30,7 @@ static void consumeConnectedParts(Room& room, int x, int y, char targetCh, std::
 	// This is the trick! We modify the map in-place so the main loop skips this tile later.
 	Point p = { x,y };
 	room.clearTile(p);
-	outParts.push_back({ x, y });
+	outParts.push_back(p);
 
 	// 4. Recurse neighbors
 	consumeConnectedParts(room, x + 1, y, targetCh, outParts);

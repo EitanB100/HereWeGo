@@ -29,7 +29,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 	}
 
 	while (true) {
-		if (_kbhit) {
+		if (_kbhit()) {
 			char c = _getch();
 			int choice = c - '0';
 			if (choice == riddle.correctAnswer) {

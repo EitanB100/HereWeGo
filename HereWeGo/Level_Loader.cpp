@@ -79,7 +79,8 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 
 		if (line == "[/MAP]") {
 			section = "";
-			
+			std::vector<Obstacle> tempObstacles;
+
 			for (int y = 0; y < MAX_Y; y++) {
 				for (int x = 0; x < MAX_X; x++) {
 					Point curr = { x,y };
@@ -93,7 +94,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 							obstacle.addPart(Placement(part.x,part.y,OBSTACLE_TILE));
 						}
 
-						room.addObstacle(obstacle);
+						tempObstacles.push_back(obstacle);
 					}
 					else if (c == SPRING_TILE) {
 						std::vector<Point> parts;
@@ -139,6 +140,9 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 						foundDoors[c - '0'] = curr;
 					}
 				}
+			}
+			for (const auto& obstacle : tempObstacles) {
+				room.addObstacle(obstacle);
 			}
 			continue;
 		}
@@ -188,6 +192,9 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 
 					if (c == 'L') {
 						room.legendLocation = { x, mapRow };
+						room.map[mapRow][x] = ' ';
+					}
+					else if (c == '$' || c == '&') { //change to constexpr player sprites later 
 						room.map[mapRow][x] = ' ';
 					}
 					else {
@@ -332,16 +339,47 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 	}
 
 	while (keyInd < foundKeys.size()) {
-		room.clearTile(foundKeys[keyInd++]);
+		Point p = foundKeys[keyInd++];
+		Key key(p.x, p.y, -1, Color::WHITE); // Default ID -1
+		key.setSeen();
+		room.addKey(key);
 	}
+
+	// Default Switches
 	while (switchInd < foundSwitches.size()) {
-		room.clearTile(foundSwitches[switchInd++]);
+		Point p = foundSwitches[switchInd++];
+		auto sw = std::make_unique<Switch>(p.x, p.y, -1);
+		sw->setSeen();
+		room.addSwitch(std::move(sw));
 	}
+
+	// Default Riddles
 	while (riddleInd < foundRiddles.size()) {
-		room.clearTile(foundRiddles[riddleInd++]);
+		Point p = foundRiddles[riddleInd++];
+		room.addRiddle(p.x, p.y, 1);
 	}
+
+	// Default Bombs
 	while (bombInd < foundBombs.size()) {
-		room.clearTile(foundBombs[bombInd++]);
+		Point p = foundBombs[bombInd++];
+		Bomb bomb(p.x, p.y, -1, 5);
+		bomb.setSeen();
+		room.addBomb(bomb);
+	}
+
+	// Default Torches
+	while (torchInd < foundTorches.size()) {
+		Point p = foundTorches[torchInd++];
+		Torch t(p.x, p.y, 5);
+		room.addTorch(t);
+	}
+
+	// Default Potions
+	while (potionInd < foundPotions.size()) {
+		Point p = foundPotions[potionInd++];
+		Potion potion(p.x, p.y);
+		potion.setSeen();
+		room.addPotion(potion);
 	}
 	file.close();
 }

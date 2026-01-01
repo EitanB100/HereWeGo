@@ -134,6 +134,7 @@
     <ClInclude Include="Placement.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Potion.h" />
+    <ClInclude Include="Riddle.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Spring.h" />

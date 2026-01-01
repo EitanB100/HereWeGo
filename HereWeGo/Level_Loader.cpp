@@ -209,3 +209,37 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 	}
 	file.close();
 }
+
+void Level_Loader::loadRiddles(const std::string& fileName, std::vector<Riddle>& outRiddles) {
+	std::ifstream file(fileName);
+	if (!file.is_open()) return;
+
+	std::string line;
+	Riddle currentRiddle;
+	bool isReading = false;
+
+	while (std::getline(file, line)) {
+		if (line.empty()) continue;
+
+		std::stringstream parser(line);
+		std::string section;
+		
+		if (!(parser >> section)) continue;
+			
+		if (section == "[RIDDLE]") {
+				if (isReading) 
+					outRiddles.push_back(currentRiddle);
+				currentRiddle = Riddle();
+				isReading = true;
+			}
+
+		else if (section == "ID") {
+			int tempID;
+			if (parser >> tempID) {
+			currentRiddle.id
+		}
+
+		}
+	}
+	
+}

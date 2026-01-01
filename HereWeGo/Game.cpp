@@ -86,7 +86,7 @@ void Game::setGame(Level level , bool firstSettings) {
 
 	switch (level) {
 	case Level::ONE:
-		screen.Lvl1Screen();
+		screen.createGameScreen();
 		break;
 	case Level::TWO:
 		screen.Lvl2Screen();
@@ -102,12 +102,12 @@ void Game::setGame(Level level , bool firstSettings) {
 		break;
 	}
 
-
-
 	currentLevelID = level;
+	
+	if (currentLevelID != Level::ONE) levels[*currentLevelID].loadFromScreen(screen);
 
-	levels[*currentLevelID].loadFromScreen(screen);
 	levels[*currentLevelID].drawRoom(screen);
+
 	if (!(firstSettings)) {
 		screen.draw();
 		levels[*currentLevelID].drawTopLayer();

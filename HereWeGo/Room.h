@@ -100,6 +100,8 @@ public:
 
     char getObjectAt(const Point& p) const;
     char getObjectAt(const Point& p, Color& color) const;
+    
+    Point getRiddlePos(int id) const;
   
     bool isWallThere(Point p);
 	Switch* getSwitchByID(int id);

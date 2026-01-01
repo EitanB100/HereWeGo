@@ -238,6 +238,14 @@ bool Room::hasExplosions() {
 	return false;
 }
 
+Point Room::getRiddlePos(int id) const
+{
+	for (const auto& riddle : riddleLocations) {
+		if (riddle.id == id) return riddle.p;
+	}
+	return { -1,-1 };
+}
+
 int Room::getRiddleID(const Point& p) const
 {
 	const RiddlePos* riddle = isRiddleThere(p);

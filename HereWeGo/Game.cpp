@@ -78,7 +78,7 @@ void Game::init()
 	initLevel4Props(levels[3]);
 
 	currentLevelID = Level::ONE;// Start at Level 1
-	setGame(currentLevelID , true);
+	setGame(currentLevelID , false);
 }
 
 void Game::setGame(Level level , bool firstSettings) {
@@ -611,4 +611,66 @@ void Game::initLevel4Props(Room& r) {
 	Potion potion2(31, 10);
 	r.addPotion(potion1);
 	r.addPotion(potion2);
+}
+
+void Game::handleRiddle(int riddleID, Player& player, Room& room)
+{
+	Riddle* currentRiddle = nullptr;
+
+	for (int i = 0; i < riddles.size(); i++) {
+		if (riddles[i].id == riddleID) {
+			currentRiddle = &riddles[i];
+			break;
+		}
+	}
+
+	if (currentRiddle == nullptr) return;
+
+	const Riddle& riddle = *currentRiddle; // for readability
+
+	screen.clearScreen();
+	setColor(Color::CYAN);
+	printCentered("=== RIDDLE TIME! ===", 5);
+	setColor(Color::WHITE);
+	printCentered(riddle.question, 8);
+
+	for (int i = 0; i < riddle.options.size(); i++) {
+		std::string currOption = "(" + std::to_string(i + 1) + ") " + riddle.options[i];
+		printCentered(currOption, 11 + i * 2);
+	}
+	while (_kbhit()) _getch();
+
+	while (true) {
+		if (_kbhit()) {
+			char c = _getch();
+			if (c < '1' || c  > '5') continue;
+			int choice = c - '0';
+			if (choice - 1 == riddle.correctAnswer) {
+				setColor(Color::GREEN);
+				printCentered("CORRECT!", 20);
+				Sleep(500);
+
+				Point targetPos = room.getRiddlePos(riddleID);
+				if (targetPos.x != -1) room.removeRiddle(targetPos);
+				break;
+
+				if (room.getObjectAt(targetPos) == RIDDLE_TILE) {
+					room.removeRiddle(targetPos);
+					break;
+				}
+			}
+
+			else {
+				setColor(Color::RED);
+				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
+				Sleep(500);
+			}
+			break;
+		}
+	}
+	setColor(Color::WHITE);
+	screen.clearScreen();
+	room.drawRoom(screen);
+	screen.draw();
+	room.drawTopLayer();
 }

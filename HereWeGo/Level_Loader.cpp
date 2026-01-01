@@ -135,14 +135,8 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 						door.addRequiredKey(keyID);
 					}
 				}
-				while (parser.peek() == ' ' || parser.peek() == ']')
-					parser.ignore();
-
 				if (parser >> switchCount) {
 					
-					while (parser.peek() == ' ' || parser.peek() == ']')
-						parser.ignore();
-
 					for (int i = 0; i < switchCount; i++) {
 						int switchID, switchState;
 						if (parser >> switchID >> switchState) {
@@ -155,8 +149,6 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 							}
 						}
 					}
-					while (parser.peek() == ' ' || parser.peek() == ']')
-						parser.ignore();
 				}
 				door.UpdatedFromSwitch();
 				room.addDoor(door);

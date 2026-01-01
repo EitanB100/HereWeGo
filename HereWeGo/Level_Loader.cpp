@@ -1,5 +1,5 @@
 #include "Level_Loader.h"
-
+#include <map>
 static std::string trimWhiteSpaces(const std::string& str) {
 	int first = str.find_first_not_of(" \t");
 	if (first == std::string::npos) 
@@ -29,6 +29,16 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 	std::string line;
 	std::string section = "";
 
+	std::vector<Point> foundKeys;
+	std::vector<Point> foundBombs;
+	std::vector<Point> foundTorches;
+	std::vector<Point> foundPotions;
+	std::map<int, Point> foundDoors; // Maps DoorChar '1' to Point(x,y)
+
+	int keyInd = 0;
+	int bombInd = 0;
+	int torchInd = 0;
+	int potionInd = 0;
 	int mapRow = 0;
 
 	while (std::getline(file, line)) {
@@ -41,6 +51,31 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 
 		if (line == "[/MAP]") {
 			section = "";
+			for (int y = 0; y < MAX_Y; y++) {
+				for (int x = 0; x < MAX_X; x++) {
+					Point curr = { x,y };
+					char c = room.getObjectAt(curr);
+
+					switch (c) {
+					case 'K':
+						foundKeys.push_back(curr);
+						break;
+					case '@':
+						foundBombs.push_back(curr);
+						break;
+					case '!':
+						foundTorches.push_back(curr);
+						break;
+					case 'P':
+						foundPotions.push_back(curr);
+						break;
+					}
+					
+					if (c >= '1' && c <= '9') {
+						foundDoors[c - '0'] = curr;
+					}
+				}
+			}
 			continue;
 		}
 		
@@ -81,6 +116,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 
 		std::stringstream parser(line);
 
+
 		if (section == "MAP") {
 			if (mapRow < MAX_Y) {
 				for (int x = 0; x < MAX_X && x < line.length(); x++) {
@@ -112,19 +148,32 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 		}
 
 		else if (section == "KEYS") {
-			int id, x, y, color, seen;
-			if (parser >> id >> x >> y >> color >> seen) {
-				Key key (x, y, id, static_cast<Color>(color));
-				if (seen) key.setSeen();
-				room.addKey(key);
+			int id, color, seen;
+			if (parser >> id >> color >> seen) {
+				if (keyInd < foundKeys.size()) {
+					Point p = foundKeys[keyInd];
+					Key key(p.x, p.y, id, static_cast<Color>(color));
+					if (seen) key.setSeen();
+					room.addKey(key);
+					keyInd++;
+				}
+				else {
+					std::cerr << "Error - More key entries than keys on grid!" << std::endl;
+				}
 			}
 		}
 
 		else if (section == "DOORS") {
-			int id, x, y, color, keyCount, switchCount;
+			int id, color, keyCount, switchCount;
+			Point p = { 1,1 };
+			
+			if (parser >> id >> color >> keyCount) {
+				if (foundDoors.find(id) != foundDoors.end()) {
+					p = foundDoors[id];
+				}
+				else std::cerr << "Error - Door id " << id << " defined in props but not found on grid!" << std::endl;
 
-			if (parser >> id >> x >> y >> color >> keyCount) {
-				Door door(x, y, id, static_cast<Color>(color));
+				Door door(p.x, p.y, id, static_cast<Color>(color));
 
 				while (parser.peek() == ' ' || parser.peek() == '[') 
 					parser.ignore();
@@ -185,27 +234,36 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 		}
 
 		else if (section == "TORCHES") {
-			int x, y, radius;
-			if (parser >> x >> y >> radius) {
-				Torch torch(x, y, radius);
-				room.addTorch(torch);
+			int  radius;
+			if (parser >> radius) {
+				if (torchInd < foundTorches.size()) {
+					Point p = foundTorches[torchInd];
+					Torch torch(p.x, p.y, radius);
+					room.addTorch(torch);
+					torchInd++;
+				}
 			}
 		}
 
 		else if (section == "BOMBS") {
-			int id, x, y, timer;
+			int id, timer;
 			
-			if (parser >> id >> x >> y >> timer) {
-				Bomb bomb(x, y, id, timer);
-				room.addBomb(bomb);
+			if (parser >> id >> timer) {
+				if (bombInd < foundBombs.size()) {
+					Point p = foundBombs[bombInd];
+					Bomb bomb(p.x, p.y, id, timer);
+					room.addBomb(bomb);
+					bombInd++;
+				}
 			}
 		}
 
 		else if (section == "POTIONS") {
-			int x, y;
-			if (parser >> x >> y) {
-				Potion potion(x, y);
+			if (potionInd < foundPotions.size()) {
+				Point p = foundPotions[potionInd];
+				Potion potion(p.x, p.y);
 				room.addPotion(potion);
+				potionInd++;
 			}
 		}
 

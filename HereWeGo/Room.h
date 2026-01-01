@@ -123,7 +123,7 @@ public:
     Spring* isSpringThere(const Point& p);
     Bomb* isBombThere(const Point& p);
     Potion* isPotionThere(const Point& p);
-    Riddle* isRiddleThere(const Point& p);
+    RiddlePos* isRiddleThere(const Point& p);
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
 	void CompleteLineOfSight(const Torch& torch);

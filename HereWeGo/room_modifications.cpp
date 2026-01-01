@@ -159,5 +159,11 @@ void Room::removePotion(const Point& p)
 
 void Room::removeRiddle(const Point& p)
 {
-	
+	for (auto riddle = riddleLocations.begin(); riddle != riddleLocations.end(); riddle++) {
+		if (riddle->p == p) {
+			riddleLocations.erase(riddle);
+			map[p.y][p.x] = ' ';
+			return;
+		}
+	}
 }

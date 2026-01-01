@@ -83,26 +83,29 @@ void Game::init()
 
 void Game::setGame(Level level , bool firstSettings) {
 	screen.clearScreen();
-
-	switch (level) {
-	case Level::ONE:
-		screen.createGameScreen();
-		break;
-	case Level::TWO:
-		screen.Lvl2Screen();
-		break;
-	case Level::THREE:
-		screen.Lvl3Screen();
-		break;
-	case Level::TEST:
-		screen.Lvl4Screen();
-		break;
-	default:
-		screen.Lvl1Screen();
-		break;
+	currentLevelID = level;
+	if (level != Level::ONE) {
+		switch (level) {
+		case Level::TWO:
+			screen.Lvl2Screen();
+			break;
+		case Level::THREE:
+			screen.Lvl3Screen();
+			break;
+		case Level::TEST:
+			screen.Lvl4Screen();
+			break;
+		default:
+			screen.Lvl1Screen();
+			break;
+		}
+		levels[*currentLevelID].loadFromScreen(screen);
+	}
+	else {
+		levels[*currentLevelID].drawRoom(screen);
 	}
 
-	currentLevelID = level;
+	
 	
 	if (currentLevelID != Level::ONE) levels[*currentLevelID].loadFromScreen(screen);
 

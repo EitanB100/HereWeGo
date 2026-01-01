@@ -330,6 +330,19 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			}
 		}
 	}
+
+	while (keyInd < foundKeys.size()) {
+		room.clearTile(foundKeys[keyInd++]);
+	}
+	while (switchInd < foundSwitches.size()) {
+		room.clearTile(foundSwitches[switchInd++]);
+	}
+	while (riddleInd < foundRiddles.size()) {
+		room.clearTile(foundRiddles[riddleInd++]);
+	}
+	while (bombInd < foundBombs.size()) {
+		room.clearTile(foundBombs[bombInd++]);
+	}
 	file.close();
 }
 

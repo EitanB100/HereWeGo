@@ -236,50 +236,49 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 
 		else if (section == "DOORS") {
 			int id, color, keyCount, switchCount;
-			Point p = { 1,1 };
 			
 			if (parser >> id >> color >> keyCount) {
 				if (foundDoors.find(id) != foundDoors.end()) {
-					p = foundDoors[id];
-				}
-				else std::cerr << "Error - Door id " << id << " defined in props but not found on grid!" << std::endl;
+					Point p = foundDoors[id];
+					Door door(p.x, p.y, id, static_cast<Color>(color));
 
-				Door door(p.x, p.y, id, static_cast<Color>(color));
-
-				while (parser.peek() == ' ' || parser.peek() == '[') 
-					parser.ignore();
-
-				for (int i = 0; i < keyCount; i++) {
-					int keyID;
-					if (parser >> keyID) {
-						door.addRequiredKey(keyID);
-					}
-				}
-				while (parser.peek() == ' ' || parser.peek() == ']')
-					parser.ignore();
-
-				if (parser >> switchCount) {
-					
 					while (parser.peek() == ' ' || parser.peek() == '[')
 						parser.ignore();
 
-					for (int i = 0; i < switchCount; i++) {
-						int switchID, switchState;
-						if (parser >> switchID >> switchState) {
-							Switch* sw = room.getSwitchByID(switchID);
-							if (sw) {
-								door.addRequiredSwitch(sw, (bool)switchState);
-							} 
-							else {
-								std::cerr << "Error - door " << id << "missing switch " << switchID << std::endl;
-							}
+					for (int i = 0; i < keyCount; i++) {
+						int keyID;
+						if (parser >> keyID) {
+							door.addRequiredKey(keyID);
 						}
 					}
 					while (parser.peek() == ' ' || parser.peek() == ']')
 						parser.ignore();
+
+					if (parser >> switchCount) {
+
+						while (parser.peek() == ' ' || parser.peek() == '[')
+							parser.ignore();
+
+						for (int i = 0; i < switchCount; i++) {
+							int switchID, switchState;
+							if (parser >> switchID >> switchState) {
+								Switch* sw = room.getSwitchByID(switchID);
+								if (sw) {
+									door.addRequiredSwitch(sw, (bool)switchState);
+								}
+								else {
+									std::cerr << "Error - door " << id << "missing switch " << switchID << std::endl;
+								}
+							}
+						}
+						while (parser.peek() == ' ' || parser.peek() == ']')
+							parser.ignore();
+					}
+					door.UpdatedFromSwitch();
+					room.addDoor(door);
 				}
-				door.UpdatedFromSwitch();
-				room.addDoor(door);
+				else
+					std::cerr << "Error - door "<< id << " defined in props but not on grid!" << std::endl;
 			}
 		}
 

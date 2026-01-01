@@ -1,8 +1,9 @@
-#include "Game.h"
 #include <iostream>
 #include <sstream> 
 #include <iomanip>  
 #include <string>
+#include "Game.h"
+#include "Level_Loader.h"
 
 char p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
 char p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
@@ -68,6 +69,7 @@ void Game::startInLevel(Level level)
 
 void Game::init()
 {
+	Level_Loader::loadRiddles("riddles.txt", riddles);
     // Initialize ALL levels
     initLevel1Props(levels[0]);
     initLevel2Props(levels[1]);

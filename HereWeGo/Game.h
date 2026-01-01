@@ -1,12 +1,13 @@
 #pragma once
-#include "utils.h"
-#include "Screen.h"
-#include "Room.h"
-#include "Player.h"
 #include <iostream>
 #include <iomanip> // For formatting output
 #include <chrono>  // For time-related functions
 #include <thread>  // For sleeping/pausing
+#include "utils.h"
+#include "Screen.h"
+#include "Room.h"
+#include "Player.h"
+#include "Riddle.h"
 
 static constexpr int ROOM_AMOUNT = 4; //4th is test room
 static constexpr int PLAYER_AMOUNT = 2;

@@ -56,12 +56,17 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 	std::vector<Point> foundBombs;
 	std::vector<Point> foundTorches;
 	std::vector<Point> foundPotions;
+	std::vector<Point> foundSwitches;
+	std::vector<Point> foundRiddles;
 	std::map<int, Point> foundDoors; // Maps DoorChar '1' to Point(x,y)
+
 
 	int keyInd = 0;
 	int bombInd = 0;
 	int torchInd = 0;
 	int potionInd = 0;
+	int switchInd = 0;
+	int riddleInd = 0;
 	int mapRow = 0;
 
 	while (std::getline(file, line)) {
@@ -198,11 +203,18 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 		}
 		
 		else if (section == "SWITCHES") {
-			int id, x, y, seen;
-			if (parser >> id >> x >> y >> seen) {
-				auto sw = std::make_unique<Switch>(x, y, id);
-				if (seen) sw->setSeen();
-				room.addSwitch(std::move(sw));
+			int id, seen;
+			if (parser >> id >> seen) {
+				if (switchInd < foundSwitches.size()) {
+					Point p = foundSwitches[switchInd];
+					auto sw = std::make_unique<Switch>(p.x, p.y, id);
+					if (seen) sw->setSeen();
+					room.addSwitch(std::move(sw));
+					switchInd++;
+				}
+				else {
+					std::cerr << "Error - More switch entries than switches on grid!" << std::endl;
+				}
 			}
 		}
 
@@ -259,7 +271,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 								door.addRequiredSwitch(sw, (bool)switchState);
 							} 
 							else {
-								std::cerr << "Warning - door " << id << "missing switch " << switchID << std::endl;
+								std::cerr << "Error - door " << id << "missing switch " << switchID << std::endl;
 							}
 						}
 					}
@@ -268,27 +280,6 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 				}
 				door.UpdatedFromSwitch();
 				room.addDoor(door);
-			}
-		}
-
-		else if (section == "OBSTACLES") {
-			int partCount;
-			if (parser >> partCount) {
-				Obstacle obstacle;
-
-				for (int i = 0; i < partCount; i++) {
-					while (parser.peek() == ' ' || parser.peek() == '[')
-						parser.ignore();
-
-					int px, py;
-
-					if (parser >> px >> py)
-						obstacle.addPart(Placement(px, py, OBSTACLE_TILE));
-					
-					while (parser.peek() == ' ' || parser.peek() == ']')
-						parser.ignore();
-				}
-				room.addObstacle(obstacle);
 			}
 		}
 
@@ -326,24 +317,17 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			}
 		}
 
-		else if (section == "SPRINGS") {
-			int dirx, diry, count;
-			
-			if (parser >> dirx >> diry >> count) {
-				Spring spring({ dirx,diry });
-				for (int i = 0; i < count; i++) {
-					int px, py;
-					if (parser >> px >> py)
-						spring.addPart(px, py);
-				}
-				room.addSpring(spring);
-			}
-		}
-
 		else if (section == "RIDDLES") {
-			int id, x, y;
-			if (parser >> id >> x >> y) {
-				room.addRiddle(x, y, id);
+			int id;
+			if (parser >> id ) {
+				if (riddleInd < foundRiddles.size()) {
+					Point p = foundRiddles[riddleInd];
+					room.addRiddle(p.x, p.y, id);
+					riddleInd++;
+				}
+				else {
+					std::cerr << "Error - More riddle entries than riddles on grid!" << std::endl;
+				}
 			}
 		}
 	}

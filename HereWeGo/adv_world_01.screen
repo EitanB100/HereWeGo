@@ -5,7 +5,7 @@ W $      W     &             W                 W                               W
 W        1                   W                 W                               W
 W        W     \             W                 W                               W
 W        W                   W                 W                               W
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW                 W                               W
+WWWWWWWWWWWWWWWWWWW2WWWWWWWWWW                 W                               W
 W        #                                     W                               W
 W                                              W                               W
 W                                              W                               W
@@ -21,7 +21,7 @@ W       W          W               W            W                              W
 W       W          WWWWWWWWWWWWW   W            W                              W
 W     WWW          W               W                                           W
 W           WWWWWWWW WWWWWWWWWWW   W                                           W
-WWW  WW     W         W        W                                          ?    2
+WWW  WW     W         W        W                                          ?    3
 W     W          W    W   W        W            W                              W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [/MAP]
@@ -33,9 +33,10 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [DOORS]
 # Door 1 at (9, 3): ID 1, Color 14 (Yellow), 0 Keys, 1 Switch (ID 100 ON)
 1 14 0 1 100 1
-
+#door 2 no keys one switch
+2 5 0 1 100 0
 # Door 2 (Exit) at (79, 22): ID 2, Color 2 (Green), 1 Key (ID 10), 0 Switches
-2 2 1 10 0
+3 2 1 10 0
 
 [SWITCHES]
 # Switch at (15, 4): ID 100, Seen 1

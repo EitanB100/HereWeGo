@@ -1,23 +1,23 @@
 [RIDDLE]
 ID 1
-Q: What niggers are mainly used for
-A: Manual labour
-A: Slavery
-A: Unpaid work
-CORRECT: 2
+Q: What has keys but cannot open locks?
+A: A Piano
+A: A Map
+A: A Banana
+CORRECT: 0
 
 [RIDDLE]
 ID 2
-Q: Is taiwan a part of china?
-A: Yes
-A: Yes
-A: Yes
+Q: I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?
+A: A Ghost
+A: An Echo
+A: A Cloud
 CORRECT: 1
 
 [RIDDLE]
 ID 3
-Q: Did Jeffrey Epstein kill himself?
-A: Yes
-A: No
-A: Wait a sec this 15 yo looks fineeee
+Q: The more of this there is, the less you see. What is it?
+A: Darkness
+A: Fog
+A: Light
 CORRECT: 0

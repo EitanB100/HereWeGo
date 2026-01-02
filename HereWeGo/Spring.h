@@ -19,7 +19,7 @@ public:
     const std::vector<Placement>& getParts() const { return parts; }
 
     int getCompressionCount() { return compressedCount; }
-
+    
     // Add a tile to the spring (springs can be multiple tiles long)
     void addPart(int x, int y) {
         parts.push_back(Placement(x, y, SPRING_TILE));

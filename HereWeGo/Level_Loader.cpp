@@ -96,9 +96,24 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 
 						tempObstacles.push_back(obstacle);
 					}
-					else if (c == '^' || c =='>' || c == 'v' || c == 'V' || c == '<' {
+					else if (c == '^' || c =='>' || c == 'v' || c == 'V' || c == '<') {
+						Point dir;
+				
+						if (c == '^') dir = Directions::UP;
+						else if (c == '>') dir = Directions::RIGHT;
+						else if (c == 'v' || c == 'V') dir = Directions::DOWN;
+						else if (c == '<') dir = Directions::LEFT;
+						
+						std::vector<Point> parts;
+						consumeConnectedParts(room, x, y, SPRING_TILE, parts);
 
+						Spring spring(dir);
+						for (const auto& part : parts) {
+							spring.addPart(part.x, part.y);
+						}
 
+						spring.sortParts();
+						room.addSpring(spring);
 					}
 
 					switch (c) {

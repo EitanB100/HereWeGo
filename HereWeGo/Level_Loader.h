@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
-#include "Room.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+#include "Room.h"
 #include "Switch.h"
 #include "Door.h"
 #include "Key.h"

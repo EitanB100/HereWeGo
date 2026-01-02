@@ -63,6 +63,8 @@ public:
     //changed switches to be unique_ptrs, but just in case did those anyway
     Room(const Room&) = delete;
     Room& operator=(const Room&) = delete;
+
+    Room(Room&&) = default;
     ~Room() = default;
 
     const char (*getMap() const)[MAX_X] {

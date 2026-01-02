@@ -153,7 +153,8 @@ void Game::run()
 			}
 		}
 
-		checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos());
+		bool isVictory = checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos());
+		if (isVictory) break;
 		
 		if (boomDustCleaningNeeded) {
 			currRoom.clearExplosions();
@@ -192,10 +193,10 @@ void Game::run()
 
 }
 
-void Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
+bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 {
 	Point exit = levels[currentLevelIndex].getExitPos();
-	if (exit.x == -1) return; // No standard exit
+	if (exit.x == -1) return false; // No standard exit
 
 	if (p1 == exit && p2 == exit)
 	{
@@ -206,19 +207,24 @@ void Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 		score += (MAX_SCORE / (levelSeconds + 1));
 
 		// 2. Handle Special Case (Obstacle carry over)
-		if (currentLevelIndex < levels.size() - 1) 
-			currentLevelIndex++;	
-		
-		setGame(currentLevelIndex, false );
+		if (currentLevelIndex < levels.size() - 1)
+		{
+			currentLevelIndex++;
 
-		resetLevelTimer();
+			setGame(currentLevelIndex, false);
 
-		printTimer(); // Force a timer update immediately so it doesn't show the old time for 75ms
+			resetLevelTimer();
+
+			printTimer(); // Force a timer update immediately so it doesn't show the old time for 75ms
+			return false;
+		}
 	}
 	else {
 		setColor(Color::GREEN);
 		printCentered("THANKS FOR PLAYING!", 12);
 		Sleep(1500);
+		setColor(Color::WHITE);
+		return true;
 	}
 }
 

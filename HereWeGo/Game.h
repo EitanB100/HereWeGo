@@ -36,7 +36,7 @@ class Game {
 	void printHUD();
 	void printTimer();
 	void resetLevelTimer();
-	void checkLevelTransition(int& currentLevelIndex, Point p1, Point p2);
+	bool checkLevelTransition(int& currentLevelIndex, Point p1, Point p2);
 	void printScore();
 	void updatePlayerKeys(char keys[], int playerNum);
 	void handleGameOver();

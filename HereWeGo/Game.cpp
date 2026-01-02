@@ -105,9 +105,6 @@ void Game::setGame(Level level , bool firstSettings) {
 		levels[*currentLevelID].drawRoom(screen);
 	}
 
-	
-	
-	if (currentLevelID != Level::ONE) levels[*currentLevelID].loadFromScreen(screen);
 
 	levels[*currentLevelID].drawRoom(screen);
 

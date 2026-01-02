@@ -328,9 +328,6 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			}
 		}
 
-		else if (section == "SPRINGS") {
-			int direction = 0;
-		}
 
 		else if (section == "POTIONS") {
 			if (potionInd < foundPotions.size()) {

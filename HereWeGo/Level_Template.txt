@@ -1,0 +1,68 @@
+[MAP]
+L
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+[/MAP]
+# Legend (Place these chars inside the map above):
+# W = Wall, $ = P1 Start, & = P2 Start
+# K = Key, @ = Bomb, ! = Torch, ? = Riddle, P = Potion
+# * = Obstacle
+# / or \ = Switch
+# 1-9 = Doors
+# ^ v < > = Springs (Directional)
+# L = Legend/HUD position (Do not remove)
+
+[KEYS]
+# Format: ID Color(1=Blue,2=Green,3=Cyan,4=Red,5=Magenta,6=Yellow,15=White) Seen(0=Hidden,1=Visible)
+# Example: 100 4 1
+
+[SWITCHES]
+# Format: ID Seen(0/1)
+# Note: Initial state (ON/OFF) is determined by the map char (/ or \)
+# Example: 200 1
+
+[DOORS]
+# Format: DoorID Color KeyCount [KeyID1...] SwitchCount [SwitchID1 State(0=OFF,1=ON)...]
+# Example: 1 2 1 100 1 200 1
+
+[BOMBS]
+# Format: BombID Timer(Ticks)
+# Note: IDs correspond to the order bombs are found on the map (Top-Left -> Bottom-Right)
+# Example: 1 5
+
+[TORCHES]
+# Format: Radius
+# Note: Maps sequentially to Torches found on the map
+# Example: 5
+
+[RIDDLES]
+# Format: RiddleID
+# Note: Maps sequentially to Riddles found on the map. ID links to riddles.txt
+# Example: 1
+
+[POTIONS]
+# Just list '1' for each potion on the map to acknowledge existence (properties handled by code)
+# Example: 1

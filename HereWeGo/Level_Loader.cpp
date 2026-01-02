@@ -328,16 +328,6 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			}
 		}
 
-
-		else if (section == "POTIONS") {
-			if (potionInd < foundPotions.size()) {
-				Point p = foundPotions[potionInd];
-				Potion potion(p.x, p.y);
-				room.addPotion(potion);
-				potionInd++;
-			}
-		}
-
 		else if (section == "RIDDLES") {
 			int id;
 			if (parser >> id ) {

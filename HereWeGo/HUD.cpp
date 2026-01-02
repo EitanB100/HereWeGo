@@ -5,7 +5,7 @@
 
 void Game::printHUD()
 {
-	Point hudPos = levels[*currentLevelID].getLegendLoc();
+	Point hudPos = levels[currentLevelIndex].getLegendLoc();
 
 	gotoxy(hudPos.x, hudPos.y);
 
@@ -55,7 +55,7 @@ void Game::printHUD()
 
 void Game::printTimer() {
 
-	Point hudPos = levels[*currentLevelID].getLegendLoc();
+	Point hudPos = levels[currentLevelIndex].getLegendLoc();
 	gotoxy(hudPos.x, hudPos.y + 2);
 	
 	auto currentTime = std::chrono::steady_clock::now();
@@ -83,7 +83,7 @@ void Game::printTimer() {
 }
 
 void Game::printScore() {
-	Point hudPos = levels[*currentLevelID].getLegendLoc();
+	Point hudPos = levels[currentLevelIndex].getLegendLoc();
 	gotoxy(hudPos.x + 45, hudPos.y + 1);
 
 	setColor(Color::YELLOW);

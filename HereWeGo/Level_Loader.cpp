@@ -192,6 +192,10 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			continue;
 		}
 
+		if (line == "[EXIT]") {
+			section = "EXIT";
+			continue;
+		}
 		std::stringstream parser(line);
 
 
@@ -340,6 +344,13 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 				else {
 					std::cerr << "Error - More riddle entries than riddles on grid!" << std::endl;
 				}
+			}
+		}
+
+		else if (section == "EXIT") {
+			int exitX, exitY;
+			if (parser >> exitX >> exitY) {
+				room.setExitPos({ exitX,exitY });
 			}
 		}
 	}

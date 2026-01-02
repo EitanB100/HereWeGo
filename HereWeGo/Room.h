@@ -55,7 +55,7 @@ class Room {
 
     Point p1Start = { 1,1 };
     Point p2Start = { 2,1 };
-
+    Point exitPos = { -1,-1 };
     Point legendLocation = { 0,0 };
 public:
 
@@ -80,6 +80,9 @@ public:
     void setP1Start(const Point& p) { p1Start = p; }
     Point getP2Start() const { return p2Start; }
     void setP2Start(const Point& p) { p2Start = p; }
+    
+    Point getExitPos() const { return exitPos; }
+    void setExitPos(const Point& p) { exitPos = p; }
 
     void drawTopLayer();
     void drawRoom(Screen& screen);

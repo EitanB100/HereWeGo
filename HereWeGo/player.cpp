@@ -25,6 +25,14 @@ void Player::draw() {
     setColor(Color::WHITE);
 }
 
+void Player::transferMomentum(int _force, Point dir, int time)
+{
+    spring.force = _force;
+    spring.launchDir = dir;
+    spring.flightTime = time;
+    spring.compressionCount = 0;
+}
+
 void Player::takeDamage(int amount)
 {
     hp -= amount;
@@ -67,6 +75,12 @@ int Player::move(Room& room, Player* otherPlayer) {
 
     //Player collision 
     if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint == otherPlayer->getPos()) { 
+        if (spring.flightTime > 0) {
+            otherPlayer->transferMomentum(spring.force, { dirx,diry }, spring.flightTime);
+            spring.flightTime = 0;
+            spring.force = 1;
+        }
+
         setDirection(Directions::STAY);
         return 0;
     }

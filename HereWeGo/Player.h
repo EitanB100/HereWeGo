@@ -53,6 +53,10 @@ public:
     void setFinished(bool state) { finishedLevel = state; }
     void setDirection(const Point& direction) { dirx = direction.x; diry = direction.y; }
 
+    void setForce(int _force) { force = _force; }
+    int getForce() const { return force; }
+    void transferMomentum(int _force, Point dir, int time);
+
     int getHP() const { return hp; }
     void takeDamage(int amount);
     bool increaseHP(int amount);

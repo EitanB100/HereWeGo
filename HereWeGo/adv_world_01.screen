@@ -2,7 +2,7 @@
 L                                              WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW                               W
 W $      W     &             W                 W                               W
-W        1                   W                 W                               W
+W        1        K          W                 W                               W
 W        W     \             W                 W                               W
 W        W                   W                 W                               W
 WWWWWWWWWWWWWWWWWWW2WWWWWWWWWW                 W                               W
@@ -12,7 +12,7 @@ W                                              W                               W
 W        K          WWWWWWWWWWWWWWWWWWWWWWWWWWWW                               W
 W                   W                          W                               W
 W                   W                          W                               W
-W                   W             * W                               W
+W                   W             * W                                          W
 W                   W                          W                               W
 W                   W                          W                               W
 W                                              W                               W
@@ -29,7 +29,8 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [KEYS]
 # Key at (9, 10): ID 10, Color 2 (Green), Seen 1
 10 2 1
-
+#Key at idk: ID 7 Color 5 Seen 0
+7 5 0
 [SWITCHES]
 # Switch at (15, 4): ID 100, Seen 1
 100 1
@@ -37,9 +38,9 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [DOORS]
 # Door 1 at (9, 3): ID 1, Color 14 (Yellow), 0 Keys, 1 Switch (ID 100 ON)
 1 14 0 1 100 1
-#door 2 no keys one switch
-2 5 0 1 100 0
-# Door 2 (Exit) at (79, 22): ID 2, Color 2 (Green), 1 Key (ID 10), 0 Switches
+#door 2 at idk: ID 2, Color 5, 1 Key (ID 7), 0 switches
+2 5 1 7 0
+# Door 3 (Exit) at (79, 22): ID 1, Color 2 (Green), 1 Key (ID 10), 0 Switches
 3 2 1 10 0
 
 

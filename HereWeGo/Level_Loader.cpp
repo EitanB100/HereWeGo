@@ -17,7 +17,6 @@ static std::string readCleanLine(std::stringstream& parser) {
 }
 
 //suggested by gemini to get obstacle and spring parts correctly from a file by adjacent parts in advance 
-// Helper: Finds connected parts and REMOVES them from the map so they aren't processed twice.
 static void consumeConnectedParts(Room& room, int x, int y, char targetCh, std::vector<Point>& outParts, int axis = 0)
 {
 	// 1. Bounds Check

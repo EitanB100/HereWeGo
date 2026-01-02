@@ -189,7 +189,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			section = "SPRINGS";
 			continue;
 		}
-
+		
 		if (line == "[POTIONS]") {
 			section = "POTIONS";
 			continue;

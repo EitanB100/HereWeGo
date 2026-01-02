@@ -22,34 +22,41 @@ void Game::printHUD()
 		setColor(item1.color);
 		std::cout << "TORCH";
 	}
-
-	else std::cout << "EMPTY ";
+	else if (item1.type == ItemType::BOMB) {
+		setColor(item1.color);
+		std::cout << "BOMB";
+	}
+	else std::cout << " ";
 	setColor(Color::WHITE);
+	std::cout << "]    ";
 
-	std::cout << " Hitpoints " << players[0].getHP() << "/" << Player::MAX_HP;
+	gotoxy(hudPos.x, hudPos.y + 1);
+	std::cout << "P2:" << players[1].getHP() << "/" << players[1].MAX_HP << " [";
 
-	std::cout << "| Player 2: ";
-	const heldItem& item2 = players[1].getItemInHand();
+ 	const heldItem& item2 = players[1].getItemInHand();
+	
 	if (item2.type == ItemType::KEY) {
 		setColor(item2.color);
 		std::cout << "KEY ";
 	}
-
 	else if (item2.type == ItemType::TORCH) {
 		setColor(item2.color);
 		std::cout << "TORCH ";
 	}
-
-	else std::cout << "EMPTY ";
+	else if (item2.type == ItemType::BOMB) {
+		setColor(item2.color);
+		std::cout << "BOMB";
+	}
+	else std::cout << " ";
 	setColor(Color::WHITE);
-	std::cout << " Hitpoints " << players[1].getHP() << "/15 ";
+	std::cout << "]    ";
 }
 
 
 void Game::printTimer() {
 
 	Point hudPos = levels[*currentLevelID].getLegendLoc();
-	gotoxy(hudPos.x, hudPos.y + 1);
+	gotoxy(hudPos.x, hudPos.y + 2);
 	
 	auto currentTime = std::chrono::steady_clock::now();
 
@@ -70,8 +77,7 @@ void Game::printTimer() {
 		};
 
 	setColor(Color::YELLOW);
-	std::cout << "Total Time: " << formatTime(totalElapsed)
-		<< " | Level Time: " << formatTime(levelElapsed) << " ";
+	std::cout << "TIME " << formatTime(levelElapsed);
 	gotoxy(hudPos.x + 50, hudPos.y + 1);
 	printScore();
 }

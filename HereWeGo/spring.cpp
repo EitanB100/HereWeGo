@@ -23,16 +23,16 @@ void Spring::sortParts() //ensuring parts[0] is the tip of the spring
 	while (swapped) {
 		swapped = false;
 		for (int i = 0; i < parts.size() - 1; i++) { 
-			if (direction.x == 1){
+			if (direction == Directions::RIGHT){
 				if (parts[i].getx() < parts[i + 1].getx()) needSwap = true;
 			}
-			else if (direction.x == -1) {
+			else if (direction == Directions:: LEFT) {
 				if (parts[i].getx() > parts[i + 1].getx()) needSwap = true;
 			}
-			else if (direction.y == 1) {
+			else if (direction == Directions::DOWN) {
 				if (parts[i].gety() < parts[i + 1].gety()) needSwap = true;
 			}
-			else if (direction.y == -1) {
+			else if (direction == Directions::UP) {
 				if (parts[i].gety() > parts[i + 1].gety()) needSwap = true;
 			}
 			if (needSwap)

@@ -76,7 +76,7 @@ bool Player::handleSprings(Room& room, Point nextPoint) {
             }
             else {
                 if (spring.flightTime == 0) {
-                    setDirection(0, 0);
+                    setDirection(Directions::STAY);
                     return false;
                 }
                 return true;
@@ -94,13 +94,13 @@ bool Player::handleSprings(Room& room, Point nextPoint) {
 
             // Only allow entry from the tip or if already on it
             if (!alreadyOnSpring && nextPoint != tip) {
-                setDirection(0, 0);
+                setDirection(Directions::STAY);
                 return false;
             }
 
             // Stop if fully compressed
             if (spring.compressionCount >= (int)s->getParts().size() && isOpposing) {
-                setDirection(0, 0);
+                setDirection(Directions::STAY);
                 return false;
             }
             spring.compressionCount++;
@@ -125,7 +125,7 @@ bool Player::handleSpringExit(Room& room)
     bool isOpposing = (dirx == -springDir.x && diry == -springDir.y);
 
     if (isOpposing && spring.compressionCount >= s->getParts().size()) {
-        setDirection(0, 0);
+        setDirection(Directions::STAY);
         return false;
     }
     s->setCompression(0);

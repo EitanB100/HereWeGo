@@ -120,7 +120,7 @@ void Game::setGame(Level level , bool firstSettings) {
 	players[1].setPos(levels[*currentLevelID].getP2Start());
 
 	for (auto& player : players) {
-		player.setDirection(0, 0);
+		player.setDirection(Directions::STAY);
 		player.setFinished(false);
 		player.draw();
 	}

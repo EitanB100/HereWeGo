@@ -3,10 +3,12 @@
 #include "Placement.h"
 #include "Screen.h"
 #include "Room.h"
+#include "Utils.h"
 
 class Player {
     Placement pos = Placement();
     char symbol = ' ';
+    Directions direction;
     int dirx = 0, diry = 0;
     int force = 1;
     bool finishedLevel = false;
@@ -49,7 +51,7 @@ public:
 
     void setPos(Point p) { pos.set(p.x, p.y, symbol); }
     void setFinished(bool state) { finishedLevel = state; }
-    void setDirection(int dx, int dy) { dirx = dx; diry = dy; }
+    void setDirection(const Point& direction) { dirx = direction.x; diry = direction.y; }
 
     int getHP() const { return hp; }
     void takeDamage(int amount);

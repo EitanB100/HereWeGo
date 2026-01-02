@@ -96,28 +96,9 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 
 						tempObstacles.push_back(obstacle);
 					}
-					else if (c == SPRING_TILE) {
-						std::vector<Point> parts;
-						consumeConnectedParts(room, x, y, SPRING_TILE, parts);
+					else if (c == '^' || c =='>' || c == 'v' || c == 'V' || c == '<' {
 
-						int dirX = 0, dirY = 0;
-						bool dirFound = false;
 
-						for (Point part : parts) {
-							if (part.y > 0 && room.getObjectAt(Point{ part.x, part.y - 1 }) == 'W') { dirX = 0; dirY = 1; dirFound = true; break; }
-							if (part.y < MAX_Y - 1 && room.getObjectAt(Point{ part.x, part.y + 1 }) == 'W') { dirX = 0; dirY = -1; dirFound = true; break; }
-							if (part.x > 0 && room.getObjectAt(Point{ part.x - 1, part.y }) == 'W') { dirX = 1; dirY = 0; dirFound = true; break; }
-							if (part.x < MAX_X - 1 && room.getObjectAt(Point{ part.x + 1, part.y }) == 'W') { dirX = -1; dirY = 0; dirFound = true; break; }
-						}
-						if (!dirFound) {
-							dirX = 0;
-							dirY = -1;
-						}
-						Spring spring({ dirX,dirY });
-						for (Point part : parts) {
-							spring.addPart(part.x,part.y);
-						}
-						room.addSpring(spring);
 					}
 
 					switch (c) {

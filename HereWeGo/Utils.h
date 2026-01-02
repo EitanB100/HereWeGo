@@ -47,6 +47,13 @@ struct Point { // simple struct for position getting
     }
 };
 
+struct Directions {
+    static constexpr Point UP = { 0,-1 };
+    static constexpr Point RIGHT = { 1,0 };
+    static constexpr Point DOWN = { 0,1 };
+    static constexpr Point LEFT = { -1,0 };
+    static constexpr Point STAY = { 0,0 };
+};
 
 void printCentered(std::string text, int y); //to print the menu in the center
 void printInstructions();

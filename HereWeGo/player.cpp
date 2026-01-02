@@ -61,13 +61,13 @@ int Player::move(Room& room, Player* otherPlayer) {
     
     //Static collisions
 	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE || tileOnMap == GLASS_TILE) {
-        setDirection(0, 0); 
+        setDirection(Directions::STAY); 
         return 0; 
     }
 
     //Player collision 
     if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint == otherPlayer->getPos()) { 
-        setDirection(0, 0);
+        setDirection(Directions::STAY);
         return 0;
     }
     
@@ -76,7 +76,7 @@ int Player::move(Room& room, Player* otherPlayer) {
     if (isDoorTile(tileOnMap)) 
     {
         room.checkDoor(nextPoint, itemInHand);
-        setDirection(0, 0);
+        setDirection(Directions::STAY);
         setColor(itemInHand.color);
         pos.draw();
         return 0;
@@ -87,7 +87,7 @@ int Player::move(Room& room, Player* otherPlayer) {
      
         if (!handlePickups(room, nextPoint))
         {
-            setDirection(0, 0);
+            setDirection(Directions::STAY);
             return 0;
         }
         
@@ -116,7 +116,7 @@ int Player::move(Room& room, Player* otherPlayer) {
 
             room.checkSwitch(switchOnOff->getPos()); 
             room.drawTopLayer();                 
-            setDirection(0, 0);                  
+            setDirection(Directions::STAY);                  
             return 0;
         }
     }
@@ -127,7 +127,7 @@ int Player::move(Room& room, Player* otherPlayer) {
             if (increaseHP(HP_INCREASE))
                 room.removePotion(nextPoint);
             else {
-                setDirection(0, 0);
+                setDirection(Directions::STAY);
                 return 0;
             }
            
@@ -138,7 +138,7 @@ int Player::move(Room& room, Player* otherPlayer) {
     if (tileOnMap == RIDDLE_TILE) {
         int id = room.getRiddleID(nextPoint);
 
-        setDirection(0, 0);
+        setDirection(Directions::STAY);
         return id;
     }
 
@@ -201,37 +201,23 @@ void Player::inputManager(char input, Room& room) {
 
     input = toupper(input); // normalize input to uppercase
 
-    int requestedDirx = 0;
-    int requestedDiry = 0;
 
-    if (isCommand(input,CommandKeys::UP)) {
-        requestedDiry = -1;
-        requestedDirx = 0;
-    }
+    if (isCommand(input, CommandKeys::UP)) setDirection(Directions::UP);
 
-    else if (isCommand(input,CommandKeys::DOWN)) {
+    else if (isCommand(input, CommandKeys::DOWN)) setDirection(Directions::DOWN);
 
-        requestedDirx = 0;
-        requestedDiry = 1;
-    }
+    else if (isCommand(input, CommandKeys::LEFT)) setDirection(Directions::LEFT);
 
-    else if (isCommand(input,CommandKeys::LEFT)) {
-        requestedDirx = -1;
-        requestedDiry = 0;
-    }
-    else if (isCommand(input,CommandKeys::RIGHT)) {
-        requestedDirx = 1;
-        requestedDiry = 0;
-    }
+    else if (isCommand(input, CommandKeys::RIGHT)) setDirection(Directions::RIGHT);
 
-    else if (isCommand(input,CommandKeys::STAY))
-        setDirection(0, 0);
+    else if (isCommand(input, CommandKeys::STAY)) setDirection(Directions::STAY);
+        
 
     else if (isCommand(input,CommandKeys::DISPOSE))
         dropItem(room);
     
     else return;
     
-    setDirection(requestedDirx, requestedDiry);
+    
     
 }

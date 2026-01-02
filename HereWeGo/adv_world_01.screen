@@ -1,13 +1,14 @@
 [MAP]
 L
+
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W $    W                       W               W                               W
-W      W    *** Obstacle      W   Springs     W   BOMB TEST                   W
-W      W    Push Test          W               W                               W
+W      W    ***                W               W                               W
+W      W                       W               W                               W
 W      W                       W      ^        W   @ (Timer 5)                 W
 W      W          K            W      |        W                               W
 W      W                       W   <--+-->     W                               W
-W      W   1      * W      |        W   @ (Timer 15)                W
+W      W   1      * W      |        W   @ (Timer 15)                           W
 W      W                       W      v        W                               W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W &    W                       W               W                               W

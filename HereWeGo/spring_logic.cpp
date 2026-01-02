@@ -96,12 +96,19 @@ bool Player::handleSprings(Room& room, Point nextPoint) {
     if (spring.flightTime == 0) {
         Spring* s = room.isSpringThere(nextPoint);
         if (s) {
+            Point springDir = s->getDirection();
             bool isOpposing = (dirx == -s->getDirection().x && diry == -s->getDirection().y);
             bool alreadyOnSpring = s->isSpringPart(pos.getPosition());
+            bool isMovingInSpringDir = (dirx == springDir.x && diry == springDir.y);
             Point tip = s->getParts()[0].getPosition();
 
             // Only allow entry from the tip or if already on it
             if (!alreadyOnSpring && nextPoint != tip) {
+                setDirection(Directions::STAY);
+                return false;
+            }
+
+            if (!alreadyOnSpring && s->getParts().size() == 1 && isMovingInSpringDir) {
                 setDirection(Directions::STAY);
                 return false;
             }

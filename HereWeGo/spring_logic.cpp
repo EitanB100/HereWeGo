@@ -62,34 +62,30 @@ bool Player::handleSprings(Room& room, Point nextPoint) {
             Point dir = spring->getDirection();
             Point tip = spring->getParts()[0].getPosition();
 
-            if (spring->isSpringPart(pos.getPosition()) && nextPoint != tip) {
-                setDirection(Directions::STAY);
-                return false;
-            }
+            bool isOpposing = (dirx == -dir.x && diry == -dir.y);
 
-            if (!(spring->isSpringPart(pos.getPosition()) && dirx != -dir.x && diry != -dir.y)) {
+            if (!isOpposing) {
                 setDirection(Directions::STAY);
                 return false;
             }
 
             // Hit Tip -> Chain
             if (nextPoint == tip) {
-                int conservedMomentum = spring->force;
-                if (conservedMomentum > (int)nextSpring->getParts().size()) {
-                    conservedMomentum = (int)nextSpring->getParts().size();
+                int conservedMomentum = this->spring.force;
+                if (conservedMomentum > (int)spring->getParts().size()) {
+                    conservedMomentum = (int)spring->getParts().size();
                 }
-                nextSpring->setCompression(conservedMomentum);
-                spring.compressionCount = conservedMomentum;
-                spring.flightTime = 0; // Stop flight, land on spring
-                spring.force = 1;
+                spring->setCompression(conservedMomentum);
+
+                this->spring.compressionCount = conservedMomentum;
+                this->spring.flightTime = 0; // Stop flight, land on spring
+                this->spring.force = 1;
+
                 return true; // Continue move logic (step onto spring)
             }
             else {
-                if (spring.flightTime == 0) {
-                    setDirection(Directions::STAY);
-                    return false;
-                }
-                return true;
+                setDirection(Directions::STAY);
+                return false;
             }
         }
     }
@@ -104,6 +100,11 @@ bool Player::handleSprings(Room& room, Point nextPoint) {
 
             // Only allow entry from the tip or if already on it
             if (!alreadyOnSpring && nextPoint != tip) {
+                setDirection(Directions::STAY);
+                return false;
+            }
+
+            if (!alreadyOnSpring && !isOpposing) {
                 setDirection(Directions::STAY);
                 return false;
             }

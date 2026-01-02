@@ -23,7 +23,7 @@ inline Level& operator++ (Level& level) {
 }
 
 enum class Color {
-    BLUE = 1, GREEN, CYAN, RED, MAGENTA,YELLOW,WHITE = 15//white is default
+    BLUE = 1, GREEN, CYAN, RED, MAGENTA, YELLOW, WHITE = 15//white is default
 };
 
 struct heldItem {

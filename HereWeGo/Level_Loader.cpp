@@ -166,11 +166,6 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			continue;
 		}
 
-		if (line == "[OBSTACLES]") {
-			section = "OBSTACLES";
-			continue;
-		}
-
 		if (line == "[TORCHES]") {
 			section = "TORCHES";
 			continue;
@@ -178,16 +173,6 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 		
 		if (line == "[BOMBS]") {
 			section = "BOMBS";
-			continue;
-		}
-
-		if (line == "[SPRINGS]") {
-			section = "SPRINGS";
-			continue;
-		}
-		
-		if (line == "[POTIONS]") {
-			section = "POTIONS";
 			continue;
 		}
 

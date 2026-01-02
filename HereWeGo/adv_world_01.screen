@@ -7,7 +7,7 @@ W      W                       W               W                               W
 W      W                  $    W      ^        W   @                           W
 W      W          K            W      |        W                               W
 W      W                       W   <--+-->     W                               W
-W      W          *     ^   <<<         @                                      W
+W      W          *     ^               @                                      W
 W      W                ^      W      v        W                               W
 WWWWWWWWWWWWWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W &    W                       W               W                               W
@@ -33,14 +33,14 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [KEYS]
 # ORDER MATTERS: Scanned Top-Left -> Bottom-Right
 # 1. P1 Area (Top Left) - Key ID 100
-100 2 0
+100 2 1
 
 # 2. P2 Area (Bottom Left) - Key ID 101
-101 4 0
+101 4 1
 
 [SWITCHES]
 # 1. P2 Area - Switch ID 200 (Opens Door 2)
-200 0
+200 1
 
 [DOORS]
 # 1. P1 Area - ID 1 (Cyan). Requires Key 100

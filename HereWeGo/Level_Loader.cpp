@@ -105,7 +105,7 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 						else if (c == '<') dir = Directions::LEFT;
 						
 						std::vector<Point> parts;
-						consumeConnectedParts(room, x, y, SPRING_TILE, parts);
+						consumeConnectedParts(room, x, y, c, parts);
 
 						Spring spring(dir);
 						for (const auto& part : parts) {

@@ -1,57 +1,57 @@
 ================================================================================
-                           LEVEL CREATION GUIDE 
+                              LEVEL CREATOR GUIDE
 ================================================================================
 
 1. FILE NAMING & LOCATION
-   - Files must be named `adv_world_XX.screen` (e.g., `adv_world_01.screen`).
-   - Place files in the game's working directory (next to the .exe).
-   - The game loads them in lexicographical order.
+   - Files must follow the naming convention: adv_world_XX.screen (e.g., adv_world_01.screen).
+   - Files are loaded in lexicographical order.
+   - Place them in the game's working directory.
 
-2. FILE STRUCTURE
-   The file is divided into sections marked by brackets (e.g., `[MAP]`). 
-   Order matters: The Loader scans the map from Top-Left to Bottom-Right. 
-   Properties in the sections below the map are assigned to objects in that exact order.
+2. FILE SECTIONS
+   The level file is divided into blocks. The most critical is [MAP]. The blocks
+   following the map provide specific data for objects found during the map scan.
 
-3. SECTION: [MAP] ... [/MAP]
-   - Draw the level layout here (80x25 characters max).
-   - MANDATORY: Include 'L' for the HUD/Legend location.
-   - TILES:
-     W = Wall           |  * = Obstacle (Multi-tile supported)
-     $ = Player 1       |  & = Player 2
-     K = Key            |  ! = Torch
-     @ = Bomb           |  P = Potion
-     ? = Riddle         |  # = Spring (Use ^ v < > for direction)
-     / or \ = Switch    |  1-9 = Doors (Digit is the ID)
+3. OBJECTS & MAP CHARACTERS
+   Objects are identified by characters on the grid. Most are scanned from 
+   Top-Left to Bottom-Right.
 
-4. OBJECT CONFIGURATION SECTIONS
-   
+   - Players ($ &): The starting positions for Player 1 ($) and Player 2 (&).
+   - Walls (W): Solid, unpassable, and immovable boundaries.
+   - Obstacles (*): Blocks that can be pushed if the player has enough force.
+     Adjacent '*' characters are treated as a single multi-tile obstacle.
+   - Springs (^, v, <, >): Launchers that push players in the direction of the 
+     arrow. Multiple adjacent spring chars of the same type form one 
+     long spring.
+   - Keys (K): Collectible items used to open doors.
+   - Switches (/ \): Interactive floor tiles that toggle between ON (/) and OFF (\).
+   - Doors (1-9): Passable gates. Digits represent the Door ID.
+   - Torches (!): Items that provide illumination in dark areas.
+   - Bombs (@): Collectible explosives with a 5-tick timer.
+   - Potions (P): Collectible health-restoring items.
+   - Riddles (?): Obstacles that require a correct answer to pass.
+   - Legend (L): Defines the top-left coordinate where the HUD (Health, Timer, 
+     Score) will be printed.
+
+4. DATA BLOCK FORMATS
+   Blocks after [/MAP] configure the objects found on the grid:
+
    [KEYS]
-   - Matches 'K' on map (Scan Order).
    - Format: ID Color(Enum) Seen(0/1)
-   - Colors: 1=Blue, 2=Green, 3=Cyan, 4=Red, 5=Magenta, 6=Yellow, 15=White
+   - Colors: 1:Blue, 2:Green, 3:Cyan, 4:Red, 5:Magenta, 6:Yellow, 15:White
 
    [SWITCHES]
-   - Matches '/' or '\' on map (Scan Order).
    - Format: ID Seen(0/1)
-   
+
    [DOORS]
-   - Matches digits '1'-'9' on map (Linked by ID, NOT Scan Order).
    - Format: ID Color KeyCount [KeyIDs...] SwitchCount [SwitchID State...]
-   - State: 0 = OFF, 1 = ON.
-   - Example: 1 2 1 100 1 200 1  (Door 1, Green, needs Key 100, needs Switch 200 ON).
+   - State: 0=OFF, 1=ON.
+   - Note: Doors are linked by the Digit ID on the map, not scan order.
 
    [BOMBS]
-   - Matches '@' on map (Scan Order).
    - Format: ID Timer(Ticks)
 
    [TORCHES]
-   - Matches '!' on map (Scan Order).
    - Format: Radius
 
    [RIDDLES]
-   - Matches '?' on map (Scan Order).
-   - Format: ID (Must match an ID in `riddles.txt`).
-
-   [POTIONS]
-   - Matches 'P' on map (Scan Order).
-   - Format: 1 (Placeholder, properties are currently hardcoded).
+   - Format: ID (Must match an entry in riddles.txt)

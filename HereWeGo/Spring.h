@@ -32,5 +32,9 @@ public:
 
     void setCompression(int count) { compressedCount = count; }
 
+    void setDirection(Point dir);
+    void sortParts();
+    bool partcmp(const Placement& a, const Placement& b);
+
     void draw();
 };

@@ -8,6 +8,39 @@ bool Spring::isSpringPart(const Point& p) const
 	return false;
 }
 
+void Spring::setDirection(Point dir)
+{
+	direction = dir;
+	sortParts();
+}
+
+void Spring::sortParts() //ensuring parts[0] is the tip of the spring
+{
+	if (parts.size() < 2) return;
+
+	bool swapped = true;
+	bool needSwap = false;
+	while (swapped) {
+		swapped = false;
+		for (int i = 0; i < parts.size() - 1; i++) { 
+			if (direction.x == 1){
+				if (parts[i].getx() < parts[i + 1].getx()) needSwap = true;
+			}
+			else if (direction.x == -1) {
+				if (parts[i].getx() > parts[i + 1].getx()) needSwap = true;
+			}
+			else if (direction.y == 1) {
+				if (parts[i].gety() < parts[i + 1].gety()) needSwap = true;
+			}
+			else if (direction.y == -1) {
+				if (parts[i].gety() > parts[i + 1].gety()) needSwap = true;
+			}
+			if (needSwap)
+				std::swap(parts[i], parts[i + 1]);
+		}
+	}
+}
+
 void Spring::draw() {
 	setColor(color);
 	for (int i = 0; i < parts.size(); i++) {

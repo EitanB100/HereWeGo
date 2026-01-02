@@ -1,29 +1,29 @@
 [MAP]
 L
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W $    W                       W               W                               W
+W      W                       W               W                               W
 W      W    ***                W               W                               W
 W      W                       W               W                               W
-W      W                       W      ^        W   @ (Timer 5)                 W
+W      W                  $    W      ^        W   @                           W
 W      W          K            W      |        W                               W
 W      W                       W   <--+-->     W                               W
-W      W   1      * W      |        W   @ (Timer 15)                           W
-W      W                       W      v        W                               W
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+W      W          *     ^   <<<         @                                      W
+W      W                ^      W      v        W                               W
+WWWWWWWWWWWWWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W &    W                       W               W                               W
-W      W   DOOR / SWITCH       W   Multi-Tile  W   POTION / RIDDLE             W
+W      W                       W               W                               W
 W      W                       W   Springs     W                               W
-W      W     2    /            W               W      P  (Heal)                W
-W      W     (Needs Switch)    W     >>>       W                               W
+W      W          /            W               W      P                        W
+W      W                       2     >>>       W                               W
+W      W                       W                                               W
+W      W          K            W     ^^        W      ?                        W
 W      W                       W               W                               W
-W      W     3    K            W     ^^        W      ?  (Riddle)              W
-W      W     (Needs Key)       W               W                               W
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWW3WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W      W                       W               W                               W
-W      W   LIGHTING TEST       W   Chain       W   Start Items:                W
-W      W                       W   Reaction    W                               W
-W      W     !                 W               W   P1: $                       W
-W      W     (Torch)           W    @  @       W   P2: &                       W
+W      W                       W               W                               W
+W      W                       W           &   W                               W
+W      W     !                 W               W                               W
+W      W                       W    @  @       W                               W
 W      W                       W               W                               W
 W      W                       W               W                               W
 W      W                       W               W                               W

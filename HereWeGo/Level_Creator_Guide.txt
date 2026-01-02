@@ -1,0 +1,57 @@
+================================================================================
+                           LEVEL CREATION GUIDE 
+================================================================================
+
+1. FILE NAMING & LOCATION
+   - Files must be named `adv_world_XX.screen` (e.g., `adv_world_01.screen`).
+   - Place files in the game's working directory (next to the .exe).
+   - The game loads them in lexicographical order.
+
+2. FILE STRUCTURE
+   The file is divided into sections marked by brackets (e.g., `[MAP]`). 
+   Order matters: The Loader scans the map from Top-Left to Bottom-Right. 
+   Properties in the sections below the map are assigned to objects in that exact order.
+
+3. SECTION: [MAP] ... [/MAP]
+   - Draw the level layout here (80x25 characters max).
+   - MANDATORY: Include 'L' for the HUD/Legend location.
+   - TILES:
+     W = Wall           |  * = Obstacle (Multi-tile supported)
+     $ = Player 1       |  & = Player 2
+     K = Key            |  ! = Torch
+     @ = Bomb           |  P = Potion
+     ? = Riddle         |  # = Spring (Use ^ v < > for direction)
+     / or \ = Switch    |  1-9 = Doors (Digit is the ID)
+
+4. OBJECT CONFIGURATION SECTIONS
+   
+   [KEYS]
+   - Matches 'K' on map (Scan Order).
+   - Format: ID Color(Enum) Seen(0/1)
+   - Colors: 1=Blue, 2=Green, 3=Cyan, 4=Red, 5=Magenta, 6=Yellow, 15=White
+
+   [SWITCHES]
+   - Matches '/' or '\' on map (Scan Order).
+   - Format: ID Seen(0/1)
+   
+   [DOORS]
+   - Matches digits '1'-'9' on map (Linked by ID, NOT Scan Order).
+   - Format: ID Color KeyCount [KeyIDs...] SwitchCount [SwitchID State...]
+   - State: 0 = OFF, 1 = ON.
+   - Example: 1 2 1 100 1 200 1  (Door 1, Green, needs Key 100, needs Switch 200 ON).
+
+   [BOMBS]
+   - Matches '@' on map (Scan Order).
+   - Format: ID Timer(Ticks)
+
+   [TORCHES]
+   - Matches '!' on map (Scan Order).
+   - Format: Radius
+
+   [RIDDLES]
+   - Matches '?' on map (Scan Order).
+   - Format: ID (Must match an ID in `riddles.txt`).
+
+   [POTIONS]
+   - Matches 'P' on map (Scan Order).
+   - Format: 1 (Placeholder, properties are currently hardcoded).

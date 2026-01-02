@@ -10,15 +10,17 @@ void Game::printHUD()
 	gotoxy(hudPos.x, hudPos.y);
 
 	setColor(Color::WHITE);
-	std::cout << "Player 1: ";
+	std::cout << "P1:" << players[0].getHP() << "/" << players[0].MAX_HP << " [";
+	
 	const heldItem& item1 = players[0].getItemInHand();
+
 	if (item1.type == ItemType::KEY) {
 		setColor(item1.color);
-		std::cout << "KEY ";
+		std::cout << "KEY";
 	}
 	else if (item1.type == ItemType::TORCH) {
 		setColor(item1.color);
-		std::cout << "TORCH ";
+		std::cout << "TORCH";
 	}
 
 	else std::cout << "EMPTY ";

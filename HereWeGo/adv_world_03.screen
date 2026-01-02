@@ -1,0 +1,61 @@
+[MAP]
+L
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+[/MAP]
+
+[KEYS]
+# Scanned Top-Left -> Bottom-Right
+# Variables: ID Color(1-6, 15) Seen(0/1)
+# Example: 100 2 1
+
+[SWITCHES]
+# Scanned Top-Left -> Bottom-Right
+# Variables: ID Seen(0/1)
+# Example: 200 1
+
+[DOORS]
+# Linked by the digit (1-9) placed on the map
+# Variables: ID Color KeyCount [KeyIDs] SwitchCount [SwitchID RequiredState]
+# Example: 1 4 1 100 1 200 1
+
+[BOMBS]
+# Scanned Top-Left -> Bottom-Right
+# Variables: ID Timer(int)
+# Example: 1 5
+
+[TORCHES]
+# Scanned Top-Left -> Bottom-Right
+# Variables: Radius(int)
+# Example: 5
+
+[RIDDLES]
+# Scanned Top-Left -> Bottom-Right
+# Variables: ID(int)
+# Example: 1
+
+[POTIONS]
+# Note: Currently uses default values; list '1' for each P found on map
+# Format: 1

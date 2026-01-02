@@ -56,15 +56,25 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
 bool Player::handleSprings(Room& room, Point nextPoint) {
     // A. Flight Logic (Chaining)
     if (spring.flightTime > 0) {
-        Spring* nextSpring = room.isSpringThere(nextPoint);
-        Spring* currentSpring = room.isSpringThere(pos.getPosition());
+        Spring* spring = room.isSpringThere(nextPoint);
 
-        if (nextSpring != nullptr && nextSpring != currentSpring) {
-            Point tip = nextSpring->getParts()[0].getPosition();
+        if (spring) {
+            Point dir = spring->getDirection();
+            Point tip = spring->getParts()[0].getPosition();
+
+            if (spring->isSpringPart(pos.getPosition()) && nextPoint != tip) {
+                setDirection(Directions::STAY);
+                return false;
+            }
+
+            if (!(spring->isSpringPart(pos.getPosition()) && dirx != -dir.x && diry != -dir.y)) {
+                setDirection(Directions::STAY);
+                return false;
+            }
 
             // Hit Tip -> Chain
             if (nextPoint == tip) {
-                int conservedMomentum = spring.force;
+                int conservedMomentum = spring->force;
                 if (conservedMomentum > (int)nextSpring->getParts().size()) {
                     conservedMomentum = (int)nextSpring->getParts().size();
                 }

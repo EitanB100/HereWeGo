@@ -34,12 +34,12 @@ static void consumeConnectedParts(Room& room, int x, int y, char targetCh, std::
 
 	// 4. Recurse neighbors
 	if (axis == 0 || axis == 1) {
-		consumeConnectedParts(room, x + 1, y, targetCh, outParts);
-		consumeConnectedParts(room, x - 1, y, targetCh, outParts);
+		consumeConnectedParts(room, x + 1, y, targetCh, outParts, axis);
+		consumeConnectedParts(room, x - 1, y, targetCh, outParts, axis);
 	}
 	if (axis ==0 || axis == 2) {
-		consumeConnectedParts(room, x, y + 1, targetCh, outParts);
-		consumeConnectedParts(room, x, y - 1, targetCh, outParts);
+		consumeConnectedParts(room, x, y + 1, targetCh, outParts, axis);
+		consumeConnectedParts(room, x, y - 1, targetCh, outParts, axis);
 	}
 }
 

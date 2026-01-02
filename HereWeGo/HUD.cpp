@@ -78,7 +78,7 @@ void Game::printTimer() {
 
 	setColor(Color::YELLOW);
 	std::cout << "TIME " << formatTime(levelElapsed);
-	gotoxy(hudPos.x + 50, hudPos.y + 1);
+	gotoxy(hudPos.x + 50, hudPos.y + 1); 
 	printScore();
 }
 

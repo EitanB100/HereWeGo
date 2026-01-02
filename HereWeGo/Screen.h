@@ -17,7 +17,6 @@ public:
     void createGameScreen();
 
     void setTile(int x, int y, char symbol) ;
-    //void inLimit(Placement& p);
 
     char getTile(int x, int y) const {
         if (x >= 0 && x < MAX_X && y >= 0 && y < MAX_Y) {

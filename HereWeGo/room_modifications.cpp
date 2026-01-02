@@ -122,7 +122,7 @@ void Room::removeSpring(const Point& p)
 			return;
 		}
 	}
-} // ask if remove all or just one part of spring
+} 
 
 
 void Room::removeSwitch(const Point& p)

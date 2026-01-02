@@ -27,20 +27,27 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [/MAP]
 
 [KEYS]
-# Key at (9, 10): ID 10, Color 2 (Green), Seen 1
+# Top Key (was invisible): Now ID 7, Color 3 (Cyan), Seen 1
+# This is the key that opens Door 2
+7 3 1
+
+# Bottom Key: ID 10, Color 2 (Green), Seen 1
+# This is the key that opens Door 3 (Exit)
 10 2 1
+
 [SWITCHES]
 # Switch at (15, 4): ID 100, Seen 1
 100 1
 
 [DOORS]
-# Door 1 at (9, 3): ID 1, Color 14 (Yellow), 0 Keys, 1 Switch (ID 100 ON)
+# Door 1 (Yellow) - Needs Switch 100
 1 14 0 1 100 1
-#door 2 at idk: ID 2, Color 5, 1 Key (ID 7), 0 switches
-2 5 1 7 0
-# Door 3 (Exit) at (79, 22): ID 1, Color 2 (Green), 1 Key (ID 10), 0 Switches
-3 2 1 10 0
 
+# Door 2 (Purple) - Needs Key 7 (The Cyan Key)
+2 5 1 7 0
+
+# Door 3 (Green Exit) - Needs Key 10 (The Green Key)
+3 2 1 10 0
 
 [RIDDLES]
 # Riddle at (74, 22): ID 1

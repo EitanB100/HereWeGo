@@ -24,14 +24,15 @@ Room::Room() {
 //redraws all non wall objects on top
 void Room::drawTopLayer()
 {
-	for (Door& door : doors) door.draw();
+	for (auto& switchOnOff : switches) switchOnOff->draw(); 
 	for (Key& key : keys) key.draw();
-	for (auto& switchOnOff : switches) switchOnOff->draw();
-	for (Torch& torch : torches) torch.draw();
-	for (Obstacle& obstacle : obstacles) obstacle.draw();
-	for (Spring& spring : springs) spring.draw();
-	for (Bomb& bomb : bombs) bomb.draw();
+	for (Torch& torch : torches) torch.draw();	
 	for (Potion& potion : potions) potion.draw();
+	for (Bomb& bomb : bombs) bomb.draw();
+	for (Spring& spring : springs) spring.draw();
+	for (Door& door : doors) door.draw();
+	for (Obstacle& obstacle : obstacles) obstacle.draw();
+
 	getTorchesLineOfSight();
 	
 }

@@ -18,7 +18,7 @@ static std::string readCleanLine(std::stringstream& parser) {
 
 //suggested by gemini to get obstacle and spring parts correctly from a file by adjacent parts in advance 
 // Helper: Finds connected parts and REMOVES them from the map so they aren't processed twice.
-static void consumeConnectedParts(Room& room, int x, int y, char targetCh, std::vector<Point>& outParts)
+static void consumeConnectedParts(Room& room, int x, int y, char targetCh, std::vector<Point>& outParts, int axis = 0)
 {
 	// 1. Bounds Check
 	if (x < 0 || x >= MAX_X || y < 0 || y >= MAX_Y) return;
@@ -33,10 +33,14 @@ static void consumeConnectedParts(Room& room, int x, int y, char targetCh, std::
 	outParts.push_back(p);
 
 	// 4. Recurse neighbors
-	consumeConnectedParts(room, x + 1, y, targetCh, outParts);
-	consumeConnectedParts(room, x - 1, y, targetCh, outParts);
-	consumeConnectedParts(room, x, y + 1, targetCh, outParts);
-	consumeConnectedParts(room, x, y - 1, targetCh, outParts);
+	if (axis == 0 || axis == 1) {
+		consumeConnectedParts(room, x + 1, y, targetCh, outParts);
+		consumeConnectedParts(room, x - 1, y, targetCh, outParts);
+	}
+	if (axis ==0 || axis == 2) {
+		consumeConnectedParts(room, x, y + 1, targetCh, outParts);
+		consumeConnectedParts(room, x, y - 1, targetCh, outParts);
+	}
 }
 
 void Level_Loader::loadLevel(Room& room, const std::string& fileName)
@@ -98,14 +102,27 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 					}
 					else if (c == '^' || c =='>' || c == 'v' || c == 'V' || c == '<') {
 						Point dir;
-				
-						if (c == '^') dir = Directions::UP;
-						else if (c == '>') dir = Directions::RIGHT;
-						else if (c == 'v' || c == 'V') dir = Directions::DOWN;
-						else if (c == '<') dir = Directions::LEFT;
-						
+						int axis = 0;
+						if (c == '^') {
+							dir = Directions::UP;
+							axis = 2;
+							
+						}
+						else if (c == 'v' || c == 'V') {
+							dir = Directions::DOWN;
+							axis = 2;
+						}
+						else if (c == '>') {
+							dir = Directions::RIGHT;
+							axis = 1;
+						}
+						else if (c == '<') {
+							dir = Directions::LEFT;
+							axis = 1;
+						}
+
 						std::vector<Point> parts;
-						consumeConnectedParts(room, x, y, c, parts);
+						consumeConnectedParts(room, x, y, c, parts, axis);
 
 						Spring spring(dir);
 						for (const auto& part : parts) {

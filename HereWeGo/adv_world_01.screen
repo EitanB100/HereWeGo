@@ -29,7 +29,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [KEYS]
 # Top Key (was invisible): Now ID 7, Color 3 (Cyan), Seen 1
 # This is the key that opens Door 2
-7 3 1
+7 5 1
 
 # Bottom Key: ID 10, Color 2 (Green), Seen 1
 # This is the key that opens Door 3 (Exit)

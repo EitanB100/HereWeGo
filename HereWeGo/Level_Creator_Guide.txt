@@ -31,6 +31,8 @@
    - Riddles (?): Obstacles that require a correct answer to pass.
    - Legend (L): Defines the top-left coordinate where the HUD (Health, Timer, 
      Score) will be printed.
+   - Exit (E): Level end point. from there the next level is being loaded
+    (if both players arrived) or the game ends (if its the last level)
 
 4. DATA BLOCK FORMATS
    Blocks after [/MAP] configure the objects found on the grid:

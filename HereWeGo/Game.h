@@ -48,6 +48,10 @@ class Game {
 	void tileMapError();
 
 public:
+
+	static char p1Keys[KEY_COUNT];
+	static char p2Keys[KEY_COUNT];
+	
 	Game(); //defined in .cpp
 	void setGame(int levelIndex, bool firstSettings);
 

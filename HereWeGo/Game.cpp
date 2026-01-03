@@ -6,9 +6,8 @@
 #include "Level_Loader.h"
 #include "Tile_Chars.h"
 
-
-char p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
-char p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
+char Game::p1Keys[KEY_COUNT] = {'W','X','A','D','S','E'};
+char Game::p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
 
 void Game::resetLevelTimer() {
 	levelStartTime = std::chrono::steady_clock::now();

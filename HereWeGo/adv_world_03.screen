@@ -1,46 +1,104 @@
 [MAP]
 L
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W  $   &              W            W   W            W                          W
-W          ?          W            W   W            W                          W
-W                     W                             W                          W
-W                                                                              W
-W                     W                             W                          W
-W                     W                             W  WWWWWW    W   WWWWWWW   W
-WWWWWWWWW WWWWWWWWWWWWW                             W  W  WWW           W      W
-W                     W                             W  W WW      W      W      W
-W                     W                             W  W  WWW    W      W      W
-W                     W                             W  WWWWWW    W      W      W
-W                     W                             W                          W
-W                     W                             WWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W                     W                             W           W              W
-W                     W                             W           W              W
-W                     W                             W                          W
-W                     W                             W           W              W
-W                     W                             W           WWWWWWWWWWWWWWWW
-W                     W                             W           W              W
-WWWWWWWWW WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW           W              W
-W                     W             W               W           W              W
-W                                                               W              W
-W                     W             W               W           W              W
+W  $   &   THE STRESS TEST LAB         W                                       W
+W                                      W   ^^^^^^^^^^^^^    <<<<<<<<<<<<<      W
+W   [1. EXPLOSION CHAIN REACTION]      W   ^           ^    <           <      W
+W                                      W   ^  PINBALL  ^    <  SPRINGS  <      W
+W      @ @ @ @ @ @                     W   ^   CHAOS   ^    <           <      W
+W      @ @ @ @ @ @                     W   ^           ^    <           <      W
+W      @ @ @ @ @ @                     W   ^^^^^^^^^^^^^    <<<<<<<<<<<<<      W
+W      @ @ @ @ @ @                     W                                       W
+W      @ @ @ @ @ @                     W   [3. RENDER OVERLOAD]                W
+W                                      W                                       W
+W   [2. SWITCH LOGIC TEST]             W   ********************************* W
+W                                      W   * * * * * * * * * * * * * * * * * W
+W    / / / / / / / / / /               W   ********************************* W
+W    \ \ \ \ \ \ \ \ \ \               W   * * * * * * * * * * * * * * * * * W
+W                                      W   ********************************* W
+W    1  (Requires 5 Keys)              W                                       W
+W                                      W   [4. PATHFINDING / WALLS]            W
+W    K K K K K                         W                                       W
+W                                      W   W W W W W W W W W W W W W W W W W   W
+W   [5. INVALID OBJECTS TEST]          W   W                               W   W
+W                                      W   W   (Try to get stuck here)     W   W
+W    ? (No Riddle Defined)             W   W                               W   W
+W    ! (Torch Edge)                    W   W W W W W W W W W W W W W W W W W   W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [/MAP]
 
 [KEYS]
+# 5 keys for one door
+101 1 1
+102 2 1
+103 3 1
+104 4 1
+105 5 1
 
 [SWITCHES]
+# A massive amount of switches to test memory/vectors
+1 1
+2 1
+3 1
+4 1
+5 1
+6 1
+7 1
+8 1
+9 1
+10 1
+11 1
+12 1
+13 1
+14 1
+15 1
+16 1
+17 1
+18 1
+19 1
+20 1
 
 [DOORS]
+# Door 1 requires 5 keys (ID 101-105) and 1 Switch (ID 1)
+1 4 5 101 102 103 104 105 1 1 1
 
 [BOMBS]
+# 30 Bombs with short timers for chain reactions
+1 5
+2 5
+3 5
+4 5
+5 5
+6 5
+7 5
+8 5
+9 5
+10 5
+11 5
+12 5
+13 5
+14 5
+15 5
+16 5
+17 5
+18 5
+19 5
+20 5
+21 5
+22 5
+23 5
+24 5
+25 5
+26 5
+27 5
+28 5
+29 5
+30 5
 
 [TORCHES]
+# Torch near edge
+5
 
 [RIDDLES]
-# Matches the '?' found at (11,2)
-3
-
-[POTIONS]
-
-[EXIT]
-78 22
+# ID 99 doesn't exist in riddles.txt -> Should default safely or show error
+99

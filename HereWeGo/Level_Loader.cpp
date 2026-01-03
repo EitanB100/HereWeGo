@@ -59,7 +59,6 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 	std::vector<Point> foundKeys;
 	std::vector<Point> foundBombs;
 	std::vector<Point> foundTorches;
-	std::vector<Point> foundPotions;
 	std::vector<Point> foundSwitches;
 	std::vector<Point> foundRiddles;
 	std::map<int, Point> foundDoors; // Maps DoorChar '1' to Point(x,y)
@@ -146,7 +145,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 						foundTorches.push_back(curr);
 						break;
 					case POTION_TILE:
-						foundPotions.push_back(curr);
+						room.addPotion(Potion(curr.x, curr.y));
 						break;
 					case RIDDLE_TILE:
 						foundRiddles.push_back(curr);

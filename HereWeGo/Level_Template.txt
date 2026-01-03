@@ -55,7 +55,3 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 # Scanned Top-Left -> Bottom-Right
 # Variables: ID(int)
 # Example: 1
-
-[POTIONS]
-# Note: Currently uses default values; list '1' for each P found on map
-# Format: 1

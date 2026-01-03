@@ -45,4 +45,5 @@ void Switch::destroy()
 {
 	broken = true;
 	state = false; 
+	pos.set(pos.getx(), pos.gety(), SWITCH_OFF);
 }

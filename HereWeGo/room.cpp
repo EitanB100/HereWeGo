@@ -146,6 +146,10 @@ void Room::clearExplosions() {
 		for (int x = 0; x < MAX_X; x++) {
 			// Check if the tile is an explosion character
 			if (map[y][x] == EXPLOSION_TILE) {
+				if (isSwitchThere({ x,y })) {
+					map[y][x] = SWITCH_OFF;
+				}
+				else
 				map[y][x] = ' '; // Revert to empty floor
 			}
 		}

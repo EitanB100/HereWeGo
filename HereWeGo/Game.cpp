@@ -140,7 +140,7 @@ void Game::run()
 				auto pauseStart = std::chrono::steady_clock::now();
 
 				setColor(Color::BLUE);
-				printCentered("GAME PAUSED", 12);
+				printCentered("GAME PAUSED", 2);
 				key = _getch();
 
 				if (key == 'h' || key == 'H') {

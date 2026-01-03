@@ -128,7 +128,12 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 						}
 						if (isSwitchThere(p)) {
 							Switch* sw = isSwitchThere(p);
-							if (sw) sw->destroy(); // Break it, don't delete it!
+							if (sw) {
+								sw->destroy(); // Break it, don't delete it!
+								for (auto& door : doors) {
+									door.UpdatedFromSwitch();
+								}
+							}
 						}
 
 						// Draw the explosion char onto the room map buffer

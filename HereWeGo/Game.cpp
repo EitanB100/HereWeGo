@@ -2,7 +2,6 @@
 #include <sstream> 
 #include <iomanip>  
 #include <string>
-#include <filesystem>
 #include "Game.h"
 #include "Level_Loader.h"
 #include "Tile_Chars.h"
@@ -63,24 +62,24 @@ void Game::init()
 {
 	Level_Loader::loadRiddles("riddles.txt", riddles);
 
-	std::vector<std::string> screenFiles;
-	for (const auto& entry : std::filesystem::directory_iterator(".")) {
-		if (entry.is_regular_file()) {
-			std::string name = entry.path().filename().string();
-			if (name.find("adv_world_") == 0 && name.find(".screen") != std::string::npos) {
-				screenFiles.push_back(name);
-			}
-		}
-	}
-	std::sort(screenFiles.begin(), screenFiles.end());
+	for (int i = 1; i <= LEVEL_COUNT; i++) {
+		
+		std::string currentFile = "adv_world_0" + std::to_string(i) + ".screen";
+		
+		std::ifstream fileCheck(currentFile);
+		if (fileCheck.is_open()) {
+			fileCheck.close();
+			levels.emplace_back(); //create empty room in the vector (adds object to vector using its empty constructor)
 
-	levels.resize(screenFiles.size());
-	for (int i = 0; i < screenFiles.size(); i++) {
-		Level_Loader::loadLevel(levels[i], screenFiles[i]);
+			Level_Loader::loadLevel(levels.back(), currentFile);
+		}
+		else { //missing file or no more levels or level incorretly named
+			break;
+		}
 	}
 
 	if (levels.empty()) levels.resize(1);
-	
+
 	currentLevelIndex = 0;
 	setGame(currentLevelIndex, false);
 }

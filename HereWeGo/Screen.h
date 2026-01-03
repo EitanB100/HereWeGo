@@ -25,7 +25,7 @@ public:
         return ' ';
     }
 
-    void clearScreen() {
+    inline void clearScreen() {
         system("cls");
     }
     void draw() const;

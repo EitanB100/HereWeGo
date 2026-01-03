@@ -11,6 +11,7 @@ class Switch {
 	Color color = Color::RED; //defult color for Off
 	bool state = false;
 	bool seen = false; 
+	bool broken = false;
 
 public:
 	Switch(int x, int y, int id) : pos(x, y, SWITCH_OFF), SwitchID(id) {}
@@ -40,8 +41,10 @@ public:
 	char stateChar() const {
 		return state ? SWITCH_ON : SWITCH_OFF;
 	}
-
+	bool isBroken() const { return broken; }
+	
+	
 	void toggleState();
 	void draw();
-
+	void destroy();
 };

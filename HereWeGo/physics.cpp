@@ -126,6 +126,10 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 								otherBomb->activate(); // Chain reaction
 							}
 						}
+						if (isSwitchThere(p)) {
+							Switch* sw = isSwitchThere(p);
+							if (sw) sw->destroy(); // Break it, don't delete it!
+						}
 
 						// Draw the explosion char onto the room map buffer
 						map[y][x] = bomb->getExplosionChar();

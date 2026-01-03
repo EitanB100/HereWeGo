@@ -2,6 +2,8 @@
 
 void Switch::toggleState()
 {
+	if (broken) return;
+
 	state = !state;
 	if (state) {
 		setColor(Color::GREEN);
@@ -32,4 +34,11 @@ void Switch::draw() {
 		pos.draw(UNKNOWN_TILE); // Draw as unknown if not seen
 		setColor(Color::WHITE);
 	}
+}
+
+void Switch::destroy()
+{
+	broken = true;
+	state = false; 
+	setColor(Color::DARK_GRAY);
 }

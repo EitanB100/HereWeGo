@@ -67,20 +67,21 @@ void printInstructions() {
 		"/" + std::string(1, Game::p1Keys[1]) +
 		"/" + std::string(1, Game::p1Keys[3]) + 
 		", " + std::string(1,Game::p1Keys[4]) + " to stay, " +
-		std::string(1,Game::p1Keys[5]) + "to dispose";
+		std::string(1,Game::p1Keys[5]) + " to dispose";
 
 	std::string p2Text = "P2: Move " + std::string(1, Game::p2Keys[0]) +
 		"/" + std::string(1, Game::p2Keys[2]) +
 		"/" + std::string(1, Game::p2Keys[1]) +
 		"/" + std::string(1, Game::p2Keys[3]) +
 		", " + std::string(1, Game::p2Keys[4]) + " to stay, " +
-		std::string(1, Game::p2Keys[5]) + "to dispose";
+		std::string(1, Game::p2Keys[5]) + " to dispose";
 
 	system("cls");
 	printCentered("Instructions:",5);
 	printCentered(p1Text,8);
-	printCentered(p2Text,10);
+	printCentered(p2Text,10); 
+	printCentered("Press any key to return", 12);
 	printCentered("Tip - When you drop a bomb, it explodes automatically and destroyes everything around it. Better be careful!", 20);
-	printCentered("Press any key to return",12);
+	
 	_getch();
 }

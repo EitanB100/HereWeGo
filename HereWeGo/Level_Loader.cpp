@@ -153,6 +153,9 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 					case SWITCH_OFF:
 						foundSwitches.push_back(curr);
 						break;
+					case EXIT_TILE:
+						room.setExitPos(curr);
+						room.clearTile(curr);
 					}
 
 
@@ -192,10 +195,6 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			continue;
 		}
 
-		if (line == "[EXIT]") {
-			section = "EXIT";
-			continue;
-		}
 		std::stringstream parser(line);
 
 
@@ -347,12 +346,6 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			}
 		}
 
-		else if (section == "EXIT") {
-			int exitX, exitY;
-			if (parser >> exitX >> exitY) {
-				room.setExitPos({ exitX,exitY });
-			}
-		}
 	}
 
 	while (keyInd < foundKeys.size()) {

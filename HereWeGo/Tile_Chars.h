@@ -1,6 +1,7 @@
 #pragma once
 
 constexpr char WALL_TILE = 'W';
+constexpr char EXIT_TILE = 'E';
 constexpr char OBSTACLE_TILE = '*';
 constexpr char KEY_TILE = 'K';
 constexpr char SWITCH_ON = '/';

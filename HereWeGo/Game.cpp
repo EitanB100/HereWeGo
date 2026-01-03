@@ -5,6 +5,8 @@
 #include <filesystem>
 #include "Game.h"
 #include "Level_Loader.h"
+#include "Tile_Chars.h"
+
 
 char p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
 char p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
@@ -218,14 +220,15 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 			printTimer(); // Force a timer update immediately so it doesn't show the old time for 75ms
 			return false;
 		}
+		else {
+			setColor(Color::GREEN);
+			printCentered("THANKS FOR PLAYING!", 12);
+			Sleep(1500);
+			setColor(Color::WHITE);
+			return true;
+		}
 	}
-	else {
-		setColor(Color::GREEN);
-		printCentered("THANKS FOR PLAYING!", 12);
-		Sleep(1500);
-		setColor(Color::WHITE);
-		return true;
-	}
+	return false;
 }
 
 

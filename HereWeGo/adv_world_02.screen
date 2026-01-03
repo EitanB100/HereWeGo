@@ -49,10 +49,3 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [RIDDLES]
 # Matches the '?' found at (4,2)
 2
-
-[POTIONS]
-# Note: Currently uses default values;
-# list '1' for each P found on map
-# Format: 1
-[EXIT]
-79 22

@@ -23,7 +23,20 @@ inline Level& operator++ (Level& level) {
 }
 
 enum class Color {
-    BLUE = 1, GREEN, CYAN, RED, MAGENTA, YELLOW, WHITE = 15//white is default
+    BLUE = 1,
+    GREEN = 2,
+    CYAN = 3,
+    RED = 4,
+    MAGENTA = 5,
+    BROWN = 6,      
+    LIGHT_GRAY = 7,
+    DARK_GRAY = 8,
+    SKY = 9,
+    LIME = 10,
+    AQUA = 11,
+    ORANGE = 12,      // Actually LIGHT_RED, but looks like vibrant orange/coral
+    YELLOW = 14,      // The "Bright" attractive yellow you want
+    WHITE = 15        // Default
 };
 
 struct heldItem {

@@ -7,7 +7,7 @@
 #include "Torch.h"
 #include "Bomb.h"
 
-Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount], Color color) : playerColor(color)
+Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount]) : 
 {
     symbol = c;
     pos.set(p.getx(), p.gety(), symbol);
@@ -20,7 +20,6 @@ Player::Player(const Placement& p, char c, int directx, int directy, const char 
 
 void Player::draw() {
 
-    setColor(playerColor);
     if (itemInHand.type != ItemType::NONE) {
         setColor(itemInHand.color);
     }

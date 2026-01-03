@@ -44,6 +44,7 @@ static void consumeConnectedParts(Room& room, int x, int y, char targetCh, std::
 
 void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 {
+	bool isDiscrepency = false;
 	std::ifstream file(fileName);
 	
 	if (!file.is_open()) {
@@ -352,7 +353,10 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			}
 		}
 	}
-if (keyInd < foundKeys.size()) {
+
+	//Discrepency checks between tilemap and definitions
+	if (keyInd < foundKeys.size()) {
+		isDiscrepency = true;
 		std::cerr << "Warning: Map has " << foundKeys.size() << " Keys, but file defines only " << keyInd << "!" << std::endl;
 		std::cerr << "Excess keys created as default (ID -1)." << std::endl;
 		system("pause"); // Stop so you can read it!
@@ -366,6 +370,7 @@ if (keyInd < foundKeys.size()) {
 
 	// 2. Check SWITCHES
 	if (switchInd < foundSwitches.size()) {
+		isDiscrepency = true;
 		std::cerr << "Warning: Map has " << foundSwitches.size() << " Switches, but file defines only " << switchInd << "!" << std::endl;
 		system("pause");
 	}
@@ -378,6 +383,7 @@ if (keyInd < foundKeys.size()) {
 
 	// 3. Check RIDDLES
 	if (riddleInd < foundRiddles.size()) {
+		isDiscrepency = true;
 		std::cerr << "Warning: Map has " << foundRiddles.size() << " Riddles, but file defines only " << riddleInd << "!" << std::endl;
 		system("pause");
 	}
@@ -388,6 +394,7 @@ if (keyInd < foundKeys.size()) {
 
 	// 4. Check BOMBS
 	if (bombInd < foundBombs.size()) {
+		isDiscrepency = true;
 		std::cerr << "Warning: Map has " << foundBombs.size() << " Bombs, but file defines only " << bombInd << "!" << std::endl;
 		system("pause");
 	}
@@ -400,6 +407,7 @@ if (keyInd < foundKeys.size()) {
 
 	// 5. Check TORCHES
 	if (torchInd < foundTorches.size()) {
+		isDiscrepency = true;
 		std::cerr << "Warning: Map has " << foundTorches.size() << " Torches, but file defines only " << torchInd << "!" << std::endl;
 		system("pause");
 	}
@@ -409,16 +417,8 @@ if (keyInd < foundKeys.size()) {
 		room.addTorch(t);
 	}
 
-	// 6. Check POTIONS
-	// (Potions use default loop logic, but good to know if we missed definitions)
-	if (potionInd < foundPotions.size()) {
-		// Just a silent fill for potions usually, but you can warn if you expected definitions
-	}
-	while (potionInd < foundPotions.size()) {
-		Point p = foundPotions[potionInd++];
-		Potion potion(p.x, p.y);
-		potion.setSeen();
-		room.addPotion(potion);
+	if (isDiscrepency) {
+
 	}
 	file.close();
 }

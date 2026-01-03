@@ -65,8 +65,9 @@ void printCentered(std::string text, int y)
 void printInstructions() {
 	system("cls");
 	printCentered("Instructions:",5);
-	printCentered("Use W/A/X/D to move Player 1, S to stop in place, Q to drop an Item",8);
+	printCentered("Use W/A/X/D to move Player 1, S to stop in place, E to drop an Item",8);
 	printCentered("Use I/J/M/L to move Player 2, K to stop in place, O to drop an Item",10);
+	printCentered("Tip - When you drop a bomb, it explodes automatically and destroyes everything around it. Better be careful!", 20);
 	printCentered("Press any key to return",12);
 	_getch();
 }

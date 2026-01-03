@@ -19,7 +19,12 @@ void Switch::toggleState()
 
 void Switch::draw() {
 	if (seen) {
-		if (state) {
+		if (broken) {
+			setColor(Color::DARK_GRAY);
+			pos.draw();
+			setColor(Color::WHITE);
+		}
+		else if (state) {
 			setColor(Color::GREEN);
 			pos.draw();
 			setColor(Color::WHITE);
@@ -40,5 +45,4 @@ void Switch::destroy()
 {
 	broken = true;
 	state = false; 
-	setColor(Color::DARK_GRAY);
 }

@@ -54,19 +54,32 @@ void setColor(Color c, bool allowColor)
 
 void printCentered(std::string text, int y)
 {
-	size_t length = text.length();
-
-
-	int x = (80 - length) / 2;
+	int length = static_cast<int>(text.length());
+	int x = (MAX_X - length) / 2;
+	if (x < 0) x = 0;
 	gotoxy(x, y);
 	std::cout << text;
 }
 
 void printInstructions() {
+	std::string p1Text = "P1: Move " + std::string(1, Game::p1Keys[0]) +
+		"/" + std::string(1, Game::p1Keys[2]) +
+		"/" + std::string(1, Game::p1Keys[1]) +
+		"/" + std::string(1, Game::p1Keys[3]) + 
+		", " + std::string(1,Game::p1Keys[4]) + " to stay, " +
+		std::string(1,Game::p1Keys[5]) + "to dispose";
+
+	std::string p2Text = "P2: Move " + std::string(1, Game::p2Keys[0]) +
+		"/" + std::string(1, Game::p2Keys[2]) +
+		"/" + std::string(1, Game::p2Keys[1]) +
+		"/" + std::string(1, Game::p2Keys[3]) +
+		", " + std::string(1, Game::p2Keys[4]) + " to stay, " +
+		std::string(1, Game::p2Keys[5]) + "to dispose";
+
 	system("cls");
 	printCentered("Instructions:",5);
-	printCentered("Use W/A/X/D to move Player 1, S to stop in place, E to drop an Item",8);
-	printCentered("Use I/J/M/L to move Player 2, K to stop in place, O to drop an Item",10);
+	printCentered(p1Text,8);
+	printCentered(p2Text,10);
 	printCentered("Tip - When you drop a bomb, it explodes automatically and destroyes everything around it. Better be careful!", 20);
 	printCentered("Press any key to return",12);
 	_getch();

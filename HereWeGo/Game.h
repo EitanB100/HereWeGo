@@ -22,6 +22,7 @@ extern char p2Keys[KEY_COUNT];
 class Game {
 	Screen screen;
 	std::vector<Room> levels;
+	bool levelLoadedCorrectly = true;
 
 	Player players[PLAYER_AMOUNT];
 	
@@ -42,7 +43,7 @@ class Game {
 	void printScore(const Point& hudPos);
 	void updatePlayerKeys(char keys[], int playerNum);
 	void handleGameOver();
-
+	void tileMapError();
 
 public:
 	Game(); //defined in .cpp

@@ -45,6 +45,18 @@ void Game::handleGameOver()
 	}
 }
 
+void Game::tileMapError()
+{
+	screen.clearScreen();
+	setColor(Color::RED);
+	printCentered("CRITICAL ERROR", 10);
+	printCentered("Level data invalid or corrupted.", 12);
+	printCentered("Check console output for details.", 14);
+	printCentered("Press any key to return to menu...", 16);
+	setColor(Color::WHITE);
+	_getch();
+}
+
 void Game::toggleColor(){ 
 	useColor = !useColor; 
 	setColorMode(useColor);
@@ -71,8 +83,11 @@ void Game::init()
 			fileCheck.close();
 			levels.emplace_back(); //create empty room in the vector (adds object to vector using its empty constructor)
 
-			if (!Level_Loader::loadLevel(levels.back(), currentFile)) 
+			if (!Level_Loader::loadLevel(levels.back(), currentFile)) {
+				levelLoadedCorrectly = false;
+				levels.pop_back();
 				return;
+			}
 		}
 
 		else { //missing file or no more levels or level incorretly named
@@ -80,7 +95,7 @@ void Game::init()
 		}
 	}
 
-	if (levels.empty()) levels.resize(1);
+	if (levels.empty()) levelLoadedCorrectly = false;
 }
 
 void Game::setGame(int levelIndex, bool firstSettings) {
@@ -106,6 +121,10 @@ void Game::setGame(int levelIndex, bool firstSettings) {
 
 void Game::run()
 {
+	if (!levelLoadedCorrectly) {
+		tileMapError();
+		return; // Exits run(), returning to main() menu
+	}
 	resetLevelTimer();
 	bool boomDustCleaningNeeded = false;
 	while (true) {

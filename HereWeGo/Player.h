@@ -9,6 +9,7 @@ class Player {
     Placement pos = Placement();
     char symbol = ' ';
     Directions direction;
+    Color playerColor = Color::WHITE;
     int dirx = 0, diry = 0;
     int force = 1;
     bool finishedLevel = false;
@@ -34,7 +35,7 @@ class Player {
     bool handlePickups(Room& room, Point nextPoint);
     bool handleSpringExit(Room& room);
 public:
-    Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount]);
+    Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount], Color color);
 
     static constexpr int MAX_HP = 15;
     static constexpr int DEAD_HP = 0;
@@ -49,8 +50,11 @@ public:
     int getDirX() { return dirx; }
     int getDirY() { return diry; }
 
+    void setColor(Color c) { playerColor = c; }
+    Color getColor() { return playerColor; }
+
     void setPos(Point p) { pos.set(p.x, p.y, symbol); }
-    void setFinished(bool state) { finishedLevel = state; }
+    void setFinished(bool state) { finishedLevel = state; setDirection(Directions::STAY); }
     void setDirection(const Point& direction) { dirx = direction.x; diry = direction.y; }
 
     void setForce(int _force) { force = _force; }

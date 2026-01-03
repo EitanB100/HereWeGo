@@ -73,8 +73,9 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 	int mapRow = 0;
 
 	while (std::getline(file, line)) {
-		if (line.empty() || line[0] == '#') continue;
-
+		if (section != "MAP") {
+			if (line.empty() || line[0] == '#') continue;
+		}
 		if (line == "[MAP]") { 
 			section = "MAP";
 			continue;
@@ -403,8 +404,6 @@ void Level_Loader::loadRiddles(const std::string& fileName, std::vector<Riddle>&
 	bool isReading = false;
 
 	while (std::getline(file, line)) {
-		if (line.empty()) continue;
-
 		std::stringstream parser(line);
 		std::string section;
 		

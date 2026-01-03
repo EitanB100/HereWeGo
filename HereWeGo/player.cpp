@@ -7,7 +7,7 @@
 #include "Torch.h"
 #include "Bomb.h"
 
-Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount])
+Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount], Color color) : playerColor(color)
 {
     symbol = c;
     pos.set(p.getx(), p.gety(), symbol);
@@ -15,9 +15,12 @@ Player::Player(const Placement& p, char c, int directx, int directy, const char 
     diry = directy;
     for (int i = 0; i < keyAmount; ++i)
         keys[i] = keyArray[i];
+
 }
 
 void Player::draw() {
+
+    setColor(playerColor);
     if (itemInHand.type != ItemType::NONE) {
         setColor(itemInHand.color);
     }
@@ -56,6 +59,7 @@ bool Player::increaseHP(int amount)
 
 //Movement logic: collisions, interactions, and updates
 int Player::move(Room& room, Player* otherPlayer) {
+
 
     if (dirx == 0 && diry == 0) return 0; // No movement input
     

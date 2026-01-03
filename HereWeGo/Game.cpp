@@ -277,21 +277,22 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 	while (true) {
 		if (_kbhit()) {
 			char c = _getch();
-			if (c < '1' || c  > '5') continue;
+			if (c < '1' || c  > '5') continue; //maximum 5 options 
 			int choice = c - '0';
 			if (choice - 1 == riddle.correctAnswer) {
 				setColor(Color::GREEN);
 				printCentered("CORRECT!", 20);
 				Sleep(500);
 
-				Point targetPos = room.getRiddlePos(riddleID);
-				if (targetPos.x != -1) room.removeRiddle(targetPos);
-				break;
+				Point p = player.getPos();
+				Point neighbors[4] = { {p.x + 1,p.y},{p.x - 1,p.y},{p.x,p.y + 1},{p.x,p.y - 1} };
 
-				if (room.getObjectAt(targetPos) == RIDDLE_TILE) {
-					room.removeRiddle(targetPos);
-					break;
-				}
+				for (const auto& neighbor : neighbors) {
+					if (room.getObjectAt(neighbor) == RIDDLE_TILE && room.getRiddleID(neighbor) == riddleID) {
+						room.removeRiddle(neighbor);
+						break;
+					}
+				} 
 			}
 
 			else {

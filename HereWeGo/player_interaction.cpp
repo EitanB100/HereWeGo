@@ -101,7 +101,7 @@ bool Player::handlePickups(Room& room, Point nextPoint) {
         return true;
     }
     Bomb* bomb = room.isBombThere(nextPoint);
-    if (bomb != nullptr) {
+    if (bomb != nullptr && !bomb->isActivated()) {
         itemInHand = { ItemType::BOMB, bomb->getBombID(), bomb->getColor() };
         room.removeBomb(nextPoint);
         return true;

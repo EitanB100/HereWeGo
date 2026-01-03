@@ -351,17 +351,24 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 				}
 			}
 		}
-
 	}
-
+if (keyInd < foundKeys.size()) {
+		std::cerr << "Warning: Map has " << foundKeys.size() << " Keys, but file defines only " << keyInd << "!" << std::endl;
+		std::cerr << "Excess keys created as default (ID -1)." << std::endl;
+		system("pause"); // Stop so you can read it!
+	}
 	while (keyInd < foundKeys.size()) {
 		Point p = foundKeys[keyInd++];
-		Key key(p.x, p.y, -1, Color::WHITE); // Default ID -1
+		Key key(p.x, p.y, -1, Color::WHITE); 
 		key.setSeen();
 		room.addKey(key);
 	}
 
-	// Default Switches
+	// 2. Check SWITCHES
+	if (switchInd < foundSwitches.size()) {
+		std::cerr << "Warning: Map has " << foundSwitches.size() << " Switches, but file defines only " << switchInd << "!" << std::endl;
+		system("pause");
+	}
 	while (switchInd < foundSwitches.size()) {
 		Point p = foundSwitches[switchInd++];
 		auto sw = std::make_unique<Switch>(p.x, p.y, -1);
@@ -369,13 +376,21 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 		room.addSwitch(std::move(sw));
 	}
 
-	// Default Riddles
+	// 3. Check RIDDLES
+	if (riddleInd < foundRiddles.size()) {
+		std::cerr << "Warning: Map has " << foundRiddles.size() << " Riddles, but file defines only " << riddleInd << "!" << std::endl;
+		system("pause");
+	}
 	while (riddleInd < foundRiddles.size()) {
 		Point p = foundRiddles[riddleInd++];
 		room.addRiddle(p.x, p.y, 1);
 	}
 
-	// Default Bombs
+	// 4. Check BOMBS
+	if (bombInd < foundBombs.size()) {
+		std::cerr << "Warning: Map has " << foundBombs.size() << " Bombs, but file defines only " << bombInd << "!" << std::endl;
+		system("pause");
+	}
 	while (bombInd < foundBombs.size()) {
 		Point p = foundBombs[bombInd++];
 		Bomb bomb(p.x, p.y, -1, 5);
@@ -383,14 +398,22 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 		room.addBomb(bomb);
 	}
 
-	// Default Torches
+	// 5. Check TORCHES
+	if (torchInd < foundTorches.size()) {
+		std::cerr << "Warning: Map has " << foundTorches.size() << " Torches, but file defines only " << torchInd << "!" << std::endl;
+		system("pause");
+	}
 	while (torchInd < foundTorches.size()) {
 		Point p = foundTorches[torchInd++];
 		Torch t(p.x, p.y, 5);
 		room.addTorch(t);
 	}
 
-	// Default Potions
+	// 6. Check POTIONS
+	// (Potions use default loop logic, but good to know if we missed definitions)
+	if (potionInd < foundPotions.size()) {
+		// Just a silent fill for potions usually, but you can warn if you expected definitions
+	}
 	while (potionInd < foundPotions.size()) {
 		Point p = foundPotions[potionInd++];
 		Potion potion(p.x, p.y);

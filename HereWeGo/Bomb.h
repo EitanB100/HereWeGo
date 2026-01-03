@@ -33,6 +33,9 @@ public:
 	void setSeen() {
 		seen = true;
 	}
+	
+	bool isActivated() { return activated; }
+
 	Point getPos() const {
 		return pos.getPosition();
 	}

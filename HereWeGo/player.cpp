@@ -44,7 +44,7 @@ void Player::takeDamage(int amount)
 
 bool Player::increaseHP(int amount)
 {
-    if (hp >= MAX_HP) {
+    if (hp >= MAX_HP && amount > 0) {
         hp = MAX_HP;
         return false;
     }

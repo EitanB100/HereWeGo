@@ -79,9 +79,6 @@ void Game::init()
 	}
 
 	if (levels.empty()) levels.resize(1);
-
-	currentLevelIndex = 0;
-	setGame(currentLevelIndex, false);
 }
 
 void Game::setGame(int levelIndex, bool firstSettings) {
@@ -281,6 +278,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 			else {
 				setColor(Color::RED);
 				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
+				player.increaseHP(-HP_INCREASE);
 				Sleep(500);
 			}
 			break;

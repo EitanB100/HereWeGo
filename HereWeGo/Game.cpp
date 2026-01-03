@@ -64,6 +64,9 @@ void Game::toggleColor(){
 
 void Game::startInLevel(Level level)
 {
+	if (!levelLoadedCorrectly || levels.empty()) {
+		return;
+	}
 	currentLevelIndex = static_cast<int>(level);
 
 	if (currentLevelIndex >= levels.size()) currentLevelIndex = 0;
@@ -99,6 +102,8 @@ void Game::init()
 }
 
 void Game::setGame(int levelIndex, bool firstSettings) {
+	if (levels.empty()) return;
+
 	screen.clearScreen();
 	currentLevelIndex = levelIndex;
 

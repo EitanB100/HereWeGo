@@ -71,8 +71,10 @@ void Game::init()
 			fileCheck.close();
 			levels.emplace_back(); //create empty room in the vector (adds object to vector using its empty constructor)
 
-			Level_Loader::loadLevel(levels.back(), currentFile);
+			if (!Level_Loader::loadLevel(levels.back(), currentFile)) 
+				return;
 		}
+
 		else { //missing file or no more levels or level incorretly named
 			break;
 		}

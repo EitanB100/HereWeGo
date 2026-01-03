@@ -113,12 +113,15 @@ void Game::run()
 		if (_kbhit()) {
 			key = _getch();
 			if (key == ESC) {
+				setColor(Color::BLUE);
+				printCentered("GAME PAUSED", 12);
 				key = _getch();
 				if (key == 'h' || key == 'H') {
 					setColor(Color::WHITE);
 					screen.clearScreen();
 					break; //main menu exit
 				}
+				
 			}
 		}
 		
@@ -278,7 +281,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 			else {
 				setColor(Color::RED);
 				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
-				player.increaseHP(-HP_INCREASE);
+				player.takeDamage(HP_INCREASE);
 				Sleep(500);
 			}
 			break;

@@ -17,6 +17,6 @@
 class Level_Loader {
 public:
 	
-	static bool loadLevel(Room& room, const std::string& fileName);
+	static bool loadLevel(Room& room, const std::string& fileName, std::string& errorMessage);
 	static void loadRiddles(const std::string& fileName, std::vector<Riddle>& outRiddles);
 };

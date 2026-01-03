@@ -42,13 +42,13 @@ static void consumeConnectedParts(Room& room, int x, int y, char targetCh, std::
 	}
 }
 
-bool Level_Loader::loadLevel(Room& room, const std::string& fileName)
+bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::string& errorMessage)
 {
 	bool isDiscrepancy = false;
 	std::ifstream file(fileName);
 	
 	if (!file.is_open()) {
-		std::cerr << "Error: Could not open level file " << fileName << std::endl;
+		errorMessage = "Error: Could not open level file " + fileName;
 		return false;
 	}
 
@@ -245,7 +245,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName)
 					switchInd++;
 				}
 				else {
-					std::cerr << "Error - More switch entries than switches on grid!" << std::endl;
+					errorMessage =  "Error - More switch entries than switches on grid!";
 					isDiscrepancy = true;
 				}
 			}
@@ -262,7 +262,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName)
 					keyInd++;
 				}
 				else {
-					std::cerr << "Error - More key entries than keys on grid!" << std::endl;
+					errorMessage = "Error - More key entries than keys on grid!";
 					isDiscrepancy = true;
 				}
 			}
@@ -301,7 +301,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName)
 									door.addRequiredSwitch(sw, (bool)switchState);
 								}
 								else {
-									std::cerr << "Error - door " << id << "missing switch " << switchID << std::endl;
+									errorMessage = "Error - door " + std::to_string(id) + "missing switch " + std::to_string(switchID);
 									isDiscrepancy = true;
 								}
 							}
@@ -313,7 +313,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName)
 					room.addDoor(door);
 				}
 				else {
-					std::cerr << "Error - door " << id << " defined in props but not on grid!" << std::endl;
+					errorMessage = "Error - door " + std::to_string(id) + " defined in props but not on grid!";
 					isDiscrepancy = true;
 				}
 			}
@@ -330,7 +330,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName)
 				}
 			}
 			else {
-				std::cerr << "Error - More torch entries than torches on grid!" << std::endl;
+				errorMessage = "Error - More torch entries than torches on grid!";
 			}
 		}
 
@@ -346,7 +346,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName)
 				}
 			}
 			else {
-				std::cerr << "Error - More bomb entries than bombs on grid!";
+				errorMessage = "Error - More bomb entries than bombs on grid!";
 			}
 		}
 
@@ -359,7 +359,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName)
 					riddleInd++;
 				}
 				else {
-					std::cerr << "Error - More riddle entries than riddles on grid!" << std::endl;
+					errorMessage = "Error - More riddle entries than riddles on grid!";
 				}
 			}
 		}
@@ -368,34 +368,33 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName)
 	//Discrepency checks between tilemap and definitions
 	if (keyInd < foundKeys.size()) {
 		isDiscrepancy = true;
-		std::cerr << "Error: Map has " << foundKeys.size() << " Keys, but file defines only " << keyInd << "!" << std::endl;
+		errorMessage = "Error: Map has " + std::to_string(foundKeys.size()) + " Keys, but file defines only " + std::to_string(keyInd) + "!";
 	}
 	
 	if (switchInd < foundSwitches.size()) {
 		isDiscrepancy = true;
-		std::cerr << "Warning: Map has " << foundSwitches.size() << " Switches, but file defines only " << switchInd << "!" << std::endl;
+		errorMessage = "Warning: Map has " + std::to_string(foundSwitches.size()) + " Switches, but file defines only " + std::to_string(switchInd) + "!";
 	}
 	if (riddleInd < foundRiddles.size()) {
 		isDiscrepancy = true;
-		std::cerr << "Warning: Map has " << foundRiddles.size() << " Riddles, but file defines only " << riddleInd << "!" << std::endl;
+		errorMessage = "Warning: Map has " + std::to_string(foundRiddles.size()) + " Riddles, but file defines only " + std::to_string(riddleInd) + "!";
 	}
 	
 	if (bombInd < foundBombs.size()) {
 		isDiscrepancy = true;
-		std::cerr << "Warning: Map has " << foundBombs.size() << " Bombs, but file defines only " << bombInd << "!" << std::endl;
+		errorMessage = "Warning: Map has " + std::to_string(foundBombs.size()) + " Bombs, but file defines only " + std::to_string(bombInd) + "!";
 		
 	}
 	
 	if (torchInd < foundTorches.size()) {
 		isDiscrepancy = true;
-		std::cerr << "Warning: Map has " << foundTorches.size() << " Torches, but file defines only " << torchInd << "!" << std::endl;
+		errorMessage = "Warning: Map has " + std::to_string(foundTorches.size()) + " Torches, but file defines only " + std::to_string(torchInd) +"!" ;
 		
 	}
 
 	file.close();
 
 	if (isDiscrepancy) {
-		std::cerr << "can't load the level";
 		return false;
 	}
 	return true;

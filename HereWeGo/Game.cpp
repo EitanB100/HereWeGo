@@ -50,9 +50,8 @@ void Game::tileMapError()
 	screen.clearScreen();
 	setColor(Color::RED);
 	printCentered("CRITICAL ERROR", 10);
-	printCentered("Level data invalid or corrupted.", 12);
-	printCentered("Check console output for details.", 14);
-	printCentered("Press any key to return to menu...", 16);
+	printCentered(loadingErrorMessage, 12);
+	printCentered("Press any key to return to menu...", 14);
 	setColor(Color::WHITE);
 	_getch();
 }
@@ -86,13 +85,13 @@ void Game::init()
 			fileCheck.close();
 			levels.emplace_back(); //create empty room in the vector (adds object to vector using its empty constructor)
 
-			if (!Level_Loader::loadLevel(levels.back(), currentFile)) {
+			if (!Level_Loader::loadLevel(levels.back(), currentFile, loadingErrorMessage)) {
+				loadingErrorMessage = "Level " + std::to_string(i) + " failed - " + loadingErrorMessage;
 				levelLoadedCorrectly = false;
 				levels.pop_back();
 				return;
 			}
 		}
-
 		else { //missing file or no more levels or level incorretly named
 			break;
 		}

@@ -24,6 +24,8 @@ class Game {
 	std::vector<Room> levels;
 	bool levelLoadedCorrectly = true;
 
+	std::string loadingErrorMessage = "Unknown error";
+
 	Player players[PLAYER_AMOUNT];
 	
 	std::chrono::steady_clock::time_point startTime;      // Total game time

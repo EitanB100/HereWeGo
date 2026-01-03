@@ -1,29 +1,29 @@
 [MAP]
 L
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W  $   &   THE STRESS TEST LAB         W                                       W
-W                                      W   ^^^^^^^^^^^^^    <<<<<<<<<<<<<      W
-W   [1. EXPLOSION CHAIN REACTION]      W   ^           ^    <           <      W
-W                                      W   ^  PINBALL  ^    <  SPRINGS  <      W
-W      @ @ @ @ @ @                     W   ^   CHAOS   ^    <           <      W
-W      @ @ @ @ @ @                     W   ^           ^    <           <      W
-W      @ @ @ @ @ @                     W   ^^^^^^^^^^^^^    <<<<<<<<<<<<<      W
+W  $   &                               W                                       W
+W                                      W   >>>>>>>>>>>>v    <<<<<<<<<<<<<      W
+W                                      W   ^           v    <           <      W
+W                                      W   ^           v    <           <      W
+W      @ @ @ @ @ @                     W   ^           v    <           <      W
+W      @ @ @ @ @ @                     W   ^           v    <           <      W
+W      @ @ @ @ @ @                     W   ^<<<<<<<<<<<<    <<<<<<<<<<<<<      W
 W      @ @ @ @ @ @                     W                                       W
-W      @ @ @ @ @ @                     W   [3. RENDER OVERLOAD]                W
+W      @ @ @ @ @ @                     W                                       W
 W                                      W                                       W
-W   [2. SWITCH LOGIC TEST]             W   ********************************* W
+W                                      W   ********************************* W
 W                                      W   * * * * * * * * * * * * * * * * * W
 W    / / / / / / / / / /               W   ********************************* W
 W    \ \ \ \ \ \ \ \ \ \               W   * * * * * * * * * * * * * * * * * W
 W                                      W   ********************************* W
-W    1  (Requires 5 Keys)              W                                       W
-W                                      W   [4. PATHFINDING   WALLS]            W
+W    1                                 W                                       W
+W                                      W                                       W
 W    K K K K K                         W                                       W
 W                                      W   W W W W W W W W W W W W W W W W W   W
-W   [5. INVALID OBJECTS TEST]          W   W                               W   W
-W                                      W   W   (Try to get stuck here)     W   W
-W    ? (No Riddle Defined)             W   W                               W   W
-W    ! (Torch Edge)                    W   W W W W W W W W W W W W W W W W W   W
+W                                      W   W                               W   W
+W                                      W   W                               W   W
+W    ?                                 W   W                               W   W
+W    !                                 W   W W W W W W W W W W W W W W W W W   W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [/MAP]
 

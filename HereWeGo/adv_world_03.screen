@@ -1,17 +1,16 @@
 [MAP]
 L
+
+
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W  $   &                               W                                       W
-W                                      W   >>>>>>>>>>>>v    <<<<<<<<<<<<<      W
+W    $                                 W   >>>>>>>>>>>>v    <<<<<<<<<<<<<     W
 W                                      W   ^           v    <           <      W
-W                                      W   ^           v    <           <      W
+W     &                                  W   ^           v    <           <     W
 W      @ @ @ @ @ @                     W   ^           v    <           <      W
 W      @ @ @ @ @ @                     W   ^           v    <           <      W
 W      @ @ @ @ @ @                     W   ^<<<<<<<<<<<<    <<<<<<<<<<<<<      W
-W      @ @ @ @ @ @                     W                                       W
-W      @ @ @ @ @ @                     W                                       W
-W                                      W                                       W
-W                                      W   ********************************* W
+W      @ @ @ @ @ @                     W                                       W                                       W
+W                                      W                                       W                                      W   ********************************* W
 W                                      W   * * * * * * * * * * * * * * * * * W
 W    / / / / / / / / / /               W   ********************************* W
 W    \ \ \ \ \ \ \ \ \ \               W   * * * * * * * * * * * * * * * * * W
@@ -20,7 +19,6 @@ W    1                                 W                                       W
 W                                      W                                       W
 W    K K K K K                         W                                       W
 W                                      W   W W W W W W W W W W W W W W W W W   W
-W                                      W   W                               W   W
 W                                      W   W                               W   W
 W    ?                                 W   W                               W   W
 W    !                                 W   W W W W W W W W W W W W W W W W W   W

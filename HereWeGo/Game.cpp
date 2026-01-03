@@ -15,8 +15,8 @@ void Game::resetLevelTimer() {
 }
 
 Game::Game() : useColor(getColorMode()), players{
-	Player(Placement(10,20),'$',0,0,p1Keys, Color::BLUE),
-	Player(Placement(9,15),'&',0,0,p2Keys, Color::YELLOW)
+	Player(Placement(10,20),'$',0,0,p1Keys),
+	Player(Placement(9,15),'&',0,0,p2Keys)
 }
 {
 	startTime = std::chrono::steady_clock::now();

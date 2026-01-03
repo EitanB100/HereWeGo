@@ -7,7 +7,7 @@
 #include "Torch.h"
 #include "Bomb.h"
 
-Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount]) : 
+Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount]) 
 {
     symbol = c;
     pos.set(p.getx(), p.gety(), symbol);

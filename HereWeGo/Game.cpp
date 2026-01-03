@@ -113,13 +113,29 @@ void Game::run()
 		if (_kbhit()) {
 			key = _getch();
 			if (key == ESC) {
+				auto pauseStart = std::chrono::steady_clock::now();
+
 				setColor(Color::BLUE);
 				printCentered("GAME PAUSED", 12);
 				key = _getch();
+
 				if (key == 'h' || key == 'H') {
 					setColor(Color::WHITE);
 					screen.clearScreen();
 					break; //main menu exit
+				}
+				else {
+					auto pauseEnd = std::chrono::steady_clock::now(); //we store the time player paused and resumed to deduct it from actual playing time
+					auto pauseDuration = pauseEnd - pauseStart;
+					levelStartTime += pauseDuration;
+					startTime += pauseDuration;
+
+					setColor(Color::WHITE);
+					screen.draw();
+					currRoom.drawTopLayer();
+					for (int i = 0; i < PLAYER_AMOUNT; i++) {
+						players[i].draw();
+					}
 				}
 				
 			}

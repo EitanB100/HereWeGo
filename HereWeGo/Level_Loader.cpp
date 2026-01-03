@@ -196,6 +196,11 @@ void Level_Loader::loadLevel(Room& room, const std::string& fileName)
 			continue;
 		}
 
+		if (line == "[RIDDLES]") {
+			section = "RIDDLES";
+			continue;
+		}
+
 		std::stringstream parser(line);
 
 

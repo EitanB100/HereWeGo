@@ -2,45 +2,62 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+
 void Game::printHUD()
 {
-	gotoxy(0, 0);
+	Point hudPos = levels[currentLevelIndex].getLegendLoc();
+
+	gotoxy(hudPos.x, hudPos.y);
+
 	setColor(Color::WHITE);
-	std::cout << "Player 1: ";
+	std::cout << "P1:" << players[0].getHP() << "/" << players[0].MAX_HP << " [";
+	
 	const heldItem& item1 = players[0].getItemInHand();
+
 	if (item1.type == ItemType::KEY) {
 		setColor(item1.color);
-		std::cout << "KEY ";
+		std::cout << "KEY";
 	}
 	else if (item1.type == ItemType::TORCH) {
 		setColor(item1.color);
-		std::cout << "TORCH ";
+		std::cout << "TORCH";
 	}
-
-	else std::cout << "EMPTY ";
+	else if (item1.type == ItemType::BOMB) {
+		setColor(item1.color);
+		std::cout << "BOMB";
+	}
+	else std::cout << " ";
 	setColor(Color::WHITE);
+	std::cout << "]    ";
 
-	std::cout << " Hitpoints " << players[0].getHP() << "/" << Player::MAX_HP;
+	gotoxy(hudPos.x, hudPos.y + 1);
+	std::cout << "P2:" << players[1].getHP() << "/" << players[1].MAX_HP << " [";
 
-	std::cout << "| Player 2: ";
-	const heldItem& item2 = players[1].getItemInHand();
+ 	const heldItem& item2 = players[1].getItemInHand();
+	
 	if (item2.type == ItemType::KEY) {
 		setColor(item2.color);
 		std::cout << "KEY ";
 	}
-
 	else if (item2.type == ItemType::TORCH) {
 		setColor(item2.color);
 		std::cout << "TORCH ";
 	}
-
-	else std::cout << "EMPTY ";
+	else if (item2.type == ItemType::BOMB) {
+		setColor(item2.color);
+		std::cout << "BOMB";
+	}
+	else std::cout << " ";
 	setColor(Color::WHITE);
-	std::cout << " Hitpoints " << players[1].getHP() << "/15 ";
+	std::cout << "]    ";
 }
 
 
 void Game::printTimer() {
+
+	const Point& hudPos = levels[currentLevelIndex].getLegendLoc();
+	gotoxy(hudPos.x, hudPos.y + 2);
+	
 	auto currentTime = std::chrono::steady_clock::now();
 
 	// Calculate Total Time from the very beginning of the game
@@ -59,16 +76,15 @@ void Game::printTimer() {
 		return ss.str();
 		};
 
-	gotoxy(0, 1);
-	setColor(Color::YELLOW);
-	std::cout << "Total Time: " << formatTime(totalElapsed)
-		<< " | Level Time: " << formatTime(levelElapsed) << " ";
-
-	printScore();
+	setColor(Color::GREEN);
+	std::cout << "TIME " << formatTime(levelElapsed) << " |";
+	
+	printScore(hudPos);
 }
 
-void Game::printScore() {
-	setColor(Color::YELLOW);
-	gotoxy(55, 1);
-	std::cout << "Score: " << score;
+void Game::printScore(const Point& hudPos) {
+	gotoxy(hudPos.x + 12, hudPos.y + 2);
+
+	setColor(Color::GREEN);
+	std::cout << " Score: " << score;
 }

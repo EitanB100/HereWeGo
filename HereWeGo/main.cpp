@@ -82,7 +82,6 @@ int main() {
 		}
 		case MENU_EXIT:
 		{
-			Game game;
 			system("cls");
 			printCentered("Goodbye :3", 10);
 			exitProgram = true;

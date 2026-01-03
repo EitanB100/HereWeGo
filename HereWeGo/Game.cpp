@@ -1,11 +1,13 @@
-#include "Game.h"
 #include <iostream>
 #include <sstream> 
 #include <iomanip>  
 #include <string>
+#include "Game.h"
+#include "Level_Loader.h"
+#include "Tile_Chars.h"
 
-char p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
-char p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
+char Game::p1Keys[KEY_COUNT] = {'W','X','A','D','S','E'};
+char Game::p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
 
 void Game::resetLevelTimer() {
 	levelStartTime = std::chrono::steady_clock::now();
@@ -16,19 +18,6 @@ Game::Game() : useColor(getColorMode()), players{
 	Player(Placement(9,15),'&',0,0,p2Keys)
 }
 {
-	exitPoints[0] = exitPoints[1] = { 79,22 };
-	exitPoints[2] = { -1,-1 }; //final room
-	exitPoints[3] = { 79,23 }; //dummy for test room
-	p1StartPoints[0] = { 6,3 };
-	p1StartPoints[1] = { 2,2};
-	p1StartPoints[2] = { 65,5 };
-	
-	p2StartPoints[0] = { 6,7 };
-	p2StartPoints[1] = { 4,2 };
-	p2StartPoints[2] = { 70,16 };
-	// for test room
-	p1StartPoints[3] = { 4, 3 };
-	p2StartPoints[3] = { 4, 4 };
 	startTime = std::chrono::steady_clock::now();
 	init();
 }
@@ -55,6 +44,17 @@ void Game::handleGameOver()
 	}
 }
 
+void Game::tileMapError()
+{
+	screen.clearScreen();
+	setColor(Color::RED);
+	printCentered("CRITICAL ERROR", 10);
+	printCentered(loadingErrorMessage, 12);
+	printCentered("Press any key to return to menu...", 14);
+	setColor(Color::WHITE);
+	_getch();
+}
+
 void Game::toggleColor(){ 
 	useColor = !useColor; 
 	setColorMode(useColor);
@@ -62,59 +62,60 @@ void Game::toggleColor(){
 
 void Game::startInLevel(Level level)
 {
-	currentLevelID = level;
-	setGame(currentLevelID, false);
+	if (!levelLoadedCorrectly || levels.empty()) {
+		return;
+	}
+	currentLevelIndex = static_cast<int>(level);
+
+	if (currentLevelIndex >= levels.size()) currentLevelIndex = 0;
+	setGame(currentLevelIndex, false);
 }
 
 void Game::init()
 {
-    // Initialize ALL levels
-    initLevel1Props(levels[0]);
-    initLevel2Props(levels[1]);
-    initLevel3Props(levels[2]);
-	initLevel4Props(levels[3]);
+	Level_Loader::loadRiddles("riddles.txt", riddles);
 
-	currentLevelID = Level::ONE;// Start at Level 1
-	setGame(currentLevelID , true);
+	for (int i = 1; i <= LEVEL_COUNT; i++) {
+		
+		std::string currentFile = "adv_world_0" + std::to_string(i) + ".screen";
+		
+		std::ifstream fileCheck(currentFile);
+		if (fileCheck.is_open()) {
+			fileCheck.close();
+			levels.emplace_back(); //create empty room in the vector (adds object to vector using its empty constructor)
+
+			if (!Level_Loader::loadLevel(levels.back(), currentFile, loadingErrorMessage)) {
+				loadingErrorMessage = "Level " + std::to_string(i) + " failed - " + loadingErrorMessage;
+				levelLoadedCorrectly = false;
+				levels.pop_back();
+				return;
+			}
+		}
+		else { //missing file or no more levels or level incorretly named
+			break;
+		}
+	}
+
+	if (levels.empty()) levelLoadedCorrectly = false;
 }
 
-void Game::setGame(Level level , bool firstSettings) {
+void Game::setGame(int levelIndex, bool firstSettings) {
+	if (levels.empty()) return;
+
 	screen.clearScreen();
+	currentLevelIndex = levelIndex;
 
-	switch (level) {
-	case Level::ONE:
-		screen.Lvl1Screen();
-		break;
-	case Level::TWO:
-		screen.Lvl2Screen();
-		break;
-	case Level::THREE:
-		screen.Lvl3Screen();
-		break;
-	case Level::TEST:
-		screen.Lvl4Screen();
-		break;
-	default:
-		screen.Lvl1Screen();
-		break;
-	}
-
-
-
-	currentLevelID = level;
-
-	levels[*currentLevelID].loadFromScreen(screen);
-	levels[*currentLevelID].drawRoom(screen);
-	if (!(firstSettings)) {
+	levels[currentLevelIndex].drawRoom(screen);
+	if (!firstSettings) {
 		screen.draw();
-		levels[*currentLevelID].drawTopLayer();
+		levels[currentLevelIndex].drawTopLayer();
 	}
 
-	players[0].setPos(p1StartPoints[*currentLevelID]);
-	players[1].setPos(p2StartPoints[*currentLevelID]);
+	players[0].setPos(levels[currentLevelIndex].getP1Start());
+	players[1].setPos(levels[currentLevelIndex].getP2Start());
 
 	for (auto& player : players) {
-		player.setDirection(0, 0);
+		player.setDirection(Directions::STAY);
 		player.setFinished(false);
 		player.draw();
 	}
@@ -123,27 +124,49 @@ void Game::setGame(Level level , bool firstSettings) {
 
 void Game::run()
 {
+	if (!levelLoadedCorrectly) {
+		tileMapError();
+		return; // Exits run(), returning to main() menu
+	}
 	resetLevelTimer();
 	bool boomDustCleaningNeeded = false;
 	while (true) {
-		Room& currRoom = levels[*currentLevelID]; 
+		Room& currRoom = levels[currentLevelIndex]; 
 		char key = 0;
-		
 		
 		if (_kbhit()) {
 			key = _getch();
 			if (key == ESC) {
+				auto pauseStart = std::chrono::steady_clock::now();
+
+				setColor(Color::BLUE);
+				printCentered("GAME PAUSED", 2);
 				key = _getch();
+
 				if (key == 'h' || key == 'H') {
 					setColor(Color::WHITE);
 					screen.clearScreen();
 					break; //main menu exit
 				}
+				else {
+					auto pauseEnd = std::chrono::steady_clock::now(); //we store the time player paused and resumed to deduct it from actual playing time
+					auto pauseDuration = pauseEnd - pauseStart;
+					levelStartTime += pauseDuration;
+					startTime += pauseDuration;
+
+					setColor(Color::WHITE);
+					screen.draw();
+					currRoom.drawTopLayer();
+					for (int i = 0; i < PLAYER_AMOUNT; i++) {
+						players[i].draw();
+					}
+				}
+				
 			}
 		}
 		
 		currRoom.resetObstacles();
-		Point currentExitPoint = exitPoints[*currentLevelID];
+		Point currentExitPoint = currRoom.getExitPos();
 
 		//update loop
 		for (int i = 0; i < PLAYER_AMOUNT; i++) {
@@ -154,7 +177,13 @@ void Game::run()
 			setColor(Color::WHITE);
 
 			p.updateSpringPhysics(currRoom, &other);
-			p.move(currRoom, &other);
+			
+			int eventID = p.move(currRoom, &other);
+			
+			if (eventID != 0) {
+				handleRiddle(eventID, p, currRoom);
+			}
+
 			//check level completion for a player
 			if (currentExitPoint.x != -1 && p.getPos() == currentExitPoint) {
 				if (!p.isFinished()) {
@@ -165,26 +194,9 @@ void Game::run()
 			}
 		}
 
-		checkLevelTransition(currentLevelID, players[0].getPos(), players[1].getPos());
+		bool isVictory = checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos());
+		if (isVictory) break;
 		
-		if (*currentLevelID == 2) {
-			Point p1 = players[0].getPos();
-			Point p2 = players[1].getPos();
-
-			Point winA = { 37,1 };
-			Point winB = { 37,2 };
-			if ((p1 == winA && p2 == winB) || (p1 == winB && p2 == winA)){
-
-				setColor(Color::GREEN);
-				printCentered("THANKS FOR PLAYING!", 12);
-
-				levels[*currentLevelID].drawRoom(screen);
-			}
-			gotoxy(45, 0);
-			setColor(Color::GREEN);
-			std::cout << "Go through the top door to finish!";
-			setColor(Color::WHITE);
-		}
 		if (boomDustCleaningNeeded) {
 			currRoom.clearExplosions();
 			currRoom.drawRoom(screen);
@@ -222,10 +234,10 @@ void Game::run()
 
 }
 
-void Game::checkLevelTransition(Level& currentLevel, Point p1, Point p2)
+bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 {
-	Point exit = exitPoints[*currentLevel];
-	if (exit.x == -1) return; // No standard exit
+	Point exit = levels[currentLevelIndex].getExitPos();
+	if (exit.x == -1) return false; // No standard exit
 
 	if (p1 == exit && p2 == exit)
 	{
@@ -236,367 +248,89 @@ void Game::checkLevelTransition(Level& currentLevel, Point p1, Point p2)
 		score += (MAX_SCORE / (levelSeconds + 1));
 
 		// 2. Handle Special Case (Obstacle carry over)
-		if (*currentLevel == 0) {
-			Obstacle* obs = levels[0].isObstacleThere({ 58, 18 });
-			if (obs) {
-				Obstacle newObs = *obs;
-				newObs.obstacleRoomTravel(3, 3);
-				levels[1].addObstacle(newObs);
-				levels[0].removeObstacle({ 58, 18 });
+		if (currentLevelIndex < levels.size() - 1)
+		{
+			currentLevelIndex++;
+
+			setGame(currentLevelIndex, false);
+
+			resetLevelTimer();
+
+			printTimer(); // Force a timer update immediately so it doesn't show the old time for 75ms
+			return false;
+		}
+		else {
+			setColor(Color::GREEN);
+			printCentered("THANKS FOR PLAYING!", 12);
+			Sleep(1500);
+			setColor(Color::WHITE);
+			return true;
+		}
+	}
+	return false;
+}
+
+
+void Game::handleRiddle(int riddleID, Player& player, Room& room)
+{
+	Riddle* currentRiddle = nullptr;
+
+	for (int i = 0; i < riddles.size(); i++) {
+		if (riddles[i].id == riddleID) {
+			currentRiddle = &riddles[i];
+			break;
+		}
+	}
+
+	if (currentRiddle == nullptr) return;
+
+	const Riddle& riddle = *currentRiddle; // for readability
+
+	screen.clearScreen();
+	setColor(Color::CYAN);
+	printCentered("=== RIDDLE TIME! ===", 5);
+	setColor(Color::WHITE);
+	printCentered(riddle.question, 8);
+
+	for (int i = 0; i < riddle.options.size(); i++) {
+		std::string currOption = "(" + std::to_string(i + 1) + ") " + riddle.options[i];
+		printCentered(currOption, 11 + i * 2);
+	}
+	while (_kbhit()) _getch();
+
+	while (true) {
+		if (_kbhit()) {
+			char c = _getch();
+			if (c < '1' || c  > '5') continue; //maximum 5 options 
+			int choice = c - '0';
+			if (choice - 1 == riddle.correctAnswer) {
+				setColor(Color::GREEN);
+				printCentered("CORRECT!", 20);
+				Sleep(500);
+
+				Point p = player.getPos();
+				Point neighbors[4] = { {p.x + 1,p.y},{p.x - 1,p.y},{p.x,p.y + 1},{p.x,p.y - 1} };
+
+				for (const auto& neighbor : neighbors) {
+					if (room.getObjectAt(neighbor) == RIDDLE_TILE && room.getRiddleID(neighbor) == riddleID) {
+						room.removeRiddle(neighbor);
+						break;
+					}
+				} 
 			}
+
+			else {
+				setColor(Color::RED);
+				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
+				player.takeDamage(HP_INCREASE);
+				Sleep(500);
+			}
+			break;
 		}
-
-		// 3. Advance Level and Reset Timer
-		if (*currentLevel < ROOM_AMOUNT - 1) {
-			++currentLevel;
-		}
-
-		// Reset the game state for the new currentLevel
-		setGame(currentLevel, false );
-
-		// RESET TIMER HERE: This sets levelStartTime to 'now', making the HUD show 00:00
-		resetLevelTimer();
-
-		// Update HUD
-		printTimer(); // Force a timer update immediately so it doesn't show the old time for 75ms
 	}
-}
-
-void Game::initLevel1Props(Room& r) {
-
-	// 1. DOORS
-	// ==========================================
-	// Door 1 (White) at (12,6) //requiers swtich
-	Door d1(12, 6, 1, Color::WHITE);
-	r.addDoor(d1);
-
-	// Door 2 (Magenta) at (44,9) - Requires Key 2
-	Door d2(44, 9, 2, Color::YELLOW);
-	d2.addRequiredKey(2);
-	r.addDoor(d2);
-
-	// Door 3 (Red) at (45,17) - Requires Key 3
-	Door d3(44, 17, 3, Color::RED);
-	d3.addRequiredKey(3);
-	r.addDoor(d3);
-
-	// Door 4 (Cyan) at (63,17)
-	Door d4(63, 17, 4, Color::CYAN);
-	r.addDoor(d4);
-
-	// Door 5 (Green - Exit) at (79,22) or close to it
-	Door d5(79, 22, 5, Color::GREEN);
-	d5.addRequiredKey(4);
-	d5.addRequiredKey(5);
-	r.addDoor(d5);
-
-	// ==========================================
-	// 2. SWITCHES
-	// ==========================================
-
-	// -- Area1-2 Switches (The "Same Switch" Group) --
-	r.addSwitch(std::make_unique<Switch>(12, 8, 101));
-	r.isDoorThere(Point{ 12, 6 })->addRequiredSwitch(r.getSwitchByID(101), true);  // D1 needs S(12,8) ON
-	r.isDoorThere(Point{ 44, 9 })->addRequiredSwitch(r.getSwitchByID(101), false); // D2 needs S(12,8) OFF
-	r.addSwitch(std::make_unique<Switch>(23, 11, 102));
-	r.isDoorThere(Point{ 44, 9 })->addRequiredSwitch(r.getSwitchByID(102), false); // D2 needs S(23,11) OFF
-	r.isDoorThere(Point{ 44, 17 })->addRequiredSwitch(r.getSwitchByID(102), true); // D3 needs S(23,11) ON
-	
-	r.addSwitch(std::make_unique<Switch>(10,14,103));
-	r.isDoorThere(Point{ 44, 17 })->addRequiredSwitch(r.getSwitchByID(103), true); // D3 needs S(10,14) ON
-	//-- Area3 Switches and 4--
-	r.addSwitch(std::make_unique<Switch>(50, 14, 104));
-	r.addSwitch(std::make_unique<Switch>(57, 10, 105));
-	r.addSwitch(std::make_unique<Switch>(64, 10, 106));
-	r.addSwitch(std::make_unique<Switch>(71, 10, 107));
-	r.addSwitch(std::make_unique<Switch>(78, 14, 108));
-	r.isDoorThere(Point{ 63, 17 })->addRequiredSwitch(r.getSwitchByID(104), false); // D4 needs S(49,14) OFF
-	r.isDoorThere(Point{ 63, 17 })->addRequiredSwitch(r.getSwitchByID(106), false); // D4 needs S(64,10) OFF
-	r.isDoorThere(Point{ 63, 17 })->addRequiredSwitch(r.getSwitchByID(107), false); // D4 needs S(71,10) OFF
-	r.isDoorThere(Point{ 79, 22 })->addRequiredSwitch(r.getSwitchByID(105), true);  // D5 needs S(56,10) ON
-	r.isDoorThere(Point{ 79, 22 })->addRequiredSwitch(r.getSwitchByID(108), true); // D5 needs S(78,14) On
-
-	// ==========================================
-	// 3. OBSTACLES
-	// ==========================================
-	// Group 1: Top (y=2,3) at x=28
-	Obstacle obs1;
-	obs1.addPart(Placement(28, 2));
-	obs1.addPart(Placement(28, 3));
-	r.addObstacle(obs1);
-
-	// Group 2: Middle (y=7,8) at x=21
-	Obstacle obs2;
-	obs2.addPart(Placement(21, 7));
-	obs2.addPart(Placement(21, 8));
-	r.addObstacle(obs2);
-
-	// Group 3: Lower (y=13) at x=22
-	Obstacle obs3;
-	obs3.addPart(Placement(22, 13));
-	r.addObstacle(obs3);
-
-	// Group 4: Bottom (y=16) at x=22
-	Obstacle obs4;
-	obs4.addPart(Placement(22, 16));
-	r.addObstacle(obs4);
-
-	// ==========================================
-	// 4. KEYS & ITEMS
-	// ==========================================
-	r.addTorch(Torch(2, 2, 6));
-
-	r.addKey(Key(22, 4, 2, Color::YELLOW)); // K2
-	r.addKey(Key(37, 3, 4, Color::GREEN));   // K5
-	r.addKey(Key(5, 10, 3, Color::RED));     // K3 (Left)
-	r.addKey(Key(12, 19, 5, Color::GREEN));    // K5 (Bottom maze)
-
-	// ==========================================
-	// 5. PLAYERS
-	// ==========================================
-	players[0].setPos(p1StartPoints[0]);
-	players[1].setPos(p2StartPoints[0]);
-
-}
-
-void Game::initLevel2Props(Room& r){
-	// 1. DOORS
-	Door d1(79, 22, 1, Color::GREEN);
-	
-	// ==========================================
-	// ==========================================
-	// 2. SWITCHES
-	// ==========================================
-	for (int i = 1; i <= 16; i++) {
-
-		auto temp = std::make_unique<Switch>(i,23,i);
-		if (i % 2 == 0)
-			temp->toggleState();
-		
-		r.addSwitch(std::move(temp));
-
-	}
-	for (int i = 50; i <= 65; i++) {
-	
-		r.addSwitch(std::make_unique<Switch>(i, 18, i));
-
-		if (i % 2 == 1)
-			d1.addRequiredSwitch(r.getSwitchByID(i), true);
-		else
-			d1.addRequiredSwitch(r.getSwitchByID(i), false);
-	}
-	d1.UpdatedFromSwitch();
-	r.addDoor(d1);
-	// ==========================================
-	// 3. OBSTACLES
-	// ==========================================
-	for (int i = 20; i < 80; i += 20) {
-		Obstacle top;
-		top.addPart(Placement(i, 2));
-		top.addPart(Placement(i, 3));
-		r.addObstacle(top);
-	}
-	for (int i = 11; i < 70; i += 20) {
-		Obstacle mid1;
-		mid1.addPart(Placement(i, 5));
-		mid1.addPart(Placement(i, 6));
-		r.addObstacle(mid1);
-	}
-	for (int i = 34; i < 80; i += 20) {
-		Obstacle mid2;
-		mid2.addPart(Placement(i, 8));
-		mid2.addPart(Placement(i, 9));
-		r.addObstacle(mid2);
-	}
-	for (int i = 24; i < 80; i += 20) {
-		Obstacle lower;
-		lower.addPart(Placement(i, 11));
-		lower.addPart(Placement(i, 12));
-		r.addObstacle(lower);
-	}
-	// ==========================================
-	// 4. KEYS & ITEMS
-		r.addTorch(Torch(31, 20, 2));
-	}
-
-void Game::initLevel3Props(Room& r) {
-	//  1.DOORS
-	Door d1(64, 16, 4, Color::GREEN);
-	Door d2(52, 22, 3, Color::RED);
-	Door d3(36, 22, 6, Color::MAGENTA);
-	Door d4(22, 22, 7, Color::YELLOW);
-	Door d5(9, 20, 5, Color::CYAN);
-	Door d6(9, 8, 2, Color::GREEN);
-	Door d7(22, 5, 1, Color::RED);
-	// ==========================================
-	// 2. SWITCHES
-	
-	auto sD1 = std::make_unique<Switch>(64,2,201);
-	sD1->setSeen();
-	r.addSwitch(std::move(sD1));
-
-	auto sD2 = std::make_unique<Switch>(65, 2, 202);
-	sD2->setSeen();
-	r.addSwitch(std::move(sD2));
-	auto sD3 = std::make_unique<Switch>(66, 2, 203);
-	sD3->setSeen();
-	r.addSwitch(std::move(sD3));
-
-
-	//Door 1
-	d1.addRequiredSwitch(r.getSwitchByID(201), true);  // Left switch must be TRUE
-	d1.addRequiredSwitch(r.getSwitchByID(202), false);  // Middle switch must be TRUE
-	d1.addRequiredSwitch(r.getSwitchByID(203), false); // Right switch must be FALSE
-
-	// Door 2
-	d2.addRequiredSwitch(r.getSwitchByID(201), false);
-	d2.addRequiredSwitch(r.getSwitchByID(202), true);
-	d2.addRequiredSwitch(r.getSwitchByID(203), true);
-
-	// Door 3
-	d3.addRequiredSwitch(r.getSwitchByID(201), true);
-	d3.addRequiredSwitch(r.getSwitchByID(202), true);
-	d3.addRequiredSwitch(r.getSwitchByID(203), false);
-
-	// Door 4
-	d4.addRequiredSwitch(r.getSwitchByID(201), true);
-	d4.addRequiredSwitch(r.getSwitchByID(202), true);
-	d4.addRequiredSwitch(r.getSwitchByID(203), true);
-
-	// Door 5
-	d5.addRequiredSwitch(r.getSwitchByID(201), true);
-	d5.addRequiredSwitch(r.getSwitchByID(202), false);
-	d5.addRequiredSwitch(r.getSwitchByID(203), true);
-
-	// Door 6
-	d6.addRequiredSwitch(r.getSwitchByID(201), false);
-	d6.addRequiredSwitch(r.getSwitchByID(202), true);
-	d6.addRequiredSwitch(r.getSwitchByID(203), false);
-
-	// Door 7
-	d7.addRequiredSwitch(r.getSwitchByID(201), false);
-	d7.addRequiredSwitch(r.getSwitchByID(202), false);
-	d7.addRequiredSwitch(r.getSwitchByID(203), true);
-
-	// ==========================================
-	r.addDoor(d1);
-	r.addDoor(d2);
-	r.addDoor(d3);
-	r.addDoor(d4);
-	r.addDoor(d5);
-	r.addDoor(d6);
-	r.addDoor(d7);
-
-
-	
-}
-
-void Game::initLevel4Props(Room& r) {
-	// === TEST LAB SETUP ===
-
-	// 1. Keys & Doors (Top Right)
-	r.addKey(Key(40, 3, 1, Color::RED));
-	r.addDoor(Door(42, 3, 1, Color::RED));
-
-	// Switch Door
-
-	r.addSwitch(std::make_unique<Switch>(60,3,401));
-	Door dSwitch(65, 3, 0, Color::CYAN);
-	dSwitch.addRequiredSwitch(r.getSwitchByID(401), true);
-	r.addDoor(dSwitch);
-
-	// 2. Spring Chaining (Middle Left)
-	Spring s1({ 1,0 }); 
-	s1.addPart(10, 10); 
-	s1.addPart(9, 10); 
-	s1.addPart(8, 10);
-	r.addSpring(s1);
-
-	r.addWall({ 15, 4 });
-
-	// 3. Obstacles (Bottom)
-	Obstacle box;
-	box.addPart(Placement(10, 18));
-	box.addPart(Placement(11, 18));
-	r.addObstacle(box);
-	
-	Obstacle one;
-	one.addPart(Placement(10,20));
-	r.addObstacle(one);
-
-	// 4. Torch
-	r.addTorch(Torch(35, 18, 5));
-
-	// === NEW OBJECTS ADDED ===
-
-	// A cage area defined by walls
-	for (int x = 50; x < 60; x++) { r.addWall({ x, 15 }); r.addWall({ x, 22 }); }
-	for (int y = 15; y <= 22; y++) { r.addWall({ 50, y }); r.addWall({ 60, y }); }
-
-	// A door protecting the cage entrance
-	Door cageDoor(55, 15, 9, Color::MAGENTA);
-	cageDoor.addRequiredKey(9);
-	r.addDoor(cageDoor);
-
-	// The key for the cage (hidden behind obstacles)
-	r.addKey(Key(70, 20, 9, Color::MAGENTA));
-
-	// Obstacles blocking the key
-	Obstacle block;
-	block.addPart(Placement(68, 20));
-	block.addPart(Placement(68, 21));
-	r.addObstacle(block);
-
-	// Extra switch for atmosphere
-	r.addSwitch(std::make_unique<Switch>(55,18,402));
-	// === NEW TRICKY OBJECTS ===
-
-	// 1. "Ping-Pong" Springs (Bottom Right)
-	// Spring Facing Left at (75, 12)
-	Spring sPing({ -1, 0 });
-	sPing.addPart(75, 12); // Tip
-	sPing.addPart(76, 12); // Base
-	r.addSpring(sPing);
-
-	// Spring Facing Right at (70, 12)
-	Spring sPong({ 1, 0 });
-	sPong.addPart(70, 12); // Tip
-	sPong.addPart(69, 12); // Base
-	r.addSpring(sPong);
-
-	// 2. The Wall Slam (Top Left)
-	// Spring pointing UP into a wall with only 1 space gap
-	Spring sSlam({ 0, -1 });
-	sSlam.addPart(5, 5); // Tip
-	sSlam.addPart(5, 6); // Base
-	r.addSpring(sSlam);
-	r.addWall({ 5, 3 }); // The wall you will hit
-
-	// 3. Locked Door Launch (Bottom Left)
-	// Spring pointing DOWN into a door
-	Spring sDoor({ 0, 1 });
-	sDoor.addPart(20, 20); // Tip
-	sDoor.addPart(20, 19); // Base
-	r.addSpring(sDoor);
-
-	Spring chain1({ 0,1 });
-	chain1.addPart(10, 4);
-	chain1.addPart(10, 3);
-	
-	r.addSpring(chain1);
-	// A red locked door at (20, 23)
-	Door dTrap(20, 23, 8, Color::RED);
-	dTrap.addRequiredKey(99); // Impossible key ID
-	r.addDoor(dTrap);
-
-	Bomb b1(40, 18, 1);
-	Bomb b2(42, 22, 2);
-	Bomb b3(42, 20, 2);
-	r.addBomb(b1);
-	r.addBomb(b2);
-	r.addBomb(b3);
-	Potion potion1(30, 17);
-	Potion potion2(31, 10);
-	r.addPotion(potion1);
-	r.addPotion(potion2);
+	setColor(Color::WHITE);
+	screen.clearScreen();
+	room.drawRoom(screen);
+	screen.draw();
+	room.drawTopLayer();
 }

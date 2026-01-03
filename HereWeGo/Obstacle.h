@@ -2,11 +2,12 @@
 #include <vector>
 #include "Utils.h"
 #include "Placement.h"
+#include "Tile_Chars.h"
 
 class Obstacle {
 	std::vector<Placement> parts;
-	char symbol = '*';
 	bool hasMoved = false;
+	Color color = Color::WHITE;
 
 public:
 	Obstacle() {}
@@ -23,9 +24,9 @@ public:
 	bool getHasMoved() { return hasMoved; }
 	void resetMove() { hasMoved = false; }
 	void markAsMoved() { hasMoved = true; }
-	void getParts(std::vector<Placement>& outParts) const {
-		outParts = parts;
-	}
+
+	void setColor(Color c) { color = c; }
+	Color getColor() const { return color; }
 
 	void obstacleRoomTravel(int x, int y);
 	

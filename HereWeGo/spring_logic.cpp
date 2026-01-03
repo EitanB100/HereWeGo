@@ -56,30 +56,38 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
 bool Player::handleSprings(Room& room, Point nextPoint) {
     // A. Flight Logic (Chaining)
     if (spring.flightTime > 0) {
-        Spring* nextSpring = room.isSpringThere(nextPoint);
-        Spring* currentSpring = room.isSpringThere(pos.getPosition());
+        Spring* spring = room.isSpringThere(nextPoint);
 
-        if (nextSpring != nullptr && nextSpring != currentSpring) {
-            Point tip = nextSpring->getParts()[0].getPosition();
+        if (spring) {
+            if (spring->isSpringPart(pos.getPosition())) return true;
+
+            Point dir = spring->getDirection();
+            Point tip = spring->getParts()[0].getPosition();
+
+            bool isOpposing = (dirx == -dir.x && diry == -dir.y);
+
+            if (!isOpposing) {
+                setDirection(Directions::STAY);
+                return false;
+            }
 
             // Hit Tip -> Chain
             if (nextPoint == tip) {
-                int conservedMomentum = spring.force;
-                if (conservedMomentum > (int)nextSpring->getParts().size()) {
-                    conservedMomentum = (int)nextSpring->getParts().size();
+                int conservedMomentum = this->spring.force;
+                if (conservedMomentum > (int)spring->getParts().size()) {
+                    conservedMomentum = (int)spring->getParts().size();
                 }
-                nextSpring->setCompression(conservedMomentum);
-                spring.compressionCount = conservedMomentum;
-                spring.flightTime = 0; // Stop flight, land on spring
-                spring.force = 1;
+                spring->setCompression(conservedMomentum);
+
+                this->spring.compressionCount = conservedMomentum;
+                this->spring.flightTime = 0; // Stop flight, land on spring
+                this->spring.force = 1;
+
                 return true; // Continue move logic (step onto spring)
             }
             else {
-                if (spring.flightTime == 0) {
-                    setDirection(0, 0);
-                    return false;
-                }
-                return true;
+                setDirection(Directions::STAY);
+                return false;
             }
         }
     }
@@ -88,19 +96,26 @@ bool Player::handleSprings(Room& room, Point nextPoint) {
     if (spring.flightTime == 0) {
         Spring* s = room.isSpringThere(nextPoint);
         if (s) {
+            Point springDir = s->getDirection();
             bool isOpposing = (dirx == -s->getDirection().x && diry == -s->getDirection().y);
             bool alreadyOnSpring = s->isSpringPart(pos.getPosition());
+            bool isMovingInSpringDir = (dirx == springDir.x && diry == springDir.y);
             Point tip = s->getParts()[0].getPosition();
 
             // Only allow entry from the tip or if already on it
             if (!alreadyOnSpring && nextPoint != tip) {
-                setDirection(0, 0);
+                setDirection(Directions::STAY);
+                return false;
+            }
+
+            if (!alreadyOnSpring && s->getParts().size() == 1 && isMovingInSpringDir) {
+                setDirection(Directions::STAY);
                 return false;
             }
 
             // Stop if fully compressed
             if (spring.compressionCount >= (int)s->getParts().size() && isOpposing) {
-                setDirection(0, 0);
+                setDirection(Directions::STAY);
                 return false;
             }
             spring.compressionCount++;
@@ -125,7 +140,7 @@ bool Player::handleSpringExit(Room& room)
     bool isOpposing = (dirx == -springDir.x && diry == -springDir.y);
 
     if (isOpposing && spring.compressionCount >= s->getParts().size()) {
-        setDirection(0, 0);
+        setDirection(Directions::STAY);
         return false;
     }
     s->setCompression(0);

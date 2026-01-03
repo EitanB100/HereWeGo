@@ -24,14 +24,15 @@ Room::Room() {
 //redraws all non wall objects on top
 void Room::drawTopLayer()
 {
-	for (Door& door : doors) door.draw();
+	for (auto& switchOnOff : switches) switchOnOff->draw(); 
 	for (Key& key : keys) key.draw();
-	for (auto& switchOnOff : switches) switchOnOff->draw();
-	for (Torch& torch : torches) torch.draw();
-	for (Obstacle& obstacle : obstacles) obstacle.draw();
-	for (Spring& spring : springs) spring.draw();
-	for (Bomb& bomb : bombs) bomb.draw();
+	for (Torch& torch : torches) torch.draw();	
 	for (Potion& potion : potions) potion.draw();
+	for (Bomb& bomb : bombs) bomb.draw();
+	for (Spring& spring : springs) spring.draw();
+	for (Door& door : doors) door.draw();
+	for (Obstacle& obstacle : obstacles) obstacle.draw();
+
 	getTorchesLineOfSight();
 	
 }
@@ -40,84 +41,6 @@ void Room::drawTopLayer()
 void Room::drawRoom(Screen& screen) {
 	screen.loadMapFromRoom(this->map);
 }
-
-void Room::loadFromScreen(Screen& screen) // Load the room from the screen
-{
-	for (int y = 0; y < MAX_Y; y++)
-	{
-		for (int x = 0; x < MAX_X; x++)
-		{
-			map[y][x] = screen.getTile(x, y);
-		}
-	}
-
-	//suggested by Gemini as a bug fix for obstacles not colliding with each other when moved
-	for (const auto& obs : obstacles) {
-		// Get current parts (0,0 direction means current position)
-		std::vector<Point> parts = obs.getFutureParts(0, 0);
-		for (const auto& p : parts) {
-			if (p.x >= 0 && p.x < MAX_X && p.y >= 0 && p.y < MAX_Y) {
-				map[p.y][p.x] = OBSTACLE_TILE;
-			}
-		}
-	}
-
-	for (Spring& spring : springs) {
-		for (const auto& part : spring.getParts()) {
-			map[part.gety()][part.getx()] = SPRING_TILE;
-		}
-	}
-
-	for (const auto& key : keys) {
-		Point p = key.getPos();
-		if (key.getIsSeen())
-			map[p.y][p.x] = KEY_TILE;
-		else
-			map[p.y][p.x] = UNKNOWN_TILE;
-	}
-
-	for (const auto& door : doors) {
-		Point p = door.getPos().getPosition();
-		// If door is closed, mark it. If open, leave it as space (passable)
-		if (!door.getIsOpen()) {
-			map[p.y][p.x] = door.getDoorID() + '0';
-		}
-	}
-
-	for (const auto& torch : torches) {
-		Point p = torch.getPos();
-		map[p.y][p.x] = TORCH_TILE;
-	}
-
-	for (const auto& bomb : bombs) {
-		Point p = bomb.getPos();
-		if (bomb.getIsSeen())
-			map[p.y][p.x] = BOMB_TILE;
-		else
-			map[p.y][p.x] = UNKNOWN_TILE;
-	}
-
-	for (const auto& sw : switches) {
-		if (sw) {
-			Point p = sw->getPos();
-			if (sw->getIsSeen())
-				map[p.y][p.x] = sw->getState() ? SWITCH_ON : SWITCH_OFF;
-			else
-				map[p.y][p.x] = UNKNOWN_TILE;
-		}
-	}
-	
-	for (const auto& potion : potions) {
-		Point p = potion.getPos();
-		if (potion.getIsSeen())
-			map[p.y][p.x] = POTION_TILE;
-		else
-			map[p.y][p.x] = UNKNOWN_TILE;
-	}
-}
-
-
-
 
 void Room::resetRoom()
 {
@@ -184,8 +107,6 @@ bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham
 		if (x1 == x2 && y1 == y2)
 			return true;
 
-		Point p{ x1, y1 };
-
 		if (map[y1][x1] == WALL_TILE || map[y1][x1] == OBSTACLE_TILE) //  obstacle or wall in the way
 			return false;
 
@@ -225,6 +146,10 @@ void Room::clearExplosions() {
 		for (int x = 0; x < MAX_X; x++) {
 			// Check if the tile is an explosion character
 			if (map[y][x] == EXPLOSION_TILE) {
+				if (isSwitchThere({ x,y })) {
+					map[y][x] = SWITCH_OFF;
+				}
+				else
 				map[y][x] = ' '; // Revert to empty floor
 			}
 		}
@@ -238,6 +163,21 @@ bool Room::hasExplosions() {
 		}
 	}
 	return false;
+}
+
+Point Room::getRiddlePos(int id) const
+{
+	for (const auto& riddle : riddleLocations) {
+		if (riddle.id == id) return riddle.p;
+	}
+	return { -1,-1 };
+}
+
+int Room::getRiddleID(const Point& p) const
+{
+	const RiddlePos* riddle = isRiddleThere(p);
+	if (riddle) return riddle->id;
+	return 0;
 }
 
 //determines what exists at a coordinate.
@@ -258,18 +198,10 @@ char Room::getObjectAt(const Point& p, Color& color) const
 	
 	char mapChar = map[p.y][p.x];
 
-	if (mapChar == ' ' || mapChar == WALL_TILE || mapChar == SPRING_TILE || mapChar == GLASS_TILE) {
+	if (mapChar == ' ' || mapChar == WALL_TILE || mapChar == SPRING_TILE || mapChar == GLASS_TILE || mapChar == OBSTACLE_TILE) {
 		color = Color::WHITE;
 
 		return mapChar;
-	}
-
-	//obstacles - movable object - top priority
-	if (mapChar == OBSTACLE_TILE) {
-
-		color = Color::WHITE;
-		return OBSTACLE_TILE;
-
 	}
 
 	
@@ -282,6 +214,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = key->getColor();
 			return KEY_TILE;
 		}
+		return ' ';
 	}
 
 	//torches
@@ -291,6 +224,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = torch->getColor();
 			return TORCH_TILE;
 		}
+		return ' ';
 	}
 	//doors
 	if (isDoorTile(mapChar)) {
@@ -304,6 +238,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = door->getColor();
 			return mapChar;
 		}
+		return ' ';
 	}
 	//bombs
 	if (mapChar == BOMB_TILE) {
@@ -312,6 +247,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = bomb->getColor();
 			return BOMB_TILE;
 		}
+		return ' ';
 	}
 
 	//switches:
@@ -320,12 +256,17 @@ char Room::getObjectAt(const Point& p, Color& color) const
 		if (sw != nullptr) {
 			// Map might say OFF ('\') but switch is ON ('/'), so we trust the object
 			if (sw->getIsSeen()) {
+				if (sw->isBroken()) {
+					color = Color::DARK_GRAY;
+					return SWITCH_OFF;
+				}
 				color = sw->getState() ? Color::GREEN : Color::RED;
 				return sw->getState() ? SWITCH_ON : SWITCH_OFF;
 			}
 			// If not seen, it falls through to UNKNOWN_TILE logic usually, 
 			// but if map has the switch char, we treat it as visible.
 		}
+		return ' ';
 	}
 	
 	if (mapChar == POTION_TILE) {
@@ -334,6 +275,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = potion->getColor();
 			return POTION_TILE;
 		}
+		return ' ';
 	}
 
 	if (mapChar == UNKNOWN_TILE) {

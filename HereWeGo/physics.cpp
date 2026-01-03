@@ -116,7 +116,6 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 					if (PointhasLineOfSight(blastCenter.x, blastCenter.y, x, y)) {
 						// Clear items and obstacles 
 						if (isKeyThere(p)) removeKey(p);
-						if (isSwitchThere(p)) removeSwitch(p);
 						if (isObstacleThere(p)) removeObstacle(p);
 						if (isWallThere(p)) map[p.y][p.x] = ' ';
 						if (isTorchThere(p)) removeTorch(p);
@@ -125,6 +124,15 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 							Bomb* otherBomb = isBombThere(p);
 							if (otherBomb != nullptr && otherBomb != bomb) {
 								otherBomb->activate(); // Chain reaction
+							}
+						}
+						if (isSwitchThere(p)) {
+							Switch* sw = isSwitchThere(p);
+							if (sw) {
+								sw->destroy(); // Break it, don't delete it!
+								for (auto& door : doors) {
+									door.UpdatedFromSwitch();
+								}
 							}
 						}
 

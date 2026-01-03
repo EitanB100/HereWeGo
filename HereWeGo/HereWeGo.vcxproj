@@ -129,10 +129,12 @@
     <ClInclude Include="Door.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Key.h" />
+    <ClInclude Include="Level_Loader.h" />
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Placement.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Potion.h" />
+    <ClInclude Include="Riddle.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Spring.h" />
@@ -147,6 +149,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="key.cpp" />
+    <ClCompile Include="Level_Loader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="obstacle.cpp" />

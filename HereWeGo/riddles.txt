@@ -1,0 +1,23 @@
+[RIDDLE]
+ID 1
+Q: What has keys but cannot open locks?
+A: A Piano
+A: A Map
+A: A Banana
+CORRECT: 0
+
+[RIDDLE]
+ID 2
+Q: I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?
+A: A Ghost
+A: An Echo
+A: A Cloud
+CORRECT: 1
+
+[RIDDLE]
+ID 3
+Q: The more of this there is, the less you see. What is it?
+A: Darkness
+A: Fog
+A: Light
+CORRECT: 0

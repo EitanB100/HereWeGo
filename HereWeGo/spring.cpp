@@ -8,8 +8,44 @@ bool Spring::isSpringPart(const Point& p) const
 	return false;
 }
 
-void Spring::draw() {
+void Spring::setDirection(Point dir)
+{
+	direction = dir;
+	sortParts();
+}
+
+void Spring::sortParts() //ensuring parts[0] is the tip of the spring
+{
+	if (parts.size() < 2) return;
+
+	bool swapped = true;
 	
+	while (swapped) {
+		swapped = false;
+		for (int i = 0; i < parts.size() - 1; i++) {
+			bool needSwap = false;
+			if (direction == Directions::RIGHT){
+				if (parts[i].getx() < parts[i + 1].getx()) needSwap = true;
+			}
+			else if (direction == Directions:: LEFT) {
+				if (parts[i].getx() > parts[i + 1].getx()) needSwap = true;
+			}
+			else if (direction == Directions::DOWN) {
+				if (parts[i].gety() < parts[i + 1].gety()) needSwap = true;
+			}
+			else if (direction == Directions::UP) {
+				if (parts[i].gety() > parts[i + 1].gety()) needSwap = true;
+			}
+			if (needSwap) {
+				std::swap(parts[i], parts[i + 1]);
+				swapped = true;
+			}
+		}
+	}
+}
+
+void Spring::draw() {
+	setColor(color);
 	for (int i = 0; i < parts.size(); i++) {
 		if (i < compressedCount) {
 			parts[i].draw(' ');
@@ -18,4 +54,5 @@ void Spring::draw() {
 			parts[i].draw(SPRING_TILE);
 		}
 	}
+	setColor(Color::WHITE);
 }

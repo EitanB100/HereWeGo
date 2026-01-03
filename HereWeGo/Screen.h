@@ -17,7 +17,6 @@ public:
     void createGameScreen();
 
     void setTile(int x, int y, char symbol) ;
-    //void inLimit(Placement& p);
 
     char getTile(int x, int y) const {
         if (x >= 0 && x < MAX_X && y >= 0 && y < MAX_Y) {
@@ -26,12 +25,8 @@ public:
         return ' ';
     }
 
-    void clearScreen() {
+    inline void clearScreen() {
         system("cls");
     }
-    void Lvl1Screen();
-    void Lvl2Screen();
-    void Lvl3Screen();
-    void Lvl4Screen();
     void draw() const;
 };

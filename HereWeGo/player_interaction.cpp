@@ -13,7 +13,21 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
     if (otherPlayer) {
         std::vector<Point> futureParts = obstacleToPush->getFutureParts(dirx,diry);
         for (const auto& part : futureParts) {
-            if (part == otherPlayer->getPos()) return false;
+            if (part == otherPlayer->getPos()) {
+                if (spring.flightTime > 0) {
+                    Point ogDir = { otherPlayer->getDirX(),otherPlayer->getDirY() };
+                    int ogForce = otherPlayer->getForce();
+
+                    otherPlayer->setDirection({ dirx,diry });
+                    otherPlayer->setForce(force);
+                    otherPlayer->move(room, this);
+                    otherPlayer->setDirection({ ogDir.x,ogDir.y });
+                    otherPlayer->setForce(ogForce);
+
+                    if (otherPlayer->getPos() == part) return false;
+                }
+                else return false;
+            }
         }
     }
 
@@ -87,7 +101,7 @@ bool Player::handlePickups(Room& room, Point nextPoint) {
         return true;
     }
     Bomb* bomb = room.isBombThere(nextPoint);
-    if (bomb != nullptr) {
+    if (bomb != nullptr && !bomb->isActivated()) {
         itemInHand = { ItemType::BOMB, bomb->getBombID(), bomb->getColor() };
         room.removeBomb(nextPoint);
         return true;

@@ -70,6 +70,12 @@ void Room::addPotion(const Potion& potion)
 	potions.push_back(potion);
 }
 
+void Room::addRiddle(int x, int y, int id)
+{
+	riddleLocations.push_back({ {x,y},id });
+	map[y][x] = RIDDLE_TILE;
+}
+
 void Room::addWall(const Point& p)
 {
 	map[p.y][p.x] = WALL_TILE;
@@ -116,7 +122,7 @@ void Room::removeSpring(const Point& p)
 			return;
 		}
 	}
-} // ask if remove all or just one part of spring
+} 
 
 
 void Room::removeSwitch(const Point& p)
@@ -145,6 +151,17 @@ void Room::removePotion(const Point& p)
 	for (auto potion = potions.begin(); potion != potions.end(); potion++) {
 		if (potion->getPos() == p) {
 			potions.erase(potion);
+			map[p.y][p.x] = ' ';
+			return;
+		}
+	}
+}
+
+void Room::removeRiddle(const Point& p)
+{
+	for (auto riddle = riddleLocations.begin(); riddle != riddleLocations.end(); riddle++) {
+		if (riddle->p == p) {
+			riddleLocations.erase(riddle);
 			map[p.y][p.x] = ' ';
 			return;
 		}

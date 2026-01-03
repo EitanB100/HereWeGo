@@ -3,10 +3,13 @@
 #include "Placement.h"
 #include "Screen.h"
 #include "Room.h"
+#include "Utils.h"
 
 class Player {
     Placement pos = Placement();
     char symbol = ' ';
+    Directions direction;
+    Color playerColor = Color::WHITE;
     int dirx = 0, diry = 0;
     int force = 1;
     bool finishedLevel = false;
@@ -38,28 +41,34 @@ public:
     static constexpr int DEAD_HP = 0;
     void draw();
 
+
     // Getters / Setters
     Point getPos() const { return { pos.getx(),pos.gety() }; }
-    void setPos(Point p) { pos.set(p.x, p.y, symbol); }
+    heldItem getItemInHand() { return itemInHand; }
     char getSymbol() { return symbol; }
     bool isFinished() { return finishedLevel; }
-    void setFinished(bool state) { finishedLevel = state; }
-    heldItem getItemInHand() { return itemInHand; }
-    void setDirection(int dx, int dy) { dirx = dx; diry = dy; }
+    int getDirX() { return dirx; }
+    int getDirY() { return diry; }
+
+   
+
+    void setPos(Point p) { pos.set(p.x, p.y, symbol); }
+    void setFinished(bool state) { finishedLevel = state; setDirection(Directions::STAY); }
+    void setDirection(const Point& direction) { dirx = direction.x; diry = direction.y; }
+
+    void setForce(int _force) { force = _force; }
+    int getForce() const { return force; }
+    void transferMomentum(int _force, Point dir, int time);
 
     int getHP() const { return hp; }
-    void takeDamage(int amount) {
-        hp -= amount;
-        if (hp <= DEAD_HP) {
-            hp = DEAD_HP;
-            alive = false; // Mark as dead
-        }
-    }
+    void takeDamage(int amount);
+    bool increaseHP(int amount);
+       
     bool isDead() const { return !alive; }
     bool isAlive() const { return alive; }
 
     // Core Logic
-    void move(Room& room, Player* otherPlayer);
+    int move(Room& room, Player* otherPlayer);
     bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
     void updateSpringPhysics(Room& room, Player* otherPlayer);
     void dropItem(Room& room);

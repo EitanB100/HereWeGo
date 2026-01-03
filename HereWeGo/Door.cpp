@@ -27,7 +27,6 @@ void Door::draw()
 	}
 }
 
-//PLACEHOLDER	
 void Door::UpdatedFromSwitch()
 {
 	// 1. If we still need keys, the door stays locked.

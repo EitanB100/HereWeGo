@@ -7,7 +7,7 @@
 #include "Torch.h"
 #include "Bomb.h"
 
-Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount])
+Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount]) 
 {
     symbol = c;
     pos.set(p.getx(), p.gety(), symbol);
@@ -15,19 +15,52 @@ Player::Player(const Placement& p, char c, int directx, int directy, const char 
     diry = directy;
     for (int i = 0; i < keyAmount; ++i)
         keys[i] = keyArray[i];
+
 }
 
 void Player::draw() {
+
     if (itemInHand.type != ItemType::NONE) {
         setColor(itemInHand.color);
     }
     pos.draw();
     setColor(Color::WHITE);
 }
-//Movement logic: collisions, interactions, and updates
-void Player::move(Room& room, Player* otherPlayer) {
 
-    if (dirx == 0 && diry == 0) return; // No movement input
+void Player::transferMomentum(int _force, Point dir, int time)
+{
+    spring.force = _force;
+    spring.launchDir = dir;
+    spring.flightTime = time;
+    spring.compressionCount = 0;
+}
+
+void Player::takeDamage(int amount)
+{
+    hp -= amount;
+    if (hp <= DEAD_HP) {
+        hp = DEAD_HP;
+        alive = false; // Mark as dead
+    }
+}
+
+bool Player::increaseHP(int amount)
+{
+    if (hp >= MAX_HP && amount > 0) {
+        hp = MAX_HP;
+        return false;
+    }
+
+    hp += amount;
+    if (hp > MAX_HP) hp = MAX_HP;
+    return true;
+}
+
+//Movement logic: collisions, interactions, and updates
+int Player::move(Room& room, Player* otherPlayer) {
+
+
+    if (dirx == 0 && diry == 0) return 0; // No movement input
     
     Point nextPoint = { pos.getx() + dirx, pos.gety() + diry };
     char tileOnMap = room.getObjectAt(nextPoint);
@@ -39,14 +72,20 @@ void Player::move(Room& room, Player* otherPlayer) {
     
     //Static collisions
 	if (tileOnMap == WALL_TILE || tileOnMap == UNKNOWN_TILE || tileOnMap == GLASS_TILE) {
-        setDirection(0, 0); 
-        return; 
+        setDirection(Directions::STAY); 
+        return 0; 
     }
 
     //Player collision 
     if (otherPlayer != nullptr && !otherPlayer->isFinished() && nextPoint == otherPlayer->getPos()) { 
-        setDirection(0, 0);
-        return;
+        if (spring.flightTime > 0) {
+            otherPlayer->transferMomentum(spring.force, { dirx,diry }, spring.flightTime);
+            spring.flightTime = 0;
+            spring.force = 1;
+        }
+
+        setDirection(Directions::STAY);
+        return 0;
     }
     
     
@@ -54,10 +93,10 @@ void Player::move(Room& room, Player* otherPlayer) {
     if (isDoorTile(tileOnMap)) 
     {
         room.checkDoor(nextPoint, itemInHand);
-        setDirection(0, 0);
+        setDirection(Directions::STAY);
         setColor(itemInHand.color);
         pos.draw();
-        return;
+        return 0;
     }
 
     //Pickups
@@ -65,8 +104,8 @@ void Player::move(Room& room, Player* otherPlayer) {
      
         if (!handlePickups(room, nextPoint))
         {
-            setDirection(0, 0);
-            return;
+            setDirection(Directions::STAY);
+            return 0;
         }
         
     }
@@ -75,15 +114,15 @@ void Player::move(Room& room, Player* otherPlayer) {
     if (tileOnMap == OBSTACLE_TILE) { 
      
         //try to push an obstacle. return true if possible
-        if (!obstacleHandling(room, nextPoint, otherPlayer)) return;
+        if (!obstacleHandling(room, nextPoint, otherPlayer)) return 0;
     }
 
     if (tileOnMap == SPRING_TILE) {
-        if (!handleSprings(room, nextPoint)) return;
+        if (!handleSprings(room, nextPoint)) return 0;
     }
 
     else  {
-        if (!handleSpringExit(room)) return;
+        if (!handleSpringExit(room)) return 0;
     }
 
     //switch collision
@@ -94,26 +133,30 @@ void Player::move(Room& room, Player* otherPlayer) {
 
             room.checkSwitch(switchOnOff->getPos()); 
             room.drawTopLayer();                 
-            setDirection(0, 0);                  
-            return;
+            setDirection(Directions::STAY);                  
+            return 0;
         }
     }
 
     if (tileOnMap == POTION_TILE) {
         Potion* potion = room.isPotionThere(nextPoint);
         if (potion) {
-            if (hp < MAX_HP) {
-                hp += 5;
-                if (hp > MAX_HP) hp = MAX_HP;
+            if (increaseHP(HP_INCREASE))
                 room.removePotion(nextPoint);
-            }
             else {
-                setDirection(0, 0);
-                return;
+                setDirection(Directions::STAY);
+                return 0;
             }
            
         }
          
+    }
+    
+    if (tileOnMap == RIDDLE_TILE) {
+        int id = room.getRiddleID(nextPoint);
+
+        setDirection(Directions::STAY);
+        return id;
     }
 
     // execution - happens after checked if can proceed
@@ -132,6 +175,7 @@ void Player::move(Room& room, Player* otherPlayer) {
     setColor(Color::WHITE);
     pos.set(nextPoint.x, nextPoint.y, symbol); 
     draw();
+    return 0;
 }
 
 void Player::dropItem(Room& room) //item that isnt a bomb!
@@ -174,37 +218,23 @@ void Player::inputManager(char input, Room& room) {
 
     input = toupper(input); // normalize input to uppercase
 
-    int requestedDirx = 0;
-    int requestedDiry = 0;
 
-    if (isCommand(input,CommandKeys::UP)) {
-        requestedDiry = -1;
-        requestedDirx = 0;
-    }
+    if (isCommand(input, CommandKeys::UP)) setDirection(Directions::UP);
 
-    else if (isCommand(input,CommandKeys::DOWN)) {
+    else if (isCommand(input, CommandKeys::DOWN)) setDirection(Directions::DOWN);
 
-        requestedDirx = 0;
-        requestedDiry = 1;
-    }
+    else if (isCommand(input, CommandKeys::LEFT)) setDirection(Directions::LEFT);
 
-    else if (isCommand(input,CommandKeys::LEFT)) {
-        requestedDirx = -1;
-        requestedDiry = 0;
-    }
-    else if (isCommand(input,CommandKeys::RIGHT)) {
-        requestedDirx = 1;
-        requestedDiry = 0;
-    }
+    else if (isCommand(input, CommandKeys::RIGHT)) setDirection(Directions::RIGHT);
 
-    else if (isCommand(input,CommandKeys::STAY))
-        setDirection(0, 0);
+    else if (isCommand(input, CommandKeys::STAY)) setDirection(Directions::STAY);
+        
 
     else if (isCommand(input,CommandKeys::DISPOSE))
         dropItem(room);
     
     else return;
     
-    setDirection(requestedDirx, requestedDiry);
+    
     
 }

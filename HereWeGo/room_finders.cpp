@@ -73,6 +73,15 @@ Potion* Room::isPotionThere(const Point& p) {
 	return findBy(potions, [&](Potion& potion) {return potion.getPos() == p; });
 }
 
+//Riddle finders
+Room::RiddlePos* Room::isRiddleThere(const Point& p)
+{	return findBy(riddleLocations, [&](RiddlePos& riddlePos) {return riddlePos.p == p; });
+}
+
+const Room::RiddlePos* Room::isRiddleThere(const Point& p) const {
+	return findBy(riddleLocations, [&](const RiddlePos& riddlePos) {return riddlePos.p == p; });
+}
+
 const Potion* Room::isPotionThere(const Point& p) const {
 	return findBy(potions, [&](const Potion& potion) {return potion.getPos() == p; });
 }

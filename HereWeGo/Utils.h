@@ -5,7 +5,8 @@
 
 constexpr char ESC = 27;
 constexpr char ENTER = 13;
-
+constexpr int MIN_X = 0;
+constexpr int MIN_Y = 4;
 constexpr int MAX_X = 80;
 constexpr int MAX_Y = 25;
 

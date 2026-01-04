@@ -4,12 +4,12 @@
 
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W  !         W                  *                             W                W
-W            W                  *                             W                W
+W     $      W                  *                             W                W
 W            W        K         W                             W       K        W
 W            W                  W                      @      W                W
 WWWWWWWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW     WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W                   *                                                          W
-W        /          *                                                          W
+W     &  /          *                                                          W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW2WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W K          W W                                  W   /         /         /    W
 W              W           /                      W                            W
@@ -20,8 +20,8 @@ W        /     W                                  W                            W
 W              *?                                 W                            W
 WGWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW3WWWWWWWWWWWWWWWWW4WWWWWWWWWWWWWWW
 WKW   W   W   W   W   W   WWWWWWWWWW            W                             WW
-W$W W W W W W W W W W W W W>>>>>>>>?            ******                    W   5E
-W!  W   W   W   W   W   W                       W                   &         WW
+W W W W W W W W W W W W W W>>>>>>>>?            ******                    W   5E
+W   W   W   W   W   W   W                       W                             WW
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 
 [/MAP]
@@ -51,7 +51,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 5 5 1 104 2 2 1 7 1 1
 
 [BOMBS]
-1 5
+1 10
 
 [TORCHES]
 5

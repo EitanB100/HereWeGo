@@ -5,6 +5,7 @@
 #include "Obstacle.h"
 #include "Bomb.h"
 #include "Player.h"
+
 #include "Tile_Chars.h"
 
 //grid initialization
@@ -32,6 +33,7 @@ void Room::drawTopLayer()
 	for (Spring& spring : springs) spring.draw();
 	for (Door& door : doors) door.draw();
 	for (Obstacle& obstacle : obstacles) obstacle.draw();
+
 
 	getTorchesLineOfSight();
 	

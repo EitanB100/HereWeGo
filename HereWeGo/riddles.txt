@@ -21,3 +21,11 @@ A: Darkness
 A: Fog
 A: Light
 CORRECT: 0
+
+[RIDDLE]
+ID 4
+Q: What walks on four legs in the morning, two legs at noon, and three legs in the evening?
+A: Shadow
+A: Shape-Shifter
+A: Human
+CORRECT: 2

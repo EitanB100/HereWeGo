@@ -111,7 +111,7 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 		for (int y = blastCenter.y - d; y <= blastCenter.y + d; y++) { 		// Iterate through the square shell at distance 'd'
 			for (int x = blastCenter.x - d; x <= blastCenter.x + d; x++) {
 				if (abs(x - blastCenter.x) == d || abs(y - blastCenter.y) == d) { // We only want to process the "border" of the current square shell this ensures we go ring-by-ring
-					if (x < 0 || y < 0 || x >= MAX_X || y >= MAX_Y) continue;
+					if (x < MIN_X || y < MIN_Y || x >= MAX_X || y >= MAX_Y) continue;
 					Point p{ x, y };
 					if (PointhasLineOfSight(blastCenter.x, blastCenter.y, x, y)) {
 						// Clear items and obstacles 
@@ -135,6 +135,8 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 								}
 							}
 						}
+						if (isPotionThere(p)) removePotion(p);
+						if (isRiddleThere(p)) removeRiddle(p);
 
 						// Draw the explosion char onto the room map buffer
 						map[y][x] = bomb->getExplosionChar();

@@ -327,10 +327,12 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 					room.addTorch(torch);
 					torchInd++;
 				}
+				else {
+					errorMessage = "Error - More torch entries than torches on grid!";
+					isDiscrepancy = true;
+				}
 			}
-			else {
-				errorMessage = "Error - More torch entries than torches on grid!";
-			}
+			
 		}
 
 		else if (section == "BOMBS") {
@@ -343,10 +345,12 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 					room.addBomb(bomb);
 					bombInd++;
 				}
+				else {
+					errorMessage = "Error - More bomb entries than bombs on grid!";
+					isDiscrepancy = true;
+				}
 			}
-			else {
-				errorMessage = "Error - More bomb entries than bombs on grid!";
-			}
+			
 		}
 
 		else if (section == "RIDDLES") {

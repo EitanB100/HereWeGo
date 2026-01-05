@@ -14,7 +14,7 @@ W                                                                              W
 W                                                                              W
 W                                                                              W
 W                                                                              W
-W                                                                              W
+W                         @                                                    W
 W            $                /        1                                       W
 W                                                                              W
 W                                                                              W
@@ -45,7 +45,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 # Scanned Top-Left -> Bottom-Right
 # Variables: ID Timer(int)
 # Example: 1 5
-
+1 10
 [TORCHES]
 # Scanned Top-Left -> Bottom-Right
 # Variables: Radius(int)

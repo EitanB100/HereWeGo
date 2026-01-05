@@ -1,18 +1,18 @@
 [RIDDLE]
 ID 1
-Q: What has keys but cannot open locks?
-A: A Piano
-A: A Map
-A: A Banana
-CORRECT: 0
-
-[RIDDLE]
-ID 2
 Q: I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?
 A: A Ghost
 A: An Echo
 A: A Cloud
 CORRECT: 1
+
+[RIDDLE]
+ID 2
+Q: What has keys but cannot open locks?
+A: A Piano
+A: A Map
+A: A Banana
+CORRECT: 0
 
 [RIDDLE]
 ID 3
@@ -29,3 +29,51 @@ A: Shadow
 A: Shape-Shifter
 A: Human
 CORRECT: 2
+
+[RIDDLE]
+ID 5
+Q: I take up space but serve no purpose. You created me with 'new' but forgot 'delete'.
+A: A Constructor
+A: A Memory Leak
+A: A Dangling Pointer
+CORRECT: 1
+
+[RIDDLE]
+ID 6
+Q: To understand me, you must first understand me. Without a base case, I am infinite.
+A: Recursion
+A: Iteration
+A: Encapsulation
+CORRECT: 0
+
+[RIDDLE]
+ID 7
+Q: I translate your code into machine language. Ignore my warnings, and you shall not pass.
+A: The Debugger
+A: The Linker
+A: The Compiler
+CORRECT: 2
+
+[RIDDLE]
+ID 8
+Q: I do not hold the value, but I know where it lives. I am powerful, but 'nullptr' is my weakness.
+A: A Reference
+A: A Pointer
+A: An Iterator
+CORRECT: 1
+
+[RIDDLE]
+ID 9
+Q: In the world of C++, if you want to be first, you must start with nothing. What number am I?
+A: One
+A: Negative One
+A: Zero
+CORRECT: 2
+
+[RIDDLE]
+ID 10
+Q: I allow different objects to respond to the same message in their own unique way.
+A: Polymorphism
+A: Inheritance
+A: Abstraction
+CORRECT: 0

@@ -1,8 +1,8 @@
 [MAP]
 L
+
+
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W                                                                              W
-W                                                                              W
 W                                                                              W
 W                                                                              W
 W                                                                              W
@@ -43,8 +43,8 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 
 [BOMBS]
 # Scanned Top-Left -> Bottom-Right
-# Variables: ID Timer(int)
-# Example: 1 5
+# Variables: ID Timer Seen
+# Example: 1 5 1
 
 [TORCHES]
 # Scanned Top-Left -> Bottom-Right

@@ -1,11 +1,11 @@
 #include "Level_Loader.h"
 #include <map>
 static std::string trimWhiteSpaces(const std::string& str) {
-	int first = str.find_first_not_of(" \t");
+	int first = str.find_first_not_of(" \t\r\n");
 	if (first == std::string::npos) 
 		return "";
-
-	return str.substr(first);
+	int last = str.find_last_not_of(" \t\r\n");
+	return str.substr(first, (last - first + 1));
 }
 
 static std::string readCleanLine(std::stringstream& parser) {
@@ -60,6 +60,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 	std::vector<Point> foundBombs;
 	std::vector<Point> foundTorches;
 	std::vector<Point> foundSwitches;
+	std::vector<Point> foundPotions;
 	std::vector<Point> foundRiddles;
 	std::map<int, Point> foundDoors; // Maps DoorChar '1' to Point(x,y)
 
@@ -73,6 +74,8 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 	int mapRow = 0;
 
 	while (std::getline(file, line)) {
+		line = trimWhiteSpaces(line);
+
 		if (section != "MAP") {
 			if (line.empty() || line[0] == '#') continue;
 		}
@@ -145,7 +148,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 						foundTorches.push_back(curr);
 						break;
 					case POTION_TILE:
-						room.addPotion(Potion(curr.x, curr.y));
+						foundPotions.push_back(curr);
 						break;
 					case RIDDLE_TILE:
 						foundRiddles.push_back(curr);
@@ -193,6 +196,11 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 		
 		if (line == "[BOMBS]") {
 			section = "BOMBS";
+			continue;
+		}
+
+		if (line == "[POTIONS]") {
+			section = "POTIONS";
 			continue;
 		}
 
@@ -336,17 +344,34 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 		}
 
 		else if (section == "BOMBS") {
-			int id, timer;
+			int id, timer, seen;
 			
-			if (parser >> id >> timer) {
+			if (parser >> id >> timer >> seen) {
 				if (bombInd < foundBombs.size()) {
 					Point p = foundBombs[bombInd];
 					Bomb bomb(p.x, p.y, id, timer);
+					if (seen) bomb.setSeen();
 					room.addBomb(bomb);
 					bombInd++;
 				}
 				else {
 					errorMessage = "Error - More bomb entries than bombs on grid!";
+					isDiscrepancy = true;
+				}
+			}
+			
+		}
+
+		else if (section == "POTIONS") {
+			int seen;
+			if (parser >> seen) {
+				if (potionInd < foundPotions.size()) {
+					Point& p = foundPotions[potionInd];
+					room.addPotion(Potion(p.x, p.y, seen));
+					potionInd++;
+				}
+				else {
+					errorMessage = "Error - More potion entries than potions on grid!";
 					isDiscrepancy = true;
 				}
 			}
@@ -368,6 +393,10 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 		}
 	}
 
+	if (room.doors.size() < foundDoors.size()) {
+		isDiscrepancy = true;
+		errorMessage = "Error: Map has " + std::to_string(foundDoors.size()) + " Doors, but file defines only " + std::to_string(room.doors.size()) + "!";
+	}
 	//Discrepency checks between tilemap and definitions
 	if (keyInd < foundKeys.size()) {
 		isDiscrepancy = true;

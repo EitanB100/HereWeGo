@@ -10,6 +10,8 @@
 #include "Player.h"
 #include "Riddle.h"
 
+static constexpr int GAME_SPEED = 100;
+
 static constexpr int LEVEL_COUNT = 4;
 
 static constexpr int PLAYER_AMOUNT = 2;

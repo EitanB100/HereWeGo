@@ -229,7 +229,7 @@ void Game::run()
 		//HUD renderer
 		printHUD();
 		printTimer();
-		Sleep(100);
+		Sleep(GAME_SPEED);
 	}
 
 }

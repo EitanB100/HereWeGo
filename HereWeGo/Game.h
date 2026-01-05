@@ -12,7 +12,7 @@
 
 static constexpr int GAME_SPEED = 100;
 
-static constexpr int LEVEL_COUNT = 4;
+static constexpr int LEVEL_COUNT = 3;
 
 static constexpr int PLAYER_AMOUNT = 2;
 static constexpr int MAX_SCORE = 100000;

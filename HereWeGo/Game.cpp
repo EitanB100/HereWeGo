@@ -96,6 +96,19 @@ void Game::init()
 		}
 	}
 
+	std::string endingFile = "ending.screen";
+	std::ifstream endCheck(endingFile);
+	if (endCheck.is_open()) {
+		endCheck.close();
+		levels.emplace_back();
+
+		if (!Level_Loader::loadLevel(levels.back(), endingFile, loadingErrorMessage)) {
+			loadingErrorMessage = "Ending Screen failed - " + loadingErrorMessage;
+			levels.pop_back();
+			return;
+		}
+	}
+
 	if (levels.empty()) levelLoadedCorrectly = false;
 }
 

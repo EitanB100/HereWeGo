@@ -43,7 +43,8 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 # Variables: ID Color KeyCount [KeyIDs] SwitchCount [SwitchID RequiredState]
 # Example: 1 4 1 100 1 200 1
 1 5 1 1 0
-
+2 5 0
+3 5 0
 [BOMBS]
 # Scanned Top-Left -> Bottom-Right
 # Variables: ID Timer(int)

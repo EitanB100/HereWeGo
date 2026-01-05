@@ -250,17 +250,14 @@ void Game::run()
 bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 {
 	Point exit = levels[currentLevelIndex].getExitPos();
-	if (exit.x == -1) return false; // No standard exit
+	if (exit.x == -1) return false; 
 
 	if (p1 == exit && p2 == exit)
 	{
-		// 1. Calculate Score BEFORE resetting the level timer
-		// This ensures the player is rewarded based on the time spent on the level they just finished
 		auto now = std::chrono::steady_clock::now();
 		int levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
 		score += (MAX_SCORE / (levelSeconds + 1));
 
-		// 2. Handle Special Case (Obstacle carry over)
 		if (currentLevelIndex < levels.size() - 1)
 		{
 			currentLevelIndex++;
@@ -269,14 +266,11 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 
 			resetLevelTimer();
 
-			printTimer(); // Force a timer update immediately so it doesn't show the old time for 75ms
+			printTimer();
 			return false;
 		}
 		else {
-			setColor(Color::GREEN);
-			printCentered("THANKS FOR PLAYING!", 12);
-			Sleep(1500);
-			setColor(Color::WHITE);
+			showEndingScreen();
 			return true;
 		}
 	}

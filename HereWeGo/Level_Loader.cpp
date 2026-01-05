@@ -60,6 +60,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 	std::vector<Point> foundBombs;
 	std::vector<Point> foundTorches;
 	std::vector<Point> foundSwitches;
+	std::vector<Point> foundPotions;
 	std::vector<Point> foundRiddles;
 	std::map<int, Point> foundDoors; // Maps DoorChar '1' to Point(x,y)
 
@@ -147,7 +148,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 						foundTorches.push_back(curr);
 						break;
 					case POTION_TILE:
-						room.addPotion(Potion(curr.x, curr.y));
+						foundPotions.push_back(curr);
 						break;
 					case RIDDLE_TILE:
 						foundRiddles.push_back(curr);
@@ -195,6 +196,11 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 		
 		if (line == "[BOMBS]") {
 			section = "BOMBS";
+			continue;
+		}
+
+		if (line == "[POTIONS]") {
+			section = "POTIONS";
 			continue;
 		}
 
@@ -354,6 +360,19 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 				}
 			}
 			
+		}
+
+		else if (section == "POTIONS") {
+			int seen;
+			if (parser >> seen) {
+				Point& p = foundPotions[potionInd];
+				room.addPotion(Potion(p.x, p.y, seen));
+				potionInd++;
+			}
+			else {
+				errorMessage = "Error - More potion entries than potions on grid!";
+				isDiscrepancy = true;
+			}
 		}
 
 		else if (section == "RIDDLES") {

@@ -12,6 +12,7 @@ class Potion {
 
 public:
 	Potion(int x, int y) : pos(x, y, POTION_TILE) {}
+	Potion(int x, int y, bool _seen) : pos(x,y,POTION_TILE),seen(_seen) {}
 
 
 	Color getColor() const {

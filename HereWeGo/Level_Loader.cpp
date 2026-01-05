@@ -1,11 +1,11 @@
 #include "Level_Loader.h"
 #include <map>
 static std::string trimWhiteSpaces(const std::string& str) {
-	int first = str.find_first_not_of(" \t");
+	int first = str.find_first_not_of(" \t\r\n");
 	if (first == std::string::npos) 
 		return "";
-
-	return str.substr(first);
+	int last = str.find_last_not_of(" \t\r\n");
+	return str.substr(first, (last - first + 1));
 }
 
 static std::string readCleanLine(std::stringstream& parser) {
@@ -73,6 +73,8 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 	int mapRow = 0;
 
 	while (std::getline(file, line)) {
+		line = trimWhiteSpaces(line);
+
 		if (section != "MAP") {
 			if (line.empty() || line[0] == '#') continue;
 		}

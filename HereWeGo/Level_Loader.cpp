@@ -365,7 +365,7 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 		else if (section == "POTIONS") {
 			int seen;
 			if (parser >> seen) {
-				if (bombInd < foundPotions.size()) {
+				if (potionInd < foundPotions.size()) {
 					Point& p = foundPotions[potionInd];
 					room.addPotion(Potion(p.x, p.y, seen));
 					potionInd++;

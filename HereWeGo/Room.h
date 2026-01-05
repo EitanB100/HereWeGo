@@ -88,10 +88,8 @@ public:
 
     void drawTopLayer();
     void drawRoom(Screen& screen);
-    void loadFromScreen(Screen& screen);
     void clearTile(Point& p) { map[p.y][p.x] = ' '; }
 
-    void addWall(const Point& p);
     void addDoor(const Door& door);
     void addKey(const Key& key);
     void addTorch(const Torch& torch);

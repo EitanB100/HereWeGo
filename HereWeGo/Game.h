@@ -40,6 +40,7 @@ class Game {
 	std::vector<Riddle> riddles;
 	void handleRiddle(int riddleID, Player& player, Room& room);
 
+
 	void printHUD();
 	void printTimer();
 	void resetLevelTimer();
@@ -61,7 +62,9 @@ public:
 	void toggleColor();
 
 	void startInLevel(Level level);
-	
+
+	void showEndingScreen();
+
 	void init();
 	void run();
 	

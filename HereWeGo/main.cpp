@@ -63,8 +63,7 @@ int main() {
 		case MENU_ENDING:
 		{
 			Game game;
-			game.startInLevel(Level::ENDING);
-			game.run();
+			game.showEndingScreen();
 			break;
 		}
 		case MENU_SETTINGS:

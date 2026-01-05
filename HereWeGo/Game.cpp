@@ -96,18 +96,6 @@ void Game::init()
 		}
 	}
 
-	std::string endingFile = "ending.screen";
-	std::ifstream endCheck(endingFile);
-	if (endCheck.is_open()) {
-		endCheck.close();
-		levels.emplace_back();
-
-		if (!Level_Loader::loadLevel(levels.back(), endingFile, loadingErrorMessage)) {
-			loadingErrorMessage = "Ending Screen failed - " + loadingErrorMessage;
-			levels.pop_back();
-			return;
-		}
-	}
 
 	if (levels.empty()) levelLoadedCorrectly = false;
 }
@@ -250,17 +238,14 @@ void Game::run()
 bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 {
 	Point exit = levels[currentLevelIndex].getExitPos();
-	if (exit.x == -1) return false; // No standard exit
+	if (exit.x == -1) return false; 
 
 	if (p1 == exit && p2 == exit)
 	{
-		// 1. Calculate Score BEFORE resetting the level timer
-		// This ensures the player is rewarded based on the time spent on the level they just finished
 		auto now = std::chrono::steady_clock::now();
 		int levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
 		score += (MAX_SCORE / (levelSeconds + 1));
 
-		// 2. Handle Special Case (Obstacle carry over)
 		if (currentLevelIndex < levels.size() - 1)
 		{
 			currentLevelIndex++;
@@ -269,14 +254,11 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 
 			resetLevelTimer();
 
-			printTimer(); // Force a timer update immediately so it doesn't show the old time for 75ms
+			printTimer();
 			return false;
 		}
 		else {
-			setColor(Color::GREEN);
-			printCentered("THANKS FOR PLAYING!", 12);
-			Sleep(1500);
-			setColor(Color::WHITE);
+			showEndingScreen();
 			return true;
 		}
 	}
@@ -346,4 +328,49 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 	room.drawRoom(screen);
 	screen.draw();
 	room.drawTopLayer();
+}
+
+void Game::showEndingScreen()
+{
+		screen.clearScreen();
+
+		setColor(Color::CYAN);
+		printCentered("===============================================", 3);
+		printCentered("||                                           ||", 4);
+		printCentered("||           THANKS FOR PLAYING!             ||", 5);
+		printCentered("||                                           ||", 6);
+		printCentered("===============================================", 7);
+
+
+		setColor(Color::YELLOW);
+		printCentered("       $             &       ", 10);
+		setColor(Color::MAGENTA);
+		printCentered("    (We made it!)     ", 12);
+
+		setColor(Color::GREEN);
+		std::string finalScoreStr = "FINAL SCORE: " + std::to_string(score);
+
+		//Rank based on score
+		std::string rank = "Rank: Novice Explorer";
+		if (score > 1000) rank = "Rank: Dungeon Master";
+		if (score > 5000) rank = "Rank: C++ Wizard";
+
+		printCentered(finalScoreStr, 14);
+		setColor(Color::LIGHT_GRAY);
+		printCentered(rank, 15);
+
+		setColor(Color::WHITE);
+
+		printCentered("GAME CREATED BY", 20);
+		printCentered("EITAN BAR", 21);
+		printCentered("HAREL BEN-ABIR", 22);
+
+		setColor(Color::DARK_GRAY);
+		printCentered("Press any key to return to menu...", 24);
+
+		while (_kbhit()) _getch(); 
+		_getch(); 
+
+		setColor(Color::WHITE); // Reset for menu
+	
 }

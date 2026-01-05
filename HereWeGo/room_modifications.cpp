@@ -76,11 +76,6 @@ void Room::addRiddle(int x, int y, int id)
 	map[y][x] = RIDDLE_TILE;
 }
 
-void Room::addWall(const Point& p)
-{
-	map[p.y][p.x] = WALL_TILE;
-}
-
 void Room::removeKey(const Point& p)
 {
 	for (auto key = keys.begin(); key != keys.end(); key++) {

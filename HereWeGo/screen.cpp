@@ -16,14 +16,6 @@ void Screen::createGameScreen() {
 
 }
 
-void Screen::loadMapData(const char* mapData[MAX_Y])
-{
-	for (int y = 0; y < MAX_Y; y++) {
-		for (int x = 0; x < MAX_X; x++) {
-			setTile(x, y, mapData[y][x]);
-		}
-	}
-}
 
 void Screen::loadMapFromRoom(const char mapData[MAX_Y][MAX_X]) {
 	for (int y = 0; y < MAX_Y; y++) {
@@ -38,11 +30,6 @@ Screen::Screen() {
 		screen[i][MAX_X] = '\0';
 	}
 	createGameScreen();
-}
-
-
-void Screen::setTile(int x, int y, char symbol) { //updated to improve readability, removed const
-	screen[y][x] = symbol;
 }
 
 void Screen::draw() const {

@@ -11,9 +11,8 @@ class Spring {
     Color color = Color::BLUE;
 public:
     Spring(Point dir) : direction(dir) {
-        if (dir == Directions::UP || dir == Directions::RIGHT) {
-            color = Color::GREEN;
-    }
+        if (dir == Directions::UP || dir == Directions::RIGHT) color = Color::BLUE;
+        else color = Color::RED;
     }
 
     Color getColor() const { return color; }

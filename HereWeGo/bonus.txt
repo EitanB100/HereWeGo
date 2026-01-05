@@ -1,0 +1,35 @@
+================================================================================
+                                BONUS FEATURES
+================================================================================
+
+1. Shielded Bomb Explosions (Physics & Raycasting)
+   - The Bomb explosion logic calculates Line-of-Sight using Bresenham's algorithm.
+   
+   - Walls effectively "shield" entities from the blast. If a wall stands 
+     between the bomb and an object (even within the radius), the object is safe.
+     
+   - Chain reactions: Bombs trigger other bombs only if they have line-of-sight.
+
+2. New Game Element: Potions
+   - Implemented a completely new collectible item not defined in the original 
+     exercise requirements.
+   - Behavior: Consumable item represented by 'P' that restores Health Points 
+     (HP) to the player when collected (If HP at full it is solid).
+   - Integration: Fully supported in the Level Loader.
+
+3. Full Color Support with Toggle
+   - The game utilizes console text attributes to color-code elements:
+     * Keys match their door colors.
+     * Springs/Switches change color based on state.
+     * Potions are Blue, Bombs are Red, etc.
+   - As requested, there is a settings menu option to toggle Color Mode ON/OFF.
+   
+4. Key Rebinding System
+   - Inside Settings, a full key rebinding system that allows players to rebind controls for 
+     both Player 1 and Player 2 at runtime (includes conflict detection and prevents them).
+
+5. Advanced Torch Physics
+   - The Torch implementation uses a real-time Line-of-Sight algorithm.
+   - Instead of a simple square radius, it calculates visibility through walls 
+     and obstacles, revealing only what is optically visible to the holder.
+   - "Hidden" items (Keys, Bombs, Potions) are represented by 'R' until illuminated by a torch or line-of-sight.

@@ -7,7 +7,7 @@
 constexpr char ESC = 27;
 constexpr char ENTER = 13;
 constexpr int MIN_X = 0;
-constexpr int MIN_Y = 4;
+constexpr int MIN_Y = 3;
 constexpr int MAX_X = 80;
 constexpr int MAX_Y = 25;
 
@@ -15,7 +15,7 @@ static constexpr int HP_INCREASE = 5;
 
 enum class ItemType { NONE, KEY, TORCH, BOMB }; // possible item types - 
 
-enum class Level {ONE = 0, TWO, THREE, ENDING, COUNT};
+enum class Level {ONE = 0, TWO, THREE, COUNT};
 inline int operator*(Level level) { return static_cast<int>(level); }
 inline bool operator<(Level level, int i) { return static_cast<int>(level) < i; }
 

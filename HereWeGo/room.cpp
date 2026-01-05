@@ -256,21 +256,15 @@ char Room::getObjectAt(const Point& p, Color& color) const
 	if (isSwitchTile(mapChar)) {
 		auto sw = isSwitchThere(p);
 		if (sw != nullptr) {
-			// Map might say OFF ('\') but switch is ON ('/'), so we trust the object
 			if (sw->getIsSeen()) {
-				if (sw->isBroken()) {
-					color = Color::DARK_GRAY;
-					return SWITCH_OFF;
-				}
 				color = sw->getState() ? Color::GREEN : Color::RED;
 				return sw->getState() ? SWITCH_ON : SWITCH_OFF;
 			}
-			// If not seen, it falls through to UNKNOWN_TILE logic usually, 
-			// but if map has the switch char, we treat it as visible.
+			return UNKNOWN_TILE;
 		}
 		return ' ';
 	}
-	
+	//potions
 	if (mapChar == POTION_TILE) {
 		auto potion = isPotionThere(p);
 		if (potion != nullptr) {

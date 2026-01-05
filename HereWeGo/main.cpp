@@ -11,7 +11,7 @@ int main() {
 	constexpr char MENU_LVL1 = '1';
 	constexpr char MENU_LVL2 = '2';
 	constexpr char MENU_LVL3 = '3';
-	constexpr char MENU_TEST = '4';
+	constexpr char MENU_ENDING = '4';
 	constexpr char MENU_SETTINGS = '7';
 	constexpr char MENU_INSTRUCTIONS = '8';
 	constexpr char MENU_EXIT = '9';
@@ -32,7 +32,7 @@ int main() {
 		std::cout << "for easy playtesting:" << std::endl;
 		std::cout << "(2) Skip to level 2" << std::endl;
 		std::cout << "(3) Skip to level 3" << std::endl;
-		std::cout << "(4) Test Space" << std::endl;
+		std::cout << "(4) Ending Screen" << std::endl;
 
 		char selection = _getch();
 
@@ -60,11 +60,10 @@ int main() {
 			game.run();
 			break;
 		}
-		case MENU_TEST:
+		case MENU_ENDING:
 		{
 			Game game;
-			game.startInLevel(Level::TEST);
-			game.run();
+			game.showEndingScreen();
 			break;
 		}
 		case MENU_SETTINGS:

@@ -12,7 +12,7 @@
 
 static constexpr int GAME_SPEED = 100;
 
-static constexpr int LEVEL_COUNT = 4;
+static constexpr int LEVEL_COUNT = 3;
 
 static constexpr int PLAYER_AMOUNT = 2;
 static constexpr int MAX_SCORE = 100000;
@@ -40,6 +40,7 @@ class Game {
 	std::vector<Riddle> riddles;
 	void handleRiddle(int riddleID, Player& player, Room& room);
 
+
 	void printHUD();
 	void printTimer();
 	void resetLevelTimer();
@@ -61,7 +62,9 @@ public:
 	void toggleColor();
 
 	void startInLevel(Level level);
-	
+
+	void showEndingScreen();
+
 	void init();
 	void run();
 	

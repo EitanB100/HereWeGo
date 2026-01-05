@@ -41,7 +41,7 @@ public:
 	char stateChar() const {
 		return state ? SWITCH_ON : SWITCH_OFF;
 	}
-	bool isBroken() const { return broken; }
+	
 	
 	
 	void toggleState();

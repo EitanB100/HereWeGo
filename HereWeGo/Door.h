@@ -50,6 +50,7 @@ public:
 
     bool tryUnlock(int keyID);
     void UpdatedFromSwitch();
+    void invalidateSwitch(const Switch* sw);
 
     bool isAtPosition(const Point& p) const {
         return (pos.getx() == p.x && pos.gety() == p.y);

@@ -39,7 +39,7 @@ void Door::UpdatedFromSwitch()
 	for (const auto& req : requiredSwitchIDs)
 	{
 		// req.SW is the pointer, req.requiredState is the boolean (ON/OFF)
-		if (req.SW && req.SW->getState() != req.requiredState)
+		if (!req.SW || req.SW->getState() != req.requiredState)
 		{
 			conditionsMet = false;
 			break;
@@ -64,4 +64,12 @@ void Door::UpdatedFromSwitch()
 
 	if (stateChanged)
 		draw();
+}
+
+void Door::invalidateSwitch(const Switch* sw)
+{
+	for (auto& requiredSwitch : requiredSwitchIDs) {
+		if (requiredSwitch.SW == sw) requiredSwitch.SW = nullptr;
+	}
+	UpdatedFromSwitch();
 }

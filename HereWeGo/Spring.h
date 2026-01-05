@@ -7,7 +7,7 @@ class Spring {
     std::vector<Placement> parts;
     Point direction; // The direction the spring pushes (e.g., 1,0 for Right)
     int compressedCount = 0;
-    Color color = Color::GREEN;
+    Color color = Color::BLUE;
 public:
     Spring(Point dir) : direction(dir) {
         if (dir == Directions::UP || dir == Directions::RIGHT) color = Color::BLUE;

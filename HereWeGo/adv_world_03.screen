@@ -1,97 +1,82 @@
 [MAP]
-
-
+L                         
 
 
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W    $                                 W   >>>>>>>>>>>>v    <<<<<<<<<<<<<     W
-W                                      W   ^           v    <           <      W
-W     &                                W   ^           v    <           <     W
-W      @ @ @ @ @ @                     W   ^           v    <           <      W
-W      @ @ @ @ @ @                     W   ^           v    <           <      W
-W      @ @ @ @ @ @                     W   ^<<<<<<<<<<<<    <<<<<<<<<<<<<      W
-W      @ @ @ @ @ @                     W                                       W                                       W
-W                                      W                                       W                                      W   ********************************* W
-W                                      W   * * * * * * * * * * * * * * * * * W
-W    / / / / / / / / / /               W   ********************************* W
-W    \ \ \ \ \ \ \ \ \ \               W   * * * * * * * * * * * * * * * * * W
-W                                      W   ********************************* W
-W    1                                 W                                       W
-W                                      W                                       W
-W    K K K K K                         W                                       W
-W                                      W   W W W W W W W W W W W W W W W W W   W
-W                                      W   W                               W   W
-W    ?                                 W   W                               W   W
-W    !                                 W   W W W W W W W W W W W W W W W W W   W
+W    $     W   W   K  WWWWWWWWWWWWWWW>>       V W  /         W  /        K WWWWW
+W       @  W   W      2    *            K W     WWWWW P      WWWWWW3WWWWWW WWWWW                     
+W    &     W   W      W    *              W>>>                         W     ? W
+WWWWWWWWWWWWW**WWWW?WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW**W                      
+WWWWWWWWWWWWW  W    1               W          W V    5         *           W  W 
+WWWWWWWWWWWWW  WWWWWW WWWWWWWWWW/WWW W         W V    W         WWWWWKWWWWWWW  W                 
+W           W     *                W W         W V    WW?WWWWWWWWW   W  W 4    W
+W           W  W  *                W W         W   /  W         *  W      W    W    
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW WWWWWWWWWWWW*WWWWWWWWWWWWWWWWWWWWWW/WWW6WWW
+WWW         @ @   WW        *  PW  ?*     W   W  *        W   **  <<W   W  ?  VW    
+WWWWWWWWWWWWWWWWWWWW        *      W*     W   W  *            WW      W    W KVW
+WWW    @     K    WWWWW8WWWWWWWWWWWW*     W   WWW WWWWWWWWWW*WWWWWWWWWWWWWWWWWVW                                 
+WWW               W  WW      @     W*     W     W W                         7  W
+WWWWWWWWWWWWWWWWWWW  WWWWWWWWWWWWWWW      W   WWWWWWWWWWWWWW WWWWWWWWWWWWWWWWW*W
+WWW    @          W  WWWWWWWWWWWW  W^     W   W             W       W    P    *W
+WWW               W  WWWWWWWWWWWW**W^     W   W     @               W         *W
+E9                W  ***  <<<W  W  W^     W   W   @                 W   @      W
+WWWWWWWWWWWWWWWWWWW  W W      **W  W^     W   W                     W          W
+WWW     @            W W     W     W    * W   W                     W>>    <<WWW
+WWW             !    ? W     W  W  W   WWWW K W                     W          W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [/MAP]
 
 [KEYS]
-# 5 keys for one door
-101 1 1
-102 2 1
-103 3 1
-104 4 1
-105 5 1
+1 1 1
+2 2 1
+3 3 1
+4 4 1
+5 11 1
+6 14 0
+7 9 1
 
 [SWITCHES]
-# A massive amount of switches to test memory/vectors
-1 1
+1 1 
 2 1
 3 1
 4 1
 5 1
-6 1
-7 1
-8 1
-9 1
-10 1
-11 1
-12 1
-13 1
-14 1
-15 1
-16 1
-17 1
-18 1
-19 1
-20 1
 
 [DOORS]
-# Door 1 requires 5 keys (ID 101-105) and 1 Switch (ID 1)
-1 4 5 101 102 103 104 105 1 1 1
+1 6 0 1 3 1
+2 1 1 1 0
+3 3 1 3 2 1 1 2 0
+4 2 1 2 2 2 1 5 0
+5 4 1 4 1 5 1
+6 14 0 1 5 1
+7 11 1 5 1 4 1
+8 9 1 7 0
+9 14 1 6 0
 
 [BOMBS]
-# 30 Bombs with short timers for chain reactions
-1 5
-2 5
-3 5
-4 5
-5 5
-6 5
-7 5
-8 5
-9 5
-10 5
-11 5
-12 5
-13 5
-14 5
-15 5
-16 5
-17 5
-18 5
-19 5
-20 5
-21 5
-22 5
-23 5
-24 5
+1 5 1
+2 5 0
+3 5 0
+4 5 0
+5 5 1
+6 5 0
+7 5 1
+8 5 1
+9 5 1
+10 5 0
+
+[POTIONS]
+1
+1
+1
 
 [TORCHES]
-# Torch near edge
 5
 
 [RIDDLES]
-# ID 99 doesn't exist in riddles.txt -> Should default safely or show error
-99
+5
+6
+7
+8
+9
+10

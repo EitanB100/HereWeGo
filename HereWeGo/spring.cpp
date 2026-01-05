@@ -1,5 +1,5 @@
 #include "Spring.h"
-
+#include <iostream>
 bool Spring::isSpringPart(const Point& p) const
 {
 	for (const auto& part : parts) {
@@ -54,5 +54,6 @@ void Spring::draw() {
 			parts[i].draw(SPRING_TILE);
 		}
 	}
+	std::cout.flush();
 	setColor(Color::WHITE);
 }

@@ -365,14 +365,17 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 		else if (section == "POTIONS") {
 			int seen;
 			if (parser >> seen) {
-				Point& p = foundPotions[potionInd];
-				room.addPotion(Potion(p.x, p.y, seen));
-				potionInd++;
+				if (bombInd < foundPotions.size()) {
+					Point& p = foundPotions[potionInd];
+					room.addPotion(Potion(p.x, p.y, seen));
+					potionInd++;
+				}
+				else {
+					errorMessage = "Error - More potion entries than potions on grid!";
+					isDiscrepancy = true;
+				}
 			}
-			else {
-				errorMessage = "Error - More potion entries than potions on grid!";
-				isDiscrepancy = true;
-			}
+			
 		}
 
 		else if (section == "RIDDLES") {

@@ -12,9 +12,9 @@ WWWWWWWWWWWWW  WWWWWW WWWWWWWWWW/WWWWW W       W V    W         WWWWWKWWW/WWW  W
 W           W     *                  W W       W V    WW?WWWWWWWWW   W   WW 4  W
 W           W  W  *                  W W       W      W         *  W   W    W  W    
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW WWWWWWWWWW*WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W           @@@   WW        *  PW  *  *   W   W /*        W>>   **  W   W  ?  VW    
-W     $    $$$    WW        *     ?W  *   W   W  *            WW      W    W KVW
-W K  $  $ $   $$  WWWWW7WWWWWWWWWWWW  *   W   WWW WWWWWWWWWWWWWWWWWWWWWWW*WWWWVW                                 
+W  !        @ @   WW        *  PW  *  *   W   W /*        W>>   **  W   W  ?  VW    
+W                 WW        *     ?W  *   W   W  *            WW      W    W KVW
+W            K    WWWWW7WWWWWWWWWWWW  *   W   WWW WWWWWWWWWWWWWWWWWWWWWWW*WWWWVW                                 
 WWWWWWWWWWWWWWWWWWW  WW      @     W  *   W     W W                 WWWWW   6  W
 WWWWWWWWWWWWWWWWWWW  WWWWWWWWWWWWWWW      W   WWWWWWW               W   W WWWW*W
 WW     @  @ @     W  WWWWWWWWWWWW  W  ^   W   W                     W    P    *W
@@ -35,7 +35,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 3 3 1
 4 4 1
 5 11 1
-6 14 1
+6 14 0
 7 9 1
 
 [SWITCHES]
@@ -66,8 +66,8 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 # Variables: ID Timer Seen
 # Example: 1 5 1
 1 5 1
-2 5 1
-3 5 1
+2 5 0
+3 5 0
 4 5 1
 5 5 1
 6 5 1
@@ -82,6 +82,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 # Scanned Top-Left -> Bottom-Right
 # Variables: Radius(int)
 # Example: 5
+5
 
 [RIDDLES]
 # Scanned Top-Left -> Bottom-Right

@@ -338,12 +338,13 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 		}
 
 		else if (section == "BOMBS") {
-			int id, timer;
+			int id, timer, seen;
 			
-			if (parser >> id >> timer) {
+			if (parser >> id >> timer >> seen) {
 				if (bombInd < foundBombs.size()) {
 					Point p = foundBombs[bombInd];
 					Bomb bomb(p.x, p.y, id, timer);
+					if (seen) bomb.setSeen();
 					room.addBomb(bomb);
 					bombInd++;
 				}

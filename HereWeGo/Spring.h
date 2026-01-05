@@ -9,7 +9,10 @@ class Spring {
     int compressedCount = 0;
     Color color = Color::GREEN;
 public:
-    Spring(Point dir) : direction(dir) {}
+    Spring(Point dir) : direction(dir) {
+        if (dir == Directions::UP || dir == Directions::RIGHT) color = Color::BLUE;
+        else color = Color::RED;
+    }
 
     Color getColor() const { return color; }
     void setColor(Color c) { color = c; }

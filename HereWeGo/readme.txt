@@ -58,16 +58,10 @@ ID: [322382631]  | Name: [Harel Ben-Abir]
    - The `Game` class manages the high-level loop, ensuring the `main()` function 
      remains clean and avoids recursion problems (as per requirements).
 
-6. Riddles
+4. Riddles
    - Riddles are loaded from `riddles.txt`. 
    - Answering incorrectly deals damage (HP penalty) but allows the player to retry.
    - Answering correctly clears the riddle tile.
-
---- Known Issues / Limitations ---
-- Console Window Size: The game expects a standard 80x25 terminal. 
-  Resizing the window manually during gameplay may cause visual artifacts.
-- Color: If the terminal does not support ANSI colors or Windows Console Attributes, 
-  toggle "Color Mode" to OFF in the settings.
 
 --- References ---
 - Bresenham's Line Algorithm logic used for Torch/Bomb Line-of-Sight.

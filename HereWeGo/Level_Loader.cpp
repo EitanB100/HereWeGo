@@ -370,8 +370,10 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 
 	//Discrepency checks between tilemap and definitions
 	if (keyInd < foundKeys.size()) {
-		isDiscrepancy = true;
-		errorMessage = "Error: Map has " + std::to_string(foundKeys.size()) + " Keys, but file defines only " + std::to_string(keyInd) + "!";
+		errorMessage = "Error: Map has " + std::to_string(foundKeys.size()) + " Keys, but file defines only " + std::to_string(keyInd) + "!" + " Initiating default keys...";
+		while (keyInd < foundKeys.size()) {
+			room.addKey(Key());
+		}
 	}
 	
 	if (switchInd < foundSwitches.size()) {

@@ -3,6 +3,7 @@
 #include <string>
 #include <conio.h>
 
+
 constexpr char ESC = 27;
 constexpr char ENTER = 13;
 constexpr int MIN_X = 0;
@@ -35,9 +36,9 @@ enum class Color {
     SKY = 9,
     LIME = 10,
     AQUA = 11,
-    ORANGE = 12,      // Actually LIGHT_RED, but looks like vibrant orange/coral
-    YELLOW = 14,      // The "Bright" attractive yellow you want
-    WHITE = 15        // Default
+    ORANGE = 12,      
+    YELLOW = 14,      
+    WHITE = 15       
 };
 
 struct heldItem {
@@ -60,6 +61,8 @@ struct Point { // simple struct for position getting
         return x != other.x || y != other.y;
     }
 };
+
+constexpr Point DEFAULT_POINT = { 1,1 };
 
 struct Directions {
     static constexpr Point UP = { 0,-1 };

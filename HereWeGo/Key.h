@@ -13,7 +13,7 @@ class Key {
 	bool seen = false;
 
 public:
-	// Use the version that supports Color and the global KEY_TILE constant
+	Key() : pos(DEFAULT_POINT.x, DEFAULT_POINT.y, KEY_TILE) {}
 	Key(int x, int y, int id, Color c) : pos(x, y, KEY_TILE), keyID(id), color(c) {}
 
 	int getKeyID() const {

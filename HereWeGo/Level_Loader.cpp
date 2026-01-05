@@ -399,30 +399,28 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 	}
 	//Discrepency checks between tilemap and definitions
 	if (keyInd < foundKeys.size()) {
-		errorMessage = "Error: Map has " + std::to_string(foundKeys.size()) + " Keys, but file defines only " + std::to_string(keyInd) + "!" + " Initiating default keys...";
-		while (keyInd < foundKeys.size()) {
-			room.addKey(Key());
-		}
+		isDiscrepancy = true;
+		errorMessage = "Error: Map has " + std::to_string(foundKeys.size()) + " Keys, but file defines only " + std::to_string(keyInd) + "!";
 	}
 	
 	if (switchInd < foundSwitches.size()) {
 		isDiscrepancy = true;
-		errorMessage = "Warning: Map has " + std::to_string(foundSwitches.size()) + " Switches, but file defines only " + std::to_string(switchInd) + "!";
+		errorMessage = "Error: Map has " + std::to_string(foundSwitches.size()) + " Switches, but file defines only " + std::to_string(switchInd) + "!";
 	}
 	if (riddleInd < foundRiddles.size()) {
 		isDiscrepancy = true;
-		errorMessage = "Warning: Map has " + std::to_string(foundRiddles.size()) + " Riddles, but file defines only " + std::to_string(riddleInd) + "!";
+		errorMessage = "Error: Map has " + std::to_string(foundRiddles.size()) + " Riddles, but file defines only " + std::to_string(riddleInd) + "!";
 	}
 	
 	if (bombInd < foundBombs.size()) {
 		isDiscrepancy = true;
-		errorMessage = "Warning: Map has " + std::to_string(foundBombs.size()) + " Bombs, but file defines only " + std::to_string(bombInd) + "!";
+		errorMessage = "Error: Map has " + std::to_string(foundBombs.size()) + " Bombs, but file defines only " + std::to_string(bombInd) + "!";
 		
 	}
 	
 	if (torchInd < foundTorches.size()) {
 		isDiscrepancy = true;
-		errorMessage = "Warning: Map has " + std::to_string(foundTorches.size()) + " Torches, but file defines only " + std::to_string(torchInd) +"!" ;
+		errorMessage = "Error: Map has " + std::to_string(foundTorches.size()) + " Torches, but file defines only " + std::to_string(torchInd) +"!" ;
 		
 	}
 

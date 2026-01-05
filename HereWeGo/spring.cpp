@@ -45,7 +45,6 @@ void Spring::sortParts() //ensuring parts[0] is the tip of the spring
 }
 
 void Spring::draw() {
-	setColor(color);
 	for (int i = 0; i < parts.size(); i++) {
 		if (i < compressedCount) {
 			parts[i].draw(' ');
@@ -54,6 +53,6 @@ void Spring::draw() {
 			parts[i].draw(SPRING_TILE);
 		}
 	}
-	std::cout.flush();
+	
 	setColor(Color::WHITE);
 }

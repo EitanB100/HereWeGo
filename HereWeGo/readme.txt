@@ -24,7 +24,7 @@ ID: [322382631]  | Name: [Harel Ben-Abir]
 2. Main Menu:
    - (1) Start Game: Begins from Level 1.
    - (7) Settings: Rebind keys or Toggle Colors.
-   - (8) Instructions: View default controls.
+   - (8) Instructions: View controls (updates accordingly).
    - (2/3/4) Debug Shortcuts: Skip to specific levels or ending screen.
 
 --- Default Controls (Case Insensitive) ---
@@ -40,33 +40,19 @@ ID: [322382631]  | Name: [Harel Ben-Abir]
 
 --- Design Decisions & Implementation Details ---
 
-1. Grid & Coordinates
-   - The game uses a 0-indexed coordinate system (0,0 is Top-Left).
-   - The Map is managed by the `Room` class, which handles collision detection 
-     and object interaction.
-   - The HUD (Legend) position is determined by the 'L' character in the 
-     .screen file.
-
-2. Spring Physics
-   - Springs implement a momentum system. 
-   - "Compression": Moving onto a spring increases potential energy.
-   - "Launch": Moving off/hitting a wall releases energy.
-   - Flight Time: Calculated as (Force^2). While in flight, the player cannot 
-     change direction but can strafe sideways.
-
-3. File Format (.screen)
+1. File Format (.screen)
    - We separated the map layout ([MAP]) from the object metadata ([KEYS], [DOORS], [POTIONS]).
    - The loader reads the visual map first to find coordinates, then links them 
      to the metadata sections using IDs.
    - This allows for flexible level design where visual placement is decoupled 
      from logic properties.
 
-4. New Element: Potion
+2. New Element: Potion
    - We chose to add a healing mechanic. Potions appear on the map as 'P'.
    - Picking one up instantly restores 5 HP (up to Max HP).
    - This adds a layer of strategy to the bomb/riddle damage mechanics.
 
-5. Memory Management
+3. Memory Management
    - `std::vector` is used for managing dynamic lists of game objects.
    - `std::unique_ptr` is used for Switches to ensure safe memory handling.
    - The `Game` class manages the high-level loop, ensuring the `main()` function 

@@ -15,7 +15,7 @@ static constexpr int HP_INCREASE = 5;
 
 enum class ItemType { NONE, KEY, TORCH, BOMB }; // possible item types - 
 
-enum class Level {ONE = 0, TWO, THREE, ENDING, COUNT};
+enum class Level {ONE = 0, TWO, THREE, COUNT};
 inline int operator*(Level level) { return static_cast<int>(level); }
 inline bool operator<(Level level, int i) { return static_cast<int>(level) < i; }
 

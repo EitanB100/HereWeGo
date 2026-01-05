@@ -347,3 +347,54 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 	screen.draw();
 	room.drawTopLayer();
 }
+
+void Game::showEndingScreen()
+{
+		screen.clearScreen();
+
+		setColor(Color::CYAN);
+		printCentered("===============================================", 3);
+		printCentered("||                                           ||", 4);
+		printCentered("||           THANKS FOR PLAYING!             ||", 5);
+		printCentered("||                                           ||", 6);
+		printCentered("===============================================", 7);
+
+
+		setColor(Color::YELLOW);
+		printCentered("       $             &       ", 10);
+		setColor(Color::MAGENTA);
+		printCentered("    (We made it!)     ", 11);
+
+		// --- Final Score Display (Requirement for Ex2) ---
+		setColor(Color::GREEN);
+		std::string finalScoreStr = "FINAL SCORE: " + std::to_string(score);
+
+		// Calculate a "Rank" based on score for extra charm
+		std::string rank = "Rank: Novice Explorer";
+		if (score > 1000) rank = "Rank: Dungeon Master";
+		if (score > 5000) rank = "Rank: C++ Wizard";
+
+		printCentered(finalScoreStr, 14);
+		setColor(Color::LIGHT_GRAY);
+		printCentered(rank, 15);
+
+		// --- Credits Section ---
+		setColor(Color::WHITE);
+		printCentered("--- CREDITS ---", 18);
+
+		// REPLACE THESE WITH YOUR ACTUAL DETAILS
+		printCentered("GAME CREATED BY", 20);
+		printCentered("EITAN BAR", 21);
+		printCentered("HAREL BEN-ABIR", 22);
+
+		// --- Footer ---
+		setColor(Color::DARK_GRAY);
+		printCentered("Press any key to return to menu...", 24);
+
+		// --- Wait for input ---
+		while (_kbhit()) _getch(); // Clear any previous accidental presses
+		_getch(); // Wait for user
+
+		setColor(Color::WHITE); // Reset for menu
+	
+}

@@ -40,6 +40,8 @@ class Game {
 	std::vector<Riddle> riddles;
 	void handleRiddle(int riddleID, Player& player, Room& room);
 
+	void showEndingScreen();
+
 	void printHUD();
 	void printTimer();
 	void resetLevelTimer();

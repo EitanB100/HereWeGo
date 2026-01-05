@@ -200,7 +200,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 	
 	char mapChar = map[p.y][p.x];
 
-	if (mapChar == ' ' || mapChar == WALL_TILE || mapChar == SPRING_TILE || mapChar == GLASS_TILE || mapChar == OBSTACLE_TILE) {
+	if (mapChar == ' ' || mapChar == WALL_TILE || mapChar == GLASS_TILE || mapChar == OBSTACLE_TILE) {
 		color = Color::WHITE;
 
 		return mapChar;
@@ -250,6 +250,16 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			return BOMB_TILE;
 		}
 		return ' ';
+	}
+	//springs
+	if (mapChar == SPRING_TILE) {
+		auto spring = isSpringThere(p);
+		if (spring) {
+			color = spring->getColor();
+			return SPRING_TILE;
+		}
+		color = Color::MAGENTA;
+		return ' ' ;
 	}
 
 	//switches:

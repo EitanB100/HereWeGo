@@ -54,7 +54,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 # Scanned Top-Left -> Bottom-Right
 # Variables: Radius(int)
 # Example: 5
-
+5
 [RIDDLES]
 # Scanned Top-Left -> Bottom-Right
 # Variables: ID(int)

@@ -7,11 +7,11 @@ W          W   W   K  WWWWWWWWWWWWWWW>>       V W  /         W  /        K WWWWW
 W   $   @  W   W      2    *            K W     WWWWW P      WWWWWW3WWWWWW WWWWW                     
 W    &     W   W      W    *              W >>>                        W     ? W
 WWWWWWWWWWWWW**WWWW?WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW**W                      
-WWWWWWWWWWWWW  W    1   /             W        W V    5         *           W  W 
-WWWWWWWWWWWWW  WWWWWW WWWWWWWWWWWWWWWW W       W V    W         WWWWWKWWW/WWW  W                 
+WWWWWWWWWWWWW  W    1                 W        W V    5         *           W  W 
+WWWWWWWWWWWWW  WWWWWW WWWWWWWWWW/WWWWW W       W V    W         WWWWWKWWW/WWW  W                 
 W           W     *                  W W       W V    WW?WWWWWWWWW   W   WW 4  W
 W           W  W  *                  W W       W      W         *  W   W    WWWW    
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW WWWWWWWWWW*WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW/WWWWW WWWWWWWWWW*WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W     HELP! @@@   WW        *  PW  *  *   W   W /*        W>>   **  W   W  ?  VW    
 W     $    $$$    WW        *     ?W  *   W   W  *            WW      W    W KVW
 W K  $  $ $   $$  WWWWW7WWWWWWWWWWWW  *   W   WWW WWWWWWWWWWWWWWWWWWWWWWW*WWWWVW                                 
@@ -27,9 +27,9 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [/MAP]
 
 [KEYS]
-# Scanned Top-Left -> Bottom-Right
-# Variables: ID Color(1-6, 15) Seen(0/1)
-# Example: 100 2 1
+# top-left -> Bottom-Right
+# variables: ID Color(1-6, 15) Seen(0/1)
+# example: 100 2 1
 1 1 1
 2 2 1
 3 3 1
@@ -39,9 +39,9 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 7 9 1
 
 [SWITCHES]
-# Scanned Top-Left -> Bottom-Right
-# Variables: ID Seen(0/1)
-# Example: 200 1
+# top-left -> bottom-right
+# variables: ID seen(0/1)
+# example: 200 1
 1 1 
 2 1
 3 1
@@ -55,13 +55,28 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 1 6 0 1 3 1
 2 1 1 1 0
 3 3 1 3 2 1 1 2 0
-4 
+4 2 1 2 1 2 1
+5 4 1 4 1 4 1
+6 11 1 5 1 5 1
+7 9 1 7 0
+8 14 1 6 0
 
 [BOMBS]
 # Scanned Top-Left -> Bottom-Right
 # Variables: ID Timer Seen
 # Example: 1 5 1
-1 10 1
+1 5 1
+2 5 1
+3 5 1
+4 5 1
+5 5 1
+6 5 1
+7 5 1
+8 5 1
+9 5 1
+10 5 1
+11 5 1
+12 5 1
 
 [TORCHES]
 # Scanned Top-Left -> Bottom-Right
@@ -72,7 +87,9 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 # Scanned Top-Left -> Bottom-Right
 # Variables: ID(int)
 # Example: 1
-2
-1
-3
-4
+5
+6
+7
+8
+9
+10

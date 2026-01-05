@@ -37,7 +37,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 # Variables: ID Seen(0/1)
 # Example: 200 1
 1 1
-
+2 1
 [DOORS]
 # Linked by the digit (1-9) placed on the map
 # Variables: ID Color KeyCount [KeyIDs] SwitchCount [SwitchID RequiredState]

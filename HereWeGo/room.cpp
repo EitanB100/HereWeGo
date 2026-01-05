@@ -258,13 +258,10 @@ char Room::getObjectAt(const Point& p, Color& color) const
 		if (sw != nullptr) {
 			// Map might say OFF ('\') but switch is ON ('/'), so we trust the object
 			if (sw->getIsSeen()) {
-				if (sw->isBroken()) {
-					color = Color::DARK_GRAY;
-					return SWITCH_OFF;
-				}
 				color = sw->getState() ? Color::GREEN : Color::RED;
 				return sw->getState() ? SWITCH_ON : SWITCH_OFF;
 			}
+			return UNKNOWN_TILE;
 			// If not seen, it falls through to UNKNOWN_TILE logic usually, 
 			// but if map has the switch char, we treat it as visible.
 		}

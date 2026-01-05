@@ -55,5 +55,7 @@
    [TORCHES]
    - Format: Radius
 
+   [POTIONS]
+   - Format: Seen
    [RIDDLES]
    - Format: ID (Must match an entry in riddles.txt)

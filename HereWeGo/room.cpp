@@ -259,7 +259,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			return SPRING_TILE;
 		}
 		color = Color::MAGENTA;
-		return SPRING_TILE;
+		return ' ' ;
 	}
 
 	//switches:

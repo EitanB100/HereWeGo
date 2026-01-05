@@ -54,5 +54,5 @@ void Spring::draw() {
 			parts[i].draw(SPRING_TILE);
 		}
 	}
-	setColor(Color::WHITE);
+	//setColor(Color::WHITE);
 }

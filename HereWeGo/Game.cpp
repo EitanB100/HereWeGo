@@ -296,7 +296,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 	}
 
 	if (currentRiddle == nullptr) return;
-
+	 
 	const Riddle& riddle = *currentRiddle; // for readability
 
 	screen.clearScreen();

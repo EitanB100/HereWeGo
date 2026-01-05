@@ -370,6 +370,10 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 		}
 	}
 
+	if (room.doors.size() < foundDoors.size()) {
+		isDiscrepancy = true;
+		errorMessage = "Error: Map has " + std::to_string(foundDoors.size()) + " Doors, but file defines only " + std::to_string(room.doors.size()) + "!";
+	}
 	//Discrepency checks between tilemap and definitions
 	if (keyInd < foundKeys.size()) {
 		isDiscrepancy = true;

@@ -3,50 +3,55 @@ L
 
 
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W $   &  W   BANK LOBBY             W  SECURITY ROOM (SW1)   W  SERVER ROOM    W
-W        1                          W           * W  (Dark Area)    W
-W        W          * * 3           * 4                 W
-W        W         *** *** W           * /     W        !        W
-W   W?WWWW    * * * WWWWWWWWWWWWWWWWWWWWWWWWWW                 W
-W   W    W                          W                        W        /        W
-W   W 1K W                          W   MANAGER'S OFFICE     W                 W
-W   W    W                          W      (Key 2)           W                 W
-W   WWWWWW                          W                        W                 W
-W          ^^^^^^^^^^^^             W                        W                 W
-W          ^^^^^^^^^^^^             6          2K            W                 W
-W          ^^^^^^^^^^^^             W                        W                 W
-W                                   WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+W          WW  W   K  W                                  W                     W
+W   $   @  WW  W      W                                  W                     W
+W    &     WW         W                                  W                     W
+WWWWWWWWWWWWWWWWWWWWWW?WWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW*WW                   W
+WWWWWWWWWWWW                                           *                       W 
+WWWWWWWWWWWW                                                                   W
 W                                                                              W
-W                VAULT ANTE-CHAMBER (Requires SW1 + SW2 + Key 1)               W
-WWWWWWWWWWWWWWWWWWWWWWW5WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W STORAGE (C4)        W GOLD VAULT                                             W
-W           @         W                                                        W
-W  ?                  W   WWWWWWWWWW                                           W
-W                     W   W  E   W  <-- BLOW THIS WALL WITH BOMB (@)           W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
+W                                                                              W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 [/MAP]
 
 [KEYS]
-1 3 0
-2 6 0
+# Scanned Top-Left -> Bottom-Right
+# Variables: ID Color(1-6, 15) Seen(0/1)
+# Example: 100 2 1
 
 [SWITCHES]
-1 0
-2 0
+# Scanned Top-Left -> Bottom-Right
+# Variables: ID Seen(0/1)
+# Example: 200 1
 
 [DOORS]
-1 15 0 0 1
-3 3 0 0 1
-4 5 0 0 1
-5 4 1 2 2 1 1 2 1
-6 6 1 1 0
+# Linked by the digit (1-9) placed on the map
+# Variables: ID Color KeyCount [KeyIDs] SwitchCount [SwitchID RequiredState]
+# Example: 1 4 1 100 1 200 1
 
 [BOMBS]
-1 5 0
+# Scanned Top-Left -> Bottom-Right
+# Variables: ID Timer Seen
+# Example: 1 5 1
 
 [TORCHES]
-4
+# Scanned Top-Left -> Bottom-Right
+# Variables: Radius(int)
+# Example: 5
 
 [RIDDLES]
-1
-3
+# Scanned Top-Left -> Bottom-Right
+# Variables: ID(int)
+# Example: 1

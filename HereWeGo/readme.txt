@@ -2,7 +2,7 @@ C++ Project - Text Adventure Game (Exercise 2)
 ================================================================================
 Submitters:
 ID: [212321525]  | Name: [Eitan Bar]
-ID: []  | Name: [Harel Ben-Abir]
+ID: [322382631]  | Name: [Harel Ben-Abir]
 ================================================================================
 
 --- Files Description ---

@@ -258,7 +258,7 @@ char Room::getObjectAt(const Point& p, Color& color) const
 			color = spring->getColor();
 			return SPRING_TILE;
 		}
-		color = Color::WHITE;
+		color = Color::MAGENTA;
 		return SPRING_TILE;
 	}
 

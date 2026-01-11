@@ -56,6 +56,19 @@ bool Player::increaseHP(int amount)
     return true;
 }
 
+void Player::setHP(int amount) {
+    if (amount <= DEAD_HP) {
+        hp = DEAD_HP;
+        alive = false;
+    }
+    else if (amount > MAX_HP) {
+        hp = MAX_HP;
+    }
+    else {
+        hp = amount;
+    }
+}
+
 //Movement logic: collisions, interactions, and updates
 int Player::move(Room& room, Player* otherPlayer) {
 

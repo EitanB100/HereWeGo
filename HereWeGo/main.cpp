@@ -12,6 +12,7 @@ int main() {
 	constexpr char MENU_LVL2 = '2';
 	constexpr char MENU_LVL3 = '3';
 	constexpr char MENU_ENDING = '4';
+	constexpr char MENU_LOAD_GAME = '5';
 	constexpr char MENU_SETTINGS = '7';
 	constexpr char MENU_INSTRUCTIONS = '8';
 	constexpr char MENU_EXIT = '9';
@@ -25,9 +26,10 @@ int main() {
 
 		printCentered("Welcome to the game!", 4);
 		printCentered("(1) Start new game", 7);
-		printCentered("(7) Settings", 9);
-		printCentered("(8) Instructions", 11);
-		printCentered("(9) EXIT", 13);
+		printCentered("(5) Load saved game", 9);
+		printCentered("(7) Settings", 11);
+		printCentered("(8) Instructions", 13);
+		printCentered("(9) EXIT", 15);
 		gotoxy(0, 16);
 		std::cout << "for easy playtesting:" << std::endl;
 		std::cout << "(2) Skip to level 2" << std::endl;
@@ -64,6 +66,20 @@ int main() {
 		{
 			Game game;
 			game.showEndingScreen();
+			break;
+		}
+		case MENU_LOAD_GAME:
+		{
+			Game game;
+			if (game.loadGame()) {
+				game.run();
+			}
+			else {
+				system("cls");
+				printCentered("No saved game found!", 10);
+				printCentered("Press any key to return to menu...", 12);
+				_getch();
+			}
 			break;
 		}
 		case MENU_SETTINGS:

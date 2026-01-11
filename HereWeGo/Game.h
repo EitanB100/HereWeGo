@@ -49,6 +49,8 @@ class Game {
 	void updatePlayerKeys(char keys[], int playerNum);
 	void handleGameOver();
 	void tileMapError();
+	void saveGame();
+	
 
 public:
 
@@ -57,7 +59,8 @@ public:
 	
 	Game(); //defined in .cpp
 	void setGame(int levelIndex, bool firstSettings);
-
+	void setCurrentLevelIndex(int level) { currentLevelIndex = level; }
+	void setScore(int val) { score = val; }
 	bool getUseColor() { return useColor; }
 	void toggleColor();
 
@@ -69,4 +72,5 @@ public:
 	void run();
 	
 	void settingsMenu();
+	bool loadGame();
 };

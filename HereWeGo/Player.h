@@ -45,10 +45,12 @@ public:
     // Getters / Setters
     Point getPos() const { return { pos.getx(),pos.gety() }; }
     heldItem getItemInHand() { return itemInHand; }
+    void setItemInHand(heldItem newItem) { itemInHand = newItem; }
     char getSymbol() { return symbol; }
     bool isFinished() { return finishedLevel; }
     int getDirX() { return dirx; }
     int getDirY() { return diry; }
+
 
    
 
@@ -61,6 +63,7 @@ public:
     void transferMomentum(int _force, Point dir, int time);
 
     int getHP() const { return hp; }
+    void setHP(int amount);
     void takeDamage(int amount);
     bool increaseHP(int amount);
        

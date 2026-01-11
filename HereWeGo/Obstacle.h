@@ -24,7 +24,11 @@ public:
 	bool getHasMoved() { return hasMoved; }
 	void resetMove() { hasMoved = false; }
 	void markAsMoved() { hasMoved = true; }
-
+	void getParts(std::vector<Point>& outParts) const {
+		for (const auto& part : parts) {
+			outParts.push_back(part.getPosition());
+		}
+	}
 	void setColor(Color c) { color = c; }
 	Color getColor() const { return color; }
 

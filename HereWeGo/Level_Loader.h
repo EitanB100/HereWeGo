@@ -19,4 +19,5 @@ public:
 	
 	static bool loadLevel(Room& room, const std::string& fileName, std::string& errorMessage);
 	static void loadRiddles(const std::string& fileName, std::vector<Riddle>& outRiddles);
+	static void saveLevel(const Room& room, const std::string& fileName , Point p1Pos , Point p2Pos);
 };

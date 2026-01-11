@@ -30,6 +30,7 @@ public:
 		return pos.getPosition();
 	}
 
+
 	void draw();
 
 

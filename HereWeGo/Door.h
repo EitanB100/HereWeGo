@@ -32,12 +32,19 @@ public:
         requiredSwitchIDs.push_back({ switchOnOff, state });
     }
 
+
     int getDoorID() const { return id; }
 
     Color getColor() const {
         return color;
     }
-    
+
+    const std::vector<int>& getRequiredKeys() const {
+        return requiredKeyIDs;
+	}
+    const std::vector<SwitchRequirement>& getRequiredSwitches() const {
+        return requiredSwitchIDs;
+	}
     
     // Open/Close logic
     void open() { isOpen = true; }

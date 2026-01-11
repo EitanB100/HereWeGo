@@ -18,7 +18,6 @@ Game::Game() : useColor(getColorMode()), players{
 	Player(Placement(9,15),'&',0,0,p2Keys)
 }
 {
-	startTime = std::chrono::steady_clock::now();
 	init();
 }
 
@@ -100,6 +99,100 @@ void Game::init()
 	if (levels.empty()) levelLoadedCorrectly = false;
 }
 
+void Game::saveGame() {
+	std::ofstream saveFile("savegame.txt"); // make savefile or overdrive previous one
+	if (!saveFile.is_open()) return;
+
+	auto now = std::chrono::steady_clock::now();
+	auto totalElapsed = std::chrono::duration_cast<std::chrono::seconds>(now - startTime).count();
+	auto levelElapsed = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
+
+	saveFile << "CURRENT_LEVEL " << currentLevelIndex << "\n"; // save info and score
+	saveFile << "SCORE " << score << "\n"; 
+	saveFile << "TOTAL_TIMER " << totalElapsed << "\n"; 
+	saveFile << "LEVEL_TIMER " << levelElapsed << "\n";
+	for (int i = 0; i < PLAYER_AMOUNT; i++) { // save each player info
+		saveFile << "PLAYER_" << i << "_HP " << players[i].getHP() << "\n";
+        saveFile << "PLAYER_" << i << "_X " << players[i].getPos().x << "\n";
+        saveFile << "PLAYER_" << i << "_Y " << players[i].getPos().y << "\n";
+		
+		heldItem currentItem = players[i].getItemInHand(); // Accessing itemInHand
+		saveFile << "PLAYER_" << i << "_ITEM_TYPE " << static_cast<int>(currentItem.type) << "\n";
+		saveFile << "PLAYER_" << i << "_ITEM_ID " << currentItem.id << "\n";
+		saveFile << "PLAYER_" << i << "_ITEM_COLOR " << static_cast<int>(currentItem.color) << "\n";
+	}
+	saveFile.close();
+
+	
+	std::string currentLevelFile = "save_world_state.screen"; // export current room state to a special save-slot file
+	Level_Loader::saveLevel(levels[currentLevelIndex], currentLevelFile, players[0].getPos(), players[1].getPos());
+
+
+	printCentered("GAME SAVED SUCCESSFULLY", 2);
+	Sleep(1000);
+}
+
+bool Game::loadGame() {
+	std::ifstream saveFile("savegame.txt");
+	if (!saveFile.is_open()) return false;
+
+	long totalSaved = 0;
+	long levelSaved = 0;
+
+	struct TempPlayer {
+		int hp = 15, x = 0, y = 0, itemType = 0, itemId = -1, itemColor = 0;
+	} temp[2];
+
+	std::string key;
+	// Read the key first, then decide how to read the value
+	while (saveFile >> key) {
+		if (key == "CURRENT_LEVEL") saveFile >> currentLevelIndex;
+		else if (key == "SCORE") saveFile >> score;
+		else if (key == "TOTAL_TIMER") saveFile >> totalSaved;
+		else if (key == "LEVEL_TIMER") saveFile >> levelSaved;
+		else if (key == "PLAYER_0_HP") saveFile >> temp[0].hp;
+		else if (key == "PLAYER_0_X")  saveFile >> temp[0].x;
+		else if (key == "PLAYER_0_Y")  saveFile >> temp[0].y;
+		else if (key == "PLAYER_0_ITEM_TYPE") saveFile >> temp[0].itemType;
+		else if (key == "PLAYER_0_ITEM_ID")   saveFile >> temp[0].itemId;
+		else if (key == "PLAYER_0_ITEM_COLOR") saveFile >> temp[0].itemColor;
+		else if (key == "PLAYER_1_HP") saveFile >> temp[1].hp;
+		else if (key == "PLAYER_1_X")  saveFile >> temp[1].x;
+		else if (key == "PLAYER_1_Y")  saveFile >> temp[1].y;
+		else if (key == "PLAYER_1_ITEM_TYPE") saveFile >> temp[1].itemType;
+		else if (key == "PLAYER_1_ITEM_ID")   saveFile >> temp[1].itemId;
+		else if (key == "PLAYER_1_ITEM_COLOR") saveFile >> temp[1].itemColor;
+	}
+	saveFile.close();
+
+	std::string error;
+
+	if (Level_Loader::loadLevel(levels[currentLevelIndex], "save_world_state.screen", error)) {
+		setGame(currentLevelIndex, false);
+
+		// ADJUST THE START TIME: 
+		auto now = std::chrono::steady_clock::now();
+		startTime = now - std::chrono::seconds(totalSaved);
+		levelStartTime = now - std::chrono::seconds(levelSaved);
+
+		for (int i = 0; i < PLAYER_AMOUNT; i++) {
+			players[i].setHP(temp[i].hp);
+			players[i].setPos({ temp[i].x, temp[i].y });
+
+			// Reconstruct the heldItem struct
+			heldItem restoredItem;
+			restoredItem.type = static_cast<ItemType>(temp[i].itemType);
+			restoredItem.id = temp[i].itemId;
+			restoredItem.color = static_cast<Color>(temp[i].itemColor);
+
+			// You will need this setter in your Player class:
+			players[i].setItemInHand(restoredItem);
+		}
+		return true;
+	}
+	return false;
+}
+
 void Game::setGame(int levelIndex, bool firstSettings) {
 	if (levels.empty()) return;
 
@@ -129,7 +222,14 @@ void Game::run()
 		tileMapError();
 		return; // Exits run(), returning to main() menu
 	}
-	resetLevelTimer();
+
+	// Only initialize for a brand new game
+	if (score == 0 && currentLevelIndex == 0 &&
+		startTime.time_since_epoch().count() == 0) {
+		startTime = std::chrono::steady_clock::now();
+		levelStartTime = startTime;
+	}
+
 	bool boomDustCleaningNeeded = false;
 	while (true) {
 		Room& currRoom = levels[currentLevelIndex]; 
@@ -142,6 +242,8 @@ void Game::run()
 
 				setColor(Color::BLUE);
 				printCentered("GAME PAUSED", 2);
+				printCentered("Press H to exit", 4);
+				printCentered("Press S to save", 6);
 				key = _getch();
 
 				if (key == 'h' || key == 'H') {
@@ -149,6 +251,14 @@ void Game::run()
 					screen.clearScreen();
 					break; //main menu exit
 				}
+				if (key == 's' || key == 'S') {
+					setColor(Color::WHITE);
+					screen.clearScreen();
+					saveGame();
+					Sleep(1000);
+					break; //main menu exit
+				}
+
 				else {
 					auto pauseEnd = std::chrono::steady_clock::now(); //we store the time player paused and resumed to deduct it from actual playing time
 					auto pauseDuration = pauseEnd - pauseStart;
@@ -238,7 +348,7 @@ void Game::run()
 bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 {
 	Point exit = levels[currentLevelIndex].getExitPos();
-	if (exit.x == -1) return false; 
+	if (exit.x == -1) return false;
 
 	if (p1 == exit && p2 == exit)
 	{
@@ -246,10 +356,9 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 		int levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
 		score += (MAX_SCORE / (levelSeconds + 1));
 
-		if (currentLevelIndex < levels.size() - 1)
+		if (currentLevelIndex < (int)levels.size() - 1)
 		{
 			currentLevelIndex++;
-
 			setGame(currentLevelIndex, false);
 
 			resetLevelTimer();
@@ -257,11 +366,14 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 			printTimer();
 			return false;
 		}
-		else {
+		else
+		{
+
 			showEndingScreen();
-			return true;
+			return true; 
 		}
 	}
+
 	return false;
 }
 

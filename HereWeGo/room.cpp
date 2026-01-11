@@ -53,6 +53,8 @@ void Room::resetRoom()
 	torches.clear();
 	springs.clear();
 	bombs.clear();
+	potions.clear();
+	riddleLocations.clear();
 }
 
 bool Room::checkDoor(Point p, heldItem& item)

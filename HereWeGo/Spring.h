@@ -27,7 +27,11 @@ public:
     // Check if a specific point is part of this spring
     bool isSpringPart(const Point& p) const;
 
- 
+    void getParts(std::vector<Point>& outParts) const {
+        for (const auto& part : parts) {
+            outParts.push_back(part.getPosition());
+        }
+	}
 
     void setCompression(int count) { compressedCount = count; }
 

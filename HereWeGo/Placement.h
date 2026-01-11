@@ -31,6 +31,16 @@ public:
         inLimit();
     }
 
+    void setx(int _x) {
+        x = _x;
+        inLimit();
+	}
+
+    void sety(int _y) {
+        y = _y;
+        inLimit();
+	}   
+
     void move(int xSteps, int ySteps, char tile) {
         set(x + xSteps, y + ySteps, tile);
     }

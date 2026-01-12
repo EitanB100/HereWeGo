@@ -242,18 +242,25 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 		
 		
 		else if (section == "SWITCHES") {
-			int id, seen;
-			if (parser >> id >> seen) {
+			int id, savedState, savedSeen;
+
+			if (parser >> id >> savedState >> savedSeen) {
 				if (switchInd < foundSwitches.size()) {
 					Point p = foundSwitches[switchInd];
 					auto sw = std::make_unique<Switch>(p.x, p.y, id);
-					if (seen) sw->setSeen();
+
+					// Restore the logical toggle state
+					if (savedState == 1) {
+						sw->toggleState();
+					}
+
+					// Restore the visibility status
+					if (savedSeen == 1) {
+						sw->setSeen();
+					}
+
 					room.addSwitch(std::move(sw));
 					switchInd++;
-				}
-				else {
-					errorMessage =  "Error - More switch entries than switches on grid!";
-					isDiscrepancy = true;
 				}
 			}
 		}
@@ -487,5 +494,131 @@ void Level_Loader::loadRiddles(const std::string& fileName, std::vector<Riddle>&
 	if (isReading) {
 		outRiddles.push_back(currentRiddle);
 	}
+	file.close();
+}
+
+void Level_Loader::saveLevel(const Room& room, const std::string& fileName, Point p1Pos, Point p2Pos) {
+	std::ofstream file(fileName);
+	if (!file.is_open()) return;
+
+	std::vector<std::string> tempMap(MAX_Y, std::string(MAX_X, ' '));
+	for (int y = 0; y < MAX_Y; y++) {
+		for (int x = 0; x < MAX_X; x++) {
+			// Only keep permanent structures like Walls 'W'
+			if (room.map[y][x] == 'W') {
+				tempMap[y][x] = room.map[y][x];
+			}
+		}
+	}
+
+	//Overwrite positions using ACTUAL object data
+	for (const Key& key : room.keys) tempMap[key.getPos().y][key.getPos().x] = KEY_TILE;
+	for (const Bomb& bomb : room.bombs) tempMap[bomb.getPos().y][bomb.getPos().x] = BOMB_TILE;
+	for (const Potion& potion : room.potions) tempMap[potion.getPos().y][potion.getPos().x] = POTION_TILE;
+	for (const auto& r : room.riddleLocations) tempMap[r.p.y][r.p.x] = RIDDLE_TILE;
+	for (const Torch& t : room.torches) tempMap[t.getPos().y][t.getPos().x] = TORCH_TILE;
+
+	// Restore Obstacles and Springs using stored parts
+	for (const auto& obs : room.obstacles) {
+		std::vector<Point> obsParts;
+		obs.getParts(obsParts);
+		for (const auto& p : obsParts) {
+			if (p.x >= 0 && p.x < MAX_X && p.y >= 0 && p.y < MAX_Y)
+				tempMap[p.y][p.x] = OBSTACLE_TILE;
+		}
+	}
+
+	for (const auto& spr : room.springs) {
+		char sprChar = ' ';
+		if (spr.getDirection() == Directions::UP) sprChar = '^';
+		else if (spr.getDirection() == Directions::DOWN) sprChar = 'v';
+		else if (spr.getDirection() == Directions::LEFT) sprChar = '<';
+		else if (spr.getDirection() == Directions::RIGHT) sprChar = '>';
+
+		std::vector<Point> sprParts;
+		spr.getParts(sprParts);
+		for (const auto& p : sprParts) {
+			if (p.x >= 0 && p.x < MAX_X && p.y >= 0 && p.y < MAX_Y)
+				tempMap[p.y][p.x] = sprChar;
+		}
+	}
+
+	// Write the reconstructed [MAP]
+	file << "[MAP]\n";
+	for (int y = 0; y < MAX_Y; y++) {
+		for (int x = 0; x < MAX_X; x++) {
+			Point current = { x, y };
+
+			// Players, Legend, Exit
+			if (current == p1Pos) file << '$';
+			else if (current == p2Pos) file << '&';
+			else if (current == room.legendLocation) file << 'L';
+			else if (current == room.getExitPos()) file << EXIT_TILE;
+			else {
+				// Doors (MUST be saved as their ID '1'-'9' for the loader)
+				bool isDoor = false;
+				for (const auto& door : room.doors) {
+					if (door.getPos().getx() == x && door.getPos().gety() == y) {
+						file << (char)('0' + door.getDoorID());
+						isDoor = true;
+						break;
+					}
+				}
+				// Switches (MUST be saved as SWITCH_OFF in map section)
+				if (!isDoor) {
+					bool isSwitch = false;
+					for (const auto& sw : room.switches) {
+						if (sw->getPos().x == x && sw->getPos().y == y) {
+							file << sw->stateChar();
+							isSwitch = true;
+							break;
+						}
+					}
+					//Everything else
+					if (!isSwitch) file << tempMap[y][x];
+				}
+
+			}
+		}
+		file << "\n";
+	}
+	file << "[/MAP]\n\n";
+
+	file << "\n[KEYS]\n"; // save Keys
+	for (const auto& key : room.keys) {
+		file << key.getKeyID() << " " << static_cast<int>(key.getColor()) << " " << (key.getIsSeen() ? 1 : 0) << "\n";
+	}
+
+	file << "\n[SWITCHES]\n"; // save Switches
+	for (const auto& sw : room.switches) {
+		file << sw->getSwitchID() << " " << (sw->getState() ? 1 : 0) << " " << (sw->getIsSeen() ? 1 : 0) << "\n";
+	}
+	
+	file << "\n[DOORS]\n";
+	for (const auto& door : room.doors) {
+		file << door.getDoorID() << " " << static_cast<int>(door.getColor()) << " " << door.getRequiredKeys().size();
+		for (int kid : door.getRequiredKeys()) {
+			file << " " << kid;
+		}
+		auto swReqs = door.getRequiredSwitches();
+		file << " " << swReqs.size(); // This is the switchCount for the loader
+		for (auto const& [swPtr, state] : swReqs) {
+			file << " " << swPtr->getSwitchID() << " " << (state ? 1 : 0);
+		}
+		file << " " << 1 << "\n"; // doors always seen 
+	}
+
+	file << "\n[BOMBS]\n"; // save Bombs
+	for (const auto& b : room.bombs) file << b.getBombID() << " " << b.getTimer() << " " << (b.getIsSeen() ? 1 : 0) << "\n";
+
+	file << "\n[TORCHES]\n"; // save Torches
+	for (const auto& t : room.torches) file << t.getLineOfSight() << "\n";
+
+	file << "\n[POTIONS]\n"; // save Potions
+	for (const auto& p : room.potions) file << (p.getIsSeen() ? 1 : 0) << "\n";
+
+	file << "\n[RIDDLES]\n"; // save Riddles
+	for (const auto& r : room.riddleLocations) file << r.id << "\n";
+
 	file.close();
 }

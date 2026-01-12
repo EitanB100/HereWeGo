@@ -54,19 +54,18 @@ void Game::printHUD()
 
 
 void Game::printTimer() {
-
 	const Point& hudPos = levels[currentLevelIndex].getLegendLoc();
 	gotoxy(hudPos.x, hudPos.y + 2);
-	
+
 	auto currentTime = std::chrono::steady_clock::now();
 
-	// Calculate Total Time from the very beginning of the game
+	// Calculate Total Time
 	auto totalElapsed = std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count();
 
-	// Calculate Level Time from the last reset (start of level)
+	// Calculate Level Time 
 	auto levelElapsed = std::chrono::duration_cast<std::chrono::seconds>(currentTime - levelStartTime).count();
 
-	// Lambda to format seconds into MM:SS
+	//  Lambda to format seconds into MM:SS
 	auto formatTime = [](long long totalSeconds) -> std::string {
 		int m = static_cast<int>((totalSeconds % 3600) / 60);
 		int s = static_cast<int>(totalSeconds % 60);
@@ -77,13 +76,15 @@ void Game::printTimer() {
 		};
 
 	setColor(Color::GREEN);
-	std::cout << "TIME " << formatTime(levelElapsed) << " |";
-	
+	// Display both timers
+	std::cout << "LEVEL " << formatTime(levelElapsed)
+		<< " | TOTAL " << formatTime(totalElapsed) << " |";
+
 	printScore(hudPos);
 }
 
 void Game::printScore(const Point& hudPos) {
-	gotoxy(hudPos.x + 12, hudPos.y + 2);
+	gotoxy(hudPos.x + 26, hudPos.y + 2);
 
 	setColor(Color::GREEN);
 	std::cout << " Score: " << score;

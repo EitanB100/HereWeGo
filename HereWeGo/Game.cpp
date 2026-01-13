@@ -72,6 +72,7 @@ void Game::startInLevel(Level level)
 
 void Game::init()
 {
+	loadGlobalSaveConfig(); // collect how 
 	Level_Loader::loadRiddles("riddles.txt", riddles);
 
 	for (int i = 1; i <= LEVEL_COUNT; i++) {
@@ -100,7 +101,10 @@ void Game::init()
 }
 
 void Game::saveGame() {
-	std::ofstream saveFile("savegame.txt"); // make savefile or overdrive previous one
+	std::string dataFilename = "savegame" + std::to_string(savefiles) + ".txt"; // dynamic file name for data file
+	std::string worldFilename = "world_state" + std::to_string(savefiles) + ".screen"; // dynamic file name for map load file
+
+    std::ofstream saveFile(dataFilename);
 	if (!saveFile.is_open()) return;
 
 	auto now = std::chrono::steady_clock::now();
@@ -122,22 +126,21 @@ void Game::saveGame() {
 		saveFile << "PLAYER_" << i << "_ITEM_COLOR " << static_cast<int>(currentItem.color) << "\n";
 	}
 	saveFile.close();
-
-	
-	std::string currentLevelFile = "save_world_state.screen"; // export current room state to a special save-slot file
-	Level_Loader::saveLevel(levels[currentLevelIndex], currentLevelFile, players[0].getPos(), players[1].getPos());
-
-
-	printCentered("GAME SAVED SUCCESSFULLY", 2);
+	Level_Loader::saveLevel(levels[currentLevelIndex], worldFilename, players[0].getPos(), players[1].getPos());
+	printCentered("GAME SAVED SUCCESSFULLY TO SLOT " + std::to_string(savefiles+1), 2);
+	savefiles++; // new save file added
+	saveGlobalSaveConfig(); // save on file how many saves are
 	Sleep(1000);
 }
 
-bool Game::loadGame() {
-	std::ifstream saveFile("savegame.txt");
+bool Game::loadGame(int slot) {
+	std::string dataFilename = "savegame" + std::to_string(slot) + ".txt";
+	std::string worldFilename = "world_state" + std::to_string(slot) + ".screen";
+	std::ifstream saveFile(dataFilename);
 	if (!saveFile.is_open()) return false;
 
-	long totalSaved = 0;
-	long levelSaved = 0;
+	long totalTimeSaved = 0;
+	long levelTimeSaved = 0;
 
 	struct TempPlayer {
 		int hp = 15, x = 0, y = 0, itemType = 0, itemId = -1, itemColor = 0;
@@ -148,8 +151,8 @@ bool Game::loadGame() {
 	while (saveFile >> key) {
 		if (key == "CURRENT_LEVEL") saveFile >> currentLevelIndex;
 		else if (key == "SCORE") saveFile >> score;
-		else if (key == "TOTAL_TIMER") saveFile >> totalSaved;
-		else if (key == "LEVEL_TIMER") saveFile >> levelSaved;
+		else if (key == "TOTAL_TIMER") saveFile >> totalTimeSaved;
+		else if (key == "LEVEL_TIMER") saveFile >> levelTimeSaved;
 		else if (key == "PLAYER_0_HP") saveFile >> temp[0].hp;
 		else if (key == "PLAYER_0_X")  saveFile >> temp[0].x;
 		else if (key == "PLAYER_0_Y")  saveFile >> temp[0].y;
@@ -167,13 +170,13 @@ bool Game::loadGame() {
 
 	std::string error;
 
-	if (Level_Loader::loadLevel(levels[currentLevelIndex], "save_world_state.screen", error)) {
+	if (Level_Loader::loadLevel(levels[currentLevelIndex], worldFilename, error)) {
 		setGame(currentLevelIndex, false);
 
 		// ADJUST THE START TIME: 
 		auto now = std::chrono::steady_clock::now();
-		startTime = now - std::chrono::seconds(totalSaved);
-		levelStartTime = now - std::chrono::seconds(levelSaved);
+		startTime = now - std::chrono::seconds(totalTimeSaved);
+		levelStartTime = now - std::chrono::seconds(levelTimeSaved);
 
 		for (int i = 0; i < PLAYER_AMOUNT; i++) {
 			players[i].setHP(temp[i].hp);
@@ -184,13 +187,30 @@ bool Game::loadGame() {
 			restoredItem.type = static_cast<ItemType>(temp[i].itemType);
 			restoredItem.id = temp[i].itemId;
 			restoredItem.color = static_cast<Color>(temp[i].itemColor);
-
-			// You will need this setter in your Player class:
 			players[i].setItemInHand(restoredItem);
 		}
 		return true;
 	}
 	return false;
+}
+
+void Game::saveGlobalSaveConfig() {
+	std::ofstream configFile("config.dat");
+	if (configFile.is_open()) {
+		configFile << savefiles;
+		configFile.close();
+	}
+}
+
+void Game::loadGlobalSaveConfig() {
+	std::ifstream configFile("config.dat");
+	if (configFile.is_open()) {
+		configFile >> savefiles;
+		configFile.close();
+	}
+	else {
+		savefiles = 0; // First time playing
+	}
 }
 
 void Game::setGame(int levelIndex, bool firstSettings) {

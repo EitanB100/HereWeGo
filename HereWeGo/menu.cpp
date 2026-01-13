@@ -135,3 +135,64 @@ void Game::updatePlayerKeys(char keys[], int playerNum) {
 		}
 	}
 }
+
+void Game::loadMenu() {
+	int savesPerPage = SAVE_IN_LOAD_MENU;
+	int totalSaves = savefiles;
+
+	if (totalSaves <= 0) {
+		system("cls");
+		printCentered("No saved games found!", 10);
+		_getch();
+		return;
+	}
+
+	int currentPage = 0;
+	bool inMenu = true;
+
+	while (inMenu) {
+		system("cls");
+		printCentered("--- LOAD GAME (Page " + std::to_string(currentPage + 1) + ") ---", 2);
+
+		
+		int startIdx = totalSaves - 1 - (currentPage * savesPerPage); //  highest index on this page (newest)
+		int endIdx = startIdx - savesPerPage; // oldest file in the page (oldest)
+		if (endIdx < -1) endIdx = -1; // if we reach to negetive index
+
+		for (int i = startIdx; i > endIdx; --i) {
+			int displayNum = startIdx - i + 1;
+			std::string line = "(" + std::to_string(displayNum) + ") Save Slot " + std::to_string(i+1);
+			printCentered(line, 4 + ((displayNum - 1) * 2));
+		}
+
+		// Navigation UI
+		if (endIdx > -1) printCentered("(8) Next Page ", 18);
+		if (currentPage > 0) printCentered("(9) Previous Page ", 20);
+		printCentered("(0) Back to Menu", 22);
+
+		char input = _getch();
+
+		if (input >= '1' && input <= '7') {
+			int displayKeyIndex = input - '1';
+			// Subtract the key from startIdx to get the correct file
+			int selectedSlot = startIdx - displayKeyIndex;
+
+			// Safety: Ensure the selection doesn't go past the end of the current page
+			if (selectedSlot > endIdx && selectedSlot <= startIdx) {
+				if (loadGame(selectedSlot)) {
+					run();
+					inMenu = false;
+				}
+			}
+		}
+		else if (input == '8' && endIdx > -1) {
+			currentPage++;
+		}
+		else if (input == '9' && currentPage > 0) {
+			currentPage--;
+		}
+		else if (input == '0') {
+			inMenu = false;
+		}
+	}
+}

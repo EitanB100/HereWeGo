@@ -10,6 +10,7 @@ constexpr int MIN_X = 0;
 constexpr int MIN_Y = 3;
 constexpr int MAX_X = 80;
 constexpr int MAX_Y = 25;
+constexpr int SAVE_IN_LOAD_MENU = 7;
 
 static constexpr int HP_INCREASE = 5;
 

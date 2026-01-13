@@ -33,6 +33,7 @@ class Game {
 	std::chrono::steady_clock::time_point startTime;      // Total game time
 	std::chrono::steady_clock::time_point levelStartTime; // Current level time
 	
+	int savefiles = 0; // ho much save files there 
 	int currentLevelIndex = 0;
 	int score = 0;
 	bool useColor;
@@ -50,6 +51,8 @@ class Game {
 	void handleGameOver();
 	void tileMapError();
 	void saveGame();
+	void saveGlobalSaveConfig(); // type on file how many saves are
+	void loadGlobalSaveConfig(); // load how many saves are into savefiles
 	
 
 public:
@@ -61,6 +64,7 @@ public:
 	void setGame(int levelIndex, bool firstSettings);
 	void setCurrentLevelIndex(int level) { currentLevelIndex = level; }
 	void setScore(int val) { score = val; }
+	int getSavefilesCount() const { return savefiles; }
 	bool getUseColor() { return useColor; }
 	void toggleColor();
 
@@ -72,5 +76,7 @@ public:
 	void run();
 	
 	void settingsMenu();
-	bool loadGame();
+	bool loadGame(int slot); // slot is the number (id of the game file)
+
+	void loadMenu(); // for picking a save file
 };

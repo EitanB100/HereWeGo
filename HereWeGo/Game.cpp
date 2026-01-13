@@ -195,7 +195,7 @@ bool Game::loadGame(int slot) {
 }
 
 void Game::saveGlobalSaveConfig() {
-	std::ofstream configFile("config.dat");
+	std::ofstream configFile("config.txt");
 	if (configFile.is_open()) {
 		configFile << savefiles;
 		configFile.close();
@@ -203,13 +203,15 @@ void Game::saveGlobalSaveConfig() {
 }
 
 void Game::loadGlobalSaveConfig() {
-	std::ifstream configFile("config.dat");
+	std::ifstream configFile("config.txt");
 	if (configFile.is_open()) {
-		configFile >> savefiles;
+		if (!(configFile >> savefiles)) {
+			savefiles = 0; // Fallback if file is corrupted or empty
+		}
 		configFile.close();
 	}
 	else {
-		savefiles = 0; // First time playing
+		savefiles = 0; // File doesn't exist yet (first time running the game)
 	}
 }
 

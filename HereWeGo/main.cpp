@@ -71,15 +71,7 @@ int main() {
 		case MENU_LOAD_GAME:
 		{
 			Game game;
-			if (game.loadGame()) {
-				game.run();
-			}
-			else {
-				system("cls");
-				printCentered("No saved game found!", 10);
-				printCentered("Press any key to return to menu...", 12);
-				_getch();
-			}
+			game.loadMenu(); 
 			break;
 		}
 		case MENU_SETTINGS:

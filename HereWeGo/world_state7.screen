@@ -1,0 +1,56 @@
+[MAP]
+L                                                                               
+                                                                                
+                                                                                
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+W            W     *                                          W                W
+W            W     *                                                           W
+W            W                  W                                              W
+W            W                  W                                              W
+WWWWWWWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW     WWWWWWWWWW    WWWWWWWWWWWWWWWWW
+W                                                   *                          W
+W        \                                          *                          W
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW2WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+W            W*W                                  W   \         \         \    W
+W              W           /                      W                            W
+W            W W                                P W                            W
+W            W                                    W\                          \W
+WWWWWWWWWWWWWW W                                  W                            W
+W        /     W                                  W                            W
+W    *                                            W                            W
+W WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW3WWWWWWWWWWWWWWWWW4WWWWWWWWWWWWWWW
+W W   W   W   W   W   W   WWWWWWWWWW            W                             WW
+W W W W W W W W W W W W W W>>>>>>>>                                $******W   5E
+W   W   W   W   W   W   W                     & W                             WW
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+                                                                                
+[/MAP]
+
+
+[KEYS]
+
+[SWITCHES]
+1 0 1
+2 0 0
+3 0 0
+4 0 0
+5 1 1
+6 0 0
+7 0 0
+8 1 1
+
+[DOORS]
+1 1 0 1 1 1 1
+2 2 0 1 1 0 1
+3 3 0 2 5 1 8 1 1
+4 4 0 3 3 0 4 0 6 0 1
+5 5 1 104 2 2 1 7 1 1
+
+[BOMBS]
+
+[TORCHES]
+
+[POTIONS]
+1
+
+[RIDDLES]

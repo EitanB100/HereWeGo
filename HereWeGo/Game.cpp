@@ -327,6 +327,7 @@ void Game::run()
 			int eventID = p.move(currRoom, &other);
 			
 			if (eventID != 0) {
+				p.setDirection(Directions::STAY);
 				handleRiddle(eventID, p, currRoom);
 			}
 

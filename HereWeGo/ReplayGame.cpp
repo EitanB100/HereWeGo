@@ -95,10 +95,10 @@ char ReplayGame::getInput()
 
 char ReplayGame::getInteractionInput()
 {
-	if (nextStepInd < steps.size()) {
+	if (nextStepInd < steps.size() && steps[nextStepInd].tick == currentTick) {
 		return steps[nextStepInd++].key;
 	}
-	return '1';
+	return '0';
 }
 
 void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //temporary. need full riddle file to write to
@@ -113,7 +113,7 @@ void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //tempor
 		// Simulate the loop without printing
 		while (true) {
 			char c = getInteractionInput();
-			if (c < '1' || c > '5') continue;
+			if (c == '0' || c < '1' || c > '5') continue;
 
 			int choice = c - '0';
 			bool correct = (choice - 1 == currentRiddle->correctAnswer);

@@ -127,7 +127,7 @@ void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //tempor
 		// Simulate the loop without printing
 		while (true) {
 			char c = getInteractionInput();
-			if (c == '0') break;
+			if (c == 0) break;
 			if (c < '1' || c > '5') continue;
 
 			int choice = c - '0';

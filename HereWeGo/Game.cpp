@@ -220,14 +220,9 @@ void Game::loadGlobalSaveConfig() {
 void Game::setGame(int levelIndex, bool firstSettings) {
 	if (levels.empty()) return;
 
-	screen.clearScreen();
 	currentLevelIndex = levelIndex;
 
-	levels[currentLevelIndex].drawRoom(screen);
-	if (!firstSettings) {
-		screen.draw();
-		levels[currentLevelIndex].drawTopLayer();
-	}
+	
 
 	players[0].setPos(levels[currentLevelIndex].getP1Start());
 	players[1].setPos(levels[currentLevelIndex].getP2Start());
@@ -235,7 +230,19 @@ void Game::setGame(int levelIndex, bool firstSettings) {
 	for (auto& player : players) {
 		player.setDirection(Directions::STAY);
 		player.setFinished(false);
-		player.draw();
+	}
+
+	if (!isSilent) {
+		screen.clearScreen();
+		levels[currentLevelIndex].drawRoom(screen);
+		if (!firstSettings) {
+			screen.draw();
+			levels[currentLevelIndex].drawTopLayer();
+		}
+
+		for (auto& player : players) {
+			player.draw();
+		}
 	}
 }
 

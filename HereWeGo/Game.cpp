@@ -215,7 +215,6 @@ void Game::loadGlobalSaveConfig() {
 	}
 }
 
-
 void Game::setGame(int levelIndex, bool firstSettings) {
 	if (levels.empty()) return;
 
@@ -239,6 +238,13 @@ void Game::setGame(int levelIndex, bool firstSettings) {
 }
 
 
+char Game::getInput()
+{
+	if (_kbhit) return _getch();
+	return 0;
+}
+
+
 void Game::run()
 {
 	if (!levelLoadedCorrectly) {
@@ -256,9 +262,48 @@ void Game::run()
 	bool boomDustCleaningNeeded = false;
 	while (true) {
 		Room& currRoom = levels[currentLevelIndex]; 
-		char key = 0;
+		char key = getInput();
 		
-		
+		if (key != 0) {
+			key = _getch();
+			if (key == ESC) {
+				auto pauseStart = std::chrono::steady_clock::now();
+
+				setColor(Color::BLUE);
+				printCentered("GAME PAUSED", 2);
+				printCentered("Press H to exit", 4);
+				printCentered("Press S to save", 6);
+				key = _getch();
+
+				if (key == 'h' || key == 'H') {
+					setColor(Color::WHITE);
+					screen.clearScreen();
+					break; //main menu exit
+				}
+				if (key == 's' || key == 'S') {
+					setColor(Color::WHITE);
+					screen.clearScreen();
+					saveGame();
+					Sleep(1000);
+					break; //main menu exit
+				}
+
+				else {
+					auto pauseEnd = std::chrono::steady_clock::now(); //we store the time player paused and resumed to deduct it from actual playing time
+					auto pauseDuration = pauseEnd - pauseStart;
+					levelStartTime += pauseDuration;
+					startTime += pauseDuration;
+
+					setColor(Color::WHITE);
+					screen.draw();
+					currRoom.drawTopLayer();
+					for (int i = 0; i < PLAYER_AMOUNT; i++) {
+						players[i].draw();
+					}
+				}
+				
+			}
+		}
 		
 		currRoom.resetObstacles();
 		Point currentExitPoint = currRoom.getExitPos();
@@ -328,52 +373,6 @@ void Game::run()
 	}
 
 }
-
-
-char Game::getInput(char& key)
-{
-	if (_kbhit()) {
-		key = _getch();
-		if (key == ESC) {
-			auto pauseStart = std::chrono::steady_clock::now();
-
-			setColor(Color::BLUE);
-			printCentered("GAME PAUSED", 2);
-			printCentered("Press H to exit", 4);
-			printCentered("Press S to save", 6);
-			key = _getch();
-
-			if (key == 'h' || key == 'H') {
-				setColor(Color::WHITE);
-				screen.clearScreen();
-				break; //main menu exit
-			}
-			if (key == 's' || key == 'S') {
-				setColor(Color::WHITE);
-				screen.clearScreen();
-				saveGame();
-				Sleep(1000);
-				break; //main menu exit
-			}
-
-			else {
-				auto pauseEnd = std::chrono::steady_clock::now(); //we store the time player paused and resumed to deduct it from actual playing time
-				auto pauseDuration = pauseEnd - pauseStart;
-				levelStartTime += pauseDuration;
-				startTime += pauseDuration;
-
-				setColor(Color::WHITE);
-				screen.draw();
-				currRoom.drawTopLayer();
-				for (int i = 0; i < PLAYER_AMOUNT; i++) {
-					players[i].draw();
-				}
-			}
-
-		}
-	}
-}
-
 
 bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 {

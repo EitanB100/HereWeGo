@@ -69,6 +69,12 @@
     <ClInclude Include="Riddle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Recording_Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReplayGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

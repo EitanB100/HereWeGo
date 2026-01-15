@@ -134,6 +134,8 @@
     <ClInclude Include="Placement.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Potion.h" />
+    <ClInclude Include="Recording_Game.h" />
+    <ClInclude Include="ReplayGame.h" />
     <ClInclude Include="Riddle.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Screen.h" />

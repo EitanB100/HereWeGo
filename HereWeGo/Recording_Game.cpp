@@ -20,7 +20,7 @@ char RecordingGame::getInteractionInput()
 {
 	char key = Game::getInteractionInput();
 	if (key != 0) {
-		recordedSteps.push_back(std::to_string(currentTick) + " " + key);
+		recordedSteps.push_back(std::to_string(currentTick) + " " + key + "i"); //i stands for interaction in parsing
 	}
 	return key;
 }

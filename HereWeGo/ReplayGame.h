@@ -7,6 +7,7 @@ class ReplayGame : public Game {
 	struct Step {
 		int tick;
 		char key;
+		bool isInteraction;
 	};
 	
 	struct ExpectedEvent {

@@ -1,5 +1,5 @@
 #include "ReplayGame.h"
-
+#include <sstream>
 
 
 ReplayGame::ReplayGame(bool silent)
@@ -9,12 +9,19 @@ ReplayGame::ReplayGame(bool silent)
 	std::ifstream inFile("adv-world.steps");
 
 	if (inFile.is_open()) {
-		int t;
-		char k;
-		while (inFile >> t >> k) {
-			steps.push_back({ t,k });
+		std::string line;
+		while (std::getline(inFile, line)) {
+			if (line.empty()) continue;
+
+			std::stringstream parser(line);
+			int t;
+			char k;
+			std::string interaction;
+			if (parser >> t >> k) {
+				bool isInteractable = (parser >> interaction && interaction == "i");
+				steps.push_back({ t,k,isInteractable });
+			}
 		}
-		inFile.close();
 	}
 	if (isSilent) {
 		loadExpectedResult();
@@ -85,9 +92,9 @@ char ReplayGame::getInput()
 	currentTick++;  // Increment every game loop call
 
 	if (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
-		char keyToPress = steps[nextStepInd].key;
-		nextStepInd++;
-		return keyToPress;
+		if (!steps[nextStepInd].isInteraction) {
+			return steps[nextStepInd++].key;
+		}
 	}
 	return 0;
 
@@ -96,9 +103,10 @@ char ReplayGame::getInput()
 char ReplayGame::getInteractionInput()
 {
 	if (nextStepInd < steps.size() && steps[nextStepInd].tick == currentTick) {
-		return steps[nextStepInd++].key;
+		if (steps[nextStepInd].isInteraction)
+			return steps[nextStepInd++].key;
 	}
-	return '0';
+	return 0;
 }
 
 void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //temporary. need full riddle file to write to
@@ -113,7 +121,8 @@ void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //tempor
 		// Simulate the loop without printing
 		while (true) {
 			char c = getInteractionInput();
-			if (c == '0' || c < '1' || c > '5') continue;
+			if (c == '0') break;
+			if (c < '1' || c > '5') continue;
 
 			int choice = c - '0';
 			bool correct = (choice - 1 == currentRiddle->correctAnswer);

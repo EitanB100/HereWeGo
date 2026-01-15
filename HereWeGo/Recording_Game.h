@@ -1,13 +1,19 @@
 #pragma once
 #include "Game.h"
-#include "Utils.h"
+#include <fstream>
+#include <vector>
+#include <string>
+
 class RecordingGame : public Game {
 	std::vector<std::string> recordedSteps;
 public:
 	char getInput() override {
 		char key = Game::getInput();
 		if (key != 0) {
-			recordedSteps.push_back(std::to_string(levelTimer) + " " + key);
+			auto now = std::chrono::steady_clock::now();
+			int diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - levelStartTime).count();
+			int currentTick = diff / GAME_SPEED;
+			recordedSteps.push_back(std::to_string(currentTick) + " " + key);
 		}
 		return key;
 	}

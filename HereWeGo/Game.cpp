@@ -464,6 +464,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 				setColor(Color::RED);
 				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
 				player.takeDamage(HP_INCREASE);
+				onLifeLost();
 				Sleep(500);
 			}
 			break;

@@ -19,6 +19,9 @@ ReplayGame::ReplayGame(bool silent)
 	if (isSilent) {
 		loadExpectedResult();
 	}
+	else {
+		hideCursor();
+	}
 }
 
 ReplayGame::~ReplayGame()
@@ -88,6 +91,16 @@ char ReplayGame::getInput()
 	}
 	return 0;
 
+}
+
+void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //temporary. need full riddle file to write to
+{
+	Point riddlePos = room.getRiddlePos(riddleID);
+	if (riddlePos.x != -1) {
+		room.removeRiddle(riddlePos);
+		player.setPos(riddlePos);
+		player.draw();
+	}
 }
 
 void ReplayGame::onLevelChange(int levelInd)

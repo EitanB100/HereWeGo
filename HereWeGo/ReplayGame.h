@@ -34,6 +34,7 @@ public:
 		if (!isSilent) Sleep(GAME_SPEED);
 	}
 
+	void handleRiddle(int riddleID, Player& player, Room& room) override;
 	void onLevelChange(int levelInd) override;
 	void onLifeLost() override;
 	void onRiddleSolved(bool correct) override;

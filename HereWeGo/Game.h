@@ -54,7 +54,7 @@ class Game {
 	void saveGlobalSaveConfig(); // type on file how many saves are
 	void loadGlobalSaveConfig(); // load how many saves are into savefiles
 	
-
+	virtual char getInput(char& key);
 public:
 
 	static char p1Keys[KEY_COUNT];

@@ -98,11 +98,12 @@ char ReplayGame::getInteractionInput()
 	if (nextStepInd < steps.size()) {
 		return steps[nextStepInd++].key;
 	}
-	return 0;
+	return '1';
 }
 
 void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //temporary. need full riddle file to write to
 {
+	// Logic split: Silent mode (simulation) vs Visual mode (base class logic)
 	if (isSilent) {
 		Riddle* currentRiddle = nullptr;
 		for (auto& r : riddles) if (r.id == riddleID) currentRiddle = &r;
@@ -120,7 +121,7 @@ void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //tempor
 			onRiddleSolved(correct); // Log result
 
 			if (correct) {
-				// Logic to remove riddle (copied from Game::handleRiddle logic logic)
+				// Logic to remove riddle (copied from Game::handleRiddle logic)
 				Point p = player.getPos();
 				Point neighbors[4] = { {p.x + 1,p.y},{p.x - 1,p.y},{p.x,p.y + 1},{p.x,p.y - 1} };
 				for (const auto& neighbor : neighbors) {
@@ -133,51 +134,13 @@ void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //tempor
 			else {
 				onLifeLost(); // Log life lost
 				player.takeDamage(HP_INCREASE);
-			}if (isSilent) {
-				Riddle* currentRiddle = nullptr;
-				for (auto& r : riddles) if (r.id == riddleID) currentRiddle = &r;
-
-				if (!currentRiddle) return;
-
-				// Simulate the loop without printing
-				while (true) {
-					char c = getInteractionInput();
-					if (c < '1' || c > '5') continue;
-
-					int choice = c - '0';
-					bool correct = (choice - 1 == currentRiddle->correctAnswer);
-
-					onRiddleSolved(correct); // Log result
-
-					if (correct) {
-						// Logic to remove riddle (copied from Game::handleRiddle logic logic)
-						Point p = player.getPos();
-						Point neighbors[4] = { {p.x + 1,p.y},{p.x - 1,p.y},{p.x,p.y + 1},{p.x,p.y - 1} };
-						for (const auto& neighbor : neighbors) {
-							if (room.getObjectAt(neighbor) == RIDDLE_TILE && room.getRiddleID(neighbor) == riddleID) {
-								room.removeRiddle(neighbor);
-								break;
-							}
-						}
-					}
-					else {
-						onLifeLost(); // Log life lost
-						player.takeDamage(HP_INCREASE);
-					}
-					break; // Exit loop after processing answer
-				}
-			}
-			else {
-				// Not silent? Just run the normal visual logic, 
-				// which will now call our getInteractionInput() to get the recorded keys!
-				Game::handleRiddle(riddleID, player, room);
 			}
 			break; // Exit loop after processing answer
 		}
 	}
 	else {
-		// Not silent? Just run the normal visual logic, 
-		// which will now call our getInteractionInput() to get the recorded keys!
+		// Not silent? Run normal visual logic.
+		// It will calls our getInteractionInput() to get the recorded keys.
 		Game::handleRiddle(riddleID, player, room);
 	}
 }

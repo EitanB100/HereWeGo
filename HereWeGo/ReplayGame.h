@@ -29,6 +29,7 @@ public:
 	~ReplayGame();
 
 	char getInput() override;
+	char getInteractionInput() override;
 	
 	void sleepFrame() override {
 		if (!isSilent) Sleep(GAME_SPEED);

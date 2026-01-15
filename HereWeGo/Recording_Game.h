@@ -10,6 +10,7 @@ class RecordingGame : public Game {
 	int currentTick = 0;
 public:
 	char getInput() override;
+	char getInteractionInput() override;
 	
 	void onLevelChange(int levelInd) override;
 	void onLifeLost() override;

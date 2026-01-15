@@ -33,7 +33,7 @@ class Game {
 	
 	bool useColor;
 
-	std::vector<Riddle> riddles;
+	
 	virtual void handleRiddle(int riddleID, Player& player, Room& room);
 
 
@@ -57,7 +57,9 @@ protected:
 	std::chrono::steady_clock::time_point startTime;      // Total game time
 	std::chrono::steady_clock::time_point levelStartTime; // Current level time
 	
-	
+	std::vector<Riddle> riddles;
+	virtual char getInteractionInput();
+
 	int currentLevelIndex = 0;
 	int score = 0;
 

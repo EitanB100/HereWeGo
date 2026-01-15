@@ -238,6 +238,13 @@ void Game::setGame(int levelIndex, bool firstSettings) {
 }
 
 
+char Game::getInteractionInput()
+{
+	while (true) {
+		if (_kbhit()) return _getch();
+	}
+}
+
 char Game::getInput()
 {
 	if (_kbhit()) return _getch();
@@ -440,47 +447,48 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 	while (_kbhit()) _getch();
 
 	while (true) {
-		if (_kbhit()) {
-			char c = _getch();
-			if (c < '1' || c  > '5') continue; //maximum 5 options 
-			int choice = c - '0';
-			if (choice - 1 == riddle.correctAnswer) {
+		char c = getInteractionInput();
 
-				onRiddleSolved(true);
+		if (c < '1' || c  > '5') continue; //maximum 5 options 
+		int choice = c - '0';
+		if (choice - 1 == riddle.correctAnswer) {
 
-				setColor(Color::GREEN);
-				printCentered("CORRECT!", 20);
-				Sleep(500);
+			onRiddleSolved(true);
 
-				Point p = player.getPos();
-				Point neighbors[4] = { {p.x + 1,p.y},{p.x - 1,p.y},{p.x,p.y + 1},{p.x,p.y - 1} };
+			setColor(Color::GREEN);
+			printCentered("CORRECT!", 20);
+			Sleep(500);
 
-				for (const auto& neighbor : neighbors) {
-					if (room.getObjectAt(neighbor) == RIDDLE_TILE && room.getRiddleID(neighbor) == riddleID) {
-						room.removeRiddle(neighbor);
-						break;
-					}
-				} 
+			Point p = player.getPos();
+			Point neighbors[4] = { {p.x + 1,p.y},{p.x - 1,p.y},{p.x,p.y + 1},{p.x,p.y - 1} };
+
+			for (const auto& neighbor : neighbors) {
+				if (room.getObjectAt(neighbor) == RIDDLE_TILE && room.getRiddleID(neighbor) == riddleID) {
+					room.removeRiddle(neighbor);
+					break;
+				}
 			}
-
-			else {
-				onRiddleSolved(false);
-				onLifeLost();
-				setColor(Color::RED);
-				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
-				player.takeDamage(HP_INCREASE);
-				onLifeLost();
-				Sleep(500);
-			}
-			break;
 		}
+
+		else {
+			onRiddleSolved(false);
+			onLifeLost();
+			setColor(Color::RED);
+			printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
+			player.takeDamage(HP_INCREASE);
+			onLifeLost();
+			Sleep(500);
+		}
+		break;
 	}
+
 	setColor(Color::WHITE);
 	screen.clearScreen();
 	room.drawRoom(screen);
 	screen.draw();
 	room.drawTopLayer();
 }
+
 
 void Game::showEndingScreen()
 {

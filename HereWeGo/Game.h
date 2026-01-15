@@ -72,6 +72,7 @@ protected:
 	virtual void onRiddleSolved(bool correct) {} //when answering a riddle
 
 public:
+	virtual ~Game() = default;
 
 	static char p1Keys[KEY_COUNT];
 	static char p2Keys[KEY_COUNT];

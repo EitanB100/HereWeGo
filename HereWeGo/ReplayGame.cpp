@@ -22,6 +22,7 @@ ReplayGame::ReplayGame(bool silent)
 				steps.push_back({ t,k,isInteractable });
 			}
 		}
+		inFile.close();
 	}
 	if (isSilent) {
 		loadExpectedResult();
@@ -74,9 +75,14 @@ void ReplayGame::loadExpectedResult()
 
 		int spacePos = line.find(' ');
 		if (spacePos != std::string::npos) {
-			int time = std::stoi(line.substr(0, spacePos));
-			std::string description = line.substr(spacePos + 1);
-			expectedEvents.push_back({ time,description });
+			try {
+				int time = std::stoi(line.substr(0, spacePos));
+				std::string description = line.substr(spacePos + 1);
+				expectedEvents.push_back({ time,description });
+			}
+			catch (...) {
+				continue;
+			}
 		}
 	}
 	inFile.close();

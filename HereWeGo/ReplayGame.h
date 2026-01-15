@@ -21,7 +21,6 @@ class ReplayGame : public Game {
 	std::vector<ExpectedEvent> expectedEvents;
 	std::vector<ExpectedEvent> actualEvents;
 	int nextStepInd = 0;
-	bool isSilent;
 
 	void loadExpectedResult();
 	void recordActualEvent(int time, const std::string& description);

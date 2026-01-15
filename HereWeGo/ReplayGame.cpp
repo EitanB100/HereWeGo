@@ -4,11 +4,11 @@
 
 ReplayGame::ReplayGame(bool silent)
 {
-	isSilent = silent;
+	this->isSilent = silent;
 
 	std::ifstream inFile("adv-world.steps");
 
-	if (inFile.is_open()) {
+	if (inFile.is_open()) {  
 		std::string line;
 		while (std::getline(inFile, line)) {
 			if (line.empty()) continue;

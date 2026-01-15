@@ -54,6 +54,8 @@ protected:
 	std::vector<Room> levels;
 	bool levelLoadedCorrectly = true;
 
+	bool isSilent = false;
+
 	std::chrono::steady_clock::time_point startTime;      // Total game time
 	std::chrono::steady_clock::time_point levelStartTime; // Current level time
 	

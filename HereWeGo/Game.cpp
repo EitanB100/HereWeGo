@@ -25,6 +25,7 @@ Game::Game() : useColor(getColorMode()), players{
 
 void Game::handleGameOver()
 {
+	if (isSilent) return;
 	screen.clearScreen();
 	gotoxy(35, 10);
 	setColor(Color::RED);
@@ -130,7 +131,8 @@ void Game::saveGame() {
 	printCentered("GAME SAVED SUCCESSFULLY TO SLOT " + std::to_string(savefiles+1), 2);
 	savefiles++; // new save file added
 	saveGlobalSaveConfig(); // save on file how many saves are
-	Sleep(1000);
+	
+	if (!isSilent) Sleep(1000);
 }
 
 bool Game::loadGame(int slot) {
@@ -273,38 +275,40 @@ void Game::run()
 		
 		if (key != 0) {
 			if (key == ESC) {
-				auto pauseStart = std::chrono::steady_clock::now();
+				if (!isSilent) {
+					auto pauseStart = std::chrono::steady_clock::now();
 
-				setColor(Color::BLUE);
-				printCentered("GAME PAUSED", 2);
-				printCentered("Press H to exit", 4);
-				printCentered("Press S to save", 6);
-				key = _getch();
+					setColor(Color::BLUE);
+					printCentered("GAME PAUSED", 2);
+					printCentered("Press H to exit", 4);
+					printCentered("Press S to save", 6);
+					key = _getch();
 
-				if (key == 'h' || key == 'H') {
-					setColor(Color::WHITE);
-					screen.clearScreen();
-					break; //main menu exit
-				}
-				if (key == 's' || key == 'S') {
-					setColor(Color::WHITE);
-					screen.clearScreen();
-					saveGame();
-					Sleep(1000);
-					break; //main menu exit
-				}
+					if (key == 'h' || key == 'H') {
+						setColor(Color::WHITE);
+						screen.clearScreen();
+						break; //main menu exit
+					}
+					if (key == 's' || key == 'S') {
+						setColor(Color::WHITE);
+						screen.clearScreen();
+						saveGame();
+						Sleep(1000);
+						break; //main menu exit
+					}
 
-				else {
-					auto pauseEnd = std::chrono::steady_clock::now(); //we store the time player paused and resumed to deduct it from actual playing time
-					auto pauseDuration = pauseEnd - pauseStart;
-					levelStartTime += pauseDuration;
-					startTime += pauseDuration;
+					else {
+						auto pauseEnd = std::chrono::steady_clock::now(); //we store the time player paused and resumed to deduct it from actual playing time
+						auto pauseDuration = pauseEnd - pauseStart;
+						levelStartTime += pauseDuration;
+						startTime += pauseDuration;
 
-					setColor(Color::WHITE);
-					screen.draw();
-					currRoom.drawTopLayer();
-					for (int i = 0; i < PLAYER_AMOUNT; i++) {
-						players[i].draw();
+						setColor(Color::WHITE);
+						screen.draw();
+						currRoom.drawTopLayer();
+						for (int i = 0; i < PLAYER_AMOUNT; i++) {
+							players[i].draw();
+						}
 					}
 				}
 				
@@ -320,7 +324,7 @@ void Game::run()
 			Player& other = players[1 - i];
 
 			p.inputManager(key, currRoom);
-			setColor(Color::WHITE);
+			if (!isSilent) setColor(Color::WHITE);
 
 			p.updateSpringPhysics(currRoom, &other);
 			
@@ -340,8 +344,10 @@ void Game::run()
 			if (currentExitPoint.x != -1 && p.getPos() == currentExitPoint) {
 				if (!p.isFinished()) {
 					p.setFinished(true);
-					gotoxy(50, 0);
-					std::cout << "Player " << p.getSymbol() << " Is waiting...";
+					if (!isSilent) {
+						gotoxy(50, 0);
+						std::cout << "Player " << p.getSymbol() << " Is waiting...";
+					}
 				}
 			}
 		}
@@ -351,10 +357,13 @@ void Game::run()
 		
 		if (boomDustCleaningNeeded) {
 			currRoom.clearExplosions();
-			currRoom.drawRoom(screen);
-			
-			screen.draw(); 
-			currRoom.drawTopLayer();
+
+			if (!isSilent) {
+				currRoom.drawRoom(screen);
+				screen.draw();
+				currRoom.drawTopLayer();
+			}
+
 			boomDustCleaningNeeded = false;
 		}
 		
@@ -367,7 +376,8 @@ void Game::run()
 
 		bool gameOver = false;
 		for (int i = 0; i < PLAYER_AMOUNT; i++) {
-			players[i].draw();
+			if (!isSilent) players[i].draw();
+			
 			if (players[i].isDead()) {
 				gameOver = true;
 				break;
@@ -378,9 +388,10 @@ void Game::run()
 			handleGameOver();
 			break;
 		}
-		//HUD renderer
-		printHUD();
-		printTimer();
+		if (!isSilent) {
+			printHUD();
+			printTimer();
+		}
 		sleepFrame();
 	}
 
@@ -405,7 +416,7 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 
 			resetLevelTimer();
 
-			printTimer();
+		if (!isSilent) printTimer();
 			return false;
 		}
 		else
@@ -432,18 +443,20 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 	}
 
 	if (currentRiddle == nullptr) return;
-	 
+
 	const Riddle& riddle = *currentRiddle; // for readability
 
-	screen.clearScreen();
-	setColor(Color::CYAN);
-	printCentered("=== RIDDLE TIME! ===", 5);
-	setColor(Color::WHITE);
-	printCentered(riddle.question, 8);
+	if (!isSilent) {
+		screen.clearScreen();
+		setColor(Color::CYAN);
+		printCentered("=== RIDDLE TIME! ===", 5);
+		setColor(Color::WHITE);
+		printCentered(riddle.question, 8);
 
-	for (int i = 0; i < riddle.options.size(); i++) {
-		std::string currOption = "(" + std::to_string(i + 1) + ") " + riddle.options[i];
-		printCentered(currOption, 11 + i * 2);
+		for (int i = 0; i < riddle.options.size(); i++) {
+			std::string currOption = "(" + std::to_string(i + 1) + ") " + riddle.options[i];
+			printCentered(currOption, 11 + i * 2);
+		}
 	}
 	while (_kbhit()) _getch();
 
@@ -455,10 +468,11 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 		if (choice - 1 == riddle.correctAnswer) {
 
 			onRiddleSolved(true);
-
-			setColor(Color::GREEN);
-			printCentered("CORRECT!", 20);
-			Sleep(500);
+			if (!isSilent) {
+				setColor(Color::GREEN);
+				printCentered("CORRECT!", 20);
+				Sleep(500);
+			}
 
 			Point p = player.getPos();
 			Point neighbors[4] = { {p.x + 1,p.y},{p.x - 1,p.y},{p.x,p.y + 1},{p.x,p.y - 1} };
@@ -474,25 +488,29 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 		else {
 			onRiddleSolved(false);
 			onLifeLost();
-			setColor(Color::RED);
-			printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
+			if (!isSilent) {
+				setColor(Color::RED);
+				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
+				Sleep(500);
+			}
 			player.takeDamage(HP_INCREASE);
 			onLifeLost();
-			Sleep(500);
 		}
 		break;
 	}
-
-	setColor(Color::WHITE);
-	screen.clearScreen();
-	room.drawRoom(screen);
-	screen.draw();
-	room.drawTopLayer();
+	if (!isSilent) {
+		setColor(Color::WHITE);
+		screen.clearScreen();
+		room.drawRoom(screen);
+		screen.draw();
+		room.drawTopLayer();
+	}
 }
 
 
 void Game::showEndingScreen()
 {
+	if (isSilent) return;
 		screen.clearScreen();
 
 		setColor(Color::CYAN);

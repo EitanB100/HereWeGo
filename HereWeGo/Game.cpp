@@ -440,6 +440,9 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 			if (c < '1' || c  > '5') continue; //maximum 5 options 
 			int choice = c - '0';
 			if (choice - 1 == riddle.correctAnswer) {
+
+				onRiddleSolved(true);
+
 				setColor(Color::GREEN);
 				printCentered("CORRECT!", 20);
 				Sleep(500);
@@ -456,6 +459,8 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 			}
 
 			else {
+				onRiddleSolved(false);
+				onLifeLost();
 				setColor(Color::RED);
 				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
 				player.takeDamage(HP_INCREASE);

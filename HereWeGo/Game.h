@@ -22,20 +22,15 @@ extern char p1Keys[KEY_COUNT];
 extern char p2Keys[KEY_COUNT];
 
 class Game {
-	Screen screen;
-	std::vector<Room> levels;
-	bool levelLoadedCorrectly = true;
+	
 
 	std::string loadingErrorMessage = "Unknown error";
 
 	Player players[PLAYER_AMOUNT];
 	
-	std::chrono::steady_clock::time_point startTime;      // Total game time
-	std::chrono::steady_clock::time_point levelStartTime; // Current level time
 	
 	int savefiles = 0; // ho much save files there 
-	int currentLevelIndex = 0;
-	int score = 0;
+	
 	bool useColor;
 
 	std::vector<Riddle> riddles;
@@ -55,7 +50,17 @@ class Game {
 	void loadGlobalSaveConfig(); // load how many saves are into savefiles
 	
 protected:
-	virtual char getInput();
+	Screen screen;
+	std::vector<Room> levels;
+	bool levelLoadedCorrectly = true;
+
+	std::chrono::steady_clock::time_point startTime;      // Total game time
+	std::chrono::steady_clock::time_point levelStartTime; // Current level time
+	
+	virtual char getInput(); 
+	int currentLevelIndex = 0;
+	int score = 0;
+	
 public:
 
 	static char p1Keys[KEY_COUNT];

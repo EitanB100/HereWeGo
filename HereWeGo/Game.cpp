@@ -387,6 +387,7 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 		if (currentLevelIndex < (int)levels.size() - 1)
 		{
 			currentLevelIndex++;
+			onLevelChange(currentLevelIndex);
 			setGame(currentLevelIndex, false);
 
 			resetLevelTimer();

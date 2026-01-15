@@ -63,7 +63,11 @@ protected:
 
 	virtual char getInput();
 	virtual void sleepFrame() { Sleep(GAME_SPEED); }
-	
+
+	virtual void onLevelChange(int levelInd) {} //transitioning between levels
+	virtual void onLifeLost() {} //when getting hit/getting a riddle wrong
+	virtual void onRiddleSolved(bool correct) {} //when answering a riddle
+
 public:
 
 	static char p1Keys[KEY_COUNT];

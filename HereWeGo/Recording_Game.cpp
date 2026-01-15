@@ -7,11 +7,10 @@ static int getCurrentTime(std::chrono::steady_clock::time_point start) {
 
 char RecordingGame::getInput()
 {
+	currentTick++;
+
 	char key = Game::getInput();
 	if (key != 0) {
-		auto now = std::chrono::steady_clock::now();
-		int diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - levelStartTime).count();
-		int currentTick = diff / GAME_SPEED;
 		recordedSteps.push_back(std::to_string(currentTick) + " " + key);
 	}
 	return key;

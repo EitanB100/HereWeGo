@@ -14,6 +14,8 @@ class ReplayGame : public Game {
 		std::string description;
 	};
 
+	int currentTick = 0;
+
 	std::vector<Step> steps;
 	std::vector<ExpectedEvent> expectedEvents;
 	std::vector<ExpectedEvent> actualEvents;

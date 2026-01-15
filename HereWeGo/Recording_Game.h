@@ -6,9 +6,13 @@
 
 class RecordingGame : public Game {
 	std::vector<std::string> recordedSteps;
+	std::vector<std::string> recordedEvents;
 public:
 	char getInput() override;
-		
+	
+	void onLevelChange(int levelInd) override;
+	void onLifeLost() override;
+	void onRiddleSolved(bool correct) override;
 	
 	~RecordingGame(); 
 

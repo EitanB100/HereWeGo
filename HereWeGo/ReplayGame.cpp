@@ -33,7 +33,7 @@ ReplayGame::~ReplayGame()
 			passed = false;
 		}
 
-		size_t minSize = std::min(actualEvents.size(), expectedEvents.size());
+		size_t minSize = (std::min)(actualEvents.size(), expectedEvents.size());
 		for (size_t i = 0; i < minSize; i++) {
 			if (actualEvents[i].description != expectedEvents[i].description) {
 				std::cout << "FAIL at event " << i << ":" << std::endl;

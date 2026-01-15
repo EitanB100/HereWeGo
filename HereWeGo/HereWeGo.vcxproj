@@ -160,6 +160,8 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_interaction.cpp" />
     <ClCompile Include="potion.cpp" />
+    <ClCompile Include="Recording_Game.cpp" />
+    <ClCompile Include="ReplayGame.cpp" />
     <ClCompile Include="room.cpp" />
     <ClCompile Include="room_finders.cpp" />
     <ClCompile Include="room_modifications.cpp" />

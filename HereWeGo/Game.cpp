@@ -323,6 +323,11 @@ void Game::run()
 				handleRiddle(eventID, p, currRoom);
 			}
 
+			if (p.hasGotHit()) {
+				onLifeLost();
+				p.resetGotHit();
+			}
+
 			//check level completion for a player
 			if (currentExitPoint.x != -1 && p.getPos() == currentExitPoint) {
 				if (!p.isFinished()) {

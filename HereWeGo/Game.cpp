@@ -240,7 +240,7 @@ void Game::setGame(int levelIndex, bool firstSettings) {
 
 char Game::getInput()
 {
-	if (_kbhit) return _getch();
+	if (_kbhit()) return _getch();
 	return 0;
 }
 
@@ -265,7 +265,6 @@ void Game::run()
 		char key = getInput();
 		
 		if (key != 0) {
-			key = _getch();
 			if (key == ESC) {
 				auto pauseStart = std::chrono::steady_clock::now();
 
@@ -369,7 +368,7 @@ void Game::run()
 		//HUD renderer
 		printHUD();
 		printTimer();
-		Sleep(GAME_SPEED);
+		sleepFrame();
 	}
 
 }

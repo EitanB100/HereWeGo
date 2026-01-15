@@ -57,9 +57,12 @@ protected:
 	std::chrono::steady_clock::time_point startTime;      // Total game time
 	std::chrono::steady_clock::time_point levelStartTime; // Current level time
 	
-	virtual char getInput(); 
+	
 	int currentLevelIndex = 0;
 	int score = 0;
+
+	virtual char getInput();
+	virtual void sleepFrame() { Sleep(GAME_SPEED); }
 	
 public:
 

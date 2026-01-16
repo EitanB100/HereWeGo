@@ -28,6 +28,7 @@ char RecordingGame::getInteractionInput()
 void RecordingGame::onLevelChange(int levelInd){
 	int time = getCurrentTime(startTime);
 	recordedEvents.push_back(std::to_string(time) + " Level Changed: " + std::to_string(levelInd));
+
 }
 
 void RecordingGame::onLifeLost(){

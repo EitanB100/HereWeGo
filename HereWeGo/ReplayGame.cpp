@@ -72,19 +72,20 @@ void ReplayGame::loadExpectedResult()
 	std::string line;
 	while (std::getline(inFile, line)) {
 		if (line.empty()) continue;
+		
+		std::stringstream parser(line);
+		int time;
+		if (!(parser >> time)) continue;
 
-		int spacePos = line.find(' ');
-		if (spacePos != std::string::npos) {
-			try {
-				int time = std::stoi(line.substr(0, spacePos));
-				std::string description = line.substr(spacePos + 1);
-				expectedEvents.push_back({ time,description });
-			}
-			catch (...) {
-				continue;
-			}
+		std::string description;
+		std::getline(parser, description);
+
+		if (!description.empty() && description[0] == ' ') {
+			description = description.substr(1);
 		}
+		expectedEvents.push_back({ time,description });
 	}
+		
 	inFile.close();
 }
 

@@ -66,6 +66,8 @@ protected:
 	int currentLevelIndex = 0;
 	int score = 0;
 
+	virtual void resetRecording() {}
+
 	virtual char getInput();
 	virtual void sleepFrame() { Sleep(GAME_SPEED); }
 

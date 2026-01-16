@@ -12,6 +12,8 @@ public:
 	char getInput() override;
 	char getInteractionInput() override;
 	
+	void resetRecording() override;
+
 	void onLevelChange(int levelInd) override;
 	void onLifeLost() override;
 	void onRiddleSolved(bool correct) override;

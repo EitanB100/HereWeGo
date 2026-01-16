@@ -25,6 +25,13 @@ char RecordingGame::getInteractionInput()
 	return key;
 }
 
+void RecordingGame::resetRecording()
+{
+	recordedSteps.clear();
+	recordedEvents.clear();
+	currentTick = 0;
+}
+
 void RecordingGame::onLevelChange(int levelInd){
 	int time = getCurrentTime(startTime);
 	recordedEvents.push_back(std::to_string(time) + " Level Changed: " + std::to_string(levelInd));

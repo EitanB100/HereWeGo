@@ -165,6 +165,7 @@ bool Game::loadGame(int slot) {
 		else if (key == "PLAYER_1_ITEM_ID")   saveFile >> temp[1].itemId;
 		else if (key == "PLAYER_1_ITEM_COLOR") saveFile >> temp[1].itemColor;
 	}
+	resetRecording();
 	saveFile.close();
 
 	std::string error;

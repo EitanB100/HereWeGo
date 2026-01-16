@@ -5,6 +5,7 @@
 ReplayGame::ReplayGame(bool silent)
 {
 	this->isSilent = silent;
+	this->isLoadMode = true;
 
 	std::ifstream inFile("adv-world.steps");
 

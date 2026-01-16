@@ -323,7 +323,7 @@ void Game::run()
 		char key = getInput();
 		
 		if (key != 0) {
-			if (key == ESC) {
+			if (key == ESC && !isLoadMode) {
 				if (!isSilent) {
 					auto pauseStart = std::chrono::steady_clock::now();
 
@@ -331,14 +331,14 @@ void Game::run()
 					printCentered("GAME PAUSED", 2);
 					printCentered("Press H to exit", 4);
 					printCentered("Press S to save", 6);
-					char pauseKey = getInteractionInput();
+					char key = getInput();
 
-					if (pauseKey == 'h' || pauseKey == 'H') {
+					if (key == 'h' || key == 'H') {
 						setColor(Color::WHITE);
 						screen.clearScreen();
 						break; //main menu exit
 					}
-					if (pauseKey == 's' || pauseKey == 'S') {
+					if (key == 's' || key == 'S') {
 						setColor(Color::WHITE);
 						screen.clearScreen();
 						saveGame();

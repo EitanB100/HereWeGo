@@ -54,6 +54,7 @@ protected:
 	std::vector<Room> levels;
 	bool levelLoadedCorrectly = true;
 
+	bool isLoadMode = false;
 	bool isSilent = false;
 
 	std::chrono::steady_clock::time_point startTime;      // Total game time
@@ -99,5 +100,6 @@ public:
 	void settingsMenu();
 	bool loadGame(int slot); // slot is the number (id of the game file)
 
+	void setLoadMode(bool mode) { isLoadMode = mode; }
 	void loadMenu(); // for picking a save file
 };

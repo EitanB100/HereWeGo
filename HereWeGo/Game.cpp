@@ -199,7 +199,20 @@ bool Game::loadGame(int slot) {
 void Game::saveGlobalSaveConfig() {
 	std::ofstream configFile("config.txt");
 	if (configFile.is_open()) {
-		configFile << savefiles;
+		configFile << savefiles << "\n";
+
+		configFile << "[KEYS]\n";
+		configFile << "P1";
+		for (int i = 0; i < KEY_COUNT; i++) {
+			configFile << " " << p1Keys[i];
+		}
+
+		configFile << "\nP2";
+		for (int i = 0; i < KEY_COUNT; i++) {
+			configFile << " " << p2Keys[i];
+		}
+
+		configFile << "\n";
 		configFile.close();
 	}
 }
@@ -210,6 +223,35 @@ void Game::loadGlobalSaveConfig() {
 		if (!(configFile >> savefiles)) {
 			savefiles = 0; // Fallback if file is corrupted or empty
 		}
+
+		std::string line;
+		while (std::getline(configFile, line)) {
+			if (line.empty()) continue;
+			if (line == "[KEYS]") continue;
+
+			std::stringstream parser(line);
+			std::string player;
+			if (!(parser >> player)) continue;
+
+			if (player == "P1") {
+				for (int i = 0; i < KEY_COUNT; i++) {
+					char key;
+					if (parser >> key) {
+						p1Keys[i] = key;
+					}
+				}
+			}
+
+			else if (player == "P2") {
+				for (int i = 0; i < KEY_COUNT; i++) {
+					char key;
+					if (parser >> key) {
+						p2Keys[i] = key;
+					}
+				}
+			}
+		}
+
 		configFile.close();
 	}
 	else {

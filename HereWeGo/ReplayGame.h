@@ -15,6 +15,8 @@ class ReplayGame : public Game {
 		std::string description;
 	};
 
+	static constexpr int REPLAY_SPEED = 25;
+
 	int currentTick = 0;
 
 	std::vector<Step> steps;
@@ -32,7 +34,7 @@ public:
 	char getInteractionInput() override;
 	
 	void sleepFrame() override {
-		if (!isSilent) Sleep(GAME_SPEED);
+		if (!isSilent) Sleep(REPLAY_SPEED);
 	}
 
 	void handleRiddle(int riddleID, Player& player, Room& room) override;

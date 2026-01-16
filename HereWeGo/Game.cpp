@@ -13,18 +13,16 @@ void Game::resetLevelTimer() {
 	levelStartTime = std::chrono::steady_clock::now();
 }
 
-Game::Game() : useColor(getColorMode()), players{
-	Player(Placement(10,20),'$',0,0,p1Keys),
-	Player(Placement(9,15),'&',0,0,p2Keys)
-}
-{
+
+Game::Game() : useColor(getColorMode()) {
 	init();
+	players[0] = Player(Placement(10, 20), '$', 0, 0, p1Keys);
+	players[1] = Player(Placement(9, 15), '&', 0, 0, p2Keys);
 }
-
-
 
 void Game::handleGameOver()
 {
+	if (isSilent) return;
 	screen.clearScreen();
 	gotoxy(35, 10);
 	setColor(Color::RED);
@@ -130,7 +128,8 @@ void Game::saveGame() {
 	printCentered("GAME SAVED SUCCESSFULLY TO SLOT " + std::to_string(savefiles+1), 2);
 	savefiles++; // new save file added
 	saveGlobalSaveConfig(); // save on file how many saves are
-	Sleep(1000);
+	
+	if (!isSilent) Sleep(1000);
 }
 
 bool Game::loadGame(int slot) {
@@ -166,6 +165,7 @@ bool Game::loadGame(int slot) {
 		else if (key == "PLAYER_1_ITEM_ID")   saveFile >> temp[1].itemId;
 		else if (key == "PLAYER_1_ITEM_COLOR") saveFile >> temp[1].itemColor;
 	}
+	resetRecording();
 	saveFile.close();
 
 	std::string error;
@@ -197,7 +197,20 @@ bool Game::loadGame(int slot) {
 void Game::saveGlobalSaveConfig() {
 	std::ofstream configFile("config.txt");
 	if (configFile.is_open()) {
-		configFile << savefiles;
+		configFile << savefiles << "\n";
+
+		configFile << "[KEYS]\n";
+		configFile << "P1";
+		for (int i = 0; i < KEY_COUNT; i++) {
+			configFile << " " << p1Keys[i];
+		}
+
+		configFile << "\nP2";
+		for (int i = 0; i < KEY_COUNT; i++) {
+			configFile << " " << p2Keys[i];
+		}
+
+		configFile << "\n";
 		configFile.close();
 	}
 }
@@ -208,6 +221,37 @@ void Game::loadGlobalSaveConfig() {
 		if (!(configFile >> savefiles)) {
 			savefiles = 0; // Fallback if file is corrupted or empty
 		}
+
+		std::string line;
+		while (std::getline(configFile, line)) {
+			if (line.empty()) continue;
+			if (line == "[KEYS]") continue;
+
+			std::stringstream parser(line);
+			std::string player;
+			if (!(parser >> player)) continue;
+
+			if (player == "P1") {
+				for (int i = 0; i < KEY_COUNT; i++) {
+					char key;
+					if (parser >> key) {
+						p1Keys[i] = key;
+					}
+				}
+			}
+
+			//run 1 - original buttons 
+			//run 2 - changed buttons
+			else if (player == "P2") {
+				for (int i = 0; i < KEY_COUNT; i++) {
+					char key;
+					if (parser >> key) {
+						p2Keys[i] = key;
+					}
+				}
+			}
+		}
+
 		configFile.close();
 	}
 	else {
@@ -218,14 +262,9 @@ void Game::loadGlobalSaveConfig() {
 void Game::setGame(int levelIndex, bool firstSettings) {
 	if (levels.empty()) return;
 
-	screen.clearScreen();
 	currentLevelIndex = levelIndex;
 
-	levels[currentLevelIndex].drawRoom(screen);
-	if (!firstSettings) {
-		screen.draw();
-		levels[currentLevelIndex].drawTopLayer();
-	}
+	
 
 	players[0].setPos(levels[currentLevelIndex].getP1Start());
 	players[1].setPos(levels[currentLevelIndex].getP2Start());
@@ -233,8 +272,34 @@ void Game::setGame(int levelIndex, bool firstSettings) {
 	for (auto& player : players) {
 		player.setDirection(Directions::STAY);
 		player.setFinished(false);
-		player.draw();
 	}
+
+	if (!isSilent) {
+		screen.clearScreen();
+		levels[currentLevelIndex].drawRoom(screen);
+		if (!firstSettings) {
+			screen.draw();
+			levels[currentLevelIndex].drawTopLayer();
+		}
+
+		for (auto& player : players) {
+			player.draw();
+		}
+	}
+}
+
+
+char Game::getInteractionInput()
+{
+	while (true) {
+		if (_kbhit()) return _getch();
+	}
+}
+
+char Game::getInput()
+{
+	if (_kbhit()) return _getch();
+	return 0;
 }
 
 
@@ -255,43 +320,44 @@ void Game::run()
 	bool boomDustCleaningNeeded = false;
 	while (true) {
 		Room& currRoom = levels[currentLevelIndex]; 
-		char key = 0;
+		char key = getInput();
 		
-		if (_kbhit()) {
-			key = _getch();
-			if (key == ESC) {
-				auto pauseStart = std::chrono::steady_clock::now();
+		if (key != 0) {
+			if (key == ESC && !isLoadMode) {
+				if (!isSilent) {
+					auto pauseStart = std::chrono::steady_clock::now();
 
-				setColor(Color::BLUE);
-				printCentered("GAME PAUSED", 2);
-				printCentered("Press H to exit", 4);
-				printCentered("Press S to save", 6);
-				key = _getch();
+					setColor(Color::BLUE);
+					printCentered("GAME PAUSED", 2);
+					printCentered("Press H to exit", 4);
+					printCentered("Press S to save", 6);
+					char key = getInput();
 
-				if (key == 'h' || key == 'H') {
-					setColor(Color::WHITE);
-					screen.clearScreen();
-					break; //main menu exit
-				}
-				if (key == 's' || key == 'S') {
-					setColor(Color::WHITE);
-					screen.clearScreen();
-					saveGame();
-					Sleep(1000);
-					break; //main menu exit
-				}
+					if (key == 'h' || key == 'H') {
+						setColor(Color::WHITE);
+						screen.clearScreen();
+						break; //main menu exit
+					}
+					if (key == 's' || key == 'S') {
+						setColor(Color::WHITE);
+						screen.clearScreen();
+						saveGame();
+						Sleep(1000);
+						break; //main menu exit
+					}
 
-				else {
-					auto pauseEnd = std::chrono::steady_clock::now(); //we store the time player paused and resumed to deduct it from actual playing time
-					auto pauseDuration = pauseEnd - pauseStart;
-					levelStartTime += pauseDuration;
-					startTime += pauseDuration;
+					else {
+						auto pauseEnd = std::chrono::steady_clock::now(); //we store the time player paused and resumed to deduct it from actual playing time
+						auto pauseDuration = pauseEnd - pauseStart;
+						levelStartTime += pauseDuration;
+						startTime += pauseDuration;
 
-					setColor(Color::WHITE);
-					screen.draw();
-					currRoom.drawTopLayer();
-					for (int i = 0; i < PLAYER_AMOUNT; i++) {
-						players[i].draw();
+						setColor(Color::WHITE);
+						screen.draw();
+						currRoom.drawTopLayer();
+						for (int i = 0; i < PLAYER_AMOUNT; i++) {
+							players[i].draw();
+						}
 					}
 				}
 				
@@ -307,22 +373,30 @@ void Game::run()
 			Player& other = players[1 - i];
 
 			p.inputManager(key, currRoom);
-			setColor(Color::WHITE);
+			if (!isSilent) setColor(Color::WHITE);
 
 			p.updateSpringPhysics(currRoom, &other);
 			
 			int eventID = p.move(currRoom, &other);
 			
 			if (eventID != 0) {
+				p.setDirection(Directions::STAY);
 				handleRiddle(eventID, p, currRoom);
+			}
+
+			if (p.hasGotHit()) {
+				onLifeLost();
+				p.resetGotHit();
 			}
 
 			//check level completion for a player
 			if (currentExitPoint.x != -1 && p.getPos() == currentExitPoint) {
 				if (!p.isFinished()) {
 					p.setFinished(true);
-					gotoxy(50, 0);
-					std::cout << "Player " << p.getSymbol() << " Is waiting...";
+					if (!isSilent) {
+						gotoxy(50, 0);
+						std::cout << "Player " << p.getSymbol() << " Is waiting...";
+					}
 				}
 			}
 		}
@@ -332,10 +406,13 @@ void Game::run()
 		
 		if (boomDustCleaningNeeded) {
 			currRoom.clearExplosions();
-			currRoom.drawRoom(screen);
-			
-			screen.draw(); 
-			currRoom.drawTopLayer();
+
+			if (!isSilent) {
+				currRoom.drawRoom(screen);
+				screen.draw();
+				currRoom.drawTopLayer();
+			}
+
 			boomDustCleaningNeeded = false;
 		}
 		
@@ -348,7 +425,8 @@ void Game::run()
 
 		bool gameOver = false;
 		for (int i = 0; i < PLAYER_AMOUNT; i++) {
-			players[i].draw();
+			if (!isSilent) players[i].draw();
+			
 			if (players[i].isDead()) {
 				gameOver = true;
 				break;
@@ -359,10 +437,11 @@ void Game::run()
 			handleGameOver();
 			break;
 		}
-		//HUD renderer
-		printHUD();
-		printTimer();
-		Sleep(GAME_SPEED);
+		if (!isSilent) {
+			printHUD();
+			printTimer();
+		}
+		sleepFrame();
 	}
 
 }
@@ -381,11 +460,12 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 		if (currentLevelIndex < (int)levels.size() - 1)
 		{
 			currentLevelIndex++;
+			onLevelChange(currentLevelIndex);
 			setGame(currentLevelIndex, false);
 
 			resetLevelTimer();
 
-			printTimer();
+		if (!isSilent) printTimer();
 			return false;
 		}
 		else
@@ -412,60 +492,74 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 	}
 
 	if (currentRiddle == nullptr) return;
-	 
+
 	const Riddle& riddle = *currentRiddle; // for readability
 
-	screen.clearScreen();
-	setColor(Color::CYAN);
-	printCentered("=== RIDDLE TIME! ===", 5);
-	setColor(Color::WHITE);
-	printCentered(riddle.question, 8);
+	if (!isSilent) {
+		screen.clearScreen();
+		setColor(Color::CYAN);
+		printCentered("=== RIDDLE TIME! ===", 5);
+		setColor(Color::WHITE);
+		printCentered(riddle.question, 8);
 
-	for (int i = 0; i < riddle.options.size(); i++) {
-		std::string currOption = "(" + std::to_string(i + 1) + ") " + riddle.options[i];
-		printCentered(currOption, 11 + i * 2);
+		for (int i = 0; i < riddle.options.size(); i++) {
+			std::string currOption = "(" + std::to_string(i + 1) + ") " + riddle.options[i];
+			printCentered(currOption, 11 + i * 2);
+		}
 	}
 	while (_kbhit()) _getch();
 
 	while (true) {
-		if (_kbhit()) {
-			char c = _getch();
-			if (c < '1' || c  > '5') continue; //maximum 5 options 
-			int choice = c - '0';
-			if (choice - 1 == riddle.correctAnswer) {
+		char c = getInteractionInput();
+
+		if (c < '1' || c  > '5') continue; //maximum 5 options 
+		int choice = c - '0';
+		if (choice - 1 == riddle.correctAnswer) {
+
+			onRiddleSolved(true);
+			if (!isSilent) {
 				setColor(Color::GREEN);
 				printCentered("CORRECT!", 20);
 				Sleep(500);
-
-				Point p = player.getPos();
-				Point neighbors[4] = { {p.x + 1,p.y},{p.x - 1,p.y},{p.x,p.y + 1},{p.x,p.y - 1} };
-
-				for (const auto& neighbor : neighbors) {
-					if (room.getObjectAt(neighbor) == RIDDLE_TILE && room.getRiddleID(neighbor) == riddleID) {
-						room.removeRiddle(neighbor);
-						break;
-					}
-				} 
 			}
 
-			else {
+			Point p = player.getPos();
+			Point neighbors[4] = { {p.x + 1,p.y},{p.x - 1,p.y},{p.x,p.y + 1},{p.x,p.y - 1} };
+
+			for (const auto& neighbor : neighbors) {
+				if (room.getObjectAt(neighbor) == RIDDLE_TILE && room.getRiddleID(neighbor) == riddleID) {
+					room.removeRiddle(neighbor);
+					break;
+				}
+			}
+		}
+
+		else {
+			onRiddleSolved(false);
+			onLifeLost();
+			if (!isSilent) {
 				setColor(Color::RED);
 				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);
-				player.takeDamage(HP_INCREASE);
 				Sleep(500);
 			}
-			break;
+			player.takeDamage(HP_INCREASE);
+			onLifeLost();
 		}
+		break;
 	}
-	setColor(Color::WHITE);
-	screen.clearScreen();
-	room.drawRoom(screen);
-	screen.draw();
-	room.drawTopLayer();
+	if (!isSilent) {
+		setColor(Color::WHITE);
+		screen.clearScreen();
+		room.drawRoom(screen);
+		screen.draw();
+		room.drawTopLayer();
+	}
 }
+
 
 void Game::showEndingScreen()
 {
+	if (isSilent) return;
 		screen.clearScreen();
 
 		setColor(Color::CYAN);

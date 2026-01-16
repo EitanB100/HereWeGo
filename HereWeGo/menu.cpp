@@ -21,11 +21,13 @@ void Game::settingsMenu() {
 		case '1':
 		{
 			updatePlayerKeys(p1Keys, 1);
+			saveGlobalSaveConfig();
 			break;
 		}
 		case '2':
 		{
 			updatePlayerKeys(p2Keys, 2);
+			saveGlobalSaveConfig();
 			break;
 		}
 		case '3': 

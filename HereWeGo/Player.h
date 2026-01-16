@@ -13,8 +13,9 @@ class Player {
     int dirx = 0, diry = 0;
     int force = 1;
     bool finishedLevel = false;
+    bool gotHit = false;
     static constexpr int keyAmount = static_cast<int>(CommandKeys::NUM_KEYS);
-    
+   
 
     char keys[keyAmount];
     heldItem itemInHand = { ItemType::NONE, 0, Color::WHITE };
@@ -36,7 +37,10 @@ class Player {
     bool handleSpringExit(Room& room);
 public:
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount]);
-
+    Player() : pos(Placement()), symbol(' '), dirx(0), diry(0) {
+        for (int i = 0; i < keyAmount; ++i) keys[i] = 0;
+    }
+    
     static constexpr int MAX_HP = 15;
     static constexpr int DEAD_HP = 0;
     void draw();
@@ -50,7 +54,8 @@ public:
     bool isFinished() { return finishedLevel; }
     int getDirX() { return dirx; }
     int getDirY() { return diry; }
-
+    bool hasGotHit() { return gotHit; }
+    void resetGotHit() { gotHit = false; }
 
    
 

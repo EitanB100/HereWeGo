@@ -134,6 +134,8 @@
     <ClInclude Include="Placement.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Potion.h" />
+    <ClInclude Include="Recording_Game.h" />
+    <ClInclude Include="ReplayGame.h" />
     <ClInclude Include="Riddle.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Screen.h" />
@@ -158,6 +160,8 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_interaction.cpp" />
     <ClCompile Include="potion.cpp" />
+    <ClCompile Include="Recording_Game.cpp" />
+    <ClCompile Include="ReplayGame.cpp" />
     <ClCompile Include="room.cpp" />
     <ClCompile Include="room_finders.cpp" />
     <ClCompile Include="room_modifications.cpp" />

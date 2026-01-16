@@ -1,0 +1,44 @@
+#pragma once
+#include "Game.h"
+#include <fstream>
+#include <vector> 
+
+class ReplayGame : public Game {
+	struct Step {
+		int tick;
+		char key;
+		bool isInteraction;
+	};
+	
+	struct ExpectedEvent {
+		int time;
+		std::string description;
+	};
+
+	static constexpr int REPLAY_SPEED = 25;
+
+	int currentTick = 0;
+
+	std::vector<Step> steps;
+	std::vector<ExpectedEvent> expectedEvents;
+	std::vector<ExpectedEvent> actualEvents;
+	int nextStepInd = 0;
+
+	void loadExpectedResult();
+	void recordActualEvent(int time, const std::string& description);
+public:
+	ReplayGame(bool silent);
+	~ReplayGame();
+
+	char getInput() override;
+	char getInteractionInput() override;
+	
+	void sleepFrame() override {
+		if (!isSilent) Sleep(REPLAY_SPEED);
+	}
+
+	void handleRiddle(int riddleID, Player& player, Room& room) override;
+	void onLevelChange(int levelInd) override;
+	void onLifeLost() override;
+	void onRiddleSolved(bool correct) override;
+};

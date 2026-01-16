@@ -38,6 +38,7 @@ void Player::transferMomentum(int _force, Point dir, int time)
 void Player::takeDamage(int amount)
 {
     hp -= amount;
+    gotHit = true;
     if (hp <= DEAD_HP) {
         hp = DEAD_HP;
         alive = false; // Mark as dead

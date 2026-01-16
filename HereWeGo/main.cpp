@@ -2,12 +2,36 @@
 #include <conio.h>
 #include <iostream>
 #include "Game.h"
+#include "Recording_Game.h"
+#include "ReplayGame.h"
 //removed all the inclusions!
 
 
-int main() {
+int main(int argc, char* argv[]) {
 
+
+	bool isSaveMode = false;
+	bool isLoadMode = false;
+	bool isSilent = false;
+
+	if (argc > 1) {
+		std::string mode = argv[1];
+		if (mode == "-save") isSaveMode = true;
+		else if (mode == "-load") isLoadMode = true;
+	}
+
+	if (argc > 2) {
+		std::string s = argv[2];
+		if (s == "-silent") isSilent = true;
+	}
 	
+	if (isLoadMode) {
+		ReplayGame game(isSilent);
+		game.startInLevel(Level::ONE);
+		game.run();
+		return 0;
+	}
+
 	constexpr char MENU_LVL1 = '1';
 	constexpr char MENU_LVL2 = '2';
 	constexpr char MENU_LVL3 = '3';
@@ -18,6 +42,19 @@ int main() {
 	constexpr char MENU_EXIT = '9';
 
 	bool exitProgram = false;
+
+	auto runGameLevel = [&](Level level) {
+		if (isSaveMode) {
+			RecordingGame game;
+			game.startInLevel(level);
+			game.run();
+		}
+		else { //load or silent
+			Game game;
+			game.startInLevel(level);
+			game.run();
+		}
+	};
 	
 	hideCursor();
 	while (!exitProgram)
@@ -43,23 +80,17 @@ int main() {
 			
 		case MENU_LVL1:	
 		{
-			Game game;
-			game.startInLevel(Level::ONE);
-			game.run();
+			runGameLevel(Level::ONE);
 			break;
 		}
 		case MENU_LVL2:
 		{
-			Game game;
-			game.startInLevel(Level::TWO);
-			game.run();
+			runGameLevel(Level::TWO);
 			break;
 		}
 		case MENU_LVL3:
 		{
-			Game game;
-			game.startInLevel(Level::THREE);
-			game.run();
+			runGameLevel(Level::THREE);
 			break;
 		}
 		case MENU_ENDING:

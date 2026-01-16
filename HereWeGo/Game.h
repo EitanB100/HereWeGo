@@ -22,24 +22,19 @@ extern char p1Keys[KEY_COUNT];
 extern char p2Keys[KEY_COUNT];
 
 class Game {
-	Screen screen;
-	std::vector<Room> levels;
-	bool levelLoadedCorrectly = true;
+	
 
 	std::string loadingErrorMessage = "Unknown error";
 
 	Player players[PLAYER_AMOUNT];
 	
-	std::chrono::steady_clock::time_point startTime;      // Total game time
-	std::chrono::steady_clock::time_point levelStartTime; // Current level time
 	
 	int savefiles = 0; // ho much save files there 
-	int currentLevelIndex = 0;
-	int score = 0;
+	
 	bool useColor;
 
-	std::vector<Riddle> riddles;
-	void handleRiddle(int riddleID, Player& player, Room& room);
+	
+	
 
 
 	void printHUD();
@@ -54,8 +49,35 @@ class Game {
 	void saveGlobalSaveConfig(); // type on file how many saves are
 	void loadGlobalSaveConfig(); // load how many saves are into savefiles
 	
+protected:
+	Screen screen;
+	std::vector<Room> levels;
+	bool levelLoadedCorrectly = true;
+
+	bool isLoadMode = false;
+	bool isSilent = false;
+
+	std::chrono::steady_clock::time_point startTime;      // Total game time
+	std::chrono::steady_clock::time_point levelStartTime; // Current level time
+	
+	std::vector<Riddle> riddles;
+	virtual void handleRiddle(int riddleID, Player& player, Room& room);
+	virtual char getInteractionInput();
+
+	int currentLevelIndex = 0;
+	int score = 0;
+
+	virtual void resetRecording() {}
+
+	virtual char getInput();
+	virtual void sleepFrame() { Sleep(GAME_SPEED); }
+
+	virtual void onLevelChange(int levelInd) {} //transitioning between levels
+	virtual void onLifeLost() {} //when getting hit/getting a riddle wrong
+	virtual void onRiddleSolved(bool correct) {} //when answering a riddle
 
 public:
+	virtual ~Game() = default;
 
 	static char p1Keys[KEY_COUNT];
 	static char p2Keys[KEY_COUNT];
@@ -78,5 +100,6 @@ public:
 	void settingsMenu();
 	bool loadGame(int slot); // slot is the number (id of the game file)
 
+	void setLoadMode(bool mode) { isLoadMode = mode; }
 	void loadMenu(); // for picking a save file
 };

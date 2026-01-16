@@ -13,15 +13,12 @@ void Game::resetLevelTimer() {
 	levelStartTime = std::chrono::steady_clock::now();
 }
 
-Game::Game() : useColor(getColorMode()), players{
-	Player(Placement(10,20),'$',0,0,p1Keys),
-	Player(Placement(9,15),'&',0,0,p2Keys)
-}
-{
+
+Game::Game() : useColor(getColorMode()) {
 	init();
+	players[0] = Player(Placement(10, 20), '$', 0, 0, p1Keys);
+	players[1] = Player(Placement(9, 15), '&', 0, 0, p2Keys);
 }
-
-
 
 void Game::handleGameOver()
 {
@@ -242,6 +239,8 @@ void Game::loadGlobalSaveConfig() {
 				}
 			}
 
+			//run 1 - original buttons 
+			//run 2 - changed buttons
 			else if (player == "P2") {
 				for (int i = 0; i < KEY_COUNT; i++) {
 					char key;

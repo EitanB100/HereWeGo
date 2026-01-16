@@ -37,7 +37,10 @@ class Player {
     bool handleSpringExit(Room& room);
 public:
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount]);
-
+    Player() : pos(Placement()), symbol(' '), dirx(0), diry(0) {
+        for (int i = 0; i < keyAmount; ++i) keys[i] = 0;
+    }
+    
     static constexpr int MAX_HP = 15;
     static constexpr int DEAD_HP = 0;
     void draw();

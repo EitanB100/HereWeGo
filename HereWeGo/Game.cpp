@@ -331,7 +331,7 @@ void Game::run()
 					printCentered("GAME PAUSED", 2);
 					printCentered("Press H to exit", 4);
 					printCentered("Press S to save", 6);
-					key = _getch();
+					char key = getInteractionInput();
 
 					if (key == 'h' || key == 'H') {
 						setColor(Color::WHITE);

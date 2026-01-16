@@ -331,14 +331,14 @@ void Game::run()
 					printCentered("GAME PAUSED", 2);
 					printCentered("Press H to exit", 4);
 					printCentered("Press S to save", 6);
-					char key = getInteractionInput();
+					char pauseKey = getInteractionInput();
 
-					if (key == 'h' || key == 'H') {
+					if (pauseKey == 'h' || pauseKey == 'H') {
 						setColor(Color::WHITE);
 						screen.clearScreen();
 						break; //main menu exit
 					}
-					if (key == 's' || key == 'S') {
+					if (pauseKey == 's' || pauseKey == 'S') {
 						setColor(Color::WHITE);
 						screen.clearScreen();
 						saveGame();

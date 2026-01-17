@@ -6,7 +6,7 @@
 #include "Level_Loader.h"
 #include "Tile_Chars.h"
 
-char Game::p1Keys[KEY_COUNT] = {'W','X','A','D','S','E'};
+char Game::p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
 char Game::p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
 
 void Game::resetLevelTimer() {
@@ -26,7 +26,7 @@ void Game::handleGameOver()
 	screen.clearScreen();
 	gotoxy(35, 10);
 	setColor(Color::RED);
-	
+
 	printCentered("G A M E   O V E R", 10);
 	printCentered("Press 'H' to exit to menu", 12);
 	while (true) {
@@ -52,8 +52,8 @@ void Game::tileMapError()
 	_getch();
 }
 
-void Game::toggleColor(){ 
-	useColor = !useColor; 
+void Game::toggleColor() {
+	useColor = !useColor;
 	setColorMode(useColor);
 }
 
@@ -74,9 +74,9 @@ void Game::init()
 	Level_Loader::loadRiddles("riddles.txt", riddles);
 
 	for (int i = 1; i <= LEVEL_COUNT; i++) {
-		
+
 		std::string currentFile = "adv_world_0" + std::to_string(i) + ".screen";
-		
+
 		std::ifstream fileCheck(currentFile);
 		if (fileCheck.is_open()) {
 			fileCheck.close();
@@ -102,7 +102,7 @@ void Game::saveGame() {
 	std::string dataFilename = "savegame" + std::to_string(savefiles) + ".txt"; // dynamic file name for data file
 	std::string worldFilename = "world_state" + std::to_string(savefiles) + ".screen"; // dynamic file name for map load file
 
-    std::ofstream saveFile(dataFilename);
+	std::ofstream saveFile(dataFilename);
 	if (!saveFile.is_open()) return;
 
 	auto now = std::chrono::steady_clock::now();
@@ -110,14 +110,14 @@ void Game::saveGame() {
 	auto levelElapsed = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
 
 	saveFile << "CURRENT_LEVEL " << currentLevelIndex << "\n"; // save info and score
-	saveFile << "SCORE " << score << "\n"; 
-	saveFile << "TOTAL_TIMER " << totalElapsed << "\n"; 
+	saveFile << "SCORE " << score << "\n";
+	saveFile << "TOTAL_TIMER " << totalElapsed << "\n";
 	saveFile << "LEVEL_TIMER " << levelElapsed << "\n";
 	for (int i = 0; i < PLAYER_AMOUNT; i++) { // save each player info
 		saveFile << "PLAYER_" << i << "_HP " << players[i].getHP() << "\n";
-        saveFile << "PLAYER_" << i << "_X " << players[i].getPos().x << "\n";
-        saveFile << "PLAYER_" << i << "_Y " << players[i].getPos().y << "\n";
-		
+		saveFile << "PLAYER_" << i << "_X " << players[i].getPos().x << "\n";
+		saveFile << "PLAYER_" << i << "_Y " << players[i].getPos().y << "\n";
+
 		heldItem currentItem = players[i].getItemInHand(); // Accessing itemInHand
 		saveFile << "PLAYER_" << i << "_ITEM_TYPE " << static_cast<int>(currentItem.type) << "\n";
 		saveFile << "PLAYER_" << i << "_ITEM_ID " << currentItem.id << "\n";
@@ -125,10 +125,10 @@ void Game::saveGame() {
 	}
 	saveFile.close();
 	Level_Loader::saveLevel(levels[currentLevelIndex], worldFilename, players[0].getPos(), players[1].getPos());
-	printCentered("GAME SAVED SUCCESSFULLY TO SLOT " + std::to_string(savefiles+1), 2);
+	printCentered("GAME SAVED SUCCESSFULLY TO SLOT " + std::to_string(savefiles + 1), 2);
 	savefiles++; // new save file added
 	saveGlobalSaveConfig(); // save on file how many saves are
-	
+
 	if (!isSilent) Sleep(1000);
 }
 
@@ -264,7 +264,7 @@ void Game::setGame(int levelIndex, bool firstSettings) {
 
 	currentLevelIndex = levelIndex;
 
-	
+
 
 	players[0].setPos(levels[currentLevelIndex].getP1Start());
 	players[1].setPos(levels[currentLevelIndex].getP2Start());
@@ -302,7 +302,7 @@ char Game::getInput()
 	return 0;
 }
 
-
+/*
 void Game::run()
 {
 	if (!levelLoadedCorrectly) {
@@ -319,9 +319,9 @@ void Game::run()
 
 	bool boomDustCleaningNeeded = false;
 	while (true) {
-		Room& currRoom = levels[currentLevelIndex]; 
+		Room& currRoom = levels[currentLevelIndex];
 		char key = getInput();
-		
+
 		if (key != 0) {
 			if (key == ESC && !isLoadMode) {
 				if (!isSilent) {
@@ -360,10 +360,10 @@ void Game::run()
 						}
 					}
 				}
-				
+
 			}
 		}
-		
+
 		currRoom.resetObstacles();
 		Point currentExitPoint = currRoom.getExitPos();
 
@@ -376,9 +376,9 @@ void Game::run()
 			if (!isSilent) setColor(Color::WHITE);
 
 			p.updateSpringPhysics(currRoom, &other);
-			
+
 			int eventID = p.move(currRoom, &other);
-			
+
 			if (eventID != 0) {
 				p.setDirection(Directions::STAY);
 				handleRiddle(eventID, p, currRoom);
@@ -403,7 +403,7 @@ void Game::run()
 
 		bool isVictory = checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos());
 		if (isVictory) break;
-		
+
 		if (boomDustCleaningNeeded) {
 			currRoom.clearExplosions();
 
@@ -415,18 +415,18 @@ void Game::run()
 
 			boomDustCleaningNeeded = false;
 		}
-		
+
 		currRoom.updateBombs(players, PLAYER_AMOUNT , screen); // update bombs
-		
+
 		if (currRoom.hasExplosions()) {
 			boomDustCleaningNeeded = true;
-			
+
 		}
 
 		bool gameOver = false;
 		for (int i = 0; i < PLAYER_AMOUNT; i++) {
 			if (!isSilent) players[i].draw();
-			
+
 			if (players[i].isDead()) {
 				gameOver = true;
 				break;
@@ -445,6 +445,191 @@ void Game::run()
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+		if (_kbhit()) {
+			key = getInput();
+			if (key == ESC) {
+				auto pauseStart = std::chrono::steady_clock::now();
+
+				setColor(Color::BLUE);
+				printCentered("GAME PAUSED", 2);
+				printCentered("Press H to exit", 4);
+				printCentered("Press S to save", 6);
+				key = _getch();
+
+				if (key == 'h' || key == 'H') {
+					setColor(Color::WHITE);
+					screen.clearScreen();
+					break; //main menu exit
+				}
+				if (key == 's' || key == 'S') {
+					setColor(Color::WHITE);
+					screen.clearScreen();
+					saveGame();
+					Sleep(1000);
+					break; //main menu exit
+				}
+
+				else {
+					auto pauseEnd = std::chrono::steady_clock::now(); //we store the time player paused and resumed to deduct it from actual playing time
+					auto pauseDuration = pauseEnd - pauseStart;
+					levelStartTime += pauseDuration;
+					startTime += pauseDuration;
+
+					setColor(Color::WHITE);
+					reDrawScreen(currRoom);
+					for (int i = 0; i < PLAYER_AMOUNT; i++) {
+						players[i].draw();
+					}
+				}
+
+			}
+		}
+*/
+
+void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded) {
+	currRoom.resetObstacles();
+	Point currentExitPoint = currRoom.getExitPos();
+
+	//update loop
+	for (int i = 0; i < PLAYER_AMOUNT; i++) {
+		Player& p = players[i];
+		Player& other = players[1 - i];
+
+		p.inputManager(key, currRoom);
+		setColor(Color::WHITE);
+
+		p.updateSpringPhysics(currRoom, &other);
+
+		int eventID = p.move(currRoom, &other);
+
+		if (eventID != 0) {
+			handleRiddle(eventID, p, currRoom);
+		}
+
+		//check level completion for a player
+		if (currentExitPoint.x != -1 && p.getPos() == currentExitPoint) {
+			if (!p.isFinished()) {
+				p.setFinished(true);
+				gotoxy(50, 0);
+				std::cout << "Player " << p.getSymbol() << " Is waiting...";
+			}
+		}
+	}
+	if (boomDustCleaningNeeded) {
+		currRoom.clearExplosions();
+		reDrawScreen(currRoom);
+		boomDustCleaningNeeded = false;
+	}
+
+	currRoom.updateBombs(players, PLAYER_AMOUNT, screen); // update bombs
+
+	if (currRoom.hasExplosions()) {
+		boomDustCleaningNeeded = true;
+
+	}
+
+}
+
+void Game::reDrawScreen(Room& currRoom) {
+	currRoom.drawRoom(screen);
+	screen.draw();
+	currRoom.drawTopLayer();
+}
+
+void Game::run()
+{
+	if (!levelLoadedCorrectly) {
+		tileMapError();
+		return; // Exits run(), returning to main() menu
+	}
+
+	// Only initialize for a brand new game
+	if (score == 0 && currentLevelIndex == 0 &&
+		startTime.time_since_epoch().count() == 0) {
+		startTime = std::chrono::steady_clock::now();
+		levelStartTime = startTime;
+	}
+
+	bool boomDustCleaningNeeded = false;
+	while (true) {
+		Room& currRoom = levels[currentLevelIndex];
+		char key = getInput();
+
+		if (key == ESC) {
+			auto pauseStart = std::chrono::steady_clock::now();
+
+			setColor(Color::BLUE);
+			printCentered("GAME PAUSED", 2);
+			printCentered("Press H to exit", 4);
+			printCentered("Press S to save", 6);
+
+			char menuChoice = _getch();
+
+			if (menuChoice == 'h' || menuChoice == 'H') {
+				setColor(Color::WHITE);
+				screen.clearScreen();
+				break;
+			}
+			if (menuChoice == 's' || menuChoice == 'S') {
+				setColor(Color::WHITE);
+				screen.clearScreen();
+				saveGame();
+				Sleep(1000);
+				break;
+			}
+			else {
+				auto pauseEnd = std::chrono::steady_clock::now();
+				auto pauseDuration = pauseEnd - pauseStart;
+				levelStartTime += pauseDuration;
+				startTime += pauseDuration;
+
+				setColor(Color::WHITE);
+				reDrawScreen(currRoom);
+				for (int i = 0; i < PLAYER_AMOUNT; i++) {
+					players[i].draw();
+				}
+				key = 0; // reset key after handling pause
+			}
+
+		}
+
+
+		updateGameLogic(key, currRoom, boomDustCleaningNeeded);
+
+		bool isVictory = checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos());
+		if (isVictory) break;
+
+		bool gameOver = false;
+		for (int i = 0; i < PLAYER_AMOUNT; i++) {
+			players[i].draw();
+			if (players[i].isDead()) {
+				gameOver = true;
+				break;
+			}
+		}
+
+		if (gameOver) {
+			handleGameOver();
+			break;
+		}
+		//HUD renderer
+		printHUD();
+		printTimer();
+		Sleep(GAME_SPEED);
+	}
+
+}
+
 
 bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 {
@@ -465,14 +650,14 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 
 			resetLevelTimer();
 
-		if (!isSilent) printTimer();
+			if (!isSilent) printTimer();
 			return false;
 		}
 		else
 		{
 
 			showEndingScreen();
-			return true; 
+			return true;
 		}
 	}
 
@@ -560,45 +745,45 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 void Game::showEndingScreen()
 {
 	if (isSilent) return;
-		screen.clearScreen();
+	screen.clearScreen();
 
-		setColor(Color::CYAN);
-		printCentered("===============================================", 3);
-		printCentered("||                                           ||", 4);
-		printCentered("||           THANKS FOR PLAYING!             ||", 5);
-		printCentered("||                                           ||", 6);
-		printCentered("===============================================", 7);
+	setColor(Color::CYAN);
+	printCentered("===============================================", 3);
+	printCentered("||                                           ||", 4);
+	printCentered("||           THANKS FOR PLAYING!             ||", 5);
+	printCentered("||                                           ||", 6);
+	printCentered("===============================================", 7);
 
 
-		setColor(Color::YELLOW);
-		printCentered("       $             &       ", 10);
-		setColor(Color::MAGENTA);
-		printCentered("    (We made it!)     ", 12);
+	setColor(Color::YELLOW);
+	printCentered("       $             &       ", 10);
+	setColor(Color::MAGENTA);
+	printCentered("    (We made it!)     ", 12);
 
-		setColor(Color::GREEN);
-		std::string finalScoreStr = "FINAL SCORE: " + std::to_string(score);
+	setColor(Color::GREEN);
+	std::string finalScoreStr = "FINAL SCORE: " + std::to_string(score);
 
-		//Rank based on score
-		std::string rank = "Rank: Novice Explorer";
-		if (score > 1000) rank = "Rank: Dungeon Master";
-		if (score > 5000) rank = "Rank: C++ Wizard";
+	//Rank based on score
+	std::string rank = "Rank: Novice Explorer";
+	if (score > 1000) rank = "Rank: Dungeon Master";
+	if (score > 5000) rank = "Rank: C++ Wizard";
 
-		printCentered(finalScoreStr, 14);
-		setColor(Color::LIGHT_GRAY);
-		printCentered(rank, 15);
+	printCentered(finalScoreStr, 14);
+	setColor(Color::LIGHT_GRAY);
+	printCentered(rank, 15);
 
-		setColor(Color::WHITE);
+	setColor(Color::WHITE);
 
-		printCentered("GAME CREATED BY", 20);
-		printCentered("EITAN BAR", 21);
-		printCentered("HAREL BEN-ABIR", 22);
+	printCentered("GAME CREATED BY", 20);
+	printCentered("EITAN BAR", 21);
+	printCentered("HAREL BEN-ABIR", 22);
 
-		setColor(Color::DARK_GRAY);
-		printCentered("Press any key to return to menu...", 24);
+	setColor(Color::DARK_GRAY);
+	printCentered("Press any key to return to menu...", 24);
 
-		while (_kbhit()) _getch(); 
-		_getch(); 
+	while (_kbhit()) _getch();
+	_getch();
 
-		setColor(Color::WHITE); // Reset for menu
-	
+	setColor(Color::WHITE); // Reset for menu
+
 }

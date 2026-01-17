@@ -32,17 +32,6 @@ int main(int argc, char* argv[]) {
 		return 0;
 	}
 
-	constexpr char MENU_LVL1 = '1';
-	constexpr char MENU_LVL2 = '2';
-	constexpr char MENU_LVL3 = '3';
-	constexpr char MENU_ENDING = '4';
-	constexpr char MENU_LOAD_GAME = '5';
-	constexpr char MENU_SETTINGS = '7';
-	constexpr char MENU_INSTRUCTIONS = '8';
-	constexpr char MENU_EXIT = '9';
-
-	bool exitProgram = false;
-
 	auto runGameLevel = [&](Level level) {
 		if (isSaveMode) {
 			RecordingGame game;
@@ -55,8 +44,17 @@ int main(int argc, char* argv[]) {
 			game.run();
 		}
 	};
-	
+
+	bool exitProgram = false;
 	hideCursor();
+	constexpr char MENU_LVL1 = '1';
+	constexpr char MENU_LVL2 = '2';
+	constexpr char MENU_LVL3 = '3';
+	constexpr char MENU_ENDING = '4';
+	constexpr char MENU_LOAD_GAME = '5';
+	constexpr char MENU_SETTINGS = '7';
+	constexpr char MENU_INSTRUCTIONS = '8';
+	constexpr char MENU_EXIT = '9';
 	while (!exitProgram)
 	{
 		system("cls");

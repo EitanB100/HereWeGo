@@ -11,7 +11,7 @@ class RecordingGame : public Game {
 public:
 	char getInput() override;
 	char getInteractionInput() override;
-	
+	std::string translateKey(char key, int& playerID);
 	void resetRecording() override;
 
 	void onLevelChange(int levelInd) override;

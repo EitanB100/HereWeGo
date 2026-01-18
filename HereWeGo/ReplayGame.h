@@ -42,4 +42,5 @@ public:
 	void onLevelChange(int levelInd) override;
 	void onLifeLost() override;
 	void onRiddleSolved(bool correct) override;
+	void printTimer() override;
 };

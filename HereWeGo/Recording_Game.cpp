@@ -1,6 +1,7 @@
 #include "Recording_Game.h"
 #include <iostream>
 #include <string>
+#include "Level_Loader.h"
 
 static int getCurrentTime(std::chrono::steady_clock::time_point start) {
 	auto now = std::chrono::steady_clock::now();
@@ -45,9 +46,7 @@ char RecordingGame::getInteractionInput() {
 
 std::string RecordingGame::translateKey(char key, int& playerID) {
 	char upperKey = toupper(key);
-
-	// Assuming p1Keys[0] = UP, [1] = DISPOSE, [2] = LEFT, [3] = RIGHT, [4] = DOWN, [5] = STAY
-
+	// we know the keys order
 	if (upperKey == p1Keys[0]) { playerID = 1; return "UP"; }
 	if (upperKey == p1Keys[1]) { playerID = 1; return "DOWN"; }
 	if (upperKey == p1Keys[2]) { playerID = 1; return "LEFT"; }
@@ -89,10 +88,114 @@ void RecordingGame::onRiddleSolved(bool correct) {
 	recordedEvents.push_back(std::to_string(time) + " Riddle: " + status);
 }
 
+
+
+void RecordingGame::writeStepsToBackup(const std::string& destName) {
+	std::ofstream destination(destName); 
+	if (destination.is_open()) {
+		for (const auto& step : recordedSteps) {
+			destination << step << "\n";
+		}
+		destination.close();
+	}
+}
+
+
+
+void RecordingGame::saveGame() {
+	std::string dataFilename = "savegame" + std::to_string(savefiles) + ".txt";
+	std::string worldFilename = "world_state" + std::to_string(savefiles) + ".screen";
+	std::string stepsBackupName = "savedgame" + std::to_string(savefiles) + ".steps";
+
+	std::ofstream saveFile(dataFilename);
+	if (!saveFile.is_open()) return;
+
+	auto now = std::chrono::steady_clock::now();
+	auto totalElapsed = std::chrono::duration_cast<std::chrono::seconds>(now - startTime).count();
+	auto levelElapsed = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
+
+	saveFile << "CURRENT_LEVEL " << currentLevelIndex << "\n"; // save info and score
+	saveFile << "SCORE " << score << "\n";
+	saveFile << "TOTAL_TIMER " << totalElapsed << "\n";
+	saveFile << "LEVEL_TIMER " << levelElapsed << "\n";
+	for (int i = 0; i < PLAYER_AMOUNT; i++) { // save each player info
+		saveFile << "PLAYER_" << i << "_HP " << players[i].getHP() << "\n";
+		saveFile << "PLAYER_" << i << "_X " << players[i].getPos().x << "\n";
+		saveFile << "PLAYER_" << i << "_Y " << players[i].getPos().y << "\n";
+
+		heldItem currentItem = players[i].getItemInHand(); // Accessing itemInHand
+		saveFile << "PLAYER_" << i << "_ITEM_TYPE " << static_cast<int>(currentItem.type) << "\n";
+		saveFile << "PLAYER_" << i << "_ITEM_ID " << currentItem.id << "\n";
+		saveFile << "PLAYER_" << i << "_ITEM_COLOR " << static_cast<int>(currentItem.color) << "\n";
+	}
+	saveFile << "Recorded_Game 1" << "\n"; // we not on game and on recording_game
+	saveFile.close();
+
+	Level_Loader::saveLevel(levels[currentLevelIndex], worldFilename, players[0].getPos(), players[1].getPos());
+
+	writeStepsToBackup(stepsBackupName);
+	//we write backup as we might save recorded game and than record another game
+	// and if we load the saved game the recorded steps will be lost
+
+	printCentered("GAME SAVED AND RECOREDED SUCCESSFULLY TO SLOT " + std::to_string(savefiles + 1), 2);
+	savefiles++; // new save file added
+	saveGlobalSaveConfig(); // save on file how many saves are
+	if (!isSilent) Sleep(1000);
+}
+
+bool RecordingGame::loadGame(int slot) {
+	if (!Game::loadGame(slot)) return false; // load base game data
+
+	std::string stepsBackupName = "savedgame" + std::to_string(slot) + ".steps"; // load backup steps of recorded file 
+	std::ifstream stepsFile(stepsBackupName);
+
+	if (stepsFile.is_open()) {
+		recordedSteps.clear(); // clearing any movement between saved and unsaved time
+		// for example save game , played more on the game and than loaded back to save file
+		std::string line;
+		int maxTick = 0;
+
+		while (std::getline(stepsFile, line)) { // get line
+			if (line.empty() || line[0] == '#') 
+				continue; // pass comments or empty lines 
+			recordedSteps.push_back(line); //add the valid step to record vector
+
+			size_t firstSpace = line.find(' '); //;ocate the position of the first space to isolate the tick number
+			if (firstSpace != std::string::npos) { // when space is found get the num of intarction
+				int tick = std::stoi(line.substr(0, firstSpace)); // get the interaction
+				maxTick = tick; // get new max tick 
+			}
+		}
+		currentTick = maxTick; // the tick will be the max value to continoue the record 
+		stepsFile.close();
+	}
+	std::string resultsBackupName = "savedgame" + std::to_string(slot) + ".result";
+	std::ifstream resultsFile(resultsBackupName);
+	if (resultsFile.is_open()) {
+		recordedEvents.clear(); // Clear current session events
+		std::string line;
+		while (std::getline(resultsFile, line)) {
+			// Do not import the "Final Score" or "Total Ticks" lines from the old save
+			if (line.find("Final Score") != std::string::npos ||
+				line.find("Total Ticks") != std::string::npos) continue;
+
+			if (!line.empty()) {
+				recordedEvents.push_back(line);
+			}
+		}
+		resultsFile.close();
+	}
+	return true;
+}
+
 RecordingGame::~RecordingGame()
 {
+	
+	if (recordedSteps.empty()) return; // If the vector is empty, do not overwrite files with empty data
+
 	std::ofstream stepFile("adv-world.steps");
 	if (stepFile.is_open()) {
+		// This now contains [Old History] + [New Moves]
 		for (const auto& line : recordedSteps) {
 			stepFile << line << "\n";
 		}
@@ -105,10 +208,8 @@ RecordingGame::~RecordingGame()
 			resultFile << line << "\n";
 		}
 
-		auto totalTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - startTime).count();
-		
 		resultFile << "Final Score: " << score << "\n";
-		resultFile << "Total Time: " << totalTime << "\n";
+		resultFile << "Total Ticks: " << currentTick << "\n";
 		resultFile.close();
 	}
 }

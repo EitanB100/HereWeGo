@@ -99,8 +99,31 @@ int main(int argc, char* argv[]) {
 		}
 		case MENU_LOAD_GAME:
 		{
-			Game game;
-			game.loadMenu(); 
+
+			Game* gamePtr = nullptr; // temp pointer to game obeject which can either be Game or RecordingGame
+			Game tempGame;
+			int selectedSlot = tempGame.getSlotFromLoadMenu(); // You'll need this helper
+
+			if (selectedSlot != -1) {
+				// 2. CHECK: Is this a recorded game?
+				if (tempGame.isSlotRecorded(selectedSlot)) {
+					gamePtr = new RecordingGame();
+					// Force the -save behavior logic even if -save wasn't in argv
+					isSaveMode = true;
+				}
+				else {
+					gamePtr = new Game();
+				}
+
+				// 3. Load and Run the specific object
+				if (gamePtr->loadGame(selectedSlot)) {
+					// Manually trigger the redraw we discussed
+					Room& currRoom = gamePtr->getLevel(gamePtr->getCurrentLevelIdx());
+					gamePtr->reDrawScreen(currRoom);
+					gamePtr->run();
+				}
+				delete gamePtr;
+			}
 			break;
 		}
 		case MENU_SETTINGS:

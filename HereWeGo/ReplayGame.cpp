@@ -66,7 +66,8 @@ void ReplayGame::run() {
 	bool boomDustCleaningNeeded = false;
 	currentTick = 0; // Reset tick for replay
 	nextStepInd = 0; // Reset vector pointer
-
+	startTime = std::chrono::steady_clock::now();
+	levelStartTime = startTime;
 	while (true) {
 		Room& currRoom = levels[currentLevelIndex];
 
@@ -258,4 +259,27 @@ void ReplayGame::onRiddleSolved(bool correct)
 	recordActualEvent(time, "Riddle: " + status);
 }
 
+void ReplayGame::printTimer() { // helped by AI
+	const Point& hudPos = levels[currentLevelIndex].getLegendLoc();
+	gotoxy(hudPos.x, hudPos.y + 2);
+
+	// Calculate logical elapsed time based on ticks
+	// Formula: (Current Tick * Delay between frames in ms) / 1000
+	// If your original game used a 50ms Sleep, use 50 here.
+	long long totalSeconds = (currentTick * 100) / 1000;
+
+	// For Replay, Level Time and Total Time usually start together from the save point,
+	// but you can adjust this if you track 'levelStartTick'.
+	auto formatTime = [](long long totalSecs) -> std::string {
+		int m = static_cast<int>((totalSecs % 3600) / 60);
+		int s = static_cast<int>(totalSecs % 60);
+		std::stringstream ss;
+		ss << std::setfill('0') << std::setw(2) << m << ":"
+			<< std::setfill('0') << std::setw(2) << s;
+		return ss.str();
+		};
+	// Display based on logic ticks, not the system clock
+	std::cout << "LEVEL " << formatTime(totalSeconds) // Or specific level ticks
+		<< " | TOTAL " << formatTime(totalSeconds) << " |";
+}
 

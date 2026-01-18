@@ -17,7 +17,9 @@ public:
 	void onLevelChange(int levelInd) override;
 	void onLifeLost() override;
 	void onRiddleSolved(bool correct) override;
-	
+	void writeStepsToBackup(const std::string& destName); // basiclly copy the steps of the recording to a file
+	void saveGame() override;
+	bool loadGame(int slot) override;
 	~RecordingGame(); 
-
+	
 };

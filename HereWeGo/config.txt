@@ -1,4 +1,4 @@
-16
+4
 [KEYS]
 P1 W X A D S E
 P2 I M J L K O

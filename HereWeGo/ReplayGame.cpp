@@ -81,6 +81,10 @@ void ReplayGame::run() {
 	currentTick = 0; // Reset tick for replay
 	nextStepInd = 0; // Reset vector pointer
 	startTime = std::chrono::steady_clock::now();
+
+	levelStartTick = 0;
+	initialLevelOffset = std::chrono::steady_clock::now() - levelStartTime;
+
 	levelStartTime = startTime;
 	while (true) {
 		Room& currRoom = levels[currentLevelIndex];
@@ -91,10 +95,10 @@ void ReplayGame::run() {
 		}
 
 		if (isSilent) {
-			auto logicalDuration = std::chrono::milliseconds(currentTick * GAME_SPEED);
+			auto replayDuration = std::chrono::milliseconds((currentTick - levelStartTick) * GAME_SPEED);
 			auto now = std::chrono::steady_clock::now();
 
-			levelStartTime = now - logicalDuration;
+			levelStartTime = now - (initialLevelOffset + replayDuration);
 		}
 
 		char key = getInput();
@@ -402,6 +406,7 @@ void ReplayGame::onLevelChange(int levelInd)
 {
 	recordActualEvent(currentTick, "Level Changed: " + std::to_string(levelInd));
 	levelStartTick = currentTick;
+	initialLevelOffset = std::chrono::steady_clock::duration::zero();
 }
 
 void ReplayGame::onLifeLost()

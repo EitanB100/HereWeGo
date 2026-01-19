@@ -39,6 +39,7 @@ bool getColorMode()
 
 void setColor(Color c) // set console text color - logic suggested by gemini
 {
+	if (Game::s_silentMode) return;
 	setColor(c, colorEnabled);
 }
 

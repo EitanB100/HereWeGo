@@ -29,6 +29,7 @@ class ReplayGame : public Game {
 
 	int currentTick = 0;
 	int levelStartTick = 0;
+	std::chrono::steady_clock::duration initialLevelOffset = std::chrono::steady_clock::duration::zero();
 
 	std::vector<Step> steps;
 	std::vector<ExpectedEvent> expectedEvents;

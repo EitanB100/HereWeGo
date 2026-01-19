@@ -103,7 +103,7 @@ void ReplayGame::run() {
 
 
 		char key = getInput();
-		updateGameLogic(key, currRoom, boomDustCleaningNeeded);
+		updateGameLogic(key, currRoom, boomDustCleaningNeeded, isSilent);
 
 		bool isVictory = checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos()); //check Victory Nature
 		if (isVictory) break;

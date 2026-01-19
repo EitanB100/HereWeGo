@@ -4,7 +4,7 @@
 
 
 //Obstacle pushing logic
-bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
+bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer, bool isSilent)
 {
     Obstacle* obstacleToPush = room.isObstacleThere(nextPoint);
     //if it already been moved this frame
@@ -20,7 +20,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 
                     otherPlayer->setDirection({ dirx,diry });
                     otherPlayer->setForce(force);
-                    otherPlayer->move(room, this);
+                    otherPlayer->move(room, this, isSilent);
                     otherPlayer->setDirection({ ogDir.x,ogDir.y });
                     otherPlayer->setForce(ogForce);
 
@@ -54,7 +54,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 
         //if moved, move the partner too
         if (hasMoved) {
-            if (combinedPush) synchronizePartner(otherPlayer, room);
+            if (combinedPush) synchronizePartner(otherPlayer, room, isSilent);
 
             if (spring.flightTime > 0) obstacleToPush->resetMove();
         }
@@ -67,7 +67,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 //Helper function that ensures that when two playes push an obstacle, 
 //both will move in sync with each other
 //Suggested by Gemini!
-void Player::synchronizePartner(Player* otherPlayer, Room& room) {
+void Player::synchronizePartner(Player* otherPlayer, Room& room, bool isSilent) {
     if (otherPlayer == nullptr) return;
 
     //redraw the tile (similar to move function)
@@ -76,12 +76,13 @@ void Player::synchronizePartner(Player* otherPlayer, Room& room) {
     char tileBelow = room.getObjectAt(p, c); //the tile that became invisible when disposed!
 
     setColor(c);
-    otherPlayer->pos.draw(tileBelow);
+    if (!isSilent) otherPlayer->pos.draw(tileBelow);
     setColor(Color::WHITE);
 
     //move the partner in the same direction
     otherPlayer->pos.move(dirx, diry, otherPlayer->symbol);
-    otherPlayer->draw();
+
+    if (!isSilent) otherPlayer->draw();
 }
 
 bool Player::handlePickups(Room& room, Point nextPoint) {

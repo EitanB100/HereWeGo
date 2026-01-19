@@ -213,6 +213,9 @@ void ReplayGame::drawSpeedIndicator()
 	case ReplaySpeed::QUADRUPLE:
 		parser << "4x  ";
 		break;
+	case ReplaySpeed::OCTUPLE:
+		parser << "8x  ";
+		break;
 	}
 	
 	parser << "[+/-] Change Speed";
@@ -233,6 +236,9 @@ void ReplayGame::handleSpeedToggle(char c)
 			currentSpeed = ReplaySpeed::QUADRUPLE;
 			break;
 		case ReplaySpeed::QUADRUPLE:
+			currentSpeed = ReplaySpeed::OCTUPLE;
+			break;
+		case ReplaySpeed::OCTUPLE:
 			break;
 		}
 	}
@@ -250,6 +256,9 @@ void ReplayGame::handleSpeedToggle(char c)
 		case ReplaySpeed::QUADRUPLE:
 			currentSpeed = ReplaySpeed::DOUBLE;
 			break;
+		case ReplaySpeed::OCTUPLE:
+			currentSpeed = ReplaySpeed::QUADRUPLE;
+			break;
 		}
 	}
 }
@@ -265,6 +274,8 @@ int ReplayGame::getCurrentSleepDuration() const
 			return SPEED_DOUBLE;
 		case ReplaySpeed::QUADRUPLE:
 			return SPEED_QUADRUPLE;
+		case ReplaySpeed::OCTUPLE:
+			return (int) SPEED_OCTUPLE;
 
 	}
 }

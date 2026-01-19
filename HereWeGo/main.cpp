@@ -22,7 +22,10 @@ int main(int argc, char* argv[]) {
 
 	if (argc > 2) {
 		std::string s = argv[2];
-		if (s == "-silent") isSilent = true;
+		if (s == "-silent") {
+			isSilent = true;
+			Game::s_silentMode = true;
+		}
 	}
 	
 	if (isLoadMode) {

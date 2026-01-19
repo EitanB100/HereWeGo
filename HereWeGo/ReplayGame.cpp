@@ -287,7 +287,7 @@ char ReplayGame::getInput() {
 }
 
 char ReplayGame::getInteractionInput() {
-	if (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
+	if (nextStepInd < steps.size()) {
 		const std::string& cmd = steps[nextStepInd].command;
 
 		if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5') { //change to MIN_RIDDLE AND MAX_RIDDLE

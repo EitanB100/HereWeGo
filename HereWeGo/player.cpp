@@ -149,7 +149,8 @@ int Player::move(Room& room, Player* otherPlayer) {
             switchOnOff->toggleState();      
 
             room.checkSwitch(switchOnOff->getPos()); 
-            room.drawTopLayer();                 
+            if (!Game::s_silentMode)
+                room.drawTopLayer();                 
             setDirection(Directions::STAY);                  
             return 0;
         }

@@ -32,12 +32,13 @@ class Player {
     bool isSilent = false;
 
     // Helpers
-    void setSilent(bool s) { isSilent = s; }
+    // Helpers
     void synchronizePartner(Player* otherPlayer, Room& room);
     bool handleSprings(Room& room, Point nextPoint); 
     bool handlePickups(Room& room, Point nextPoint);
     bool handleSpringExit(Room& room);
 public:
+    void setSilent(bool s) { isSilent = s; }
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount]);
     Player() : pos(Placement()), symbol(' '), dirx(0), diry(0) {
         for (int i = 0; i < keyAmount; ++i) keys[i] = 0;

@@ -160,38 +160,26 @@ void ReplayGame::drawReplayUI()
 
 void ReplayGame::drawProgressBar()
 {
-	constexpr int REPLAY_STATUS_SIZE = 43;
 	constexpr int PROGRESS_BAR_WIDTH = 20;
-	constexpr int END_OF_RECORD = 100;
-
-	gotoxy(MAX_X - REPLAY_STATUS_SIZE, 0);
+	constexpr int MAX_PROGRESS = 100;
 	setColor(Color::CYAN);
 
 	int totalSteps = steps.size();
 	int currentStep = nextStepInd;
 	float progress = totalSteps > 0 ? (float)currentStep / totalSteps : 0;
 
+	std::stringstream parser;
 	int filled = static_cast<int>(progress * PROGRESS_BAR_WIDTH);
 
-	std::cout << "REPLAY [";
-	setColor(Color::GREEN);
+	parser << "REPLAY [";
 
 	for (int i = 0; i < PROGRESS_BAR_WIDTH; i++) {
-		if (i < filled) {
-			setColor(Color::WHITE);
-			std::cout << "\xDB";
-		}
-		else {
-			setColor(Color::DARK_GRAY);
-			std::cout << "\xB0";
-		}
+		parser << (i < filled ? "\xDB" : "\xB0");
 	}
 
-	setColor(Color::CYAN);
-	std::cout << "] ";
-
-	std::cout << std::setw(3) << static_cast<int>(progress * END_OF_RECORD) << "% ";
-	std::cout << "(" << currentStep << "/" << totalSteps << ")  ";
+	parser << "] " << static_cast<int>(progress * MAX_PROGRESS) << "% (" << currentStep << "/" << totalSteps << ")";
+	
+	printCentered(parser.str(),0);
 
 	setColor(Color::WHITE);
 }
@@ -199,27 +187,26 @@ void ReplayGame::drawProgressBar()
 void ReplayGame::drawSpeedIndicator()
 {
 	constexpr int SPEED_INDICATOR_LENGTH = 30;
-	gotoxy(MAX_X - SPEED_INDICATOR_LENGTH, 1);
-	setColor(Color::YELLOW);
-	std::cout << "Speed: ";
+	std::stringstream parser;
+	parser << "Speed: ";
 
 	switch (currentSpeed) {
 	case ReplaySpeed::HALF:
-		setColor(Color::RED);
-		std::cout << "0.5x  ";
+		parser << "0.5x  ";
 		break;
 	case ReplaySpeed::NORMAL:
-		setColor(Color::WHITE);
-		std::cout << "1x  ";
+		parser << "1x  ";
 		break;
 	case ReplaySpeed::DOUBLE:
-		setColor(Color::GREEN);
-		std::cout << "2x  ";
+		parser << "2x  ";
+		break;
+	case ReplaySpeed::QUADRUPLE:
+		parser << "4x  ";
 		break;
 	}
-	setColor(Color::LIGHT_GRAY);
-	std::cout << "[+/-] Change Speed";
-	setColor(Color::WHITE);
+	
+	parser << "[+/-] Change Speed";
+	printCentered(parser.str(), 1);
 }
 
 void ReplayGame::handleSpeedToggle(char c)
@@ -233,6 +220,9 @@ void ReplayGame::handleSpeedToggle(char c)
 			currentSpeed = ReplaySpeed::DOUBLE;
 			break;
 		case ReplaySpeed::DOUBLE:
+			currentSpeed = ReplaySpeed::QUADRUPLE;
+			break;
+		case ReplaySpeed::QUADRUPLE:
 			break;
 		}
 	}
@@ -247,6 +237,9 @@ void ReplayGame::handleSpeedToggle(char c)
 		case ReplaySpeed::DOUBLE:
 			currentSpeed = ReplaySpeed::NORMAL;
 			break;
+		case ReplaySpeed::QUADRUPLE:
+			currentSpeed = ReplaySpeed::DOUBLE;
+			break;
 		}
 	}
 }
@@ -260,6 +253,9 @@ int ReplayGame::getCurrentSleepDuration() const
 			return SPEED_NORMAL;
         case ReplaySpeed::DOUBLE:
 			return SPEED_DOUBLE;
+		case ReplaySpeed::QUADRUPLE:
+			return SPEED_QUADRUPLE;
+
 	}
 }
 

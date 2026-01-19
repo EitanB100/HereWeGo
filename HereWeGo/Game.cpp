@@ -325,7 +325,7 @@ char Game::getInput()
 	return 0;
 }
 
-void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded) { //what to remove here and where to call drawGameFrame?
+void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded) { //Claude - what to remove here and where to call drawGameFrame?
 	currRoom.resetObstacles();
 	Point currentExitPoint = currRoom.getExitPos();
 

@@ -9,11 +9,16 @@ ReplayGame::ReplayGame(bool silent) {
 	std::ifstream inFile("adv-world.steps");
 	if (inFile.is_open()) {
 		std::string line;
-		int step, playerID;
-		std::string command;
+		while (std::getline(inFile, line)) {
+			if (line.empty() || line[0] == '#') continue;
 
-		while (inFile >> step >> playerID >> command) { // While we can successfully read 3 pieces of data...
-			steps.push_back({ step, playerID, command }); // Push them into our vector
+			std::stringstream parser(line);
+			int step, playerID;
+			std::string command;
+
+			if (parser >> step >> playerID >> command) { // While we can successfully read 3 pieces of data...
+				steps.push_back({ step, playerID, command }); // Push them into our vector
+			}
 		}
 		inFile.close();
 	}
@@ -100,6 +105,8 @@ void ReplayGame::run() {
 			break;
 		}
 
+		if (!isSilent) drawGameFrame(currRoom);
+
 		sleepFrame();
 
 		if (nextStepInd >= steps.size()) {
@@ -175,7 +182,7 @@ void ReplayGame::drawProgressBar()
 
 void ReplayGame::drawSpeedIndicator()
 {
-	gotoxy(0, 1);
+	gotoxy(MAX_X - 30, 1);
 	setColor(Color::YELLOW);
 	std::cout << "Speed: ";
 

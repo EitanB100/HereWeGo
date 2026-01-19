@@ -29,6 +29,12 @@ int main(int argc, char* argv[]) {
 		ReplayGame game(isSilent);
 		game.startInLevel(Level::ONE);
 		game.run();
+		if (!isSilent) {
+			std::cout << "Replay Finished. Press Any Key To Exit..." << std::endl;
+			while (_kbhit())
+				_getch();
+		}
+
 		return 0;
 	}
 

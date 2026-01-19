@@ -63,7 +63,6 @@ public:
     }
 
     void draw() {
-        if (isGlobalSilent())
             draw(tileChar);
     }
     void draw(char c);

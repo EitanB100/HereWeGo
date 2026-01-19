@@ -569,7 +569,6 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 
 		else {
 			onRiddleSolved(false);
-			onLifeLost();
 			if (!isSilent) {
 				setColor(Color::RED);
 				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);

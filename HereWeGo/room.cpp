@@ -138,9 +138,6 @@ void Room::updateBombs(Player* players, int playerCount, Screen& screen) {
 		if (bombs[i].getTimer() <= 0) {
 			bombExplode(&bombs[i], players, playerCount, screen); // Pass screen
 			bombs.erase(bombs.begin() + i);
-			drawRoom(screen);     
-			screen.draw();        
-			drawTopLayer();       
 		}
 	}
 }

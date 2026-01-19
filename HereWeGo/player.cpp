@@ -20,7 +20,7 @@ Player::Player(const Placement& p, char c, int directx, int directy, const char 
 }
 
 void Player::draw() {
-    if (isGlobalSilent()) return;
+    
 
     if (itemInHand.type != ItemType::NONE) {
         setColor(itemInHand.color);
@@ -133,7 +133,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
     if (tileOnMap == OBSTACLE_TILE) { 
      
         //try to push an obstacle. return true if possible
-        if (!obstacleHandling(room, nextPoint, otherPlayer)) return 0;
+        if (!obstacleHandling(room, nextPoint, otherPlayer, isSilent)) return 0;
     }
 
     if (tileOnMap == SPRING_TILE) {
@@ -141,7 +141,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
     }
 
     else  {
-        if (!handleSpringExit(room)) return 0;
+        if (!handleSpringExit(room,isSilent)) return 0;
     }
 
     //switch collision
@@ -188,7 +188,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
     if (objectChar == SPRING_TILE && spring.compressionCount > 0) {
         objectChar = ' ';
     }
-    if (!isGlobalSilent()) {
+    if (!isSilent) {
         setColor(objectColor);
         pos.draw(objectChar);
         setColor(Color::WHITE);

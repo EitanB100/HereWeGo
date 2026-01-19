@@ -101,6 +101,7 @@ void ReplayGame::run() {
 			levelStartTime = now - (initialLevelOffset + replayDuration);
 		}
 
+
 		char key = getInput();
 		updateGameLogic(key, currRoom, boomDustCleaningNeeded);
 

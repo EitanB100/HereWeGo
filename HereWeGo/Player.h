@@ -31,10 +31,10 @@ class Player {
     bool alive = true;
 
     // Helpers
-    void synchronizePartner(Player* otherPlayer, Room& room);
+    void synchronizePartner(Player* otherPlayer, Room& room, bool isSilent);
     bool handleSprings(Room& room, Point nextPoint); 
     bool handlePickups(Room& room, Point nextPoint);
-    bool handleSpringExit(Room& room);
+    bool handleSpringExit(Room& room, bool isSilent);
 public:
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount]);
     Player() : pos(Placement()), symbol(' '), dirx(0), diry(0) {
@@ -77,8 +77,8 @@ public:
 
     // Core Logic
     int move(Room& room, Player* otherPlayer, bool isSilent);
-    bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
-    void updateSpringPhysics(Room& room, Player* otherPlayer);
+    bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer, bool isSilent);
+    void updateSpringPhysics(Room& room, Player* otherPlayer, bool isSilent);
     void dropItem(Room& room);
 
     bool isCommand(char input, CommandKeys key) const {

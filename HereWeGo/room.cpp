@@ -25,7 +25,7 @@ Room::Room() {
 //redraws all non wall objects on top
 void Room::drawTopLayer()
 {
-	if (Game::s_silentMode) return;
+	if (isGlobalSilent()) return;
 
 	for (auto& switchOnOff : switches) switchOnOff->draw(); 
 	for (Key& key : keys) key.draw();
@@ -72,7 +72,7 @@ bool Room::checkDoor(Point p, heldItem& item)
 		if (door->tryUnlock(item.id))
 		{
 			item = { ItemType::NONE, 0, Color::WHITE}; // Consume key
-			if (!Game::s_silentMode)
+			if (!isGlobalSilent())
 				door->draw();
 		}
 	}

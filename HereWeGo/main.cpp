@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
 		std::string s = argv[2];
 		if (s == "-silent") {
 			isSilent = true;
-			Game::s_silentMode = true;
+			setGlobalSilent(true);
 		}
 	}
 	

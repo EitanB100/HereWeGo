@@ -9,7 +9,7 @@
 char Game::p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
 char Game::p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
 
-bool Game::s_silentMode = false;
+
 
 void Game::resetLevelTimer() {
 	levelStartTime = std::chrono::steady_clock::now();

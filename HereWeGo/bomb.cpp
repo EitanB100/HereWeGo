@@ -2,7 +2,7 @@
 #include "Game.h"
 
 void Bomb::draw() {
-	if (Game::s_silentMode) return;
+	if (isGlobalSilent()) return;
 	if (seen) {
 		setColor(color);
 		pos.draw();

@@ -76,6 +76,9 @@ struct Directions {
 void printCentered(std::string text, int y); //to print the menu in the center
 void printInstructions();
 
+void setGlobalSilent(bool silent);
+bool isGlobalSilent();
+
 void setColorMode(bool useColor);
 bool getColorMode();
 void setColor(Color c);

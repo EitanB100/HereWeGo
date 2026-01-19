@@ -6,9 +6,19 @@
 
 
 static bool colorEnabled = true;
+static bool g_isSilent = false;
+
+void setGlobalSilent(bool silent) {
+    g_isSilent = silent;
+}
+
+bool isGlobalSilent() {
+    return g_isSilent;
+}
+
 
 void gotoxy(int x, int y) {
-	if (Game::s_silentMode) return;
+	if (isGlobalSilent()) return;
 
     std::cout.flush();
     COORD coord;
@@ -39,7 +49,7 @@ bool getColorMode()
 
 void setColor(Color c) // set console text color - logic suggested by gemini
 {
-	if (Game::s_silentMode) return;
+	if (isGlobalSilent()) return;
 	setColor(c, colorEnabled);
 }
 
@@ -57,7 +67,7 @@ void setColor(Color c, bool allowColor)
 
 void printCentered(std::string text, int y)
 {
-	if (Game::s_silentMode) return;
+	if (isGlobalSilent()) return;
 
 	int length = static_cast<int>(text.length());
 	int x = (MAX_X - length) / 2;

@@ -75,7 +75,7 @@ public:
 	static char p1Keys[KEY_COUNT];
 	static char p2Keys[KEY_COUNT];
 
-	static bool s_silentMode;
+	
 
 	Room& getLevel(int index) { return levels[index]; }
 	int getCurrentLevelIdx() const { return currentLevelIndex; }

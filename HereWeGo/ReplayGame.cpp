@@ -5,7 +5,8 @@
 ReplayGame::ReplayGame(bool silent) {
 	this->isSilent = silent;
 	this->isLoadMode = true;
-	Game::s_silentMode = silent;
+
+	setGlobalSilent(silent);
 
 	screen.setSilent(silent);
 
@@ -35,7 +36,8 @@ ReplayGame::ReplayGame(bool silent) {
 
 ReplayGame::~ReplayGame()
 {
-	Game::s_silentMode = false;
+	setGlobalSilent(false);
+
 	if (isSilent) {
 		std::cout << "\n=== TEST VALIDATION ===" << std::endl;
 		bool passed = true;

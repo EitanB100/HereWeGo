@@ -33,7 +33,7 @@ Screen::Screen() {
 }
 
 void Screen::draw() const {
-	if (Game::s_silentMode) return;
+	if (isGlobalSilent()) return;
 	int y = 0;
 	for (const auto& row : screen) {
 		gotoxy(0, y++);

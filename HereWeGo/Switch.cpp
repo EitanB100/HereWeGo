@@ -18,6 +18,7 @@ void Switch::toggleState()
 }
 
 void Switch::draw() {
+	if (isGlobalSilent()) return;
 	if (seen) {
 		if (broken) {
 			setColor(Color::DARK_GRAY);

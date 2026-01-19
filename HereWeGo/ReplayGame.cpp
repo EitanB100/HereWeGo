@@ -37,7 +37,8 @@ ReplayGame::~ReplayGame()
 {
 
 	if (isSilent) {
-		std::cout << "\n=== TEST VALIDATION ===" << std::endl;
+		gotoxy(0, 0); // Reset cursor to top-left
+		std::cout << "=== TEST VALIDATION ===" << std::endl;
 		bool passed = true;
 
 		if (actualEvents.size() != expectedEvents.size()) {

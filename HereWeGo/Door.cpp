@@ -27,11 +27,11 @@ void Door::draw()
 	}
 }
 
-void Door::UpdatedFromSwitch()
+bool Door::UpdatedFromSwitch()
 {
 	// 1. If we still need keys, the door stays locked.
 	if (!requiredKeyIDs.empty()) {
-		return;
+		return false;
 	}
 
 	// 2. Check all switch requirements
@@ -62,8 +62,7 @@ void Door::UpdatedFromSwitch()
 		}
 	}
 
-	if (stateChanged)
-		draw();
+	return stateChanged;
 }
 
 void Door::invalidateSwitch(const Switch* sw)

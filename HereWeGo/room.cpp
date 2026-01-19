@@ -85,7 +85,9 @@ void Room::checkSwitch(Point p) {
 	Switch* switchOnOff = isSwitchThere(p);
 	if (switchOnOff != nullptr) {
 		for (Door& door : doors) {
-			door.UpdatedFromSwitch();
+			if (door.UpdatedFromSwitch()) {
+				if (!isSilent) door.draw();
+			}
 		}
 	}
 }

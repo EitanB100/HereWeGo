@@ -74,6 +74,7 @@ void ReplayGame::run() {
 		return;
 	}
 
+
 	bool boomDustCleaningNeeded = false;
 	currentTick = 0; // Reset tick for replay
 	nextStepInd = 0; // Reset vector pointer

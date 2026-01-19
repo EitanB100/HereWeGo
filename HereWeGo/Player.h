@@ -29,12 +29,14 @@ class Player {
 
 	int hp = MAX_HP;
     bool alive = true;
+    bool isSilent = false;
 
     // Helpers
-    void synchronizePartner(Player* otherPlayer, Room& room, bool isSilent);
+    void setSilent(bool s) { isSilent = s; }
+    void synchronizePartner(Player* otherPlayer, Room& room);
     bool handleSprings(Room& room, Point nextPoint); 
     bool handlePickups(Room& room, Point nextPoint);
-    bool handleSpringExit(Room& room, bool isSilent);
+    bool handleSpringExit(Room& room);
 public:
     Player(const Placement& p, char c, int directx, int directy, const char keyArray[keyAmount]);
     Player() : pos(Placement()), symbol(' '), dirx(0), diry(0) {
@@ -76,9 +78,10 @@ public:
     bool isAlive() const { return alive; }
 
     // Core Logic
-    int move(Room& room, Player* otherPlayer, bool isSilent);
-    bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer, bool isSilent);
-    void updateSpringPhysics(Room& room, Player* otherPlayer, bool isSilent);
+    // Core Logic
+    int move(Room& room, Player* otherPlayer);
+    bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
+    void updateSpringPhysics(Room& room, Player* otherPlayer);
     void dropItem(Room& room);
 
     bool isCommand(char input, CommandKeys key) const {

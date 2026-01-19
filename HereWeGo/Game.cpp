@@ -304,7 +304,7 @@ void Game::setGame(int levelIndex, bool firstSettings) {
 		levels[currentLevelIndex].drawRoom(screen);
 		if (!firstSettings) {
 			screen.draw();
-			levels[currentLevelIndex].drawTopLayer(false); //already in not silent
+			levels[currentLevelIndex].drawTopLayer(); //already in not silent
 		}
 
 		for (auto& player : players) {
@@ -328,20 +328,23 @@ char Game::getInput()
 }
 
 void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded, bool isSilent) { 
+	currRoom.setSilent(isSilent);
+
 	currRoom.resetObstacles();
 	Point currentExitPoint = currRoom.getExitPos();
 
 	//update loop
 	for (int i = 0; i < PLAYER_AMOUNT; i++) {
 		Player& p = players[i];
+		p.setSilent(isSilent);
 		Player& other = players[1 - i];
 
 		p.inputManager(key, currRoom);
 		if (!isSilent) setColor(Color::WHITE);
 
-		p.updateSpringPhysics(currRoom, &other,isSilent);
+		p.updateSpringPhysics(currRoom, &other);
 
-		int eventID = p.move(currRoom, &other,isSilent);
+		int eventID = p.move(currRoom, &other);
 
 		if (eventID != 0) {
 			handleRiddle(eventID, p, currRoom);
@@ -364,7 +367,7 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 		boomDustCleaningNeeded = false;
 	}
 
-	currRoom.updateBombs(players, PLAYER_AMOUNT, screen, isSilent); // update bombs
+	currRoom.updateBombs(players, PLAYER_AMOUNT, screen); // update bombs
 
 	if (currRoom.hasExplosions()) {
 		boomDustCleaningNeeded = true;
@@ -376,7 +379,7 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 void Game::redrawScreen(Room& currRoom, bool isSilent) {
 	currRoom.drawRoom(screen);
 	if (!isSilent) screen.draw();
-	currRoom.drawTopLayer(isSilent);
+	currRoom.drawTopLayer();
 }
 
 void Game::run()
@@ -427,7 +430,7 @@ void Game::run()
 				startTime += pauseDuration;
 
 				setColor(Color::WHITE);
-				redrawScreen(currRoom, isSilent);
+				redrawScreen(currRoom, false);
 				for (int i = 0; i < PLAYER_AMOUNT; i++) {
 					players[i].draw();
 				}
@@ -437,7 +440,7 @@ void Game::run()
 		}
 
 
-		updateGameLogic(key, currRoom, boomDustCleaningNeeded,isSilent);
+		updateGameLogic(key, currRoom, boomDustCleaningNeeded, isSilent);
 
 		bool isVictory = checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos());
 		if (isVictory) break;
@@ -505,7 +508,7 @@ void Game::drawGameFrame(Room& currRoom)
 {
 	currRoom.drawRoom(screen);
 	screen.draw();
-	currRoom.drawTopLayer(isSilent);
+	currRoom.drawTopLayer();
 
 	for (int i = 0; i < PLAYER_AMOUNT; i++) players[i].draw();
 
@@ -584,7 +587,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 		screen.clearScreen();
 		room.drawRoom(screen);
 		screen.draw();
-		room.drawTopLayer(isSilent);
+		room.drawTopLayer();
 	}
 }
 

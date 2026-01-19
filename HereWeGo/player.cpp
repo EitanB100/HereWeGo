@@ -73,7 +73,7 @@ void Player::setHP(int amount) {
 }
 
 //Movement logic: collisions, interactions, and updates
-int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
+int Player::move(Room& room, Player* otherPlayer) {
 
 
     if (dirx == 0 && diry == 0) return 0; // No movement input
@@ -83,7 +83,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
 
     // Dynamic lighting
     if (this->itemInHand.type == ItemType::TORCH) {
-        room.CompleteLineOfSight(Torch(pos.getx() + dirx, pos.gety() + diry), isSilent);
+        room.CompleteLineOfSight(Torch(pos.getx() + dirx, pos.gety() + diry));
     }
     
     //Static collisions
@@ -108,11 +108,13 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
     //door collision
     if (isDoorTile(tileOnMap)) 
     {
-        room.checkDoor(nextPoint, itemInHand, isSilent);
+        room.checkDoor(nextPoint, itemInHand);
         setDirection(Directions::STAY);
  
-        setColor(itemInHand.color);
-        pos.draw();
+        if (!isSilent) {
+            setColor(itemInHand.color);
+            pos.draw();
+        }
         
         
         return 0;
@@ -133,7 +135,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
     if (tileOnMap == OBSTACLE_TILE) { 
      
         //try to push an obstacle. return true if possible
-        if (!obstacleHandling(room, nextPoint, otherPlayer, isSilent)) return 0;
+        if (!obstacleHandling(room, nextPoint, otherPlayer)) return 0;
     }
 
     if (tileOnMap == SPRING_TILE) {
@@ -141,7 +143,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
     }
 
     else  {
-        if (!handleSpringExit(room,isSilent)) return 0;
+        if (!handleSpringExit(room)) return 0;
     }
 
     //switch collision
@@ -152,7 +154,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
 
             room.checkSwitch(switchOnOff->getPos()); 
         
-            room.drawTopLayer(isSilent);                 
+            room.drawTopLayer();                 
             setDirection(Directions::STAY);                  
             return 0;
         }
@@ -195,7 +197,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
     }
     
     pos.set(nextPoint.x, nextPoint.y, symbol); 
-    draw();
+    if (!isSilent) draw();
     return 0;
 }
 
@@ -227,7 +229,7 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
 
     //reset inventory
     itemInHand = { ItemType::NONE,0,Color::WHITE };
-    draw();
+    if (!isSilent) draw();
 }
 
 

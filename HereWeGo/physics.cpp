@@ -2,7 +2,7 @@
 #include "Player.h"
 
 //logic for handling obstacle movement
-bool Room::moveObstacle(Point p, int dirx, int diry, int force, bool isSilent)
+bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 {
 	Obstacle* obs = isObstacleThere(p);
 	if (!obs) return false;
@@ -152,7 +152,7 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 }
 
 
-void Room::CompleteLineOfSight(const Torch& torch, bool isSilent) {
+void Room::CompleteLineOfSight(const Torch& torch) {
 	Point torchPoint = torch.getPos();
 	int Dist = torch.getLineOfSight();
 

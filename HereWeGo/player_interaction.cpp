@@ -4,7 +4,8 @@
 
 
 //Obstacle pushing logic
-bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer, bool isSilent)
+//Obstacle pushing logic
+bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 {
     Obstacle* obstacleToPush = room.isObstacleThere(nextPoint);
     //if it already been moved this frame
@@ -20,7 +21,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer,
 
                     otherPlayer->setDirection({ dirx,diry });
                     otherPlayer->setForce(force);
-                    otherPlayer->move(room, this, isSilent);
+                    otherPlayer->move(room, this);
                     otherPlayer->setDirection({ ogDir.x,ogDir.y });
                     otherPlayer->setForce(ogForce);
 
@@ -50,11 +51,11 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer,
         }
 
         //move the obstacle with the calculated force
-        bool hasMoved = room.moveObstacle(nextPoint, dirx, diry, currentForce, isSilent);
+        bool hasMoved = room.moveObstacle(nextPoint, dirx, diry, currentForce);
 
         //if moved, move the partner too
         if (hasMoved) {
-            if (combinedPush) synchronizePartner(otherPlayer, room, isSilent);
+            if (combinedPush) synchronizePartner(otherPlayer, room);
 
             if (spring.flightTime > 0) obstacleToPush->resetMove();
         }
@@ -67,7 +68,10 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer,
 //Helper function that ensures that when two playes push an obstacle, 
 //both will move in sync with each other
 //Suggested by Gemini!
-void Player::synchronizePartner(Player* otherPlayer, Room& room, bool isSilent) {
+//Helper function that ensures that when two playes push an obstacle, 
+//both will move in sync with each other
+//Suggested by Gemini!
+void Player::synchronizePartner(Player* otherPlayer, Room& room) {
     if (otherPlayer == nullptr) return;
 
     //redraw the tile (similar to move function)
@@ -75,9 +79,11 @@ void Player::synchronizePartner(Player* otherPlayer, Room& room, bool isSilent) 
     Color c = Color::WHITE;
     char tileBelow = room.getObjectAt(p, c); //the tile that became invisible when disposed!
 
-    setColor(c);
-    if (!isSilent) otherPlayer->pos.draw(tileBelow);
-    setColor(Color::WHITE);
+    if (!isSilent) {
+        setColor(c);
+        otherPlayer->pos.draw(tileBelow);
+        setColor(Color::WHITE);
+    }
 
     //move the partner in the same direction
     otherPlayer->pos.move(dirx, diry, otherPlayer->symbol);

@@ -22,8 +22,10 @@ Room::Room() {
 }
 
 //redraws all non wall objects on top
-void Room::drawTopLayer(bool isSilent)
+void Room::drawTopLayer()
 {
+
+
 	if (!isSilent) {
 		for (auto& switchOnOff : switches) switchOnOff->draw();
 		for (Key& key : keys) key.draw();
@@ -35,7 +37,8 @@ void Room::drawTopLayer(bool isSilent)
 		for (Obstacle& obstacle : obstacles) obstacle.draw();
 	}
 
-	getTorchesLineOfSight(isSilent);
+
+	getTorchesLineOfSight();
 	
 }
 
@@ -57,7 +60,7 @@ void Room::resetRoom()
 	riddleLocations.clear();
 }
 
-bool Room::checkDoor(Point p, heldItem& item, bool isSilent)
+bool Room::checkDoor(Point p, heldItem& item)
 {
 	Door* door = isDoorThere(p);
 	if (door == nullptr) return false;
@@ -121,9 +124,9 @@ bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham
 }
 
 
-void Room::getTorchesLineOfSight(bool isSilent) {
+void Room::getTorchesLineOfSight() {
 	for (auto& torch : torches) {
-		CompleteLineOfSight(torch, isSilent);
+		CompleteLineOfSight(torch);
 	}
 }
 
@@ -131,7 +134,7 @@ void Room::getTorchesLineOfSight(bool isSilent) {
 
 
 
-void Room::updateBombs(Player* players, int playerCount, Screen& screen, bool isSilent) {
+void Room::updateBombs(Player* players, int playerCount, Screen& screen) {
 	for (int i = bombs.size() - 1; i >= 0; i--) {
 		bombs[i].gonnaExplode();
 
@@ -141,7 +144,7 @@ void Room::updateBombs(Player* players, int playerCount, Screen& screen, bool is
 			if (!isSilent) {
 				drawRoom(screen);
 				screen.draw();
-				drawTopLayer(isSilent);
+				drawTopLayer();
 			}
 			
 		}

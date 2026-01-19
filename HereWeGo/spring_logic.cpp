@@ -3,7 +3,7 @@
 #include "Spring.h"
 
 
-void Player::updateSpringPhysics(Room& room, Player* otherPlayer, bool isSilent)
+void Player::updateSpringPhysics(Room& room, Player* otherPlayer)
 {
     if (spring.compressionCount > 0) {    //is a spring compressed?
         Spring* s = room.isSpringThere(pos.getPosition());
@@ -36,7 +36,7 @@ void Player::updateSpringPhysics(Room& room, Player* otherPlayer, bool isSilent)
         for (int i = 0; i < spring.force; i++) {
 
             Point startPos = getPos();
-            move(room, otherPlayer,isSilent);
+            move(room, otherPlayer);
 
             if (startPos == getPos()) {
                 spring.flightTime = 0;
@@ -125,7 +125,7 @@ bool Player::handleSprings(Room& room, Point nextPoint) {
     return true;
 }
 
-bool Player::handleSpringExit(Room& room, bool isSilent)
+bool Player::handleSpringExit(Room& room)
 {
 
     if (spring.compressionCount == 0) return true;

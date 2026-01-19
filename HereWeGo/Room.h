@@ -57,7 +57,9 @@ class Room {
     Point p2Start = { 2,1 };
     Point exitPos = { -1,-1 };
     Point legendLocation = { 0,0 };
+    bool isSilent = false;
 public:
+    void setSilent(bool s) { isSilent = s; }
 
     Room();
     //changed switches to be unique_ptrs, but just in case did those anyway
@@ -75,7 +77,7 @@ public:
 
     void resetRoom();
 
-    bool checkDoor(Point p, heldItem& item, bool isSilent);
+    bool checkDoor(Point p, heldItem& item);
     void checkSwitch(Point p); // 3. Added Switch Check
 
     Point getP1Start() const { return p1Start; }
@@ -86,7 +88,7 @@ public:
     Point getExitPos() const { return exitPos; }
     void setExitPos(const Point& p) { exitPos = p; }
 
-    void drawTopLayer(bool isSilent);
+    void drawTopLayer();
     void drawRoom(Screen& screen);
     void clearTile(Point& p) { map[p.y][p.x] = ' '; }
 
@@ -138,11 +140,11 @@ public:
     RiddlePos* isRiddleThere(const Point& p);
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
-	void CompleteLineOfSight(const Torch& torch, bool isSilent);
-	void getTorchesLineOfSight(bool isSilent);
+	void CompleteLineOfSight(const Torch& torch);
+	void getTorchesLineOfSight();
 
 
-    bool moveObstacle(Point p, int dirx, int diry, int force, bool isSilent);
+    bool moveObstacle(Point p, int dirx, int diry, int force);
     void resetObstacles() {
         for (auto& o : obstacles) {
             o.resetMove();
@@ -150,7 +152,7 @@ public:
     }
 
 	void bombExplode(Bomb* bomb, Player* players, int playerCount , Screen& screen);
-    void updateBombs(Player* players, int playerCount, Screen& screen, bool isSilent);
+    void updateBombs(Player* players, int playerCount, Screen& screen);
     void clearExplosions();
     bool hasExplosions();
 

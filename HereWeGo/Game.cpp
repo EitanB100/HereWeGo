@@ -351,8 +351,10 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 		if (currentExitPoint.x != -1 && p.getPos() == currentExitPoint) {
 			if (!p.isFinished()) {
 				p.setFinished(true);
-				gotoxy(50, 0);
-				std::cout << "Player " << p.getSymbol() << " Is waiting...";
+				if (!isSilent) {
+					gotoxy(50, 0);
+					std::cout << "Player " << p.getSymbol() << " Is waiting...";
+				}
 			}
 		}
 	}

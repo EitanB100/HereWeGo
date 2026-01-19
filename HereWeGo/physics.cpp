@@ -1,6 +1,5 @@
 #include "Room.h"
 #include "Player.h"
-#include "Game.h"
 
 //logic for handling obstacle movement
 bool Room::moveObstacle(Point p, int dirx, int diry, int force)

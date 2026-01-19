@@ -76,7 +76,7 @@ public:
     bool isAlive() const { return alive; }
 
     // Core Logic
-    int move(Room& room, Player* otherPlayer);
+    int move(Room& room, Player* otherPlayer, bool isSilent);
     bool obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer);
     void updateSpringPhysics(Room& room, Player* otherPlayer);
     void dropItem(Room& room);

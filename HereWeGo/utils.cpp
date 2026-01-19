@@ -6,15 +6,7 @@
 
 
 static bool colorEnabled = true;
-static bool g_isSilent = false;
 
-void setGlobalSilent(bool silent) {
-    g_isSilent = silent;
-}
-
-bool isGlobalSilent() {
-    return g_isSilent;
-}
 
 
 void gotoxy(int x, int y) {

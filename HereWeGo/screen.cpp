@@ -2,7 +2,6 @@
 
 #include "Screen.h"
 #include "utils.h"
-#include "Game.h"
 
 void Screen::createGameScreen() {
 

@@ -75,7 +75,7 @@ public:
 
     void resetRoom();
 
-    bool checkDoor(Point p, heldItem& item);
+    bool checkDoor(Point p, heldItem& item, bool isSilent);
     void checkSwitch(Point p); // 3. Added Switch Check
 
     Point getP1Start() const { return p1Start; }

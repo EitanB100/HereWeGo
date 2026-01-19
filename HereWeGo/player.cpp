@@ -73,7 +73,7 @@ void Player::setHP(int amount) {
 }
 
 //Movement logic: collisions, interactions, and updates
-int Player::move(Room& room, Player* otherPlayer) {
+int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
 
 
     if (dirx == 0 && diry == 0) return 0; // No movement input
@@ -110,10 +110,10 @@ int Player::move(Room& room, Player* otherPlayer) {
     {
         room.checkDoor(nextPoint, itemInHand);
         setDirection(Directions::STAY);
-        if (!isGlobalSilent()) {
-            setColor(itemInHand.color);
-            pos.draw();
-        }
+ 
+        setColor(itemInHand.color);
+        pos.draw();
+        
         
         return 0;
     }

@@ -5,7 +5,6 @@
 #include "Obstacle.h"
 #include "Bomb.h"
 #include "Player.h"
-#include "Game.h"
 #include "Tile_Chars.h"
 
 //grid initialization
@@ -59,7 +58,7 @@ void Room::resetRoom()
 	riddleLocations.clear();
 }
 
-bool Room::checkDoor(Point p, heldItem& item)
+bool Room::checkDoor(Point p, heldItem& item, bool isSilent)
 {
 	Door* door = isDoorThere(p);
 	if (door == nullptr) return false;
@@ -72,8 +71,7 @@ bool Room::checkDoor(Point p, heldItem& item)
 		if (door->tryUnlock(item.id))
 		{
 			item = { ItemType::NONE, 0, Color::WHITE}; // Consume key
-			if (!isGlobalSilent())
-				door->draw();
+			if (!isSilent) door->draw();
 		}
 	}
 

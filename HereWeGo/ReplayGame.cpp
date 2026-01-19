@@ -122,6 +122,12 @@ void ReplayGame::run() {
 	}
 }
 
+void ReplayGame::redrawScreen(Room& currRoom)
+{
+	if (isSilent) return;
+	Game::redrawScreen(currRoom);
+}
+
 void ReplayGame::loadExpectedResult()
 {
 	std::ifstream inFile("adv-world.result");
@@ -171,13 +177,13 @@ void ReplayGame::drawProgressBar()
 	std::stringstream parser;
 	int filled = static_cast<int>(progress * PROGRESS_BAR_WIDTH);
 
-	parser << "REPLAY [";
+	parser << " REPLAY [";
 
 	for (int i = 0; i < PROGRESS_BAR_WIDTH; i++) {
 		parser << (i < filled ? "\xDB" : "\xB0");
 	}
 
-	parser << "] " << static_cast<int>(progress * MAX_PROGRESS) << "% (" << currentStep << "/" << totalSteps << ")";
+	parser << "] " << static_cast<int>(progress * MAX_PROGRESS) << "% (" << currentStep << "/" << totalSteps << ") Ticks";
 	
 	printCentered(parser.str(),0);
 

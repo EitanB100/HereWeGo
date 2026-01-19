@@ -88,8 +88,9 @@ public:
 	void startInLevel(Level level);
 	void showEndingScreen();
 	bool isSlotRecorded(int slot);
-	void redrawScreen(Room& currRoom);
 	void init();
+
+	virtual void redrawScreen(Room& currRoom);
 
 
 	void settingsMenu();

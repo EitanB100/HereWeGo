@@ -364,9 +364,9 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 
 	if (currRoom.hasExplosions()) {
 		boomDustCleaningNeeded = true;
+		redrawScreen(currRoom);
 	}
 
-	//drawGameFrame(currRoom);
 }
 
 void Game::redrawScreen(Room& currRoom) {

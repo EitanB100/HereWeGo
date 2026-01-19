@@ -8,6 +8,8 @@
 static bool colorEnabled = true;
 
 void gotoxy(int x, int y) {
+	if (Game::s_silentMode) return;
+
     std::cout.flush();
     COORD coord;
     coord.X = x;
@@ -54,6 +56,8 @@ void setColor(Color c, bool allowColor)
 
 void printCentered(std::string text, int y)
 {
+	if (Game::s_silentMode) return;
+
 	int length = static_cast<int>(text.length());
 	int x = (MAX_X - length) / 2;
 	if (x < 0) x = 0;

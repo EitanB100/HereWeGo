@@ -444,7 +444,8 @@ void Game::run()
 
 		bool gameOver = false;
 		for (int i = 0; i < PLAYER_AMOUNT; i++) {
-			players[i].draw();
+			if (!isSilent)
+				players[i].draw();
 			if (players[i].isDead()) {
 				gameOver = true;
 				break;
@@ -456,8 +457,10 @@ void Game::run()
 			break;
 		}
 		//HUD renderer
-		printHUD();
-		printTimer();
+		if (!isSilent) {
+			printHUD();
+			printTimer();
+		}
 		Sleep(GAME_SPEED);
 	}
 

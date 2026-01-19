@@ -7,6 +7,8 @@ ReplayGame::ReplayGame(bool silent) {
 	this->isLoadMode = true;
 	Game::s_silentMode = silent;
 
+	screen.setSilent(silent);
+
 	std::ifstream inFile("adv-world.steps");
 	if (inFile.is_open()) {
 		std::string line;
@@ -86,6 +88,13 @@ void ReplayGame::run() {
 		if (!isSilent && _kbhit()) {
 			char c = _getch();
 			handleSpeedToggle(c);
+		}
+
+		if (isSilent) {
+			auto logicalDuration = std::chrono::milliseconds(currentTick * GAME_SPEED);
+			auto now = std::chrono::steady_clock::now();
+
+			levelStartTime = now - logicalDuration;
 		}
 
 		char key = getInput();

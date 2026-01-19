@@ -25,7 +25,7 @@ Room::Room() {
 //redraws all non wall objects on top
 void Room::drawTopLayer()
 {
-	if (Game::s_silentMode) return;
+
 
 	for (auto& switchOnOff : switches) switchOnOff->draw(); 
 	for (Key& key : keys) key.draw();
@@ -43,7 +43,6 @@ void Room::drawTopLayer()
 
 
 void Room::drawRoom(Screen& screen) {
-	if (Game::s_silentMode) return;
 	screen.loadMapFromRoom(this->map);
 }
 
@@ -125,7 +124,6 @@ bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham
 
 
 void Room::getTorchesLineOfSight() {
-	if (Game::s_silentMode) return;
 	for (auto& torch : torches) {
 		CompleteLineOfSight(torch);
 	}
@@ -143,11 +141,10 @@ void Room::updateBombs(Player* players, int playerCount, Screen& screen) {
 			bombExplode(&bombs[i], players, playerCount, screen); // Pass screen
 			bombs.erase(bombs.begin() + i);
 
-			if (!Game::s_silentMode) {
-				drawRoom(screen);
-				screen.draw();
-				drawTopLayer();
-			}
+			drawRoom(screen);
+			screen.draw();
+			drawTopLayer();
+			
 		}
 	}
 }

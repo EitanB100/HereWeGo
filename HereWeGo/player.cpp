@@ -109,10 +109,10 @@ int Player::move(Room& room, Player* otherPlayer) {
     {
         room.checkDoor(nextPoint, itemInHand);
         setDirection(Directions::STAY);
-        if (!Game::s_silentMode) {
-            setColor(itemInHand.color);
-            pos.draw();
-        }
+        
+        setColor(itemInHand.color);
+        pos.draw();
+        
         return 0;
     }
 
@@ -149,8 +149,8 @@ int Player::move(Room& room, Player* otherPlayer) {
             switchOnOff->toggleState();      
 
             room.checkSwitch(switchOnOff->getPos()); 
-            if (!Game::s_silentMode)
-                room.drawTopLayer();                 
+        
+            room.drawTopLayer();                 
             setDirection(Directions::STAY);                  
             return 0;
         }

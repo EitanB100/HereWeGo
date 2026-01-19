@@ -71,8 +71,8 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 		for (const auto& part : futureParts) {
 			map[part.y][part.x] = OBSTACLE_TILE;
 		}
-		if (!Game::s_silentMode)
-			obs->draw();
+	
+		obs->draw();
 
 		//prevent double moving in a frame
 		obs->markAsMoved();
@@ -84,8 +84,8 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 		{
 			map[part.y][part.x] = OBSTACLE_TILE;
 		}
-		if (!Game::s_silentMode)
-			obs->draw();
+		
+		obs->draw();
 		return false;
 	}
 

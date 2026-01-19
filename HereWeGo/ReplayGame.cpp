@@ -242,6 +242,7 @@ void ReplayGame::onLevelChange(int levelInd)
 	auto now = std::chrono::steady_clock::now();
 	int time = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count();
 	recordActualEvent(time, "Level Changed: " + std::to_string(levelInd));
+	levelStartTick = currentTick;
 }
 
 void ReplayGame::onLifeLost()
@@ -266,11 +267,11 @@ void ReplayGame::printTimer() { // helped by AI
 	// Calculate logical elapsed time based on ticks
 	// Formula: (Current Tick * Delay between frames in ms) / 1000
 	// If your original game used a 50ms Sleep, use 50 here.
-	long long totalSeconds = (currentTick * 100) / 1000;
-
+	long totalSeconds = (currentTick * 100) / 1000;
+	long levelSeconds = ((currentTick - levelStartTick) * 100) / 1000;
 	// For Replay, Level Time and Total Time usually start together from the save point,
 	// but you can adjust this if you track 'levelStartTick'.
-	auto formatTime = [](long long totalSecs) -> std::string {
+	auto formatTime = [](long totalSecs) -> std::string {
 		int m = static_cast<int>((totalSecs % 3600) / 60);
 		int s = static_cast<int>(totalSecs % 60);
 		std::stringstream ss;
@@ -279,7 +280,7 @@ void ReplayGame::printTimer() { // helped by AI
 		return ss.str();
 		};
 	// Display based on logic ticks, not the system clock
-	std::cout << "LEVEL " << formatTime(totalSeconds) // Or specific level ticks
+	std::cout << "LEVEL " << formatTime(levelSeconds) // Or specific level ticks
 		<< " | TOTAL " << formatTime(totalSeconds) << " |";
 }
 

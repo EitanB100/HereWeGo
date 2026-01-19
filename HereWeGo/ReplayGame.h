@@ -18,6 +18,7 @@ class ReplayGame : public Game {
 	static constexpr int REPLAY_SPEED = 10;
 
 	int currentTick = 0;
+	int levelStartTick = 0;
 
 	std::vector<Step> steps;
 	std::vector<ExpectedEvent> expectedEvents;
@@ -43,4 +44,5 @@ public:
 	void onLifeLost() override;
 	void onRiddleSolved(bool correct) override;
 	void printTimer() override;
+
 };

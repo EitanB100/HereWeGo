@@ -88,7 +88,16 @@ void RecordingGame::onRiddleSolved(bool correct) {
 	recordedEvents.push_back(std::to_string(time) + " Riddle: " + status);
 }
 
-
+void RecordingGame::writeResultsToBackup(const std::string& destName) {
+	std::ofstream destination(destName);
+	if (destination.is_open()) {
+		// Write all historical and current events
+		for (const auto& event : recordedEvents) {
+			destination << event << "\n";
+		}
+		destination.close();
+	}
+}
 
 void RecordingGame::writeStepsToBackup(const std::string& destName) {
 	std::ofstream destination(destName); 
@@ -105,7 +114,8 @@ void RecordingGame::writeStepsToBackup(const std::string& destName) {
 void RecordingGame::saveGame() {
 	std::string dataFilename = "savegame" + std::to_string(savefiles) + ".txt";
 	std::string worldFilename = "world_state" + std::to_string(savefiles) + ".screen";
-	std::string stepsBackupName = "savedgame" + std::to_string(savefiles) + ".steps";
+	std::string stepsBackupName = "saved_game" + std::to_string(savefiles) + ".steps";
+	std::string resultsBackup = "saved_game" + std::to_string(savefiles) + ".result";
 
 	std::ofstream saveFile(dataFilename);
 	if (!saveFile.is_open()) return;
@@ -134,8 +144,9 @@ void RecordingGame::saveGame() {
 	Level_Loader::saveLevel(levels[currentLevelIndex], worldFilename, players[0].getPos(), players[1].getPos());
 
 	writeStepsToBackup(stepsBackupName);
+	writeResultsToBackup(resultsBackup);
 	//we write backup as we might save recorded game and than record another game
-	// and if we load the saved game the recorded steps will be lost
+	// and if we load the saved game the recorded steps and results will be lost
 
 	printCentered("GAME SAVED AND RECOREDED SUCCESSFULLY TO SLOT " + std::to_string(savefiles + 1), 2);
 	savefiles++; // new save file added
@@ -146,11 +157,12 @@ void RecordingGame::saveGame() {
 bool RecordingGame::loadGame(int slot) {
 	if (!Game::loadGame(slot)) return false; // load base game data
 
-	std::string stepsBackupName = "savedgame" + std::to_string(slot) + ".steps"; // load backup steps of recorded file 
+	std::string stepsBackupName = "saved_game" + std::to_string(slot) + ".steps"; // load backup steps of recorded file 
 	std::ifstream stepsFile(stepsBackupName);
 
 	if (stepsFile.is_open()) {
-		recordedSteps.clear(); // clearing any movement between saved and unsaved time
+		recordedSteps.clear();
+		// clearing any movement between saved and unsaved time
 		// for example save game , played more on the game and than loaded back to save file
 		std::string line;
 		int maxTick = 0;
@@ -169,7 +181,7 @@ bool RecordingGame::loadGame(int slot) {
 		currentTick = maxTick; // the tick will be the max value to continoue the record 
 		stepsFile.close();
 	}
-	std::string resultsBackupName = "savedgame" + std::to_string(slot) + ".result";
+	std::string resultsBackupName = "saved_game" + std::to_string(slot) + ".result";
 	std::ifstream resultsFile(resultsBackupName);
 	if (resultsFile.is_open()) {
 		recordedEvents.clear(); // Clear current session events

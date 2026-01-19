@@ -3,10 +3,6 @@
 #include <string>
 #include "Level_Loader.h"
 
-static int getCurrentTime(std::chrono::steady_clock::time_point start) {
-	auto now = std::chrono::steady_clock::now();
-	return (int)std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
-}
 char RecordingGame::getInput() {
     currentTick++; 
     char key = 0;
@@ -72,20 +68,16 @@ void RecordingGame::resetRecording()
 }
 
 void RecordingGame::onLevelChange(int levelInd){
-	int time = getCurrentTime(startTime);
-	recordedEvents.push_back(std::to_string(time) + " Level Changed: " + std::to_string(levelInd));
-
+	recordedEvents.push_back(std::to_string(currentTick) + " Level Changed: " + std::to_string(levelInd));
 }
 
 void RecordingGame::onLifeLost(){
-	int time = getCurrentTime(startTime);
-	recordedEvents.push_back(std::to_string(time) + ": " + std::to_string(HP_INCREASE) + " HP lost");
+	recordedEvents.push_back(std::to_string(currentTick) + ": " + std::to_string(HP_INCREASE) + " HP lost");
 }
 
 void RecordingGame::onRiddleSolved(bool correct) {
-	int time = getCurrentTime(startTime);
 	std::string status = correct ? "Correct" : "Wrong";
-	recordedEvents.push_back(std::to_string(time) + " Riddle: " + status);
+	recordedEvents.push_back(std::to_string(currentTick) + " Riddle: " + status);
 }
 
 void RecordingGame::writeResultsToBackup(const std::string& destName) {

@@ -239,25 +239,19 @@ void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //tempor
 
 void ReplayGame::onLevelChange(int levelInd)
 {
-	auto now = std::chrono::steady_clock::now();
-	int time = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count();
-	recordActualEvent(time, "Level Changed: " + std::to_string(levelInd));
+	recordActualEvent(currentTick, "Level Changed: " + std::to_string(levelInd));
 	levelStartTick = currentTick;
 }
 
 void ReplayGame::onLifeLost()
 {
-	auto now = std::chrono::steady_clock::now();
-	int time = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count();
-	recordActualEvent(time, ": " + std::to_string(HP_INCREASE) + " HP lost");
+	recordActualEvent(currentTick, ": " + std::to_string(HP_INCREASE) + " HP lost");
 }
 
 void ReplayGame::onRiddleSolved(bool correct)
 {
-	auto now = std::chrono::steady_clock::now();
-	int time = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count();
 	std::string status = correct ? "Correct" : "Wrong";
-	recordActualEvent(time, "Riddle: " + status);
+	recordActualEvent(currentTick, "Riddle: " + status);
 }
 
 void ReplayGame::printTimer() { // helped by AI

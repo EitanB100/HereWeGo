@@ -122,7 +122,7 @@ void ReplayGame::run() {
 			break;
 		}
 		
-		currentTick++;
+		
 	}
 }
 

@@ -304,7 +304,7 @@ void Game::setGame(int levelIndex, bool firstSettings) {
 		levels[currentLevelIndex].drawRoom(screen);
 		if (!firstSettings) {
 			screen.draw();
-			levels[currentLevelIndex].drawTopLayer();
+			levels[currentLevelIndex].drawTopLayer(false); //already in not silent
 		}
 
 		for (auto& player : players) {
@@ -360,7 +360,7 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 	}
 	if (boomDustCleaningNeeded) {
 		currRoom.clearExplosions();
-		redrawScreen(currRoom);
+		redrawScreen(currRoom, isSilent);
 		boomDustCleaningNeeded = false;
 	}
 
@@ -368,15 +368,15 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 
 	if (currRoom.hasExplosions()) {
 		boomDustCleaningNeeded = true;
-		redrawScreen(currRoom);
+		redrawScreen(currRoom, isSilent);
 	}
 
 }
 
-void Game::redrawScreen(Room& currRoom) {
+void Game::redrawScreen(Room& currRoom, bool isSilent) {
 	currRoom.drawRoom(screen);
-	screen.draw();
-	currRoom.drawTopLayer();
+	if (!isSilent) screen.draw();
+	currRoom.drawTopLayer(isSilent);
 }
 
 void Game::run()
@@ -427,7 +427,7 @@ void Game::run()
 				startTime += pauseDuration;
 
 				setColor(Color::WHITE);
-				redrawScreen(currRoom);
+				redrawScreen(currRoom, isSilent);
 				for (int i = 0; i < PLAYER_AMOUNT; i++) {
 					players[i].draw();
 				}
@@ -505,7 +505,7 @@ void Game::drawGameFrame(Room& currRoom)
 {
 	currRoom.drawRoom(screen);
 	screen.draw();
-	currRoom.drawTopLayer();
+	currRoom.drawTopLayer(isSilent);
 
 	for (int i = 0; i < PLAYER_AMOUNT; i++) players[i].draw();
 
@@ -584,7 +584,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 		screen.clearScreen();
 		room.drawRoom(screen);
 		screen.draw();
-		room.drawTopLayer();
+		room.drawTopLayer(isSilent);
 	}
 }
 

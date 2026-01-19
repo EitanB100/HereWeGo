@@ -86,7 +86,7 @@ public:
     Point getExitPos() const { return exitPos; }
     void setExitPos(const Point& p) { exitPos = p; }
 
-    void drawTopLayer();
+    void drawTopLayer(bool isSilent);
     void drawRoom(Screen& screen);
     void clearTile(Point& p) { map[p.y][p.x] = ' '; }
 
@@ -138,8 +138,8 @@ public:
     RiddlePos* isRiddleThere(const Point& p);
     
 	bool PointhasLineOfSight(int TorchPointX, int TorchPointY , int pointX , int PointY);
-	void CompleteLineOfSight(const Torch& torch);
-	void getTorchesLineOfSight();
+	void CompleteLineOfSight(const Torch& torch, bool isSilent);
+	void getTorchesLineOfSight(bool isSilent);
 
 
     bool moveObstacle(Point p, int dirx, int diry, int force, bool isSilent);

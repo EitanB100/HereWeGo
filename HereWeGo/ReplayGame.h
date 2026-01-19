@@ -49,7 +49,7 @@ public:
 	~ReplayGame();
 
 	void run() override;
-	void redrawScreen(Room& currRoom) override;
+	void redrawScreen(Room& currRoom, bool isSilent) override;
 	char getInput() override;
 	char getInteractionInput() override;
 	char getCharFromCommand(int playerID, const std::string& command);

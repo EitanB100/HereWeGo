@@ -83,7 +83,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
 
     // Dynamic lighting
     if (this->itemInHand.type == ItemType::TORCH) {
-        room.CompleteLineOfSight(Torch(pos.getx() + dirx, pos.gety() + diry));
+        room.CompleteLineOfSight(Torch(pos.getx() + dirx, pos.gety() + diry), isSilent);
     }
     
     //Static collisions
@@ -152,7 +152,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
 
             room.checkSwitch(switchOnOff->getPos()); 
         
-            room.drawTopLayer();                 
+            room.drawTopLayer(isSilent);                 
             setDirection(Directions::STAY);                  
             return 0;
         }

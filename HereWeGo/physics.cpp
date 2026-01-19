@@ -152,7 +152,7 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 }
 
 
-void Room::CompleteLineOfSight(const Torch& torch) {
+void Room::CompleteLineOfSight(const Torch& torch, bool isSilent) {
 	Point torchPoint = torch.getPos();
 	int Dist = torch.getLineOfSight();
 
@@ -185,7 +185,7 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 					if (!(key->getIsSeen())) {
 						key->setSeen();
 						map[p.y][p.x] = KEY_TILE; // update map tile
-						key->draw();
+						if (!isSilent) key->draw();
 					}
 				}
 			}
@@ -197,7 +197,7 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 					if (!(bomb->getIsSeen())) {
 						bomb->setSeen();
 						map[p.y][p.x] = BOMB_TILE; // update map tile
-						bomb->draw();
+						if (!isSilent) bomb->draw();
 					}
 				}
 			}
@@ -209,7 +209,7 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 					if (!(sw->getIsSeen())) {
 						sw->setSeen();
 						map[p.y][p.x] = sw->getState() ? SWITCH_ON : SWITCH_OFF; // update map tile
-						sw->draw();
+						if (!isSilent) sw->draw();
 					}
 				}
 			}
@@ -221,7 +221,7 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 					if (!(potion->getIsSeen())) {
 						potion->setSeen();
 						map[p.y][p.x] = POTION_TILE;
-						potion->draw();
+						if (!isSilent) potion->draw();
 					}
 				}
 			}

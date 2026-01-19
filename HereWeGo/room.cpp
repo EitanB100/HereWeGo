@@ -22,20 +22,20 @@ Room::Room() {
 }
 
 //redraws all non wall objects on top
-void Room::drawTopLayer()
+void Room::drawTopLayer(bool isSilent)
 {
+	if (!isSilent) {
+		for (auto& switchOnOff : switches) switchOnOff->draw();
+		for (Key& key : keys) key.draw();
+		for (Torch& torch : torches) torch.draw();
+		for (Potion& potion : potions) potion.draw();
+		for (Bomb& bomb : bombs) bomb.draw();
+		for (Spring& spring : springs) spring.draw();
+		for (Door& door : doors) door.draw();
+		for (Obstacle& obstacle : obstacles) obstacle.draw();
+	}
 
-	for (auto& switchOnOff : switches) switchOnOff->draw(); 
-	for (Key& key : keys) key.draw();
-	for (Torch& torch : torches) torch.draw();	
-	for (Potion& potion : potions) potion.draw();
-	for (Bomb& bomb : bombs) bomb.draw();
-	for (Spring& spring : springs) spring.draw();
-	for (Door& door : doors) door.draw();
-	for (Obstacle& obstacle : obstacles) obstacle.draw();
-
-
-	getTorchesLineOfSight();
+	getTorchesLineOfSight(isSilent);
 	
 }
 
@@ -121,9 +121,9 @@ bool Room::PointhasLineOfSight(int x1, int y1, int x2, int y2) //using Bresenham
 }
 
 
-void Room::getTorchesLineOfSight() {
+void Room::getTorchesLineOfSight(bool isSilent) {
 	for (auto& torch : torches) {
-		CompleteLineOfSight(torch);
+		CompleteLineOfSight(torch, isSilent);
 	}
 }
 
@@ -141,7 +141,7 @@ void Room::updateBombs(Player* players, int playerCount, Screen& screen, bool is
 			if (!isSilent) {
 				drawRoom(screen);
 				screen.draw();
-				drawTopLayer();
+				drawTopLayer(isSilent);
 			}
 			
 		}

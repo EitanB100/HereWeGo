@@ -141,10 +141,10 @@ void ReplayGame::run() {
 	}
 }
 
-void ReplayGame::redrawScreen(Room& currRoom)
+void ReplayGame::redrawScreen(Room& currRoom, bool isSilent)
 {
 	if (isSilent) return;
-	Game::redrawScreen(currRoom);
+	Game::redrawScreen(currRoom, isSilent);
 }
 
 void ReplayGame::loadExpectedResult()

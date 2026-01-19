@@ -92,7 +92,7 @@ public:
 	bool isSlotRecorded(int slot);
 	void init();
 
-	virtual void redrawScreen(Room& currRoom);
+	virtual void redrawScreen(Room& currRoom, bool isSilent);
 
 
 	void settingsMenu();

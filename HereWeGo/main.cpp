@@ -127,7 +127,7 @@ int main(int argc, char* argv[]) {
 				if (gamePtr->loadGame(selectedSlot)) {
 					// Manually trigger the redraw we discussed
 					Room& currRoom = gamePtr->getLevel(gamePtr->getCurrentLevelIdx());
-					gamePtr->redrawScreen(currRoom);
+					gamePtr->redrawScreen(currRoom, isSilent);
 					gamePtr->run();
 				}
 				delete gamePtr;

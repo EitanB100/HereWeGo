@@ -108,7 +108,7 @@ int Player::move(Room& room, Player* otherPlayer, bool isSilent) {
     //door collision
     if (isDoorTile(tileOnMap)) 
     {
-        room.checkDoor(nextPoint, itemInHand);
+        room.checkDoor(nextPoint, itemInHand, isSilent);
         setDirection(Directions::STAY);
  
         setColor(itemInHand.color);

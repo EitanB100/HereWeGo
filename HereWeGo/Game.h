@@ -58,7 +58,7 @@ protected:
 	virtual void onLifeLost() {} //when getting hit/getting a riddle wrong
 	virtual void onRiddleSolved(bool correct) {} //when answering a riddle
 
-	void updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded); // how each interation in run will do what the game logic asks
+	void updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded, bool isSilent); // how each interation in run will do what the game logic asks
 	// kids will allow to use it from the father
 	void tileMapError();
 	bool checkLevelTransition(int& currentLevelIndex, Point p1, Point p2);

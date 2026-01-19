@@ -327,7 +327,7 @@ char Game::getInput()
 	return 0;
 }
 
-void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded) { //Claude - what to remove here and where to call drawGameFrame?
+void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded, bool isSilent) { 
 	currRoom.resetObstacles();
 	Point currentExitPoint = currRoom.getExitPos();
 
@@ -337,11 +337,11 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 		Player& other = players[1 - i];
 
 		p.inputManager(key, currRoom);
-		setColor(Color::WHITE);
+		if (!isSilent) setColor(Color::WHITE);
 
-		p.updateSpringPhysics(currRoom, &other);
+		p.updateSpringPhysics(currRoom, &other,isSilent);
 
-		int eventID = p.move(currRoom, &other);
+		int eventID = p.move(currRoom, &other,isSilent);
 
 		if (eventID != 0) {
 			handleRiddle(eventID, p, currRoom);
@@ -437,7 +437,7 @@ void Game::run()
 		}
 
 
-		updateGameLogic(key, currRoom, boomDustCleaningNeeded);
+		updateGameLogic(key, currRoom, boomDustCleaningNeeded,isSilent);
 
 		bool isVictory = checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos());
 		if (isVictory) break;

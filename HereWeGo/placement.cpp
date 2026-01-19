@@ -5,7 +5,6 @@
 
 
 void Placement::draw(char c) {
-    if (isGlobalSilent()) return;
     gotoxy(x, y);
     std::cout << c;
 }

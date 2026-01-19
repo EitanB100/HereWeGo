@@ -24,7 +24,6 @@ Room::Room() {
 //redraws all non wall objects on top
 void Room::drawTopLayer()
 {
-	if (isGlobalSilent()) return;
 
 	for (auto& switchOnOff : switches) switchOnOff->draw(); 
 	for (Key& key : keys) key.draw();

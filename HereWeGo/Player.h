@@ -85,6 +85,6 @@ public:
         int index = static_cast<int>(key);
         return toupper(input) == keys[index];
     }
-    void inputManager(char tav, Room& room);
+    void inputManager(char input, Room& room);
 
 };

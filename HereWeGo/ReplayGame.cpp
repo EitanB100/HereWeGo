@@ -43,13 +43,10 @@ ReplayGame::~ReplayGame()
 			bool descMatch = (actualEvents[i].description == expectedEvents[i].description);
 
 			if (!tickMatch || !descMatch) {
-
-			}
-			if (actualEvents[i].description != expectedEvents[i].description) {
 				std::cout << "FAIL at event " << i << ":" << std::endl;
 				std::cout << "  Expected: [tick " << expectedEvents[i].description << "] " << std::endl;
 				std::cout << "  Actual: [tick " << actualEvents[i].description << "] " << std::endl;
-				
+
 				passed = false;
 			}
 		}

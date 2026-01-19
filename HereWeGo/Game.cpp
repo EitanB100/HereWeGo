@@ -366,7 +366,7 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 		boomDustCleaningNeeded = true;
 	}
 
-	drawGameFrame(currRoom);
+	//drawGameFrame(currRoom);
 }
 
 void Game::redrawScreen(Room& currRoom) {

@@ -5,6 +5,7 @@
 ReplayGame::ReplayGame(bool silent) {
 	this->isSilent = silent;
 	this->isLoadMode = true;
+	Game::s_silentMode = silent;
 
 	std::ifstream inFile("adv-world.steps");
 	if (inFile.is_open()) {
@@ -32,6 +33,7 @@ ReplayGame::ReplayGame(bool silent) {
 
 ReplayGame::~ReplayGame()
 {
+	Game::s_silentMode = false;
 	if (isSilent) {
 		std::cout << "\n=== TEST VALIDATION ===" << std::endl;
 		bool passed = true;
@@ -275,21 +277,26 @@ char ReplayGame::getInput() {
 		bool isRiddleAns = (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5'); // identify if this step is a riddle answer (1-5)
 		
 		if (!isRiddleAns) { // only handle movement/dispose; skip riddle answers
+			currentTick = getCharFromCommand(playerID, cmd);
 			key = getCharFromCommand(playerID, cmd); // pass the pID here
 			nextStepInd++;
+
 		}
 	}
 	return key;
 }
 
 char ReplayGame::getInteractionInput() {
-	if (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
+	while (nextStepInd < steps.size()) {
 		const std::string& cmd = steps[nextStepInd].command;
-		if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5') { // only handle if it's a riddle answer 
-			char key = cmd[0]; // the command is already the key '1', '2', etc.
-			nextStepInd++;    // move to next step
+
+		if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5') { //change to MIN_RIDDLE AND MAX_RIDDLE
+			currentTick = steps[nextStepInd].tick;
+			char key = cmd[0];
+			nextStepInd++;
 			return key;
 		}
+		break;
 	}
 	return 0;
 }

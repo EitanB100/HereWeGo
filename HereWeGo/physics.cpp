@@ -59,18 +59,13 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 					break;
 				}
 			}
-			if (!staysCovered)
-			{
-				gotoxy(part.x, part.y);
-				std::cout << ' ';
-			}
 		}
 
 		obs->move(dirx, diry);
 		for (const auto& part : futureParts) {
 			map[part.y][part.x] = OBSTACLE_TILE;
 		}
-		obs->draw();
+		
 
 		//prevent double moving in a frame
 		obs->markAsMoved();
@@ -82,7 +77,7 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 		{
 			map[part.y][part.x] = OBSTACLE_TILE;
 		}
-		obs->draw();
+		
 		return false;
 	}
 

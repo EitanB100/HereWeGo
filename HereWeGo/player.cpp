@@ -108,8 +108,8 @@ int Player::move(Room& room, Player* otherPlayer) {
     {
         room.checkDoor(nextPoint, itemInHand);
         setDirection(Directions::STAY);
-        setColor(itemInHand.color);
-        pos.draw();
+        //setColor(itemInHand.color);
+       
         return 0;
     }
 

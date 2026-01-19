@@ -39,10 +39,17 @@ ReplayGame::~ReplayGame()
 
 		size_t minSize = (std::min)(actualEvents.size(), expectedEvents.size());
 		for (size_t i = 0; i < minSize; i++) {
+			bool tickMatch = (actualEvents[i].time == expectedEvents[i].time);
+			bool descMatch = (actualEvents[i].description == expectedEvents[i].description);
+
+			if (!tickMatch || !descMatch) {
+
+			}
 			if (actualEvents[i].description != expectedEvents[i].description) {
 				std::cout << "FAIL at event " << i << ":" << std::endl;
-				std::cout << "  Expected: " << expectedEvents[i].description << std::endl;
-				std::cout << "  Actual:   " << actualEvents[i].description << std::endl;
+				std::cout << "  Expected: [tick " << expectedEvents[i].description << "] " << std::endl;
+				std::cout << "  Actual: [tick " << actualEvents[i].description << "] " << std::endl;
+				
 				passed = false;
 			}
 		}
@@ -71,6 +78,11 @@ void ReplayGame::run() {
 	while (true) {
 		Room& currRoom = levels[currentLevelIndex];
 
+		if (!isSilent && _kbhit()) {
+			char c = _getch();
+			handleSpeedToggle(c);
+		}
+
 		char key = getInput();
 		updateGameLogic(key, currRoom, boomDustCleaningNeeded);
 
@@ -91,17 +103,7 @@ void ReplayGame::run() {
 			break;
 		}
 
-		if (!isSilent) {
-			// only draw and wait if the user is actually watching the replay
-			for (int i = 0; i < PLAYER_AMOUNT; i++)
-				players[i].draw();
-			printHUD();
-			printTimer();
-			Sleep(REPLAY_SPEED);
-		}
-		else {
-			// In SILENT mode
-		}
+		sleepFrame();
 
 		if (nextStepInd >= steps.size()) {
 			break;
@@ -137,6 +139,107 @@ void ReplayGame::loadExpectedResult()
 void ReplayGame::recordActualEvent(int time, const std::string& description)
 {
 	actualEvents.push_back({ time,description });
+}
+
+void ReplayGame::drawReplayUI()
+{
+	drawProgressBar();
+	drawSpeedIndicator();
+}
+
+void ReplayGame::drawProgressBar()
+{
+	gotoxy(0, 0);
+	setColor(Color::CYAN);
+
+	int totalSteps = steps.size();
+	int currentStep = nextStepInd;
+	float progress = totalSteps > 0 ? (float)currentStep / totalSteps : 0;
+
+	constexpr int BAR_WIDTH = 20;
+	constexpr int END_OF_RECORD = 100;
+	int filled = static_cast<int>(progress * BAR_WIDTH);
+
+	std::cout << "REPLAY [";
+	setColor(Color::GREEN);
+	for (int i = 0; i < BAR_WIDTH; i++) {
+		if (i < filled) std::cout << "\xDB";
+		else std::cout << "\xB0";
+	}
+
+	setColor(Color::CYAN);
+	std::cout << "] ";
+
+	std::cout << std::setw(3) << static_cast<int>(progress * END_OF_RECORD) << "% ";
+	std::cout << "(" << currentStep << "/" << totalSteps << ")  ";
+
+	setColor(Color::WHITE);
+}
+
+void ReplayGame::drawSpeedIndicator()
+{
+	gotoxy(0, 1);
+	setColor(Color::YELLOW);
+	std::cout << "Speed: ";
+
+	switch (currentSpeed) {
+	case ReplaySpeed::HALF:
+		setColor(Color::RED);
+		std::cout << "0.5x  ";
+		break;
+	case ReplaySpeed::NORMAL:
+		setColor(Color::WHITE);
+		std::cout << "1x  ";
+		break;
+	case ReplaySpeed::DOUBLE:
+		setColor(Color::GREEN);
+		std::cout << "2x  ";
+		break;
+	}
+	setColor(Color::LIGHT_GRAY);
+	std::cout << "[+/-] Change Speed";
+	setColor(Color::WHITE);
+}
+
+void ReplayGame::handleSpeedToggle(char c)
+{
+	if (c == '+' || c == '=') {
+		switch (currentSpeed) {
+		case ReplaySpeed::HALF:
+			currentSpeed = ReplaySpeed::NORMAL;
+			break;
+		case ReplaySpeed::NORMAL:
+			currentSpeed = ReplaySpeed::DOUBLE;
+			break;
+		case ReplaySpeed::DOUBLE:
+			break;
+		}
+	}
+
+	else if (c == '-' || c == '_') {
+		switch (currentSpeed) {
+		case ReplaySpeed::HALF:
+			break;
+		case ReplaySpeed::NORMAL:
+			currentSpeed = ReplaySpeed::HALF;
+			break;
+		case ReplaySpeed::DOUBLE:
+			currentSpeed = ReplaySpeed::NORMAL;
+			break;
+		}
+	}
+}
+
+int ReplayGame::getCurrentSleepDuration() const
+{
+	switch (currentSpeed) {
+		case ReplaySpeed::HALF: 
+			return SPEED_HALF;
+        case ReplaySpeed::NORMAL:
+			return SPEED_NORMAL;
+        case ReplaySpeed::DOUBLE:
+			return SPEED_DOUBLE;
+	}
 }
 
 char ReplayGame::getInput() {
@@ -189,6 +292,14 @@ char ReplayGame::getCharFromCommand(int playerID, const std::string& command) {
 		return keys[5];
 
 	return 0;
+}
+
+void ReplayGame::drawGameFrame(Room& currRoom)
+{
+	if (!isSilent) {
+		Game::drawGameFrame(currRoom);
+		drawReplayUI();
+	}
 }
 
 

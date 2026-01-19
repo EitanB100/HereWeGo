@@ -325,7 +325,7 @@ char Game::getInput()
 	return 0;
 }
 
-void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded) {
+void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded) { //what to remove here and where to call drawGameFrame?
 	currRoom.resetObstacles();
 	Point currentExitPoint = currRoom.getExitPos();
 
@@ -356,7 +356,7 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 	}
 	if (boomDustCleaningNeeded) {
 		currRoom.clearExplosions();
-		reDrawScreen(currRoom);
+		redrawScreen(currRoom);
 		boomDustCleaningNeeded = false;
 	}
 
@@ -364,12 +364,11 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 
 	if (currRoom.hasExplosions()) {
 		boomDustCleaningNeeded = true;
-
 	}
 
 }
 
-void Game::reDrawScreen(Room& currRoom) {
+void Game::redrawScreen(Room& currRoom) {
 	currRoom.drawRoom(screen);
 	screen.draw();
 	currRoom.drawTopLayer();
@@ -423,7 +422,7 @@ void Game::run()
 				startTime += pauseDuration;
 
 				setColor(Color::WHITE);
-				reDrawScreen(currRoom);
+				redrawScreen(currRoom);
 				for (int i = 0; i < PLAYER_AMOUNT; i++) {
 					players[i].draw();
 				}
@@ -493,6 +492,18 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 	return false;
 }
 
+
+void Game::drawGameFrame(Room& currRoom)
+{
+	currRoom.drawRoom(screen);
+	screen.draw();
+	currRoom.drawTopLayer();
+
+	for (int i = 0; i < PLAYER_AMOUNT; i++) players[i].draw();
+
+	printHUD();
+	printTimer();
+}
 
 void Game::handleRiddle(int riddleID, Player& player, Room& room)
 {

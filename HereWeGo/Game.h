@@ -46,6 +46,8 @@ protected:
 	int currentLevelIndex = 0;
 	int score = 0;
 
+	virtual void drawGameFrame(Room& currRoom);
+
 	virtual void handleRiddle(int riddleID, Player& player, Room& room);
 	virtual char getInteractionInput();
 	virtual void saveGame();
@@ -86,7 +88,7 @@ public:
 	void startInLevel(Level level);
 	void showEndingScreen();
 	bool isSlotRecorded(int slot);
-	void reDrawScreen(Room& currRoom);
+	void redrawScreen(Room& currRoom);
 	void init();
 
 

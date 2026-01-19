@@ -199,7 +199,14 @@ RecordingGame::~RecordingGame()
 
 	std::ofstream stepFile("adv-world.steps");
 	if (stepFile.is_open()) {
-		// This now contains [Old History] + [New Moves]
+
+		stepFile << "# ============================================\n";
+		stepFile << "# Recorded Game Steps\n";
+		stepFile << "# Screen Files: adv_world_01.screen, adv_world_02.screen, adv_world_03.screen\n";
+		stepFile << "# Recorded: " << __DATE__ << " " << __TIME__ << "\n";
+		stepFile << "# Format: <tick> <playerID> <command>\n";
+		stepFile << "# ============================================\n";
+
 		for (const auto& line : recordedSteps) {
 			stepFile << line << "\n";
 		}

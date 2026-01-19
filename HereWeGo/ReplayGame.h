@@ -15,6 +15,14 @@ class ReplayGame : public Game {
 		std::string description;
 	};
 
+	enum class ReplaySpeed { HALF = 0, NORMAL, DOUBLE };
+	ReplaySpeed currentSpeed = ReplaySpeed::NORMAL;
+
+
+	static constexpr int SPEED_HALF = 200;    
+	static constexpr int SPEED_NORMAL = 100;  
+	static constexpr int SPEED_DOUBLE = 50;   
+
 	static constexpr int REPLAY_SPEED = 10;
 
 	int currentTick = 0;
@@ -27,6 +35,12 @@ class ReplayGame : public Game {
 
 	void loadExpectedResult();
 	void recordActualEvent(int time, const std::string& description);
+	
+	void drawReplayUI();
+	void drawProgressBar();
+	void drawSpeedIndicator();
+	void handleSpeedToggle(char c);
+	int getCurrentSleepDuration() const;
 public:
 	ReplayGame(bool silent);
 	~ReplayGame();
@@ -35,8 +49,11 @@ public:
 	char getInput() override;
 	char getInteractionInput() override;
 	char getCharFromCommand(int playerID, const std::string& command);
+
+	void drawGameFrame(Room& currRoom) override;
+
 	void sleepFrame() override {
-		if (!isSilent) Sleep(REPLAY_SPEED);
+		if (!isSilent) Sleep(getCurrentSleepDuration());
 	}
 
 	void handleRiddle(int riddleID, Player& player, Room& room) override;

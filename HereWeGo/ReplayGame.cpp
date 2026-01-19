@@ -266,6 +266,7 @@ int ReplayGame::getCurrentSleepDuration() const
 }
 
 char ReplayGame::getInput() {
+	currentTick++; // incresment every intraction
 	char key = 0;
 	if (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
 		const std::string& cmd = steps[nextStepInd].command;
@@ -277,7 +278,6 @@ char ReplayGame::getInput() {
 			nextStepInd++;
 		}
 	}
-	currentTick++;
 	return key;
 }
 

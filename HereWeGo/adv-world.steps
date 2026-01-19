@@ -1,55 +1,22 @@
 # ============================================
 # Recorded Game Steps
 # Screen Files: adv_world_01.screen, adv_world_02.screen, adv_world_03.screen
-# Recorded: Jan 19 2026 18:59:55
+# Recorded: Jan 19 2026 19:24:25
 # Format: <tick> <playerID> <command>
 # ============================================
 4 1 LEFT
 6 1 UP
-7 1 LEFT
-9 1 DOWN
-11 1 RIGHT
-16 1 RIGHT
-17 1 DOWN
-19 1 RIGHT
-20 1 DOWN
-25 2 RIGHT
-30 1 DOWN
-32 1 RIGHT
-34 1 DOWN
-36 1 LEFT
-39 2 UP
-40 2 RIGHT
-43 1 RIGHT
-78 2 STAY
-83 1 LEFT
-84 1 UP
-87 1 RIGHT
-92 2 UP
-94 2 RIGHT
-97 2 UP
-99 2 RIGHT
-102 2 DOWN
-104 2 RIGHT
-115 1 DISPOSE
-119 1 RIGHT
-123 1 UP
-126 1 LEFT
-128 2 RIGHT
-132 1 DOWN
-134 1 LEFT
-138 2 LEFT
-140 1 DOWN
-143 1 LEFT
-146 1 DOWN
-149 1 LEFT
-158 1 DISPOSE
-159 1 LEFT
-165 1 RIGHT
-168 1 DOWN
-173 1 RIGHT
-176 1 DOWN
-177 2 DOWN
-186 2 LEFT
-190 2 RIGHT
-191 2 DOWN
+8 1 LEFT
+10 1 DOWN
+12 1 RIGHT
+17 1 RIGHT
+18 1 DOWN
+22 1 RIGHT
+23 1 DOWN
+30 2 RIGHT
+33 1 DOWN
+36 1 RIGHT
+40 2 UP
+41 2 RIGHT
+44 2 DOWN
+45 2 RIGHT

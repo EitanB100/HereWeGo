@@ -271,19 +271,19 @@ int ReplayGame::getCurrentSleepDuration() const
 
 char ReplayGame::getInput() {
 	char key = 0;
+	currentTick++;
 	if (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
 		const std::string& cmd = steps[nextStepInd].command;
 		int playerID = steps[nextStepInd].playerID; // use the stored playerID
 		bool isRiddleAns = (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5'); // identify if this step is a riddle answer (1-5)
 		
 		if (!isRiddleAns) { // only handle movement/dispose; skip riddle answers
-			currentTick = getCharFromCommand(playerID, cmd);
 			key = getCharFromCommand(playerID, cmd); // pass the pID here
 			nextStepInd++;
-
+			return key;
 		}
 	}
-	return key;
+	return 0;
 }
 
 char ReplayGame::getInteractionInput() {
@@ -296,7 +296,6 @@ char ReplayGame::getInteractionInput() {
 			nextStepInd++;
 			return key;
 		}
-		break;
 	}
 	return 0;
 }

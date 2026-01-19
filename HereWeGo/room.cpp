@@ -5,7 +5,7 @@
 #include "Obstacle.h"
 #include "Bomb.h"
 #include "Player.h"
-
+#include "Game.h"
 #include "Tile_Chars.h"
 
 //grid initialization
@@ -70,6 +70,7 @@ bool Room::checkDoor(Point p, heldItem& item)
 		if (door->tryUnlock(item.id))
 		{
 			item = { ItemType::NONE, 0, Color::WHITE}; // Consume key
+			door->draw();
 		}
 	}
 
@@ -137,6 +138,12 @@ void Room::updateBombs(Player* players, int playerCount, Screen& screen) {
 		if (bombs[i].getTimer() <= 0) {
 			bombExplode(&bombs[i], players, playerCount, screen); // Pass screen
 			bombs.erase(bombs.begin() + i);
+
+			if (!Game::s_silentMode) {
+				drawRoom(screen);
+				screen.draw();
+				drawTopLayer();
+			}
 		}
 	}
 }

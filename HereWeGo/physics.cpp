@@ -1,5 +1,6 @@
 #include "Room.h"
 #include "Player.h"
+#include "Game.h"
 
 //logic for handling obstacle movement
 bool Room::moveObstacle(Point p, int dirx, int diry, int force)
@@ -59,13 +60,19 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 					break;
 				}
 			}
+			if (!staysCovered)
+			{
+				gotoxy(part.x, part.y);
+				std::cout << ' ';
+			}
 		}
 
 		obs->move(dirx, diry);
 		for (const auto& part : futureParts) {
 			map[part.y][part.x] = OBSTACLE_TILE;
 		}
-		
+		if (!Game::s_silentMode)
+			obs->draw();
 
 		//prevent double moving in a frame
 		obs->markAsMoved();
@@ -77,7 +84,8 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 		{
 			map[part.y][part.x] = OBSTACLE_TILE;
 		}
-		
+		if (!Game::s_silentMode)
+			obs->draw();
 		return false;
 	}
 

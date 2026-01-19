@@ -6,6 +6,7 @@
 #include "Switch.h" 
 #include "Torch.h"
 #include "Bomb.h"
+#include "Game.h"
 
 Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount]) 
 {
@@ -108,8 +109,10 @@ int Player::move(Room& room, Player* otherPlayer) {
     {
         room.checkDoor(nextPoint, itemInHand);
         setDirection(Directions::STAY);
-        //setColor(itemInHand.color);
-       
+        if (!Game::s_silentMode) {
+            setColor(itemInHand.color);
+            pos.draw();
+        }
         return 0;
     }
 

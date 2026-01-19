@@ -125,7 +125,7 @@ void ReplayGame::run() {
 
 		if (!isSilent) {
 			for (int i = 0; i < PLAYER_AMOUNT; i++) players[i].draw();
-			
+			drawGameFrame(currRoom);
 			printHUD();
 			printTimer();
 			drawReplayUI();

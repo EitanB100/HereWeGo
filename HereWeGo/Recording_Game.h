@@ -11,13 +11,16 @@ class RecordingGame : public Game {
 public:
 	char getInput() override;
 	char getInteractionInput() override;
-	
+	std::string translateKey(char key, int& playerID);
 	void resetRecording() override;
 
 	void onLevelChange(int levelInd) override;
 	void onLifeLost() override;
 	void onRiddleSolved(bool correct) override;
-	
+	void writeStepsToBackup(const std::string& destName); // basiclly copy the steps of the recording to a file
+	void writeResultsToBackup(const std::string& destName); // same but for results
+	void saveGame() override;
+	bool loadGame(int slot) override;
 	~RecordingGame(); 
-
+	
 };

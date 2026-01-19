@@ -3,24 +3,24 @@ L
                                                                                 
                                                                                 
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W            W     *                                          W                W
-W            W     *                                                           W
+W            W    *                                           W                W
+W            W    *                                                            W
 W            W                  W                                              W
 W            W                  W                                              W
 WWWWWWWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW     WWWWWWWWWW    WWWWWWWWWWWWWWWWW
-W                                                   *                          W
-W        \                                          *                          W
+W                                               *                              W
+W        \                                      *                              W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW2WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W            W*W                                  W   \         \         \    W
+W            W*W                                  W   /         \         \    W
 W              W           /                      W                            W
 W            W W                                P W                            W
-W            W                                    W\                          \W
+W            W                                    W\                         $/W
 WWWWWWWWWWWWWW W                                  W                            W
-W        /     W               &                  W                            W
-W    *                        $                   W                            W
+W        /     W                                  W                            W
+W   *                                             W                            W
 W WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW3WWWWWWWWWWWWWWWWW4WWWWWWWWWWWWWWW
-WKW   W   W   W   W   W   WWWWWWWWWW            W                             WW
-W W W W W W W W W W W W W W>>>>>>>>?            ******                    W   5E
+W W   W   W   W   W   W   WWWWWWWWWW            W                             WW
+W W W W W W W W W W W W W W>>>>>>>>                                &******W   5E
 W   W   W   W   W   W   W                       W                             WW
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
                                                                                 
@@ -28,16 +28,15 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 
 
 [KEYS]
-104 5 1
 
 [SWITCHES]
 1 0 1
-2 0 0
-3 0 0
-4 0 0
+2 1 1
+3 0 1
+4 0 1
 5 1 1
-6 0 0
-7 0 0
+6 0 1
+7 1 1
 8 1 1
 
 [DOORS]
@@ -55,4 +54,3 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 1
 
 [RIDDLES]
-2

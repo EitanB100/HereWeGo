@@ -137,6 +137,7 @@ void Game::updatePlayerKeys(char keys[], int playerNum) {
 		}
 	}
 }
+/*
 
 void Game::loadMenu() {
 	int savesPerPage = SAVE_IN_LOAD_MENU;
@@ -156,7 +157,7 @@ void Game::loadMenu() {
 		system("cls");
 		printCentered("--- LOAD GAME (Page " + std::to_string(currentPage + 1) + ") ---", 2);
 
-		
+
 		int startIdx = totalSaves - 1 - (currentPage * savesPerPage); //  highest index on this page (newest)
 		int endIdx = startIdx - savesPerPage; // oldest file in the page (oldest)
 		if (endIdx < -1) endIdx = -1; // if we reach to negetive index
@@ -164,6 +165,9 @@ void Game::loadMenu() {
 		for (int i = startIdx; i > endIdx; --i) {
 			int displayNum = startIdx - i + 1;
 			std::string line = "(" + std::to_string(displayNum) + ") Save Slot " + std::to_string(i+1);
+			if (isSlotRecorded(i)) { // add indication if the game saved on -save (recorded)
+				line += " (Recorded Game)";
+			}
 			printCentered(line, 4 + ((displayNum - 1) * 2));
 		}
 
@@ -182,6 +186,11 @@ void Game::loadMenu() {
 			// Safety: Ensure the selection doesn't go past the end of the current page
 			if (selectedSlot > endIdx && selectedSlot <= startIdx) {
 				if (loadGame(selectedSlot)) {
+					Room& currRoom = levels[currentLevelIndex];
+					reDrawScreen(currRoom);
+					for (int i = 0; i < PLAYER_AMOUNT; i++) {
+						players[i].draw();
+					}
 					run();
 					inMenu = false;
 				}
@@ -196,5 +205,53 @@ void Game::loadMenu() {
 		else if (input == '0') {
 			inMenu = false;
 		}
+	}
+}
+
+*/
+
+int Game::getSlotFromLoadMenu() {
+	int savesPerPage = SAVE_IN_LOAD_MENU;
+	int totalSaves = savefiles;
+
+	if (totalSaves <= 0) {
+		system("cls");
+		printCentered("No saved games found!", 10);
+		_getch();
+		return -1;
+	}
+
+	int currentPage = 0;
+	while (true) {
+		system("cls");
+		printCentered("--- SELECT SAVE TO LOAD (Page " + std::to_string(currentPage + 1) + ") ---", 2);
+
+		int startIdx = totalSaves - 1 - (currentPage * savesPerPage);
+		int endIdx = startIdx - savesPerPage;
+		if (endIdx < -1) endIdx = -1;
+
+		for (int i = startIdx; i > endIdx; --i) {
+			int displayNum = startIdx - i + 1;
+			std::string line = "(" + std::to_string(displayNum) + ") Save Slot " + std::to_string(i + 1);
+			if (isSlotRecorded(i)) line += " (Recorded Game)";
+			printCentered(line, 4 + ((displayNum - 1) * 2));
+		}
+
+		if (endIdx > -1) printCentered("(8) Next Page ", 18);
+		if (currentPage > 0) printCentered("(9) Previous Page ", 20);
+		printCentered("(0) Back to Menu", 22);
+
+		char input = _getch();
+
+		if (input >= '1' && input <= '7') {
+			int displayKeyIndex = input - '1';
+			int selectedSlot = startIdx - displayKeyIndex;
+			if (selectedSlot > endIdx && selectedSlot <= startIdx) {
+				return selectedSlot; // ??????? ?? ?-Slot ?????
+			}
+		}
+		else if (input == '8' && endIdx > -1) currentPage++;
+		else if (input == '9' && currentPage > 0) currentPage--;
+		else if (input == '0') return -1; // ?????? ??? ????
 	}
 }

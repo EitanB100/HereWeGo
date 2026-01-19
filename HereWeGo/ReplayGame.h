@@ -6,18 +6,19 @@
 class ReplayGame : public Game {
 	struct Step {
 		int tick;
-		char key;
-		bool isInteraction;
+		int playerID;
+		std::string command;
 	};
-	
+
 	struct ExpectedEvent {
 		int time;
 		std::string description;
 	};
 
-	static constexpr int REPLAY_SPEED = 25;
+	static constexpr int REPLAY_SPEED = 10;
 
 	int currentTick = 0;
+	int levelStartTick = 0;
 
 	std::vector<Step> steps;
 	std::vector<ExpectedEvent> expectedEvents;
@@ -30,9 +31,10 @@ public:
 	ReplayGame(bool silent);
 	~ReplayGame();
 
+	void run() override;
 	char getInput() override;
 	char getInteractionInput() override;
-	
+	char getCharFromCommand(int playerID, const std::string& command);
 	void sleepFrame() override {
 		if (!isSilent) Sleep(REPLAY_SPEED);
 	}
@@ -41,4 +43,6 @@ public:
 	void onLevelChange(int levelInd) override;
 	void onLifeLost() override;
 	void onRiddleSolved(bool correct) override;
+	void printTimer() override;
+
 };

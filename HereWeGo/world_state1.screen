@@ -3,13 +3,13 @@ L
                                                                                 
                                                                                 
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W            W                  *                             W                W
+W  !         W                  *                             W                W
 W            W                  *                             W                W
 W            W        K         W                             W       K        W
-W            W                  W                      @      W                W
+W           $W                  W                      @      W                W
 WWWWWWWWW1WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW     WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W                                              $    *                          W
-W        \                                         &*                          W
+W                   *                                                          W
+W     &  \          *                                                          W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW2WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W K          W W                                  W   \         \         \    W
 W              W           \                      W                            W
@@ -34,7 +34,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 104 5 0
 
 [SWITCHES]
-1 0 1
+1 0 0
 2 0 0
 3 0 0
 4 0 0
@@ -54,6 +54,7 @@ WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 1 10 0
 
 [TORCHES]
+5
 
 [POTIONS]
 0

@@ -32,17 +32,6 @@ int main(int argc, char* argv[]) {
 		return 0;
 	}
 
-	constexpr char MENU_LVL1 = '1';
-	constexpr char MENU_LVL2 = '2';
-	constexpr char MENU_LVL3 = '3';
-	constexpr char MENU_ENDING = '4';
-	constexpr char MENU_LOAD_GAME = '5';
-	constexpr char MENU_SETTINGS = '7';
-	constexpr char MENU_INSTRUCTIONS = '8';
-	constexpr char MENU_EXIT = '9';
-
-	bool exitProgram = false;
-
 	auto runGameLevel = [&](Level level) {
 		if (isSaveMode) {
 			RecordingGame game;
@@ -55,8 +44,17 @@ int main(int argc, char* argv[]) {
 			game.run();
 		}
 	};
-	
+
+	bool exitProgram = false;
 	hideCursor();
+	constexpr char MENU_LVL1 = '1';
+	constexpr char MENU_LVL2 = '2';
+	constexpr char MENU_LVL3 = '3';
+	constexpr char MENU_ENDING = '4';
+	constexpr char MENU_LOAD_GAME = '5';
+	constexpr char MENU_SETTINGS = '7';
+	constexpr char MENU_INSTRUCTIONS = '8';
+	constexpr char MENU_EXIT = '9';
 	while (!exitProgram)
 	{
 		system("cls");
@@ -101,8 +99,31 @@ int main(int argc, char* argv[]) {
 		}
 		case MENU_LOAD_GAME:
 		{
-			Game game;
-			game.loadMenu(); 
+
+			Game* gamePtr = nullptr; // temp pointer to game obeject which can either be Game or RecordingGame
+			Game tempGame;
+			int selectedSlot = tempGame.getSlotFromLoadMenu(); // You'll need this helper
+
+			if (selectedSlot != -1) {
+				// 2. CHECK: Is this a recorded game?
+				if (tempGame.isSlotRecorded(selectedSlot)) {
+					gamePtr = new RecordingGame();
+					// Force the -save behavior logic even if -save wasn't in argv
+					isSaveMode = true;
+				}
+				else {
+					gamePtr = new Game();
+				}
+
+				// 3. Load and Run the specific object
+				if (gamePtr->loadGame(selectedSlot)) {
+					// Manually trigger the redraw we discussed
+					Room& currRoom = gamePtr->getLevel(gamePtr->getCurrentLevelIdx());
+					gamePtr->reDrawScreen(currRoom);
+					gamePtr->run();
+				}
+				delete gamePtr;
+			}
 			break;
 		}
 		case MENU_SETTINGS:

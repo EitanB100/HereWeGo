@@ -105,7 +105,14 @@ void ReplayGame::run() {
 			break;
 		}
 
-		if (!isSilent) drawGameFrame(currRoom);
+		if (!isSilent) {
+			for (int i = 0; i < PLAYER_AMOUNT; i++) players[i].draw();
+			
+			printHUD();
+			printTimer();
+			drawReplayUI();
+		}
+
 
 		sleepFrame();
 
@@ -153,22 +160,31 @@ void ReplayGame::drawReplayUI()
 
 void ReplayGame::drawProgressBar()
 {
-	gotoxy(0, 0);
+	constexpr int REPLAY_STATUS_SIZE = 43;
+	constexpr int PROGRESS_BAR_WIDTH = 20;
+	constexpr int END_OF_RECORD = 100;
+
+	gotoxy(MAX_X - REPLAY_STATUS_SIZE, 0);
 	setColor(Color::CYAN);
 
 	int totalSteps = steps.size();
 	int currentStep = nextStepInd;
 	float progress = totalSteps > 0 ? (float)currentStep / totalSteps : 0;
 
-	constexpr int BAR_WIDTH = 20;
-	constexpr int END_OF_RECORD = 100;
-	int filled = static_cast<int>(progress * BAR_WIDTH);
+	int filled = static_cast<int>(progress * PROGRESS_BAR_WIDTH);
 
 	std::cout << "REPLAY [";
 	setColor(Color::GREEN);
-	for (int i = 0; i < BAR_WIDTH; i++) {
-		if (i < filled) std::cout << "\xDB";
-		else std::cout << "\xB0";
+
+	for (int i = 0; i < PROGRESS_BAR_WIDTH; i++) {
+		if (i < filled) {
+			setColor(Color::WHITE);
+			std::cout << "\xDB";
+		}
+		else {
+			setColor(Color::DARK_GRAY);
+			std::cout << "\xB0";
+		}
 	}
 
 	setColor(Color::CYAN);
@@ -182,7 +198,8 @@ void ReplayGame::drawProgressBar()
 
 void ReplayGame::drawSpeedIndicator()
 {
-	gotoxy(MAX_X - 30, 1);
+	constexpr int SPEED_INDICATOR_LENGTH = 30;
+	gotoxy(MAX_X - SPEED_INDICATOR_LENGTH, 1);
 	setColor(Color::YELLOW);
 	std::cout << "Speed: ";
 

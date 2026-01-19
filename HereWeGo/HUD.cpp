@@ -88,4 +88,5 @@ void Game::printScore(const Point& hudPos) {
 
 	setColor(Color::GREEN);
 	std::cout << " Score: " << score;
+	setColor(Color::WHITE);
 }

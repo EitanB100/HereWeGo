@@ -3,7 +3,6 @@
 #include "Screen.h"
 #include "utils.h"
 
-
 void Screen::createGameScreen() {
 
 	for (int i = 0; i < MAX_Y; i++)

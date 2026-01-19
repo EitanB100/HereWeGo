@@ -46,6 +46,8 @@ protected:
 	int currentLevelIndex = 0;
 	int score = 0;
 
+	virtual void drawGameFrame(Room& currRoom);
+
 	virtual void handleRiddle(int riddleID, Player& player, Room& room);
 	virtual char getInteractionInput();
 	virtual void saveGame();
@@ -56,7 +58,7 @@ protected:
 	virtual void onLifeLost() {} //when getting hit/getting a riddle wrong
 	virtual void onRiddleSolved(bool correct) {} //when answering a riddle
 
-	void updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded); // how each interation in run will do what the game logic asks
+	void updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded, bool isSilent); // how each interation in run will do what the game logic asks
 	// kids will allow to use it from the father
 	void tileMapError();
 	bool checkLevelTransition(int& currentLevelIndex, Point p1, Point p2);
@@ -73,6 +75,8 @@ public:
 	static char p1Keys[KEY_COUNT];
 	static char p2Keys[KEY_COUNT];
 
+	
+
 	Room& getLevel(int index) { return levels[index]; }
 	int getCurrentLevelIdx() const { return currentLevelIndex; }
 	Player& getPlayer(int index) { return players[index]; }
@@ -86,8 +90,9 @@ public:
 	void startInLevel(Level level);
 	void showEndingScreen();
 	bool isSlotRecorded(int slot);
-	void reDrawScreen(Room& currRoom);
 	void init();
+
+	virtual void redrawScreen(Room& currRoom, bool isSilent);
 
 
 	void settingsMenu();

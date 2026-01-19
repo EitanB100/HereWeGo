@@ -6,14 +6,22 @@ ReplayGame::ReplayGame(bool silent) {
 	this->isSilent = silent;
 	this->isLoadMode = true;
 
+
+	screen.setSilent(silent);
+
 	std::ifstream inFile("adv-world.steps");
 	if (inFile.is_open()) {
 		std::string line;
-		int step, playerID;
-		std::string command;
+		while (std::getline(inFile, line)) {
+			if (line.empty() || line[0] == '#') continue;
 
-		while (inFile >> step >> playerID >> command) { // While we can successfully read 3 pieces of data...
-			steps.push_back({ step, playerID, command }); // Push them into our vector
+			std::stringstream parser(line);
+			int step, playerID;
+			std::string command;
+
+			if (parser >> step >> playerID >> command) { // While we can successfully read 3 pieces of data...
+				steps.push_back({ step, playerID, command }); // Push them into our vector
+			}
 		}
 		inFile.close();
 	}
@@ -27,8 +35,10 @@ ReplayGame::ReplayGame(bool silent) {
 
 ReplayGame::~ReplayGame()
 {
+
 	if (isSilent) {
-		std::cout << "\n=== TEST VALIDATION ===" << std::endl;
+		gotoxy(0, 0); // Reset cursor to top-left
+		std::cout << "=== TEST VALIDATION ===" << std::endl;
 		bool passed = true;
 
 		if (actualEvents.size() != expectedEvents.size()) {
@@ -39,10 +49,14 @@ ReplayGame::~ReplayGame()
 
 		size_t minSize = (std::min)(actualEvents.size(), expectedEvents.size());
 		for (size_t i = 0; i < minSize; i++) {
-			if (actualEvents[i].description != expectedEvents[i].description) {
+			bool tickMatch = (actualEvents[i].time == expectedEvents[i].time);
+			bool descMatch = (actualEvents[i].description == expectedEvents[i].description);
+
+			if (!tickMatch || !descMatch) {
 				std::cout << "FAIL at event " << i << ":" << std::endl;
-				std::cout << "  Expected: " << expectedEvents[i].description << std::endl;
-				std::cout << "  Actual:   " << actualEvents[i].description << std::endl;
+				std::cout << "  Expected: [tick " << expectedEvents[i].time << "] " << expectedEvents[i].description << std::endl;
+				std::cout << "  Actual: [tick " << actualEvents[i].time << "] " << actualEvents[i].description << std::endl;
+
 				passed = false;
 			}
 		}
@@ -63,16 +77,34 @@ void ReplayGame::run() {
 		return;
 	}
 
+
 	bool boomDustCleaningNeeded = false;
 	currentTick = 0; // Reset tick for replay
 	nextStepInd = 0; // Reset vector pointer
 	startTime = std::chrono::steady_clock::now();
+
+	levelStartTick = 0;
+	initialLevelOffset = std::chrono::steady_clock::now() - levelStartTime;
+
 	levelStartTime = startTime;
 	while (true) {
 		Room& currRoom = levels[currentLevelIndex];
 
+		if (!isSilent && _kbhit()) {
+			char c = _getch();
+			handleSpeedToggle(c);
+		}
+
+		if (isSilent) {
+			auto replayDuration = std::chrono::milliseconds((currentTick - levelStartTick) * GAME_SPEED);
+			auto now = std::chrono::steady_clock::now();
+
+			levelStartTime = now - (initialLevelOffset + replayDuration);
+		}
+
+
 		char key = getInput();
-		updateGameLogic(key, currRoom, boomDustCleaningNeeded);
+		updateGameLogic(key, currRoom, boomDustCleaningNeeded, isSilent);
 
 		bool isVictory = checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos()); //check Victory Nature
 		if (isVictory) break;
@@ -92,21 +124,28 @@ void ReplayGame::run() {
 		}
 
 		if (!isSilent) {
-			// only draw and wait if the user is actually watching the replay
-			for (int i = 0; i < PLAYER_AMOUNT; i++)
-				players[i].draw();
-			printHUD();
-			printTimer();
-			Sleep(REPLAY_SPEED);
+			 for (int i = 0; i < PLAYER_AMOUNT; i++) players[i].draw();
+			//drawGameFrame(currRoom);
+		printHUD();
+		printTimer();
+		drawReplayUI();
 		}
-		else {
-			// In SILENT mode
-		}
+
+
+		sleepFrame();
 
 		if (nextStepInd >= steps.size()) {
 			break;
 		}
+		
+		
 	}
+}
+
+void ReplayGame::redrawScreen(Room& currRoom, bool isSilent)
+{
+	if (isSilent) return;
+	Game::redrawScreen(currRoom, isSilent);
 }
 
 void ReplayGame::loadExpectedResult()
@@ -139,16 +178,135 @@ void ReplayGame::recordActualEvent(int time, const std::string& description)
 	actualEvents.push_back({ time,description });
 }
 
-char ReplayGame::getInput() {
-	currentTick++; // incresment every intraction
+void ReplayGame::drawReplayUI()
+{
+	drawProgressBar();
+	drawSpeedIndicator();
+}
 
+void ReplayGame::drawProgressBar()
+{
+	constexpr int PROGRESS_BAR_WIDTH = 20;
+	constexpr int MAX_PROGRESS = 100;
+	setColor(Color::CYAN);
+
+	int totalSteps = steps.size();
+	int currentStep = nextStepInd;
+	float progress = totalSteps > 0 ? (float)currentStep / totalSteps : 0;
+
+	std::stringstream parser;
+	int filled = static_cast<int>(progress * PROGRESS_BAR_WIDTH);
+
+	parser << " REPLAY [";
+
+	for (int i = 0; i < PROGRESS_BAR_WIDTH; i++) {
+		parser << (i < filled ? "\xDB" : "\xB0");
+	}
+
+	parser << "] " << static_cast<int>(progress * MAX_PROGRESS) << "% (" << currentStep << "/" << totalSteps << ") Ticks";
+	
+	printCentered(parser.str(),0);
+
+	setColor(Color::WHITE);
+}
+
+void ReplayGame::drawSpeedIndicator()
+{
+	constexpr int SPEED_INDICATOR_LENGTH = 30;
+	std::stringstream parser;
+	parser << "Speed: ";
+
+	switch (currentSpeed) {
+	case ReplaySpeed::HALF:
+		parser << "0.5x  ";
+		break;
+	case ReplaySpeed::NORMAL:
+		parser << "1x  ";
+		break;
+	case ReplaySpeed::DOUBLE:
+		parser << "2x  ";
+		break;
+	case ReplaySpeed::QUADRUPLE:
+		parser << "4x  ";
+		break;
+	case ReplaySpeed::OCTUPLE:
+		parser << "8x  ";
+		break;
+	}
+	
+	parser << "[+/-] Change Speed";
+	printCentered(parser.str(), 1);
+}
+
+void ReplayGame::handleSpeedToggle(char c)
+{
+	if (c == '+' || c == '=') {
+		switch (currentSpeed) {
+		case ReplaySpeed::HALF:
+			currentSpeed = ReplaySpeed::NORMAL;
+			break;
+		case ReplaySpeed::NORMAL:
+			currentSpeed = ReplaySpeed::DOUBLE;
+			break;
+		case ReplaySpeed::DOUBLE:
+			currentSpeed = ReplaySpeed::QUADRUPLE;
+			break;
+		case ReplaySpeed::QUADRUPLE:
+			currentSpeed = ReplaySpeed::OCTUPLE;
+			break;
+		case ReplaySpeed::OCTUPLE:
+			break;
+		}
+	}
+
+	else if (c == '-' || c == '_') {
+		switch (currentSpeed) {
+		case ReplaySpeed::HALF:
+			break;
+		case ReplaySpeed::NORMAL:
+			currentSpeed = ReplaySpeed::HALF;
+			break;
+		case ReplaySpeed::DOUBLE:
+			currentSpeed = ReplaySpeed::NORMAL;
+			break;
+		case ReplaySpeed::QUADRUPLE:
+			currentSpeed = ReplaySpeed::DOUBLE;
+			break;
+		case ReplaySpeed::OCTUPLE:
+			currentSpeed = ReplaySpeed::QUADRUPLE;
+			break;
+		}
+	}
+}
+
+int ReplayGame::getCurrentSleepDuration() const
+{
+	switch (currentSpeed) {
+		case ReplaySpeed::HALF: 
+			return SPEED_HALF;
+        case ReplaySpeed::NORMAL:
+			return SPEED_NORMAL;
+        case ReplaySpeed::DOUBLE:
+			return SPEED_DOUBLE;
+		case ReplaySpeed::QUADRUPLE:
+			return SPEED_QUADRUPLE;
+		case ReplaySpeed::OCTUPLE:
+			return (int) SPEED_OCTUPLE;
+
+	}
+}
+
+char ReplayGame::getInput() {
+	char key = 0;
+	currentTick++;
 	if (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
 		const std::string& cmd = steps[nextStepInd].command;
 		int playerID = steps[nextStepInd].playerID; // use the stored playerID
+
 		bool isRiddleAns = (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5'); // identify if this step is a riddle answer (1-5)
 		
 		if (!isRiddleAns) { // only handle movement/dispose; skip riddle answers
-			char key = getCharFromCommand(playerID, cmd); // pass the pID here
+			key = getCharFromCommand(playerID, cmd); // pass the pID here
 			nextStepInd++;
 			return key;
 		}
@@ -157,11 +315,13 @@ char ReplayGame::getInput() {
 }
 
 char ReplayGame::getInteractionInput() {
-	if (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
+	if (nextStepInd < steps.size()) {
 		const std::string& cmd = steps[nextStepInd].command;
-		if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5') { // only handle if it's a riddle answer 
-			char key = cmd[0]; // the command is already the key '1', '2', etc.
-			nextStepInd++;    // move to next step
+
+		if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5') { //change to MIN_RIDDLE AND MAX_RIDDLE
+			currentTick = steps[nextStepInd].tick;
+			char key = cmd[0];
+			nextStepInd++;
 			return key;
 		}
 	}
@@ -189,6 +349,14 @@ char ReplayGame::getCharFromCommand(int playerID, const std::string& command) {
 		return keys[5];
 
 	return 0;
+}
+
+void ReplayGame::drawGameFrame(Room& currRoom)
+{
+	if (!isSilent) {
+		Game::drawGameFrame(currRoom);
+		drawReplayUI();
+	}
 }
 
 
@@ -239,25 +407,20 @@ void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //tempor
 
 void ReplayGame::onLevelChange(int levelInd)
 {
-	auto now = std::chrono::steady_clock::now();
-	int time = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count();
-	recordActualEvent(time, "Level Changed: " + std::to_string(levelInd));
+	recordActualEvent(currentTick, "Level Changed: " + std::to_string(levelInd));
 	levelStartTick = currentTick;
+	initialLevelOffset = std::chrono::steady_clock::duration::zero();
 }
 
 void ReplayGame::onLifeLost()
 {
-	auto now = std::chrono::steady_clock::now();
-	int time = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count();
-	recordActualEvent(time, ": " + std::to_string(HP_INCREASE) + " HP lost");
+	recordActualEvent(currentTick, ": " + std::to_string(HP_INCREASE) + " HP lost");
 }
 
 void ReplayGame::onRiddleSolved(bool correct)
 {
-	auto now = std::chrono::steady_clock::now();
-	int time = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count();
 	std::string status = correct ? "Correct" : "Wrong";
-	recordActualEvent(time, "Riddle: " + status);
+	recordActualEvent(currentTick, "Riddle: " + status);
 }
 
 void ReplayGame::printTimer() { // helped by AI

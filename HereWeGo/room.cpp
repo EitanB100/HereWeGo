@@ -5,7 +5,6 @@
 #include "Obstacle.h"
 #include "Bomb.h"
 #include "Player.h"
-
 #include "Tile_Chars.h"
 
 //grid initialization
@@ -25,14 +24,18 @@ Room::Room() {
 //redraws all non wall objects on top
 void Room::drawTopLayer()
 {
-	for (auto& switchOnOff : switches) switchOnOff->draw(); 
-	for (Key& key : keys) key.draw();
-	for (Torch& torch : torches) torch.draw();	
-	for (Potion& potion : potions) potion.draw();
-	for (Bomb& bomb : bombs) bomb.draw();
-	for (Spring& spring : springs) spring.draw();
-	for (Door& door : doors) door.draw();
-	for (Obstacle& obstacle : obstacles) obstacle.draw();
+
+
+	if (!isSilent) {
+		for (auto& switchOnOff : switches) switchOnOff->draw();
+		for (Key& key : keys) key.draw();
+		for (Torch& torch : torches) torch.draw();
+		for (Potion& potion : potions) potion.draw();
+		for (Bomb& bomb : bombs) bomb.draw();
+		for (Spring& spring : springs) spring.draw();
+		for (Door& door : doors) door.draw();
+		for (Obstacle& obstacle : obstacles) obstacle.draw();
+	}
 
 
 	getTorchesLineOfSight();
@@ -70,7 +73,7 @@ bool Room::checkDoor(Point p, heldItem& item)
 		if (door->tryUnlock(item.id))
 		{
 			item = { ItemType::NONE, 0, Color::WHITE}; // Consume key
-			door->draw();
+			if (!isSilent) door->draw();
 		}
 	}
 
@@ -82,7 +85,9 @@ void Room::checkSwitch(Point p) {
 	Switch* switchOnOff = isSwitchThere(p);
 	if (switchOnOff != nullptr) {
 		for (Door& door : doors) {
-			door.UpdatedFromSwitch();
+			if (door.UpdatedFromSwitch()) {
+				if (!isSilent) door.draw();
+			}
 		}
 	}
 }
@@ -138,9 +143,12 @@ void Room::updateBombs(Player* players, int playerCount, Screen& screen) {
 		if (bombs[i].getTimer() <= 0) {
 			bombExplode(&bombs[i], players, playerCount, screen); // Pass screen
 			bombs.erase(bombs.begin() + i);
-			drawRoom(screen);     
-			screen.draw();        
-			drawTopLayer();       
+			if (!isSilent) {
+				drawRoom(screen);
+				screen.draw();
+				drawTopLayer();
+			}
+			
 		}
 	}
 }

@@ -6,6 +6,7 @@
 #include "Switch.h" 
 #include "Torch.h"
 #include "Bomb.h"
+#include "Game.h"
 
 Player::Player(const Placement& p, char c, int directx, int directy, const char keyArray [keyAmount]) 
 {
@@ -19,6 +20,7 @@ Player::Player(const Placement& p, char c, int directx, int directy, const char 
 }
 
 void Player::draw() {
+    
 
     if (itemInHand.type != ItemType::NONE) {
         setColor(itemInHand.color);
@@ -108,8 +110,13 @@ int Player::move(Room& room, Player* otherPlayer) {
     {
         room.checkDoor(nextPoint, itemInHand);
         setDirection(Directions::STAY);
-        setColor(itemInHand.color);
-        pos.draw();
+ 
+        if (!isSilent) {
+            setColor(itemInHand.color);
+            pos.draw();
+        }
+        
+        
         return 0;
     }
 
@@ -146,6 +153,7 @@ int Player::move(Room& room, Player* otherPlayer) {
             switchOnOff->toggleState();      
 
             room.checkSwitch(switchOnOff->getPos()); 
+        
             room.drawTopLayer();                 
             setDirection(Directions::STAY);                  
             return 0;
@@ -182,13 +190,14 @@ int Player::move(Room& room, Player* otherPlayer) {
     if (objectChar == SPRING_TILE && spring.compressionCount > 0) {
         objectChar = ' ';
     }
-
-    setColor(objectColor);
-    pos.draw(objectChar); 
+    if (!isSilent) {
+        setColor(objectColor);
+        pos.draw(objectChar);
+        setColor(Color::WHITE);
+    }
     
-    setColor(Color::WHITE);
     pos.set(nextPoint.x, nextPoint.y, symbol); 
-    draw();
+    if (!isSilent) draw();
     return 0;
 }
 
@@ -220,7 +229,7 @@ void Player::dropItem(Room& room) //item that isnt a bomb!
 
     //reset inventory
     itemInHand = { ItemType::NONE,0,Color::WHITE };
-    draw();
+    if (!isSilent) draw();
 }
 
 

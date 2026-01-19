@@ -57,7 +57,9 @@ class Room {
     Point p2Start = { 2,1 };
     Point exitPos = { -1,-1 };
     Point legendLocation = { 0,0 };
+    bool isSilent = false;
 public:
+    void setSilent(bool s) { isSilent = s; }
 
     Room();
     //changed switches to be unique_ptrs, but just in case did those anyway

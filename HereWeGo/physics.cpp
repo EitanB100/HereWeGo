@@ -61,8 +61,10 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 			}
 			if (!staysCovered)
 			{
-				gotoxy(part.x, part.y);
-				std::cout << ' ';
+				if (!isSilent) {
+					gotoxy(part.x, part.y);
+					std::cout << ' ';
+				}
 			}
 		}
 
@@ -70,7 +72,8 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 		for (const auto& part : futureParts) {
 			map[part.y][part.x] = OBSTACLE_TILE;
 		}
-		obs->draw();
+	
+		if (!isSilent) obs->draw();
 
 		//prevent double moving in a frame
 		obs->markAsMoved();
@@ -82,7 +85,8 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 		{
 			map[part.y][part.x] = OBSTACLE_TILE;
 		}
-		obs->draw();
+		
+		if (!isSilent) obs->draw();
 		return false;
 	}
 
@@ -181,7 +185,7 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 					if (!(key->getIsSeen())) {
 						key->setSeen();
 						map[p.y][p.x] = KEY_TILE; // update map tile
-						key->draw();
+						if (!isSilent) key->draw();
 					}
 				}
 			}
@@ -193,7 +197,7 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 					if (!(bomb->getIsSeen())) {
 						bomb->setSeen();
 						map[p.y][p.x] = BOMB_TILE; // update map tile
-						bomb->draw();
+						if (!isSilent) bomb->draw();
 					}
 				}
 			}
@@ -205,7 +209,7 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 					if (!(sw->getIsSeen())) {
 						sw->setSeen();
 						map[p.y][p.x] = sw->getState() ? SWITCH_ON : SWITCH_OFF; // update map tile
-						sw->draw();
+						if (!isSilent) sw->draw();
 					}
 				}
 			}
@@ -217,7 +221,7 @@ void Room::CompleteLineOfSight(const Torch& torch) {
 					if (!(potion->getIsSeen())) {
 						potion->setSeen();
 						map[p.y][p.x] = POTION_TILE;
-						potion->draw();
+						if (!isSilent) potion->draw();
 					}
 				}
 			}

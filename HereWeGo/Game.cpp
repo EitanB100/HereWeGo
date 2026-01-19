@@ -9,6 +9,8 @@
 char Game::p1Keys[KEY_COUNT] = { 'W','X','A','D','S','E' };
 char Game::p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
 
+
+
 void Game::resetLevelTimer() {
 	levelStartTime = std::chrono::steady_clock::now();
 }
@@ -302,7 +304,7 @@ void Game::setGame(int levelIndex, bool firstSettings) {
 		levels[currentLevelIndex].drawRoom(screen);
 		if (!firstSettings) {
 			screen.draw();
-			levels[currentLevelIndex].drawTopLayer();
+			levels[currentLevelIndex].drawTopLayer(); //already in not silent
 		}
 
 		for (auto& player : players) {
@@ -325,17 +327,20 @@ char Game::getInput()
 	return 0;
 }
 
-void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded) {
+void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded, bool isSilent) { 
+	currRoom.setSilent(isSilent);
+
 	currRoom.resetObstacles();
 	Point currentExitPoint = currRoom.getExitPos();
 
 	//update loop
 	for (int i = 0; i < PLAYER_AMOUNT; i++) {
 		Player& p = players[i];
+		p.setSilent(isSilent);
 		Player& other = players[1 - i];
 
 		p.inputManager(key, currRoom);
-		setColor(Color::WHITE);
+		if (!isSilent) setColor(Color::WHITE);
 
 		p.updateSpringPhysics(currRoom, &other);
 
@@ -349,14 +354,16 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 		if (currentExitPoint.x != -1 && p.getPos() == currentExitPoint) {
 			if (!p.isFinished()) {
 				p.setFinished(true);
-				gotoxy(50, 0);
-				std::cout << "Player " << p.getSymbol() << " Is waiting...";
+				if (!isSilent) {
+					gotoxy(50, 0);
+					std::cout << "Player " << p.getSymbol() << " Is waiting...";
+				}
 			}
 		}
 	}
 	if (boomDustCleaningNeeded) {
 		currRoom.clearExplosions();
-		reDrawScreen(currRoom);
+		redrawScreen(currRoom, isSilent);
 		boomDustCleaningNeeded = false;
 	}
 
@@ -364,14 +371,14 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 
 	if (currRoom.hasExplosions()) {
 		boomDustCleaningNeeded = true;
-
+		redrawScreen(currRoom, isSilent);
 	}
 
 }
 
-void Game::reDrawScreen(Room& currRoom) {
+void Game::redrawScreen(Room& currRoom, bool isSilent) {
 	currRoom.drawRoom(screen);
-	screen.draw();
+	if (!isSilent) screen.draw();
 	currRoom.drawTopLayer();
 }
 
@@ -423,7 +430,7 @@ void Game::run()
 				startTime += pauseDuration;
 
 				setColor(Color::WHITE);
-				reDrawScreen(currRoom);
+				redrawScreen(currRoom, false);
 				for (int i = 0; i < PLAYER_AMOUNT; i++) {
 					players[i].draw();
 				}
@@ -433,14 +440,15 @@ void Game::run()
 		}
 
 
-		updateGameLogic(key, currRoom, boomDustCleaningNeeded);
+		updateGameLogic(key, currRoom, boomDustCleaningNeeded, isSilent);
 
 		bool isVictory = checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos());
 		if (isVictory) break;
 
 		bool gameOver = false;
 		for (int i = 0; i < PLAYER_AMOUNT; i++) {
-			players[i].draw();
+			if (!isSilent)
+				players[i].draw();
 			if (players[i].isDead()) {
 				gameOver = true;
 				break;
@@ -452,8 +460,10 @@ void Game::run()
 			break;
 		}
 		//HUD renderer
-		printHUD();
-		printTimer();
+		if (!isSilent) {
+			printHUD();
+			printTimer();
+		}
 		Sleep(GAME_SPEED);
 	}
 
@@ -493,6 +503,18 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 	return false;
 }
 
+
+void Game::drawGameFrame(Room& currRoom)
+{
+	currRoom.drawRoom(screen);
+	screen.draw();
+	currRoom.drawTopLayer();
+
+	for (int i = 0; i < PLAYER_AMOUNT; i++) players[i].draw();
+
+	printHUD();
+	printTimer();
+}
 
 void Game::handleRiddle(int riddleID, Player& player, Room& room)
 {
@@ -550,7 +572,6 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 
 		else {
 			onRiddleSolved(false);
-			onLifeLost();
 			if (!isSilent) {
 				setColor(Color::RED);
 				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);

@@ -144,7 +144,7 @@ bool Player::handleSpringExit(Room& room)
         return false;
     }
     s->setCompression(0);
-    s->draw();
+    if (!isSilent) s->draw();
     spring.compressionCount = 0;
     return true;
 }

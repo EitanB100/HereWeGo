@@ -4,6 +4,7 @@
 
 
 //Obstacle pushing logic
+//Obstacle pushing logic
 bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 {
     Obstacle* obstacleToPush = room.isObstacleThere(nextPoint);
@@ -67,6 +68,9 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer)
 //Helper function that ensures that when two playes push an obstacle, 
 //both will move in sync with each other
 //Suggested by Gemini!
+//Helper function that ensures that when two playes push an obstacle, 
+//both will move in sync with each other
+//Suggested by Gemini!
 void Player::synchronizePartner(Player* otherPlayer, Room& room) {
     if (otherPlayer == nullptr) return;
 
@@ -75,13 +79,16 @@ void Player::synchronizePartner(Player* otherPlayer, Room& room) {
     Color c = Color::WHITE;
     char tileBelow = room.getObjectAt(p, c); //the tile that became invisible when disposed!
 
-    setColor(c);
-    otherPlayer->pos.draw(tileBelow);
-    setColor(Color::WHITE);
+    if (!isSilent) {
+        setColor(c);
+        otherPlayer->pos.draw(tileBelow);
+        setColor(Color::WHITE);
+    }
 
     //move the partner in the same direction
     otherPlayer->pos.move(dirx, diry, otherPlayer->symbol);
-    otherPlayer->draw();
+
+    if (!isSilent) otherPlayer->draw();
 }
 
 bool Player::handlePickups(Room& room, Point nextPoint) {

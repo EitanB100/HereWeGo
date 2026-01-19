@@ -63,7 +63,7 @@ public:
     }
 
     void draw() {
-        draw(tileChar);
+            draw(tileChar);
     }
     void draw(char c);
 

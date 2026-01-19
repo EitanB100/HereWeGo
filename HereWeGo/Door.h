@@ -56,10 +56,12 @@ public:
     void draw();
 
     bool tryUnlock(int keyID);
-    void UpdatedFromSwitch();
-    void invalidateSwitch(const Switch* sw);
+    	// Returns true if state changed, false otherwise
+	bool UpdatedFromSwitch();
+    
+	void invalidateSwitch(const Switch* sw);
 
     bool isAtPosition(const Point& p) const {
         return (pos.getx() == p.x && pos.gety() == p.y);
     }
-};  
+};

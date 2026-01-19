@@ -22,13 +22,21 @@ int main(int argc, char* argv[]) {
 
 	if (argc > 2) {
 		std::string s = argv[2];
-		if (s == "-silent") isSilent = true;
+		if (s == "-silent") {
+			isSilent = true;
+		}
 	}
 	
 	if (isLoadMode) {
 		ReplayGame game(isSilent);
 		game.startInLevel(Level::ONE);
 		game.run();
+		if (!isSilent) {
+			printCentered("Replay Finished. Press Any Key To Exit...",2);
+			while (_kbhit())
+				_getch();
+		}
+
 		return 0;
 	}
 
@@ -119,7 +127,7 @@ int main(int argc, char* argv[]) {
 				if (gamePtr->loadGame(selectedSlot)) {
 					// Manually trigger the redraw we discussed
 					Room& currRoom = gamePtr->getLevel(gamePtr->getCurrentLevelIdx());
-					gamePtr->reDrawScreen(currRoom);
+					gamePtr->redrawScreen(currRoom, isSilent);
 					gamePtr->run();
 				}
 				delete gamePtr;

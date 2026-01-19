@@ -364,7 +364,7 @@ void Game::updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeede
 		boomDustCleaningNeeded = false;
 	}
 
-	currRoom.updateBombs(players, PLAYER_AMOUNT, screen); // update bombs
+	currRoom.updateBombs(players, PLAYER_AMOUNT, screen, isSilent); // update bombs
 
 	if (currRoom.hasExplosions()) {
 		boomDustCleaningNeeded = true;

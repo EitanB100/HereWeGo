@@ -142,7 +142,7 @@ public:
 	void getTorchesLineOfSight();
 
 
-    bool moveObstacle(Point p, int dirx, int diry, int force);
+    bool moveObstacle(Point p, int dirx, int diry, int force, bool isSilent);
     void resetObstacles() {
         for (auto& o : obstacles) {
             o.resetMove();
@@ -150,7 +150,7 @@ public:
     }
 
 	void bombExplode(Bomb* bomb, Player* players, int playerCount , Screen& screen);
-    void updateBombs(Player* players, int playerCount, Screen& screen);
+    void updateBombs(Player* players, int playerCount, Screen& screen, bool isSilent);
     void clearExplosions();
     bool hasExplosions();
 

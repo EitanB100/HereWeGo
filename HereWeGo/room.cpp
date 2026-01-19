@@ -131,17 +131,18 @@ void Room::getTorchesLineOfSight() {
 
 
 
-void Room::updateBombs(Player* players, int playerCount, Screen& screen) {
+void Room::updateBombs(Player* players, int playerCount, Screen& screen, bool isSilent) {
 	for (int i = bombs.size() - 1; i >= 0; i--) {
 		bombs[i].gonnaExplode();
 
 		if (bombs[i].getTimer() <= 0) {
 			bombExplode(&bombs[i], players, playerCount, screen); // Pass screen
 			bombs.erase(bombs.begin() + i);
-
-			drawRoom(screen);
-			screen.draw();
-			drawTopLayer();
+			if (!isSilent) {
+				drawRoom(screen);
+				screen.draw();
+				drawTopLayer();
+			}
 			
 		}
 	}

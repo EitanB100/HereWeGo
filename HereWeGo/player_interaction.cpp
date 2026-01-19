@@ -50,7 +50,7 @@ bool Player::obstacleHandling(Room& room, Point& nextPoint, Player* otherPlayer,
         }
 
         //move the obstacle with the calculated force
-        bool hasMoved = room.moveObstacle(nextPoint, dirx, diry, currentForce);
+        bool hasMoved = room.moveObstacle(nextPoint, dirx, diry, currentForce, isSilent);
 
         //if moved, move the partner too
         if (hasMoved) {

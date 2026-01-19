@@ -20,6 +20,7 @@ Player::Player(const Placement& p, char c, int directx, int directy, const char 
 }
 
 void Player::draw() {
+    if (Game::s_silentMode) return;
 
     if (itemInHand.type != ItemType::NONE) {
         setColor(itemInHand.color);
@@ -109,9 +110,10 @@ int Player::move(Room& room, Player* otherPlayer) {
     {
         room.checkDoor(nextPoint, itemInHand);
         setDirection(Directions::STAY);
-        
-        setColor(itemInHand.color);
-        pos.draw();
+        if (!Game::s_silentMode) {
+            setColor(itemInHand.color);
+            pos.draw();
+        }
         
         return 0;
     }
@@ -186,11 +188,12 @@ int Player::move(Room& room, Player* otherPlayer) {
     if (objectChar == SPRING_TILE && spring.compressionCount > 0) {
         objectChar = ' ';
     }
-
-    setColor(objectColor);
-    pos.draw(objectChar); 
+    if (!Game::s_silentMode) {
+        setColor(objectColor);
+        pos.draw(objectChar);
+        setColor(Color::WHITE);
+    }
     
-    setColor(Color::WHITE);
     pos.set(nextPoint.x, nextPoint.y, symbol); 
     draw();
     return 0;

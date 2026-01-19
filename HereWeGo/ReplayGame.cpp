@@ -300,6 +300,7 @@ char ReplayGame::getInput() {
 	if (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
 		const std::string& cmd = steps[nextStepInd].command;
 		int playerID = steps[nextStepInd].playerID; // use the stored playerID
+
 		bool isRiddleAns = (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5'); // identify if this step is a riddle answer (1-5)
 		
 		if (!isRiddleAns) { // only handle movement/dispose; skip riddle answers

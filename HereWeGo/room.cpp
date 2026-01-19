@@ -70,7 +70,6 @@ bool Room::checkDoor(Point p, heldItem& item)
 		if (door->tryUnlock(item.id))
 		{
 			item = { ItemType::NONE, 0, Color::WHITE}; // Consume key
-			door->draw();
 		}
 	}
 

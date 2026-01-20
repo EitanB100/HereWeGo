@@ -227,6 +227,7 @@ void ReplayGame::drawProgressBar()
 	
 	constexpr int PROGRESS_BAR_WIDTH = 20;
 	constexpr int MAX_PROGRESS = 100;
+	constexpr int WIDTH = 45;
 	setColor(Color::CYAN);
 
 	int totalSteps = steps.size();
@@ -243,10 +244,11 @@ void ReplayGame::drawProgressBar()
 	}
 
 	parser << "] " << static_cast<int>(progress * MAX_PROGRESS) << "% (" << currentStep << "/" << totalSteps << ") Ticks";
-	int xPrintLoc = (MAX_X - parser.str().length()) / 2;
-	printCentered(parser.str(),0);
-	gotoxy(xPrintLoc, 0);
-	std::cout << parser.str();
+	std::string output = parser.str();
+	while (output.length() < WIDTH) {
+		output += ' ';
+	}
+	printCentered(output, 0);
 	setColor(Color::WHITE);
 }
 

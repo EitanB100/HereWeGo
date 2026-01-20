@@ -140,6 +140,7 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 							}
 						}
 						if (isPotionThere(p)) removePotion(p);
+						if (isDoorThere(p)) removeDoor(p);
 						if (isRiddleThere(p)) removeRiddle(p);
 
 						// Draw the explosion char onto the room map buffer

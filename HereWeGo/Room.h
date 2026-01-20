@@ -102,6 +102,7 @@ public:
     void addPotion(const Potion& potion);
     void addRiddle(int x, int y, int id);
 
+    void removeDoor(const Point& p);
     void removeKey(const Point& p);
     void removeTorch(const Point& p);
     void removeObstacle(const Point& p);

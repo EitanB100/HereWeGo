@@ -378,7 +378,7 @@ void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //tempor
 			int choice = c - '0';
 			bool correct = (choice - 1 == currentRiddle->correctAnswer);
 
-			onRiddleSolved(correct, currentRiddle->question, currentRiddle->options[currentRiddle->correctAnswer]); // Log result
+			onRiddleSolved(correct, currentRiddle->question, std::to_string(choice)); // Log result
 
 			if (correct) {
 				// Logic to remove riddle (copied from Game::handleRiddle logic)

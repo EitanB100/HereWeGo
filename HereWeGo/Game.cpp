@@ -552,7 +552,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 		int choice = c - '0';
 		if (choice - 1 == riddle.correctAnswer) {
 
-			onRiddleSolved(true);
+			onRiddleSolved(true, currentRiddle->question, std::to_string(choice));
 			if (!isSilent) {
 				setColor(Color::GREEN);
 				printCentered("CORRECT!", 20);
@@ -571,7 +571,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 		}
 
 		else {
-			onRiddleSolved(false);
+			onRiddleSolved(false, currentRiddle->question, std::to_string(choice));
 			if (!isSilent) {
 				setColor(Color::RED);
 				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);

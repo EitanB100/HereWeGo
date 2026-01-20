@@ -56,7 +56,7 @@ protected:
 	virtual void sleepFrame() { Sleep(GAME_SPEED); }
 	virtual void onLevelChange(int levelInd) {} //transitioning between levels
 	virtual void onLifeLost() {} //when getting hit/getting a riddle wrong
-	virtual void onRiddleSolved(bool correct) {} //when answering a riddle
+	virtual void onRiddleSolved(bool correct, const std::string& question, const std::string& answer) {} //when answering a riddle
 
 	void updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded, bool isSilent); // how each interation in run will do what the game logic asks
 	// kids will allow to use it from the father

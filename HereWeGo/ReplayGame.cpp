@@ -141,6 +141,8 @@ void ReplayGame::run() {
 			break;
 		}
 
+		if (isSilent) std::cout << "silent ack";
+
 		if (!isSilent) {
 			 for (int i = 0; i < PLAYER_AMOUNT; i++) players[i].draw();
 		
@@ -374,6 +376,11 @@ char ReplayGame::getInput() {
 	if (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
 		const std::string& cmd = steps[nextStepInd].command;
 		int playerID = steps[nextStepInd].playerID; // use the stored playerID
+		
+		if (cmd == "END") {
+			nextStepInd = steps.size();
+			return 0;
+		}
 
 		bool isRiddleAns = (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5'); // identify if this step is a riddle answer (1-5)
 		

@@ -90,7 +90,7 @@ void ReplayGame::run() {
 	while (true) {
 		Room& currRoom = levels[currentLevelIndex];
 
-		if (!isSilent && !isLoadInteractable && _kbhit()) {
+		if (!isSilent && isLoadInteractable && _kbhit()) {
 			char c = _getch();
 			handleSpeedToggle(c);
 		}

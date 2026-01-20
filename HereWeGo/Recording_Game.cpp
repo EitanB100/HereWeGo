@@ -75,9 +75,9 @@ void RecordingGame::onLifeLost(){
 	recordedEvents.push_back(std::to_string(currentTick) + ": " + std::to_string(HP_INCREASE) + " HP lost");
 }
 
-void RecordingGame::onRiddleSolved(bool correct) {
+void RecordingGame::onRiddleSolved(bool correct, const std::string& question, const std::string& answer) {
 	std::string status = correct ? "Correct" : "Wrong";
-	recordedEvents.push_back(std::to_string(currentTick) + " Riddle: " + status);
+	recordedEvents.push_back(std::to_string(currentTick) + " Riddle: " + question + " | Answer: " + answer + " | " + status);
 }
 
 void RecordingGame::writeResultsToBackup(const std::string& destName) {

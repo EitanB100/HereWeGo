@@ -378,7 +378,7 @@ void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //tempor
 			int choice = c - '0';
 			bool correct = (choice - 1 == currentRiddle->correctAnswer);
 
-			onRiddleSolved(correct); // Log result
+			onRiddleSolved(correct, currentRiddle->question, currentRiddle->options[currentRiddle->correctAnswer]); // Log result
 
 			if (correct) {
 				// Logic to remove riddle (copied from Game::handleRiddle logic)
@@ -417,10 +417,10 @@ void ReplayGame::onLifeLost()
 	recordActualEvent(currentTick, ": " + std::to_string(HP_INCREASE) + " HP lost");
 }
 
-void ReplayGame::onRiddleSolved(bool correct)
+void ReplayGame::onRiddleSolved(bool correct, const std::string& question, const std::string& answer)
 {
 	std::string status = correct ? "Correct" : "Wrong";
-	recordActualEvent(currentTick, "Riddle: " + status);
+	recordActualEvent(currentTick, " Riddle: " + question + " | Answer: " + answer + " | " + status);
 }
 
 void ReplayGame::printTimer() { // helped by AI

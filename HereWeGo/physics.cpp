@@ -1,5 +1,6 @@
 #include "Room.h"
 #include "Player.h"
+#include "Game.h"
 
 //logic for handling obstacle movement
 bool Room::moveObstacle(Point p, int dirx, int diry, int force)
@@ -94,9 +95,9 @@ bool Room::moveObstacle(Point p, int dirx, int diry, int force)
 
 
 
-void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& screen) {
-	Point blastCenter = bomb->getPos();
-	int blastRadius = bomb->getBlastRadius();
+void Room::bombExplode(Bomb& bomb, Player* players, int playerCount, Screen& screen) {
+	Point blastCenter = bomb.getPos();
+	int blastRadius = bomb.getBlastRadius();
 
 	//Apply damage to players
 	for (int i = 0; i < playerCount; ++i) {
@@ -106,7 +107,7 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 		int distance = (dx > dy) ? dx : dy;
 
 		if (distance <= blastRadius && PointhasLineOfSight(blastCenter.x, blastCenter.y, pPos.x, pPos.y)) {
-			int damage = (blastRadius - distance + 1) * 5;
+			int damage = (blastRadius - distance + 1) * BOMB_DAMAGE_MULTIPLIER;
 			players[i].takeDamage(damage);
 		}
 	}
@@ -126,7 +127,7 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 						if (isSpringThere(p)) removeSpring(p);
 						if (isBombThere(p)) {
 							Bomb* otherBomb = isBombThere(p);
-							if (otherBomb != nullptr && otherBomb != bomb) {
+							if (otherBomb != nullptr && otherBomb != &bomb) {
 								otherBomb->activate(); // Chain reaction
 							}
 						}
@@ -144,7 +145,7 @@ void Room::bombExplode(Bomb* bomb, Player* players, int playerCount, Screen& scr
 						if (isRiddleThere(p)) removeRiddle(p);
 
 						// Draw the explosion char onto the room map buffer
-						map[y][x] = bomb->getExplosionChar();
+						map[y][x] = bomb.getExplosionChar();
 					}
 				}
 			}

@@ -548,7 +548,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 	while (true) {
 		char c = getInteractionInput();
 
-		if (c < '1' || c  > '5') continue; //maximum 5 options 
+		if (c < '0' + MIN_RIDDLE_CHOICE || c > '0' + MAX_RIDDLE_CHOICE) continue; //maximum 5 options 
 		int choice = c - '0';
 		if (choice - 1 == riddle.correctAnswer) {
 

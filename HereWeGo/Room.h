@@ -152,7 +152,7 @@ public:
         }
     }
 
-	void bombExplode(Bomb* bomb, Player* players, int playerCount , Screen& screen);
+	void bombExplode(Bomb& bomb, Player* players, int playerCount , Screen& screen);
     void updateBombs(Player* players, int playerCount, Screen& screen);
     void clearExplosions();
     bool hasExplosions();

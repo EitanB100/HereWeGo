@@ -244,7 +244,6 @@ void ReplayGame::drawProgressBar()
 
 void ReplayGame::drawSpeedIndicator()
 {
-	constexpr int SPEED_INDICATOR_LENGTH = 30;
 	std::stringstream parser;
 	parser << "Speed: ";
 
@@ -352,7 +351,7 @@ char ReplayGame::getInteractionInput() {
 	if (nextStepInd < steps.size()) {
 		const std::string& cmd = steps[nextStepInd].command;
 
-		if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5') { //change to MIN_RIDDLE AND MAX_RIDDLE
+		if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5') { 
 			currentTick = steps[nextStepInd].tick;
 			char key = cmd[0];
 			nextStepInd++;
@@ -394,7 +393,7 @@ void ReplayGame::drawGameFrame(Room& currRoom)
 }
 
 
-void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //temporary. need full riddle file to write to
+void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) 
 {
 	// Logic split: Silent mode (simulation) vs Visual mode (base class logic)
 	if (isSilent) {

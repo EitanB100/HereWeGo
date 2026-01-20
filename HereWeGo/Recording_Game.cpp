@@ -151,7 +151,7 @@ void RecordingGame::saveGame() {
 
 	recordedSteps.pop_back(); // remove end marker to continue recording if needed
 
-	printCentered("GAME SAVED AND RECOREDED SUCCESSFULLY TO SLOT " + std::to_string(savefiles + 1), 2);
+	printCentered("GAME SAVED AND RECORDED SUCCESSFULLY TO SLOT " + std::to_string(savefiles + 1), 2);
 	savefiles++; // new save file added
 	saveGlobalSaveConfig(); // save on file how many saves are
 	if (!isSilent) Sleep(1000);
@@ -235,7 +235,7 @@ RecordingGame::~RecordingGame()
 		for (const auto& line : recordedEvents) {
 			resultFile << line << "\n";
 		}
-		resultFile << currentTick << "Game Ended: Score " << score "\n";
+		resultFile << currentTick << "Game Ended: Score " << score << "\n";
 
 		resultFile.close();
 	}

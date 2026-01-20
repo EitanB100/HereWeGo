@@ -25,7 +25,7 @@ class ReplayGame : public Game {
 	static constexpr int SPEED_QUADRUPLE = 25;
 	static constexpr float SPEED_OCTUPLE = 12.5f;
 
-	static constexpr int REPLAY_SPEED = 10;
+	
 
 	int currentTick = 0;
 	int levelStartTick = 0;

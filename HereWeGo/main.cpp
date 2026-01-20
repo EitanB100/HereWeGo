@@ -4,7 +4,6 @@
 #include "Game.h"
 #include "Recording_Game.h"
 #include "ReplayGame.h"
-//removed all the inclusions!
 
 
 int main(int argc, char* argv[]) {

@@ -38,7 +38,7 @@ class ReplayGame : public Game {
 
 	void loadExpectedResult();
 	void recordActualEvent(int time, const std::string& description);
-	
+	bool checkLevelTransition(int& currentLevelIndex, Point p1, Point p2);
 	void drawReplayUI();
 	void drawProgressBar();
 	void drawSpeedIndicator();
@@ -65,5 +65,6 @@ public:
 	void onLifeLost() override;
 	void onRiddleSolved(bool correct, const std::string& question, const std::string& answer) override;
 	void printTimer() override;
+	void printScore(const Point& hudPos) override;
 
 };

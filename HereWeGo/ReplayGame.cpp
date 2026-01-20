@@ -142,6 +142,33 @@ void ReplayGame::run() {
 	}
 }
 
+bool ReplayGame::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2) {
+	Point exit = levels[currentLevelIndex].getExitPos();
+	if (exit.x == -1) return false;
+
+	if (p1 == exit && p2 == exit) {
+		long levelSeconds = ((currentTick - levelStartTick) * GAME_SPEED) / 1000;
+		score += (MAX_SCORE / (levelSeconds + 1));
+
+		if (currentLevelIndex < (int)levels.size() - 1) {
+			currentLevelIndex++;
+			onLevelChange(currentLevelIndex);
+			setGame(currentLevelIndex, false);
+
+			// Important: Sync the start tick for the next level's score
+			levelStartTick = currentTick;
+
+			if (!isSilent) printTimer();
+			return false;
+		}
+		else {
+			showEndingScreen();
+			return true;
+		}
+	}
+	return false;
+}
+
 void ReplayGame::redrawScreen(Room& currRoom, bool isSilent)
 {
 	if (isSilent) return;
@@ -430,8 +457,8 @@ void ReplayGame::printTimer() { // helped by AI
 	// Calculate logical elapsed time based on ticks
 	// Formula: (Current Tick * Delay between frames in ms) / 1000
 	// If your original game used a 50ms Sleep, use 50 here.
-	long totalSeconds = (currentTick * 100) / 1000;
-	long levelSeconds = ((currentTick - levelStartTick) * 100) / 1000;
+	long totalSeconds = (currentTick * GAME_SPEED) / 1000;
+	long levelSeconds = ((currentTick - levelStartTick) * GAME_SPEED) / 1000;
 	// For Replay, Level Time and Total Time usually start together from the save point,
 	// but you can adjust this if you track 'levelStartTick'.
 	auto formatTime = [](long totalSecs) -> std::string {
@@ -445,5 +472,13 @@ void ReplayGame::printTimer() { // helped by AI
 	// Display based on logic ticks, not the system clock
 	std::cout << "LEVEL " << formatTime(levelSeconds) // Or specific level ticks
 		<< " | TOTAL " << formatTime(totalSeconds) << " |";
+	printScore(hudPos);
 }
 
+void ReplayGame::printScore(const Point& hudPos) {
+	gotoxy(hudPos.x + 26, hudPos.y + 2);
+
+	setColor(Color::WHITE);
+	std::cout << " Score: " << score;
+
+}

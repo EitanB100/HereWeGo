@@ -29,7 +29,6 @@ class Game {
 	std::string loadingErrorMessage = "Unknown error";
 	bool useColor;
 	void resetLevelTimer();
-	void printScore(const Point& hudPos);
 	void updatePlayerKeys(char keys[], int playerNum);
 	void loadGlobalSaveConfig(); // load how many saves are into savefiles
 
@@ -65,11 +64,11 @@ protected:
 	void updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded, bool isSilent); // how each interation in run will do what the game logic asks
 	// kids will allow to use it from the father
 	void tileMapError();
-	bool checkLevelTransition(int& currentLevelIndex, Point p1, Point p2);
+	virtual bool checkLevelTransition(int& currentLevelIndex, Point p1, Point p2);
 	void handleGameOver();
-
 	void printHUD();
 	virtual void printTimer();
+	virtual void printScore(const Point& hudPos);
 	void saveGlobalSaveConfig(); // type on file how many saves are
 
 public:
@@ -85,6 +84,7 @@ public:
 	int getCurrentLevelIdx() const { return currentLevelIndex; }
 	Player& getPlayer(int index) { return players[index]; }
 	void setGame(int levelIndex, bool firstSettings);
+
 	void setCurrentLevelIndex(int level) { currentLevelIndex = level; }
 	void setScore(int val) { score = val; }
 	int getSavefilesCount() const { return savefiles; }

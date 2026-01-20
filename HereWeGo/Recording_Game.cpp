@@ -73,7 +73,8 @@ void RecordingGame::resetRecording()
 }
 
 void RecordingGame::onLevelChange(int levelInd){
-	recordedEvents.push_back(std::to_string(currentTick) + " Level Changed: " + std::to_string(levelInd));
+	std::string screenName = (levelInd < 3) ? SCREEN_FILES[levelInd] : "unknown";
+	recordedEvents.push_back(std::to_string(currentTick) + " Level Changed: " + screenName);
 }
 
 void RecordingGame::onLifeLost(){
@@ -234,9 +235,8 @@ RecordingGame::~RecordingGame()
 		for (const auto& line : recordedEvents) {
 			resultFile << line << "\n";
 		}
+		resultFile << currentTick << "Game Ended: Score " << score "\n";
 
-		resultFile << "Final Score: " << score << "\n";
-		resultFile << "Total Ticks: " << currentTick << "\n";
 		resultFile.close();
 	}
 }

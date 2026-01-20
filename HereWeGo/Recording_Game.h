@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
+
 class RecordingGame : public Game {
 	std::vector<std::string> recordedSteps;
 	std::vector<std::string> recordedEvents;

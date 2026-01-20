@@ -135,6 +135,9 @@ void ReplayGame::run() {
 		sleepFrame();
 
 		if (nextStepInd >= steps.size()) {
+			if (isSilent) {
+				recordActualEvent(currentTick, "Game Ended: Score " + std::to_string(score));
+			}
 			break;
 		}
 		
@@ -438,7 +441,8 @@ void ReplayGame::handleRiddle(int riddleID, Player& player, Room& room) //tempor
 
 void ReplayGame::onLevelChange(int levelInd)
 {
-	recordActualEvent(currentTick, "Level Changed: " + std::to_string(levelInd));
+	std::string screenName = (levelInd < 3) ? SCREEN_FILES[levelInd] : "unknown";
+	recordActualEvent(currentTick, "Level Changed: " + screenName);
 	levelStartTick = currentTick;
 	initialLevelOffset = std::chrono::steady_clock::duration::zero();
 }

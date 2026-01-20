@@ -25,6 +25,13 @@ static constexpr int KEY_COUNT = static_cast<int>(CommandKeys::NUM_KEYS);
 extern char p1Keys[KEY_COUNT];
 extern char p2Keys[KEY_COUNT];
 
+
+static constexpr const char* SCREEN_FILES[] = {
+	"adv_world_01.screen",
+	"adv_world_02.screen",
+	"adv_world_03.screen"
+};
+
 class Game {
 	std::string loadingErrorMessage = "Unknown error";
 	bool useColor;

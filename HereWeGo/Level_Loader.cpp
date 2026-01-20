@@ -209,6 +209,11 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 			continue;
 		}
 
+		/*if (line == "[EXIT]") {
+			section = "EXIT";
+			continue;
+		}*/
+
 		std::stringstream parser(line);
 
 
@@ -398,6 +403,13 @@ bool Level_Loader::loadLevel(Room& room, const std::string& fileName, std::strin
 				}
 			}
 		}
+
+		/*else if (section == "EXIT") {
+			int dest;
+			if (parser >> dest) {
+				room.setExitDestination(dest);
+			}
+		}*/
 	}
 
 	if (room.doors.size() < foundDoors.size()) {

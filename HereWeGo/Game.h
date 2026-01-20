@@ -17,6 +17,10 @@ static constexpr int LEVEL_COUNT = 3;
 static constexpr int PLAYER_AMOUNT = 2;
 static constexpr int MAX_SCORE = 100000;
 
+static constexpr int BOMB_DAMAGE_MULTIPLIER = 5;
+static constexpr int MIN_RIDDLE_CHOICE = 1;
+static constexpr int MAX_RIDDLE_CHOICE = 5;
+
 static constexpr int KEY_COUNT = static_cast<int>(CommandKeys::NUM_KEYS);
 extern char p1Keys[KEY_COUNT];
 extern char p2Keys[KEY_COUNT];
@@ -56,7 +60,7 @@ protected:
 	virtual void sleepFrame() { Sleep(GAME_SPEED); }
 	virtual void onLevelChange(int levelInd) {} //transitioning between levels
 	virtual void onLifeLost() {} //when getting hit/getting a riddle wrong
-	virtual void onRiddleSolved(bool correct) {} //when answering a riddle
+	virtual void onRiddleSolved(bool correct, const std::string& question, const std::string& answer) {} //when answering a riddle
 
 	void updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded, bool isSilent); // how each interation in run will do what the game logic asks
 	// kids will allow to use it from the father

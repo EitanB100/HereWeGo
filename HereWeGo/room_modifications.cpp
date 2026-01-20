@@ -76,6 +76,17 @@ void Room::addRiddle(int x, int y, int id)
 	map[y][x] = RIDDLE_TILE;
 }
 
+void Room::removeDoor(const Point& p)
+{
+	for (auto door = doors.begin(); door != doors.end(); door++){
+		if (door->getPos().getPosition() == p) {
+			doors.erase(door);
+			map[p.y][p.x] = ' ';
+			return;
+		}
+	}
+}
+
 void Room::removeKey(const Point& p)
 {
 	for (auto key = keys.begin(); key != keys.end(); key++) {

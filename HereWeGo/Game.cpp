@@ -481,23 +481,23 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 		int levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
 		score += (MAX_SCORE / (levelSeconds + 1));
 
-		if (currentLevelIndex < (int)levels.size() - 1)
-		{
-			currentLevelIndex++;
+		int destination = levels[currentLevelIndex].getExitDestination();
+
+		if (destination == -1) destination = currentLevelIndex + 1;
+
+		if (destination < levels.size()) {
+			currentLevelIndex = destination;
 			onLevelChange(currentLevelIndex);
 			setGame(currentLevelIndex, false);
-
 			resetLevelTimer();
-
 			if (!isSilent) printTimer();
 			return false;
 		}
-		else
-		{
-
+		else {
 			showEndingScreen();
 			return true;
 		}
+
 	}
 
 	return false;
@@ -548,11 +548,12 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 	while (true) {
 		char c = getInteractionInput();
 
-		if (c < '1' || c  > '5') continue; //maximum 5 options 
+		if (c < '0' + MIN_RIDDLE_CHOICE || c > '0' + MAX_RIDDLE_CHOICE) continue; //maximum 5 options 
 		int choice = c - '0';
 		if (choice - 1 == riddle.correctAnswer) {
 
-			onRiddleSolved(true);
+
+			onRiddleSolved(true, currentRiddle->question, std::to_string(choice));
 			if (!isSilent) {
 				setColor(Color::GREEN);
 				printCentered("CORRECT!", 20);
@@ -571,7 +572,7 @@ void Game::handleRiddle(int riddleID, Player& player, Room& room)
 		}
 
 		else {
-			onRiddleSolved(false);
+			onRiddleSolved(false, currentRiddle->question, std::to_string(choice));
 			if (!isSilent) {
 				setColor(Color::RED);
 				printCentered("WRONG! -" + std::to_string(HP_INCREASE) + " HP •`_´•", 20);

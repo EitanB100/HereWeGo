@@ -58,6 +58,9 @@ class Room {
     Point exitPos = { -1,-1 };
     Point legendLocation = { 0,0 };
     bool isSilent = false;
+
+    int exitDestination = -1;
+
 public:
     void setSilent(bool s) { isSilent = s; }
 
@@ -74,6 +77,9 @@ public:
     }
 
     Point getLegendLoc() const { return legendLocation; }
+
+    void setExitDestination(int destination) { exitDestination = destination; }
+    int getExitDestination() const { return exitDestination; }
 
     void resetRoom();
 
@@ -102,6 +108,7 @@ public:
     void addPotion(const Potion& potion);
     void addRiddle(int x, int y, int id);
 
+    void removeDoor(const Point& p);
     void removeKey(const Point& p);
     void removeTorch(const Point& p);
     void removeObstacle(const Point& p);
@@ -151,7 +158,7 @@ public:
         }
     }
 
-	void bombExplode(Bomb* bomb, Player* players, int playerCount , Screen& screen);
+	void bombExplode(Bomb& bomb, Player* players, int playerCount , Screen& screen);
     void updateBombs(Player* players, int playerCount, Screen& screen);
     void clearExplosions();
     bool hasExplosions();

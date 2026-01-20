@@ -58,6 +58,9 @@ class Room {
     Point exitPos = { -1,-1 };
     Point legendLocation = { 0,0 };
     bool isSilent = false;
+
+    int exitDestination = -1;
+
 public:
     void setSilent(bool s) { isSilent = s; }
 
@@ -74,6 +77,9 @@ public:
     }
 
     Point getLegendLoc() const { return legendLocation; }
+
+    void setExitDestination(int destination) { exitDestination = destination; }
+    int getExitDestination() const { return exitDestination; }
 
     void resetRoom();
 

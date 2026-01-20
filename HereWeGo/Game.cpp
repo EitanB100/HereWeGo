@@ -481,23 +481,23 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 		int levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
 		score += (MAX_SCORE / (levelSeconds + 1));
 
-		if (currentLevelIndex < (int)levels.size() - 1)
-		{
-			currentLevelIndex++;
+		int destination = levels[currentLevelIndex].getExitDestination();
+
+		if (destination == -1) destination = currentLevelIndex + 1;
+
+		if (destination < levels.size()) {
+			currentLevelIndex = destination;
 			onLevelChange(currentLevelIndex);
 			setGame(currentLevelIndex, false);
-
 			resetLevelTimer();
-
 			if (!isSilent) printTimer();
 			return false;
 		}
-		else
-		{
-
+		else {
 			showEndingScreen();
 			return true;
 		}
+
 	}
 
 	return false;

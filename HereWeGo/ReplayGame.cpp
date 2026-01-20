@@ -239,12 +239,12 @@ void ReplayGame::drawProgressBar()
 	int filled = static_cast<int>(progress * PROGRESS_BAR_WIDTH);
 
 	std::cout << " REPLAY [";
-
+	//AI suggestion for progress bar effect
 	for (int i = 0; i < PROGRESS_BAR_WIDTH; i++) {
 		std::cout << (i < filled ? "\xDB" : "\xB0");
 	}
 
-	std::cout << "] " << static_cast<int>(progress * MAX_PROGRESS) << "% (" << currentStep << "/" << totalSteps << ")    ";
+	std::cout << "] " << static_cast<int>(progress * MAX_PROGRESS) << "% (" << currentStep << "/" << totalSteps << ") steps    ";
 	setColor(Color::WHITE);
 }
 

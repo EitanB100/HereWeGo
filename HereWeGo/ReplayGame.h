@@ -45,7 +45,7 @@ class ReplayGame : public Game {
 	void handleSpeedToggle(char c);
 	int getCurrentSleepDuration() const;
 public:
-	ReplayGame(bool silent);
+	ReplayGame(bool silent, bool interactable);
 	~ReplayGame();
 
 	void run() override;

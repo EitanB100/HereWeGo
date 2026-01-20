@@ -38,7 +38,9 @@ protected:
 	Player players[PLAYER_AMOUNT];
 	bool levelLoadedCorrectly = true;
 	bool isLoadMode = false;
+	bool isLoadInteractable = false;
 	bool isSilent = false;
+
 	int savefiles = 0; // ho much save files there 
 
 	std::chrono::steady_clock::time_point startTime;      // Total game time

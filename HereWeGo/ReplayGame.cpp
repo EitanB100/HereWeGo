@@ -2,10 +2,10 @@
 #include <sstream>
 
 
-ReplayGame::ReplayGame(bool silent) {
+ReplayGame::ReplayGame(bool silent, bool interactable) {
 	this->isSilent = silent;
 	this->isLoadMode = true;
-
+	this->isLoadInteractable = interactable;
 
 	screen.setSilent(silent);
 
@@ -207,12 +207,14 @@ void ReplayGame::recordActualEvent(int time, const std::string& description)
 
 void ReplayGame::drawReplayUI()
 {
+	if (!isLoadInteractable) return;
 	drawProgressBar();
 	drawSpeedIndicator();
 }
 
 void ReplayGame::drawProgressBar()
 {
+	
 	constexpr int PROGRESS_BAR_WIDTH = 20;
 	constexpr int MAX_PROGRESS = 100;
 	setColor(Color::CYAN);
@@ -267,6 +269,8 @@ void ReplayGame::drawSpeedIndicator()
 
 void ReplayGame::handleSpeedToggle(char c)
 {
+	if (!isLoadInteractable) return;
+
 	if (c == '+' || c == '=') {
 		switch (currentSpeed) {
 		case ReplaySpeed::HALF:
@@ -471,14 +475,16 @@ void ReplayGame::printTimer() { // helped by AI
 		};
 	// Display based on logic ticks, not the system clock
 	std::cout << "LEVEL " << formatTime(levelSeconds) // Or specific level ticks
-		<< " | TOTAL " << formatTime(totalSeconds) << " |";
+		<< " | TOTAL " << formatTime(totalSeconds);
 	printScore(hudPos);
 }
 
 void ReplayGame::printScore(const Point& hudPos) {
+
+	if (isLoadInteractable) return; // Score is being calculated using real time, which gets inflated/deflated depending on game speed adjustments
 	gotoxy(hudPos.x + 26, hudPos.y + 2);
 
 	setColor(Color::WHITE);
-	std::cout << " Score: " << score;
+	std::cout << "|" << " Score: " << score;
 
 }

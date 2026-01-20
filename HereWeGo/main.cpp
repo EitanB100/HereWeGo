@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
 		game.startInLevel(Level::ONE);
 		game.run();
 		if (!isSilent) {
-			printCentered("Replay Finished. Press Any Key To Exit...",2);
+			printCentered("Replay Finished. Press Any Key To Exit...",20);
 			while (_kbhit())
 				_getch();
 		}

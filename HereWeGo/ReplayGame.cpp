@@ -132,7 +132,7 @@ void ReplayGame::run() {
 
 		if (!isSilent) {
 			 for (int i = 0; i < PLAYER_AMOUNT; i++) players[i].draw();
-			//drawGameFrame(currRoom);
+		
 		printHUD();
 		printTimer();
 		drawReplayUI();
@@ -243,9 +243,10 @@ void ReplayGame::drawProgressBar()
 	}
 
 	parser << "] " << static_cast<int>(progress * MAX_PROGRESS) << "% (" << currentStep << "/" << totalSteps << ") Ticks";
-	
+	int xPrintLoc = (MAX_X - parser.str().length()) / 2;
 	printCentered(parser.str(),0);
-
+	gotoxy(xPrintLoc, 0);
+	std::cout << parser.str();
 	setColor(Color::WHITE);
 }
 

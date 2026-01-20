@@ -630,9 +630,11 @@ void Game::showEndingScreen()
 	printCentered("EITAN BAR", 21);
 	printCentered("HAREL BEN-ABIR", 22);
 
-	setColor(Color::DARK_GRAY);
-	printCentered("Press any key to return to menu...", 24);
-
+	if (!isLoadMode) {
+		setColor(Color::DARK_GRAY);
+		printCentered("Press any key to return to menu...", 24);
+		
+	}
 	if (!isLoadMode) {
 		while (_kbhit()) _getch();
 		_getch();

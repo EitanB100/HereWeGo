@@ -8,7 +8,6 @@
 class RecordingGame : public Game {
 	std::vector<std::string> recordedSteps;
 	std::vector<std::string> recordedEvents;
-	int currentTick = 0;
 public:
 	char getInput() override;
 	char getInteractionInput() override;

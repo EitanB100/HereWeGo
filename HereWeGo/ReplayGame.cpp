@@ -380,10 +380,9 @@ char ReplayGame::getInput() {
 		if (!isRiddleAns) { // only handle movement/dispose; skip riddle answers
 			key = getCharFromCommand(playerID, cmd); // pass the pID here
 			nextStepInd++;
-			return key;
 		}
 	}
-	return 0;
+	return key;
 }
 
 char ReplayGame::getInteractionInput() {

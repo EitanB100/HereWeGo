@@ -111,7 +111,10 @@ void ReplayGame::run() {
 		updateGameLogic(key, currRoom, boomDustCleaningNeeded, isSilent);
 
 		bool isVictory = checkLevelTransition(currentLevelIndex, players[0].getPos(), players[1].getPos()); //check Victory Nature
-		if (isVictory) break;
+		if (isVictory) {
+			if (isSilent) recordActualEvent(currentTick, "Game Ended: Score " + std::to_string(score));
+			break;
+		}
 
 
 		bool gameOver = false; // check Death Nature

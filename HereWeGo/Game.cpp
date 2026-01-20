@@ -633,8 +633,10 @@ void Game::showEndingScreen()
 	setColor(Color::DARK_GRAY);
 	printCentered("Press any key to return to menu...", 24);
 
-	while (_kbhit()) _getch();
-	_getch();
+	if (!isLoadMode) {
+		while (_kbhit()) _getch();
+		_getch();
+	}
 
 	setColor(Color::WHITE); // Reset for menu
 

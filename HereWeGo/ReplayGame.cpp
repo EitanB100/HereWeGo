@@ -227,59 +227,56 @@ void ReplayGame::drawProgressBar()
 	
 	constexpr int PROGRESS_BAR_WIDTH = 20;
 	constexpr int MAX_PROGRESS = 100;
-	constexpr int WIDTH = 45;
+	
+	const Point& hudPos = levels[currentLevelIndex].getLegendLoc();
+	int startX = hudPos.x + MAX_HUD_LINE_LENGTH;
 	setColor(Color::CYAN);
 
 	int totalSteps = steps.size();
 	int currentStep = nextStepInd;
 	float progress = totalSteps > 0 ? (float)currentStep / totalSteps : 0;
 
-	std::stringstream parser;
 	int filled = static_cast<int>(progress * PROGRESS_BAR_WIDTH);
 
-	parser << " REPLAY [";
+	std::cout << " REPLAY [";
 
 	for (int i = 0; i < PROGRESS_BAR_WIDTH; i++) {
-		parser << (i < filled ? "\xDB" : "\xB0");
+		std::cout << (i < filled ? "\xDB" : "\xB0");
 	}
 
-	parser << "] " << static_cast<int>(progress * MAX_PROGRESS) << "% (" << currentStep << "/" << totalSteps << ") Ticks";
-	std::string output = parser.str();
-	while (output.length() < WIDTH) {
-		output += ' ';
-	}
-	printCentered(output, 0);
+	std::cout << "] " << static_cast<int>(progress * MAX_PROGRESS) << "% (" << currentStep << "/" << totalSteps << ")    ";
 	setColor(Color::WHITE);
 }
 
 void ReplayGame::drawSpeedIndicator()
 {
-	std::stringstream parser;
-	parser << "Speed: ";
+	const Point& hudPos = levels[currentLevelIndex].getLegendLoc();
+	int startX = hudPos.x + MAX_HUD_LINE_LENGTH;
+	gotoxy(startX, hudPos.y + 1);
 
 	switch (currentSpeed) {
 	case ReplaySpeed::HALF:
-		parser << "0.5x  ";
+		std::cout << "0.5x  ";
 		break;
 	case ReplaySpeed::NORMAL:
-		parser << "1x  ";
+		std::cout << "1x  ";
 		break;
 	case ReplaySpeed::DOUBLE:
-		parser << "2x  ";
+		std::cout << "2x  ";
 		break;
 	case ReplaySpeed::QUADRUPLE:
-		parser << "4x  ";
+		std::cout << "4x  ";
 		break;
 	case ReplaySpeed::OCTUPLE:
-		parser << "8x  ";
+		std::cout << "8x  ";
 		break;
 	case ReplaySpeed::SIXTEEN_TUPLE:
-		parser << "16x  ";
+		std::cout << "16x  ";
 		break;
 	}
 	
-	parser << "[+/-] Change Speed";
-	printCentered(parser.str(), 1);
+	std::cout << "[+/-] Change Speed";
+	setColor(Color::WHITE);
 }
 
 void ReplayGame::handleSpeedToggle(char c)

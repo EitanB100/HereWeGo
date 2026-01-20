@@ -373,7 +373,7 @@ void ReplayGame::loadLevelError()
 char ReplayGame::getInput() {
 	char key = 0;
 	currentTick++;
-	if (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
+	while (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
 		const std::string& cmd = steps[nextStepInd].command;
 		int playerID = steps[nextStepInd].playerID; // use the stored playerID
 		
@@ -384,16 +384,19 @@ char ReplayGame::getInput() {
 
 		bool isRiddleAns = (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5'); // identify if this step is a riddle answer (1-5)
 		
-		if (!isRiddleAns) { // only handle movement/dispose; skip riddle answers
-			key = getCharFromCommand(playerID, cmd); // pass the pID here
+		if (isRiddleAns) { // only handle movement/dispose; skip riddle answers
 			nextStepInd++;
+			continue;
 		}
+		key = getCharFromCommand(playerID, cmd);
+		nextStepInd++;
+		break;
 	}
 	return key;
 }
 
 char ReplayGame::getInteractionInput() {
-	if (nextStepInd < steps.size()) {
+	while (nextStepInd < steps.size()) {
 		const std::string& cmd = steps[nextStepInd].command;
 
 		if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5') { 
@@ -402,6 +405,7 @@ char ReplayGame::getInteractionInput() {
 			nextStepInd++;
 			return key;
 		}
+		nextStepInd++;
 	}
 	return 0;
 }

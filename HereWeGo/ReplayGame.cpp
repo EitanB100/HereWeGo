@@ -420,7 +420,7 @@ void ReplayGame::onLifeLost()
 void ReplayGame::onRiddleSolved(bool correct, const std::string& question, const std::string& answer)
 {
 	std::string status = correct ? "Correct" : "Wrong";
-	recordActualEvent(currentTick, " Riddle: " + question + " | Answer: " + answer + " | " + status);
+	recordActualEvent(currentTick, "Riddle: " + question + " | Answer: " + answer + " | " + status);
 }
 
 void ReplayGame::printTimer() { // helped by AI

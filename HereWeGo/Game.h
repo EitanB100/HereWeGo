@@ -34,13 +34,14 @@ static constexpr const char* SCREEN_FILES[] = {
 };
 // P1: [TORCH]
 class Game {
-	std::string loadingErrorMessage = "Unknown error";
+	
 	bool useColor;
 	void resetLevelTimer();
 	void updatePlayerKeys(char keys[], int playerNum);
 	void loadGlobalSaveConfig(); // load how many saves are into savefiles
 
 protected:
+	std::string loadingErrorMessage = "Unknown error";
 	Screen screen;
 	std::vector<Room> levels;
 	Player players[PLAYER_AMOUNT];

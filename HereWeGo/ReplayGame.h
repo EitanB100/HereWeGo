@@ -45,6 +45,8 @@ class ReplayGame : public Game {
 	void drawSpeedIndicator();
 	void handleSpeedToggle(char c);
 	int getCurrentSleepDuration() const;
+
+	void loadLevelError();
 public:
 	ReplayGame(bool silent, bool interactable);
 	~ReplayGame();

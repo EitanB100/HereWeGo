@@ -10,7 +10,11 @@ ReplayGame::ReplayGame(bool silent, bool interactable) {
 	screen.setSilent(silent);
 
 	std::ifstream inFile("adv-world.steps");
-	if (inFile.is_open()) {
+	if (!inFile.is_open()) {
+		loadingErrorMessage = "adv-world.steps NOT FOUND";
+		levelLoadedCorrectly = false;
+		return;
+	}
 		std::string line;
 		while (std::getline(inFile, line)) {
 			if (line.empty() || line[0] == '#') continue;
@@ -24,8 +28,15 @@ ReplayGame::ReplayGame(bool silent, bool interactable) {
 			}
 		}
 		inFile.close();
-	}
+
 	if (isSilent) {
+		std::ifstream resultFile("adv-world.result");
+		if (!resultFile.is_open()) {
+			loadingErrorMessage = "adv-world.result NOT FOUND";
+			levelLoadedCorrectly = false;
+			return;
+		}
+		resultFile.close();
 		loadExpectedResult();
 	}
 	else {
@@ -344,6 +355,17 @@ int ReplayGame::getCurrentSleepDuration() const
 		case ReplaySpeed::SIXTEEN_TUPLE:
 			return (int)SPEED_SIXTEEN;
 	}
+}
+
+void ReplayGame::loadLevelError()
+{
+	screen.clearScreen();
+	setColor(Color::RED);
+	printCentered("CRITICAL ERROR", 10);
+	printCentered("adv-world.steps NOT FOUND", 12);
+	printCentered("Exiting...", 14);
+	setColor(Color::WHITE);
+	
 }
 
 char ReplayGame::getInput() {

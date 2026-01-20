@@ -2,34 +2,23 @@
                                 BONUS FEATURES
 ================================================================================
 
-1. Shielded Bomb Explosions (Physics & Raycasting)
-   - The Bomb explosion logic calculates Line-of-Sight using Bresenham's algorithm.
-   
-   - Walls effectively "shield" entities from the blast. If a wall stands 
-     between the bomb and an object (even within the radius), the object is safe.
-     
-   - Chain reactions: Bombs trigger other bombs only if they have line-of-sight.
+1. Shielded Bomb Explosions 
+	Implemented Wall shielding from explosions
 
 2. New Game Element: Potions
-   - Implemented a completely new collectible item not defined in the original 
-     exercise requirements.
-   - Behavior: Consumable item represented by 'P' that restores Health Points 
-     (HP) to the player when collected (If HP at full it is solid).
-   - Integration: Fully supported in the Level Loader.
+	Adds 5 HP until maximum reached.
+	marked with P in game.
 
 3. Color Support with Toggle
-   - The game utilizes color for a more intuitive level flow:
-     * Keys match their door colors.
-     * Switches change color based on state.
-     * Potions are Blue, Bombs are Red, etc.
-   - As requested, there is a settings menu option to toggle Color Mode ON/OFF.
-   
+
 4. Key Rebinding System
    - Inside Settings, a full key rebinding system that allows players to rebind controls for 
      both Player 1 and Player 2 at runtime (includes conflict detection and prevents them).
 
-5. Advanced Torch Physics
-   - The Torch implementation uses a real-time Line-of-Sight algorithm.
-   - Instead of a simple square radius, it calculates visibility through walls 
-     and obstacles, revealing only what is optically visible to the holder.
-   - "Hidden" items (Keys, Bombs, Potions) are represented by 'R' until illuminated by a torch or line-of-sight.
+5. added -interactable argument
+	The argument allows for a fast-forwarding of the recording in various speeds with a progress bar
+
+6. Added functionality to continuous recording of a saved state
+	i.e. if you play on -save, save state, relaunch the program on -save and open the same state, it continues recording from the last step.
+
+7. saved state of changed keys

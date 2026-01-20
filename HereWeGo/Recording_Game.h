@@ -9,6 +9,11 @@ class RecordingGame : public Game {
 	std::vector<std::string> recordedSteps;
 	std::vector<std::string> recordedEvents;
 public:
+	RecordingGame() {}
+	RecordingGame(const RecordingGame&) = delete;
+	RecordingGame& operator=(const RecordingGame&) = delete;
+	~RecordingGame();
+
 	char getInput() override;
 	char getInteractionInput() override;
 	std::string translateKey(char key, int& playerID);
@@ -21,6 +26,6 @@ public:
 	void writeResultsToBackup(const std::string& destName); // same but for results
 	void saveGame() override;
 	bool loadGame(int slot) override;
-	~RecordingGame(); 
+
 	
 };

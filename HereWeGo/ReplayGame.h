@@ -26,7 +26,6 @@ class ReplayGame : public Game {
 	static constexpr float SPEED_OCTUPLE = 12.5f;
 	static constexpr float SPEED_SIXTEEN = 6.25f;
 
-	
 
 	int currentTick = 0;
 	int levelStartTick = 0;
@@ -50,6 +49,8 @@ class ReplayGame : public Game {
 public:
 	ReplayGame(bool silent, bool interactable);
 	~ReplayGame();
+	ReplayGame(const ReplayGame&) = delete;
+	ReplayGame& operator=(const ReplayGame&) = delete;
 
 	void run() override;
 	void redrawScreen(Room& currRoom, bool isSilent) override;

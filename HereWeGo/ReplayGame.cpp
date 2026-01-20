@@ -141,7 +141,7 @@ void ReplayGame::run() {
 			break;
 		}
 
-		if (isSilent) std::cout << "silent ack";
+		//if (isSilent) std::cout << "silent ack";
 
 		if (!isSilent) {
 			 for (int i = 0; i < PLAYER_AMOUNT; i++) players[i].draw();
@@ -373,21 +373,26 @@ void ReplayGame::loadLevelError()
 char ReplayGame::getInput() {
 	char key = 0;
 	currentTick++;
+
 	while (nextStepInd < steps.size() && steps[nextStepInd].tick <= currentTick) {
 		const std::string& cmd = steps[nextStepInd].command;
-		int playerID = steps[nextStepInd].playerID; // use the stored playerID
-		
+		int playerID = steps[nextStepInd].playerID;
+
 		if (cmd == "END") {
 			nextStepInd = steps.size();
 			return 0;
 		}
 
-		bool isRiddleAns = (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5'); // identify if this step is a riddle answer (1-5)
-		
-		if (isRiddleAns) { // only handle movement/dispose; skip riddle answers
-			nextStepInd++;
-			continue;
+		bool isRiddleAns = (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5');
+
+		if (isRiddleAns) {
+			if (currentTick - steps[nextStepInd].tick > 3) {
+				nextStepInd++;  
+				continue;
+			}
+			break;  
 		}
+
 		key = getCharFromCommand(playerID, cmd);
 		nextStepInd++;
 		break;
@@ -395,19 +400,20 @@ char ReplayGame::getInput() {
 	return key;
 }
 
-char ReplayGame::getInteractionInput() {
-	while (nextStepInd < steps.size()) {
-		const std::string& cmd = steps[nextStepInd].command;
+char ReplayGame::getInteractionInput() { // for riddle interactions
+	int searchLimit = nextStepInd + MAX_RIDDLE_CHOICE;  
 
-		if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5') { 
-			currentTick = steps[nextStepInd].tick;
+	for (int i = nextStepInd; i < steps.size() && i < searchLimit; i++) {
+		const std::string& cmd = steps[i].command;
+
+		if (cmd.length() == 1 && cmd[0] >= '1' && cmd[0] <= '5') {
+			currentTick = steps[i].tick;
 			char key = cmd[0];
-			nextStepInd++;
+			nextStepInd = i + 1;
 			return key;
 		}
-		nextStepInd++;
 	}
-	return 0;
+	return 0;  
 }
 
 

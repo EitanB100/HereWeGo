@@ -235,7 +235,7 @@ RecordingGame::~RecordingGame()
 		for (const auto& line : recordedEvents) {
 			resultFile << line << "\n";
 		}
-		resultFile << currentTick << "Game Ended: Score " << score << "\n";
+		resultFile << currentTick << " Game Ended: Score " << score << "\n";
 
 		resultFile.close();
 	}

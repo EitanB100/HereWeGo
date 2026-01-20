@@ -1,11 +1,13 @@
-197 Riddle: I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I? | Answer: 2 | Correct
-387 Riddle: What has keys but cannot open locks? | Answer: 1 | Correct
-745 Level Changed: adv_world_02.screen
-757 Riddle: The more of this there is, the less you see. What is it? | Answer: 1 | Correct
-1211 Riddle: What walks on four legs in the morning, two legs at noon, and three legs in the evening? | Answer: 3 | Correct
-1922 Level Changed: adv_world_03.screen
-2050 Riddle: To understand me, you must first understand me. Without a base case, I am infinite. | Answer: 1 | Correct
-2262 Riddle: I take up space but serve no purpose. You created me with 'new' but forgot 'delete'. | Answer: 2 | Correct
-2340 Riddle: In the world of C++, if you want to be first, you must start with nothing. What number am I? | Answer: 3 | Correct
-2368 Riddle: I translate your code into machine language. Ignore my warnings, and you shall not pass. | Answer: 3 | Correct
-2751Game Ended: Score 1902
+174 Riddle: I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I? | Answer: 2 | Correct
+389 Riddle: What has keys but cannot open locks? | Answer: 1 | Correct
+786 Level Changed: adv_world_02.screen
+798 Riddle: The more of this there is, the less you see. What is it? | Answer: 1 | Correct
+1172 Riddle: What walks on four legs in the morning, two legs at noon, and three legs in the evening? | Answer: 3 | Correct
+1966 Level Changed: adv_world_03.screen
+2090 Riddle: To understand me, you must first understand me. Without a base case, I am infinite. | Answer: 1 | Correct
+2301 Riddle: I take up space but serve no purpose. You created me with 'new' but forgot 'delete'. | Answer: 2 | Correct
+2423 Riddle: In the world of C++, if you want to be first, you must start with nothing. What number am I? | Answer: 3 | Correct
+2480 Riddle: I translate your code into machine language. Ignore my warnings, and you shall not pass. | Answer: 3 | Correct
+2830 Riddle: I do not hold the value, but I know where it lives. I am powerful, but 'nullptr' is my weakness. | Answer: 2 | Correct
+2994 Riddle: I allow different objects to respond to the same message in their own unique way. | Answer: 1 | Correct
+3254 Game Ended: Score 300000

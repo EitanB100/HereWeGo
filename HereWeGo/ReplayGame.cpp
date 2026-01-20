@@ -62,10 +62,14 @@ ReplayGame::~ReplayGame()
 		}
 
 		if (passed) {
+			setColor(Color::GREEN);
 			std::cout << "TEST PASSED!" << std::endl;
+			setColor(Color::WHITE);
 		}
 		else {
+			setColor(Color::RED);
 			std::cout << "TEST FAILED" << std::endl;
+			setColor(Color::WHITE);
 		}
 	}
 
@@ -263,6 +267,9 @@ void ReplayGame::drawSpeedIndicator()
 	case ReplaySpeed::OCTUPLE:
 		parser << "8x  ";
 		break;
+	case ReplaySpeed::SIXTEEN_TUPLE:
+		parser << "16x  ";
+		break;
 	}
 	
 	parser << "[+/-] Change Speed";
@@ -288,6 +295,9 @@ void ReplayGame::handleSpeedToggle(char c)
 			currentSpeed = ReplaySpeed::OCTUPLE;
 			break;
 		case ReplaySpeed::OCTUPLE:
+			currentSpeed = ReplaySpeed::SIXTEEN_TUPLE;
+			break;
+		case ReplaySpeed::SIXTEEN_TUPLE:
 			break;
 		}
 	}
@@ -308,6 +318,9 @@ void ReplayGame::handleSpeedToggle(char c)
 		case ReplaySpeed::OCTUPLE:
 			currentSpeed = ReplaySpeed::QUADRUPLE;
 			break;
+		case ReplaySpeed::SIXTEEN_TUPLE:
+			currentSpeed = ReplaySpeed::OCTUPLE;
+			break;
 		}
 	}
 }
@@ -324,8 +337,9 @@ int ReplayGame::getCurrentSleepDuration() const
 		case ReplaySpeed::QUADRUPLE:
 			return SPEED_QUADRUPLE;
 		case ReplaySpeed::OCTUPLE:
-			return (int) SPEED_OCTUPLE;
-
+			return (int)SPEED_OCTUPLE;
+		case ReplaySpeed::SIXTEEN_TUPLE:
+			return (int)SPEED_SIXTEEN;
 	}
 }
 

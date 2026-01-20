@@ -13,6 +13,7 @@ char Game::p2Keys[KEY_COUNT] = { 'I','M','J','L','K','O' };
 
 void Game::resetLevelTimer() {
 	levelStartTime = std::chrono::steady_clock::now();
+	levelStartTick = currentTick;
 }
 
 
@@ -384,6 +385,7 @@ void Game::redrawScreen(Room& currRoom, bool isSilent) {
 
 void Game::run()
 {
+	currentTick++;
 	if (!levelLoadedCorrectly) {
 		tileMapError();
 		return; // Exits run(), returning to main() menu
@@ -477,8 +479,7 @@ bool Game::checkLevelTransition(int& currentLevelIndex, Point p1, Point p2)
 
 	if (p1 == exit && p2 == exit)
 	{
-		auto now = std::chrono::steady_clock::now();
-		int levelSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - levelStartTime).count();
+		long levelSeconds = ((currentTick - levelStartTick) * GAME_SPEED) / 1000; //change to a constexpr
 		score += (MAX_SCORE / (levelSeconds + 1));
 
 		int destination = levels[currentLevelIndex].getExitDestination();

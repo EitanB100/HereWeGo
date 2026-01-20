@@ -15,7 +15,7 @@ class ReplayGame : public Game {
 		std::string description;
 	};
 
-	enum class ReplaySpeed { HALF = 0, NORMAL, DOUBLE, QUADRUPLE, OCTUPLE };
+	enum class ReplaySpeed { HALF = 0, NORMAL, DOUBLE, QUADRUPLE, OCTUPLE, SIXTEEN_TUPLE };
 	ReplaySpeed currentSpeed = ReplaySpeed::NORMAL;
 
 
@@ -24,6 +24,7 @@ class ReplayGame : public Game {
 	static constexpr int SPEED_DOUBLE = 50;   
 	static constexpr int SPEED_QUADRUPLE = 25;
 	static constexpr float SPEED_OCTUPLE = 12.5f;
+	static constexpr float SPEED_SIXTEEN = 6.25f;
 
 	
 

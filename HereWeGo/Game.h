@@ -50,6 +50,9 @@ protected:
 
 	int savefiles = 0; // ho much save files there 
 
+	int currentTick = 0;
+	int levelStartTick = 0;
+
 	std::chrono::steady_clock::time_point startTime;      // Total game time
 	std::chrono::steady_clock::time_point levelStartTime; // Current level time
 

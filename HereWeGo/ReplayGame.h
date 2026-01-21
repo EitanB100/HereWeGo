@@ -15,7 +15,7 @@ class ReplayGame : public Game {
 		std::string description;
 	};
 
-	enum class ReplaySpeed { HALF = 0, NORMAL, DOUBLE, QUADRUPLE, OCTUPLE };
+	enum class ReplaySpeed { HALF = 0, NORMAL, DOUBLE, QUADRUPLE, OCTUPLE, SIXTEEN_TUPLE };
 	ReplaySpeed currentSpeed = ReplaySpeed::NORMAL;
 
 
@@ -24,8 +24,8 @@ class ReplayGame : public Game {
 	static constexpr int SPEED_DOUBLE = 50;   
 	static constexpr int SPEED_QUADRUPLE = 25;
 	static constexpr float SPEED_OCTUPLE = 12.5f;
+	static constexpr float SPEED_SIXTEEN = 6.25f;
 
-	static constexpr int REPLAY_SPEED = 10;
 
 	int currentTick = 0;
 	int levelStartTick = 0;
@@ -38,15 +38,19 @@ class ReplayGame : public Game {
 
 	void loadExpectedResult();
 	void recordActualEvent(int time, const std::string& description);
-	
+	bool checkLevelTransition(int& currentLevelIndex, Point p1, Point p2);
 	void drawReplayUI();
 	void drawProgressBar();
 	void drawSpeedIndicator();
 	void handleSpeedToggle(char c);
 	int getCurrentSleepDuration() const;
+
+	void loadLevelError();
 public:
-	ReplayGame(bool silent);
+	ReplayGame(bool silent, bool interactable);
 	~ReplayGame();
+	ReplayGame(const ReplayGame&) = delete;
+	ReplayGame& operator=(const ReplayGame&) = delete;
 
 	void run() override;
 	void redrawScreen(Room& currRoom, bool isSilent) override;
@@ -65,5 +69,6 @@ public:
 	void onLifeLost() override;
 	void onRiddleSolved(bool correct, const std::string& question, const std::string& answer) override;
 	void printTimer() override;
+	void printScore(const Point& hudPos) override;
 
 };

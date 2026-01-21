@@ -1,5 +1,15 @@
-205 Riddle: I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I? | Answer: 3 | Wrong
-205: 5 HP lost
-206 Riddle: I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I? | Answer: 2 | Correct
-Final Score: 0
-Total Ticks: 237
+225 Riddle: I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I? | Answer: 2 | Correct
+460 Riddle: What has keys but cannot open locks? | Answer: 1 | Correct
+768 Level Changed: adv_world_02.screen
+777 Riddle: The more of this there is, the less you see. What is it? | Answer: 1 | Correct
+1071 Riddle: What walks on four legs in the morning, two legs at noon, and three legs in the evening? | Answer: 2 | Wrong
+1071: 5 HP lost
+1073 Riddle: What walks on four legs in the morning, two legs at noon, and three legs in the evening? | Answer: 3 | Correct
+1869 Level Changed: adv_world_03.screen
+1974 Riddle: To understand me, you must first understand me. Without a base case, I am infinite. | Answer: 1 | Correct
+2189 Riddle: I take up space but serve no purpose. You created me with 'new' but forgot 'delete'. | Answer: 2 | Correct
+2249 Riddle: In the world of C++, if you want to be first, you must start with nothing. What number am I? | Answer: 3 | Correct
+2274 Riddle: I translate your code into machine language. Ignore my warnings, and you shall not pass. | Answer: 3 | Correct
+2716 Riddle: I do not hold the value, but I know where it lives. I am powerful, but 'nullptr' is my weakness. | Answer: 2 | Correct
+2887 Riddle: I allow different objects to respond to the same message in their own unique way. | Answer: 1 | Correct
+3111 Game Ended: Score 2998

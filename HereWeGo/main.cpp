@@ -4,7 +4,6 @@
 #include "Game.h"
 #include "Recording_Game.h"
 #include "ReplayGame.h"
-//removed all the inclusions!
 
 
 int main(int argc, char* argv[]) {
@@ -13,6 +12,7 @@ int main(int argc, char* argv[]) {
 	bool isSaveMode = false;
 	bool isLoadMode = false;
 	bool isSilent = false;
+	bool isLoadInteractable = false;
 
 	if (argc > 1) {
 		std::string mode = argv[1];
@@ -25,14 +25,18 @@ int main(int argc, char* argv[]) {
 		if (s == "-silent") {
 			isSilent = true;
 		}
+		
+		else if (s == "-interactable") {
+			isLoadInteractable = true;
+		}
 	}
 	
 	if (isLoadMode) {
-		ReplayGame game(isSilent);
+		ReplayGame game(isSilent, isLoadInteractable);
 		game.startInLevel(Level::ONE);
 		game.run();
 		if (!isSilent) {
-			printCentered("Replay Finished. Press Any Key To Exit...",2);
+			printCentered("Replay Finished. Press Any Key To Exit...",20);
 			while (_kbhit())
 				_getch();
 		}

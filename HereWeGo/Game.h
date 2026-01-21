@@ -25,22 +25,35 @@ static constexpr int KEY_COUNT = static_cast<int>(CommandKeys::NUM_KEYS);
 extern char p1Keys[KEY_COUNT];
 extern char p2Keys[KEY_COUNT];
 
+static constexpr int MAX_HUD_LINE_LENGTH = 22;
+
+static constexpr const char* SCREEN_FILES[] = {
+	"adv_world_01.screen",
+	"adv_world_02.screen",
+	"adv_world_03.screen"
+};
+// P1: [TORCH]
 class Game {
-	std::string loadingErrorMessage = "Unknown error";
+	
 	bool useColor;
 	void resetLevelTimer();
-	void printScore(const Point& hudPos);
 	void updatePlayerKeys(char keys[], int playerNum);
 	void loadGlobalSaveConfig(); // load how many saves are into savefiles
 
 protected:
+	std::string loadingErrorMessage = "Unknown error";
 	Screen screen;
 	std::vector<Room> levels;
 	Player players[PLAYER_AMOUNT];
 	bool levelLoadedCorrectly = true;
 	bool isLoadMode = false;
+	bool isLoadInteractable = false;
 	bool isSilent = false;
+
 	int savefiles = 0; // ho much save files there 
+
+	int currentTick = 0;
+	int levelStartTick = 0;
 
 	std::chrono::steady_clock::time_point startTime;      // Total game time
 	std::chrono::steady_clock::time_point levelStartTime; // Current level time
@@ -65,11 +78,11 @@ protected:
 	void updateGameLogic(char key, Room& currRoom, bool& boomDustCleaningNeeded, bool isSilent); // how each interation in run will do what the game logic asks
 	// kids will allow to use it from the father
 	void tileMapError();
-	bool checkLevelTransition(int& currentLevelIndex, Point p1, Point p2);
+	virtual bool checkLevelTransition(int& currentLevelIndex, Point p1, Point p2);
 	void handleGameOver();
-
 	void printHUD();
 	virtual void printTimer();
+	virtual void printScore(const Point& hudPos);
 	void saveGlobalSaveConfig(); // type on file how many saves are
 
 public:
@@ -85,6 +98,7 @@ public:
 	int getCurrentLevelIdx() const { return currentLevelIndex; }
 	Player& getPlayer(int index) { return players[index]; }
 	void setGame(int levelIndex, bool firstSettings);
+
 	void setCurrentLevelIndex(int level) { currentLevelIndex = level; }
 	void setScore(int val) { score = val; }
 	int getSavefilesCount() const { return savefiles; }
